@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node src/index.js",
     "test": "node --test test/**/*.test.js",
-    "lint": "node --check src/**/*.js test/**/*.js"
+    "lint": "node --check src/index.js src/telemetry-validator.js test/telemetry.test.js"
   },
   "dependencies": {
     "mqtt": "^5.10.3"

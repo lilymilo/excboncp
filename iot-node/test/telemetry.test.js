@@ -58,7 +58,7 @@ describe('IoT Node Telemetry Validator', () => {
     const sig2 = computeTelemetrySignature(samplePayload);
     assert.equal(sig1, sig2);
     assert.ok(sig1.startsWith('0x'));
-    assert.equal(sig1.length, 66); // '0x' + 64 hex chars
+    assert.equal(sig1.length, 66);
   });
 
   test('should project into Canonical IoT Layer matching attestation schema', () => {

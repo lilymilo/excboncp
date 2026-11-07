@@ -1,7 +1,6 @@
 name: cboncp-iot
 
 services:
-  # MQTT Broker (Eclipse Mosquitto)
   mqtt-broker:
     image: eclipse-mosquitto:2.0
     container_name: cboncp-mqtt-broker
@@ -21,7 +20,6 @@ services:
     networks:
       - cboncp-net
 
-  # IoT Telemetry Gateway Service & Ingest Node
   iot-node:
     build:
       context: ./iot-node
@@ -52,4 +50,3 @@ volumes:
 networks:
   cboncp-net:
     driver: bridge
-

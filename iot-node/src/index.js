@@ -2,7 +2,6 @@ import http from 'node:http';
 import mqtt from 'mqtt';
 import { validateTelemetryPayload, toCanonicalIoTLayer } from './telemetry-validator.js';
 
-// Configuration from environment variables
 const MQTT_BROKER = process.env.MQTT_BROKER || 'localhost';
 const MQTT_PORT = process.env.MQTT_PORT || '1883';
 const MQTT_URL = process.env.MQTT_URL || `mqtt://${MQTT_BROKER}:${MQTT_PORT}`;
@@ -12,17 +11,10 @@ const HTTP_PORT = parseInt(process.env.IOT_GATEWAY_PORT || process.env.PORT || '
 const SIMULATION_MODE = process.env.SIMULATION_MODE === 'true';
 const SIMULATION_INTERVAL_MS = parseInt(process.env.SIMULATION_INTERVAL_MS || '5000', 10);
 
-// In-memory telemetry cache
 const telemetryStore = new Map();
 let mqttConnected = false;
 let messageCount = 0;
 
-console.log(`[IoT-Gateway] Starting CbonCP IoT Gateway Service...`);
-console.log(`[IoT-Gateway] MQTT Broker Target: ${MQTT_URL}`);
-console.log(`[IoT-Gateway] Subscribing to: ${MQTT_TOPIC_SUB}`);
-console.log(`[IoT-Gateway] Simulation Mode: ${SIMULATION_MODE ? 'ENABLED' : 'DISABLED'}`);
-
-// Connect to MQTT Broker
 const client = mqtt.connect(MQTT_URL, {
   reconnectPeriod: 2000,
   connectTimeout: 5000,
@@ -31,16 +23,11 @@ const client = mqtt.connect(MQTT_URL, {
 
 client.on('connect', () => {
   mqttConnected = true;
-  console.log(`[MQTT] Connected successfully to ${MQTT_URL}`);
+  console.log(`[MQTT] Connected to ${MQTT_URL}`);
   client.subscribe(MQTT_TOPIC_SUB, (err) => {
-    if (err) {
-      console.error(`[MQTT] Failed to subscribe to ${MQTT_TOPIC_SUB}:`, err.message);
-    } else {
-      console.log(`[MQTT] Subscribed to topic filter: ${MQTT_TOPIC_SUB}`);
-    }
+    if (err) console.error(`[MQTT] Subscription failed: ${err.message}`);
   });
 
-  // Also subscribe to legacy topic if different
   if (MQTT_TOPIC_SUB !== 'cboncp/telemetry') {
     client.subscribe('cboncp/telemetry');
   }
@@ -48,39 +35,32 @@ client.on('connect', () => {
 
 client.on('error', (err) => {
   mqttConnected = false;
-  console.error(`[MQTT Error]: ${err.message}`);
+  console.error(`[MQTT] Error: ${err.message}`);
 });
 
 client.on('offline', () => {
   mqttConnected = false;
-  console.warn(`[MQTT] Connection lost. Reconnecting...`);
 });
 
 client.on('message', (topic, message) => {
   messageCount++;
   const validation = validateTelemetryPayload(message);
   if (!validation.valid) {
-    console.warn(`[MQTT Ingest] Discarding invalid payload from topic [${topic}]: ${validation.error}`);
+    console.warn(`[MQTT] Discarding invalid payload: ${validation.error}`);
     return;
   }
 
   const data = validation.data;
-  const canonical = toCanonicalIoTLayer(data);
-  const record = {
+  telemetryStore.set(data.node_id, {
     raw: data,
-    canonical,
+    canonical: toCanonicalIoTLayer(data),
     topic,
     receivedAt: new Date().toISOString()
-  };
-
-  telemetryStore.set(data.node_id, record);
-  console.log(`[MQTT Ingest] Processed telemetry from ${data.node_id}: Temp=${data.temperature}°C, Soil=${data.soil_moisture}%, Flame=${data.flame_detected}`);
+  });
 });
 
-// Periodic Simulator (for testing / demo / CI/CD)
 let simulationTimer = null;
 if (SIMULATION_MODE) {
-  console.log(`[Simulator] Starting mock telemetry generator every ${SIMULATION_INTERVAL_MS}ms...`);
   simulationTimer = setInterval(() => {
     if (!client.connected) return;
 
@@ -100,16 +80,13 @@ if (SIMULATION_MODE) {
     };
 
     client.publish(MQTT_TOPIC_PUB, JSON.stringify(mockPayload));
-    console.log(`[Simulator] Published synthetic telemetry to ${MQTT_TOPIC_PUB}`);
   }, SIMULATION_INTERVAL_MS);
 }
 
-// HTTP Server for Healthchecks & Telemetry API
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
 
   if (url.pathname === '/health' || url.pathname === '/healthz') {
-    const isHealthy = true;
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       status: 'UP',
@@ -162,22 +139,14 @@ const server = http.createServer((req, res) => {
 
 server.listen(HTTP_PORT, '0.0.0.0', () => {
   console.log(`[HTTP API] Server listening on port ${HTTP_PORT}`);
-  console.log(`[HTTP API] Health endpoint available at http://localhost:${HTTP_PORT}/health`);
-  console.log(`[HTTP API] Telemetry API at http://localhost:${HTTP_PORT}/api/telemetry`);
 });
 
-// Graceful Shutdown
 function shutdown() {
-  console.log('[System] Shutting down gracefully...');
   if (simulationTimer) clearInterval(simulationTimer);
   server.close(() => {
-    client.end(true, () => {
-      console.log('[System] Terminated cleanly.');
-      process.exit(0);
-    });
+    client.end(true, () => process.exit(0));
   });
 }
 
 process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);
-

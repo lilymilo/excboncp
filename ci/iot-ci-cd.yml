@@ -11,7 +11,7 @@ on:
       - 'mosquitto/**'
       - 'docker-compose.yml'
       - 'shared-schemas/**'
-      - '.github/workflows/iot-ci-cd.yml'
+      - 'ci/iot-ci-cd.yml'
   pull_request:
     branches:
       - feat/IoT-node
@@ -21,48 +21,36 @@ on:
       - 'mosquitto/**'
       - 'docker-compose.yml'
       - 'shared-schemas/**'
-      - '.github/workflows/iot-ci-cd.yml'
+      - 'ci/iot-ci-cd.yml'
   workflow_dispatch:
 
 jobs:
-  # ============================================================================
-  # 1. Firmware & Configuration Structure Verification
-  # ============================================================================
   verify-firmware:
     name: Verify ESP32 Firmware & Diagrams
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Verify Firmware Files & Configs
         run: |
-          echo "Checking ESP32 sketch and Wokwi simulation files..."
-          test -f iot-node/sketch.ino || { echo "sketch.ino not found!"; exit 1; }
-          test -f iot-node/diagram.json || { echo "diagram.json not found!"; exit 1; }
-          test -f iot-node/libraries.txt || { echo "libraries.txt not found!"; exit 1; }
-          test -f mosquitto/config/mosquitto.conf || { echo "mosquitto.conf not found!"; exit 1; }
-          test -f shared-schemas/attestation_payload.json || { echo "attestation_payload.json not found!"; exit 1; }
-          echo "All firmware and config files present."
+          test -f iot-node/sketch.ino
+          test -f iot-node/diagram.json
+          test -f iot-node/libraries.txt
+          test -f mosquitto/config/mosquitto.conf
+          test -f shared-schemas/attestation_payload.json
 
       - name: Validate JSON Files
         run: |
           python3 -c "import json; json.load(open('iot-node/diagram.json'))"
           python3 -c "import json; json.load(open('shared-schemas/attestation_payload.json'))"
-          echo "JSON syntax is valid."
 
-  # ============================================================================
-  # 2. IoT Gateway Tests & Schema Validation
-  # ============================================================================
   test-and-lint:
     name: IoT Gateway Unit Tests & Schema Check
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js 22
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: 'npm'
@@ -80,59 +68,40 @@ jobs:
         working-directory: ./iot-node
         run: npm test
 
-  # ============================================================================
-  # 3. Docker Compose & Smoke Test
-  # ============================================================================
   docker-ci:
     name: Docker Build & Compose Integration Test
     needs: [verify-firmware, test-and-lint]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v3
 
-      - name: Validate Docker Compose Configuration
+      - name: Validate Compose Config
         run: docker compose config
 
       - name: Build Docker Stack
         run: docker compose build
 
-      - name: Launch Stack in Detached Mode (Simulation Active)
-        run: |
-          SIMULATION_MODE=true docker compose up -d
+      - name: Launch Stack
+        run: SIMULATION_MODE=true docker compose up -d
 
-      - name: Wait for Services to be Ready & Healthy
+      - name: Await Healthcheck
         run: |
-          echo "Checking container status..."
-          docker compose ps
-          echo "Waiting for IoT Gateway health endpoint..."
           for i in {1..30}; do
             if curl -s http://localhost:5050/health | grep -q '"status":"UP"'; then
-              echo "IoT Gateway is UP and Healthy!"
               break
             fi
-            echo "Waiting for health check... ($i/30)"
             sleep 2
           done
 
-      - name: Run Smoke Test on API & Telemetry Pipeline
+      - name: Smoke Test
         run: |
-          echo "Querying Health Endpoint:"
-          curl -s http://localhost:5050/health | jq .
-          
-          echo "Simulating telemetry event:"
-          curl -s -X POST http://localhost:5050/api/telemetry/simulate | jq .
-
-          echo "Sleeping 3s to allow MQTT processing..."
+          curl -s http://localhost:5050/health
+          curl -s -X POST http://localhost:5050/api/telemetry/simulate
           sleep 3
+          curl -s http://localhost:5050/api/telemetry
 
-          echo "Querying Telemetry Store:"
-          curl -s http://localhost:5050/api/telemetry | jq .
-
-      - name: Teardown Docker Stack
+      - name: Teardown
         if: always()
         run: docker compose down -v
-
