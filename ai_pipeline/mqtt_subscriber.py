@@ -106,6 +106,163 @@ def create_mqtt_client(client_id: str = "cboncp-ai-pipeline") -> mqtt.Client:
     return client
 
 
+def _generate_html_dashboard(record: Dict[str, Any], output_path: Path) -> None:
+    telemetry = record.get("telemetry", {})
+    sat = record.get("satellite_verification", {})
+    coords = sat.get("coordinates") or {"lat": telemetry.get("latitude", -6.5971), "lon": telemetry.get("longitude", 106.7994)}
+    lat = coords.get("lat", -6.5971)
+    lon = coords.get("lon", 106.7994)
+    anomalies_str = ", ".join(record.get("anomalies", []))
+    ee_script = sat.get("code_editor_script", "")
+
+    html_content = f"""<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CBONCP - Laporan Verifikasi Satelit AI & GEE</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    :root {{
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #ef4444;
+      --success: #10b981;
+    }}
+    * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+    body {{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 1.5rem;
+      line-height: 1.5;
+    }}
+    .container {{ max-width: 1100px; margin: 0 auto; }}
+    header {{ margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }}
+    .badge {{
+      display: inline-block;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }}
+    .grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }}
+    @media(max-width: 768px) {{ .grid {{ grid-template-columns: 1fr; }} }}
+    .card {{
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem;
+    }}
+    .card h2 {{ font-size: 1.05rem; margin-bottom: 0.75rem; color: #38bdf8; }}
+    .metric-row {{ display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.92rem; }}
+    .metric-row:last-child {{ border-bottom: none; }}
+    .metric-label {{ color: var(--muted); }}
+    .metric-val {{ font-weight: 600; }}
+    #map {{ height: 420px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 1.5rem; }}
+    .code-box {{
+      background: #090d16;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.85rem;
+      color: #7dd3fc;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1 style="font-size: 1.5rem; font-weight: 700;">CBONCP // Verifikasi Citra Satelit Real-Time</h1>
+        <p style="color: var(--muted); font-size: 0.9rem;">Node Telemetri: {telemetry.get("node_id", "N/A")} | Terverifikasi: {sat.get("verified_at", "N/A")}</p>
+      </div>
+      <div>
+        <span class="badge">STATUS ANOMALI: {anomalies_str or "TERDETEKSI"}</span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Data Telemetri Sensor ESP32</h2>
+        <div class="metric-row"><span class="metric-label">Node ID</span><span class="metric-val">{telemetry.get("node_id", "-")}</span></div>
+        <div class="metric-row"><span class="metric-label">Suhu Sensor</span><span class="metric-val" style="color: #f87171;">{telemetry.get("temperature", "-")} °C</span></div>
+        <div class="metric-row"><span class="metric-label">Kelembapan Tanah</span><span class="metric-val">{telemetry.get("soil_moisture", "-")} %</span></div>
+        <div class="metric-row"><span class="metric-label">Deteksi Api</span><span class="metric-val">{telemetry.get("flame_detected", "-")}</span></div>
+        <div class="metric-row"><span class="metric-label">Waktu Sensor</span><span class="metric-val">{telemetry.get("timestamp", {}).get("datetime", "-") if isinstance(telemetry.get("timestamp"), dict) else telemetry.get("timestamp", "-")}</span></div>
+      </div>
+
+      <div class="card">
+        <h2>Metadata Citra Google Earth Engine (GEE)</h2>
+        <div class="metric-row"><span class="metric-label">Penyedia / Satelit</span><span class="metric-val">{sat.get("provider", "Google Earth Engine")} (Sentinel-2 L2A)</span></div>
+        <div class="metric-row"><span class="metric-label">Koleksi Satelit</span><span class="metric-val">{sat.get("collection", "-")}</span></div>
+        <div class="metric-row"><span class="metric-label">Tanggal Akuisisi</span><span class="metric-val">{sat.get("acquisition_date", "-")}</span></div>
+        <div class="metric-row"><span class="metric-label">Tutupan Awan</span><span class="metric-val">{sat.get("cloud_coverage_pct", "-")} %</span></div>
+        <div class="metric-row"><span class="metric-label">ID Citra Satelit</span><span class="metric-val" style="font-size: 0.78rem;">{sat.get("image_id", "-")}</span></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 1.5rem;">
+      <h2>Peta Lokasi Stasiun Hutan & Deteksi Anomali</h2>
+      <div id="map"></div>
+    </div>
+
+    <div class="card">
+      <h2>Script Kode untuk Google Earth Engine Code Editor</h2>
+      <p style="color: var(--muted); font-size: 0.85rem; margin-bottom: 0.75rem;">
+        Salin kode berikut dan tempelkan ke jendela <b>New Script</b> di Code Editor GEE, lalu klik tombol <b>Run</b>:
+      </p>
+      <div class="code-box">{ee_script}</div>
+    </div>
+  </div>
+
+  <script>
+    const lat = {lat};
+    const lon = {lon};
+    const map = L.map('map').setView([lat, lon], 13);
+
+    // Citra satelit ArcGIS World Imagery
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}', {{
+      attribution: 'Tiles &copy; Esri, Maxar, Earthstar Geographics'
+    }}).addTo(map);
+
+    // Marker sensor anomali
+    const marker = L.circleMarker([lat, lon], {{
+      radius: 12,
+      fillColor: '#ef4444',
+      color: '#fff',
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0.85
+    }}).addTo(map);
+
+    marker.bindPopup('<b>Stasiun Node Anomali</b><br>Lat: ' + lat + '<br>Lon: ' + lon + '<br><span style="color:red;">{anomalies_str}</span>').openPopup();
+
+    // Lingkaran radius pemantauan 2.5 km
+    L.circle([lat, lon], {{
+      radius: 2500,
+      color: '#38bdf8',
+      weight: 1.5,
+      fillColor: '#38bdf8',
+      fillOpacity: 0.1
+    }}).addTo(map);
+  </script>
+</body>
+</html>
+"""
+    output_path.write_text(html_content, encoding="utf-8")
+
+
 def _save_event_record(record: Dict[str, Any]) -> None:
     try:
         data_dir = Path(__file__).resolve().parent / "data"
@@ -113,6 +270,10 @@ def _save_event_record(record: Dict[str, Any]) -> None:
         log_file = data_dir / "verified_anomalies.jsonl"
         with open(log_file, "a", encoding="utf-8") as f:
             f.write(json.dumps(record) + "\n")
+
+        # Also generate visual HTML report
+        html_file = data_dir / "latest_verification.html"
+        _generate_html_dashboard(record, html_file)
     except Exception as exc:
         logger.debug("Could not persist event record: %s", exc)
 
@@ -157,6 +318,8 @@ def handle_telemetry_message(
         logger.info("[GEE VERIFICATION] Status: %s", satellite_res.get("status"))
         if satellite_res.get("image_id"):
             logger.info("[GEE SATELLITE IMAGE ID] %s", satellite_res.get("image_id"))
+        if satellite_res.get("code_editor_script"):
+            logger.info("[GEE SCRIPT UNTUK CODE EDITOR]\n%s", satellite_res.get("code_editor_script"))
         if satellite_res.get("thumbnail_url"):
             logger.info("[GEE THUMBNAIL URL] %s", satellite_res.get("thumbnail_url"))
 

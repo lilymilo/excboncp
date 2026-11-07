@@ -148,6 +148,8 @@ def fetch_satellite_data(
         image_id = image.id().getInfo()
         cloud_pct = props.get("CLOUDY_PIXEL_PERCENTAGE", 0.0)
 
+        full_asset_id = f"{collection_id}/{image_id}" if not image_id.startswith(collection_id) else image_id
+
         # Sentinel-2 L2A true color bands: B4 (Red), B3 (Green), B2 (Blue)
         vis_params = {
             "min": 0,
@@ -162,7 +164,7 @@ def fetch_satellite_data(
             thumb_url = image.getThumbURL(vis_params)
         except Exception as thumb_exc:
             logger.info("Direct thumbnail generation restricted (%s), using Earth Engine asset viewer link", thumb_exc)
-            thumb_url = f"https://code.earthengine.google.com/?image={image_id}"
+            thumb_url = f"https://code.earthengine.google.com/?image={full_asset_id}"
 
         raw_time = props.get("system:time_start")
         acq_date = (
@@ -170,15 +172,23 @@ def fetch_satellite_data(
             if raw_time else date_end_str
         )
 
+        ee_script = (
+            f"var image = ee.Image('{full_asset_id}');\n"
+            f"Map.setCenter({lon}, {lat}, 12);\n"
+            f"Map.addLayer(image, {{bands: ['B4', 'B3', 'B2'], min: 0, max: 3000}}, 'Sentinel-2 L2A');\n"
+            f"Map.addLayer(ee.Geometry.Point([{lon}, {lat}]), {{color: 'red'}}, 'Sensor Node');"
+        )
+
         return {
             "status": "success",
             "provider": "Google Earth Engine",
             "collection": collection_id,
-            "image_id": image_id,
+            "image_id": full_asset_id,
             "acquisition_date": acq_date,
             "cloud_coverage_pct": round(float(cloud_pct), 2),
             "coordinates": {"lat": lat, "lon": lon},
             "thumbnail_url": thumb_url,
+            "code_editor_script": ee_script,
             "verified_at": now_utc.isoformat()
         }
 
