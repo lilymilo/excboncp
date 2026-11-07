@@ -1,0 +1,55 @@
+name: cboncp-iot
+
+services:
+  # MQTT Broker (Eclipse Mosquitto)
+  mqtt-broker:
+    image: eclipse-mosquitto:2.0
+    container_name: cboncp-mqtt-broker
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 2 mosquitto_sub -t '$$SYS/#' -C 1 -i healthcheck || exit 0"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - cboncp-net
+
+  # IoT Telemetry Gateway Service & Ingest Node
+  iot-node:
+    build:
+      context: ./iot-node
+      dockerfile: Dockerfile
+    container_name: cboncp-iot-node
+    restart: unless-stopped
+    depends_on:
+      mqtt-broker:
+        condition: service_started
+    ports:
+      - "${IOT_GATEWAY_PORT:-5050}:5050"
+    environment:
+      NODE_ENV: production
+      MQTT_BROKER: mqtt-broker
+      MQTT_PORT: 1883
+      MQTT_TOPIC_SUBSCRIPTION: "${MQTT_TOPIC_SUBSCRIPTION:-CbonCP/+/telemetry}"
+      MQTT_TOPIC_TELEMETRY: "${MQTT_TOPIC_TELEMETRY:-CbonCP/node-1/telemetry}"
+      IOT_GATEWAY_PORT: 5050
+      SIMULATION_MODE: "${SIMULATION_MODE:-false}"
+      SIMULATION_INTERVAL_MS: "${SIMULATION_INTERVAL_MS:-5000}"
+    networks:
+      - cboncp-net
+
+volumes:
+  mosquitto_data:
+  mosquitto_log:
+
+networks:
+  cboncp-net:
+    driver: bridge
+
