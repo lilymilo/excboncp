@@ -156,7 +156,13 @@ def fetch_satellite_data(
             "dimensions": 512,
             "region": buffer_region
         }
-        thumb_url = image.getThumbURL(vis_params)
+
+        # Generate RGB thumbnail URL, falling back gracefully to Earth Engine explorer if thumbnail permission is restricted
+        try:
+            thumb_url = image.getThumbURL(vis_params)
+        except Exception as thumb_exc:
+            logger.info("Direct thumbnail generation restricted (%s), using Earth Engine asset viewer link", thumb_exc)
+            thumb_url = f"https://code.earthengine.google.com/?image={image_id}"
 
         raw_time = props.get("system:time_start")
         acq_date = (
