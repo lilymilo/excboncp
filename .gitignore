@@ -30,6 +30,10 @@ wheels/
 .installed.cfg
 *.egg
 
+# Logs and data outputs
+ai_pipeline/data/
+*.log
+
 # Testing & Coverage
 .pytest_cache/
 .coverage

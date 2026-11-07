@@ -106,6 +106,17 @@ def create_mqtt_client(client_id: str = "cboncp-ai-pipeline") -> mqtt.Client:
     return client
 
 
+def _save_event_record(record: Dict[str, Any]) -> None:
+    try:
+        data_dir = Path(__file__).resolve().parent / "data"
+        data_dir.mkdir(parents=True, exist_ok=True)
+        log_file = data_dir / "verified_anomalies.jsonl"
+        with open(log_file, "a", encoding="utf-8") as f:
+            f.write(json.dumps(record) + "\n")
+    except Exception as exc:
+        logger.debug("Could not persist event record: %s", exc)
+
+
 def handle_telemetry_message(
     payload_bytes: bytes,
     config: Optional[Dict[str, Any]] = None
@@ -149,12 +160,14 @@ def handle_telemetry_message(
         if satellite_res.get("thumbnail_url"):
             logger.info("[GEE THUMBNAIL URL] %s", satellite_res.get("thumbnail_url"))
 
-        return {
+        res_payload = {
             "status": "anomaly_triggered",
             "anomalies": reasons,
             "telemetry": telemetry,
             "satellite_verification": satellite_res
         }
+        _save_event_record(res_payload)
+        return res_payload
     except Exception as exc:
         logger.error("[GEE ERROR] Failed during automated anomaly verification: %s", exc)
         return {
