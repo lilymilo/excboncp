@@ -95,13 +95,14 @@ class TestAIPipeline(unittest.TestCase):
 
         res = handle_telemetry_message(raw_bytes)
         self.assertEqual(res["status"], "anomaly_triggered")
+        self.assertEqual(res["land_status"], "WARNING")
         self.assertIn("satellite_verification", res)
-        self.assertIn(res["satellite_verification"]["status"], ["simulated", "success"])
+        self.assertIn(res["satellite_verification"]["status"], ["simulated", "success", "cached"])
 
     def test_gee_fetch_satellite_data(self):
         initialize_gee()
         res = fetch_satellite_data(lat=-6.5971, lon=106.7994)
-        self.assertIn(res["status"], ["simulated", "success"])
+        self.assertIn(res["status"], ["simulated", "success", "cached"])
         self.assertIn("thumbnail_url", res)
         self.assertIn("image_id", res)
 

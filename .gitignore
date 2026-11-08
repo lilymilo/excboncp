@@ -31,8 +31,10 @@ wheels/
 *.egg
 
 # Logs and data outputs
-ai_pipeline/data/
+ai_pipeline/data/*.jsonl
+ai_pipeline/data/*.html
 *.log
+!ai_pipeline/data/gee_cache.json
 
 # Testing & Coverage
 .pytest_cache/
