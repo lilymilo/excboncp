@@ -11,7 +11,7 @@ from server.credentials.service import decrypt_credential, encrypt_credential
 
 def test_fernet_encryption_roundtrip() -> None:
     """Encryption at rest must reliably encrypt and decrypt raw provider API keys."""
-    sample_key = "sk-ant-api03-abcdef1234567890-test-key-payload"
+    sample_key = "mock-credential-abcdef1234567890-test-payload"
     cipher_text = encrypt_credential(sample_key, settings.CREDENTIAL_ENCRYPTION_KEY)
 
     assert cipher_text != sample_key

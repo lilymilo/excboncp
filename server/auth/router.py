@@ -92,7 +92,11 @@ async def register(body: UserCreate, request: Request) -> UserResponse:
         )
 
     await audit_auth_action(
-        request, user.id, "user.register", details=f"username={user.username}", resource_id=user.id,
+        request,
+        user.id,
+        "user.register",
+        details=f"username={user.username}",
+        resource_id=user.id,
     )
     return user
 
@@ -124,7 +128,10 @@ async def login(body: UserLogin, request: Request) -> TokenResponse:
     await create_session(db, user.id, token_resp.access_token, token_resp.expires_at)
 
     await audit_auth_action(
-        request, user.id, "user.login", resource_id=user.id,
+        request,
+        user.id,
+        "user.login",
+        resource_id=user.id,
     )
     return token_resp
 

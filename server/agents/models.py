@@ -35,9 +35,7 @@ class AgentDefinition(BaseModel):
     required_context: list[str]
     allowed_dirs: list[str]
     restricted_dirs: list[str]
-    required_provider: str = Field(
-        ..., description="AI provider needed to run this agent"
-    )
+    required_provider: str = Field(..., description="AI provider needed to run this agent")
 
 
 class AgentExecutionRequest(BaseModel):

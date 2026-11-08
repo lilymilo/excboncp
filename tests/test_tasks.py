@@ -7,7 +7,9 @@ from fastapi.testclient import TestClient
 from server.tasks.service import _release_locks, acquire_lock
 
 
-def _get_or_create_user(client: TestClient, username: str, password: str = "StrongPassword123!") -> str:
+def _get_or_create_user(
+    client: TestClient, username: str, password: str = "StrongPassword123!"
+) -> str:
     client.post(
         "/api/auth/register",
         json={"username": username, "password": password, "display_name": username},

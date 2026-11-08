@@ -99,7 +99,9 @@ def _load_settings() -> Settings:
         expiry = 24
 
     return Settings(
-        DATABASE_URL=os.environ.get("DATABASE_URL") or os.environ.get("DATABASE_PATH") or "./data/excboncp.db",
+        DATABASE_URL=os.environ.get("DATABASE_URL")
+        or os.environ.get("DATABASE_PATH")
+        or "./data/excboncp.db",
         JWT_SECRET=jwt_secret,
         JWT_ALGORITHM=os.environ.get("JWT_ALGORITHM", "HS256"),
         JWT_EXPIRY_HOURS=expiry,

@@ -86,16 +86,12 @@ async def server_metrics(
     db = await get_db()
 
     # User counts
-    async with db.execute(
-        "SELECT role, COUNT(*) FROM users GROUP BY role"
-    ) as cursor:
+    async with db.execute("SELECT role, COUNT(*) FROM users GROUP BY role") as cursor:
         user_rows = await cursor.fetchall()
         user_counts = {row[0]: row[1] for row in user_rows}
 
     # Task counts by status
-    async with db.execute(
-        "SELECT status, COUNT(*) FROM tasks GROUP BY status"
-    ) as cursor:
+    async with db.execute("SELECT status, COUNT(*) FROM tasks GROUP BY status") as cursor:
         task_rows = await cursor.fetchall()
         task_counts = {row[0]: row[1] for row in task_rows}
 

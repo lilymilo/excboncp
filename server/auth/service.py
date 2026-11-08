@@ -121,9 +121,7 @@ async def create_user(db: aiosqlite.Connection, data: UserCreate) -> UserRespons
     Raises *ValueError* if the username is already taken.
     """
     # Uniqueness check
-    async with db.execute(
-        "SELECT id FROM users WHERE username = ?", (data.username,)
-    ) as cur:
+    async with db.execute("SELECT id FROM users WHERE username = ?", (data.username,)) as cur:
         if await cur.fetchone():
             raise ValueError(f"Username '{data.username}' is already taken.")
 
@@ -169,18 +167,14 @@ async def authenticate_user(
     return _row_to_user(row)
 
 
-async def get_user_by_id(
-    db: aiosqlite.Connection, user_id: str
-) -> UserResponse | None:
+async def get_user_by_id(db: aiosqlite.Connection, user_id: str) -> UserResponse | None:
     """Fetch a single user by primary key."""
     async with db.execute("SELECT * FROM users WHERE id = ?", (user_id,)) as cur:
         row = await cur.fetchone()
     return _row_to_user(row) if row else None
 
 
-async def get_user_by_username(
-    db: aiosqlite.Connection, username: str
-) -> UserResponse | None:
+async def get_user_by_username(db: aiosqlite.Connection, username: str) -> UserResponse | None:
     """Fetch a single user by unique username."""
     async with db.execute("SELECT * FROM users WHERE username = ?", (username,)) as cur:
         row = await cur.fetchone()
@@ -189,16 +183,12 @@ async def get_user_by_username(
 
 async def list_users(db: aiosqlite.Connection) -> list[UserResponse]:
     """Return all registered users."""
-    async with db.execute(
-        "SELECT * FROM users ORDER BY created_at ASC"
-    ) as cur:
+    async with db.execute("SELECT * FROM users ORDER BY created_at ASC") as cur:
         rows = await cur.fetchall()
     return [_row_to_user(r) for r in rows]
 
 
-async def update_user(
-    db: aiosqlite.Connection, user_id: str, data: UserUpdate
-) -> UserResponse:
+async def update_user(db: aiosqlite.Connection, user_id: str, data: UserUpdate) -> UserResponse:
     """Update a user's profile.  Only non-*None* fields are applied."""
     now = datetime.now(UTC).isoformat()
     fields: list[str] = []
@@ -233,9 +223,7 @@ async def update_user(
     return user
 
 
-async def update_user_role(
-    db: aiosqlite.Connection, user_id: str, role: str
-) -> UserResponse:
+async def update_user_role(db: aiosqlite.Connection, user_id: str, role: str) -> UserResponse:
     """Change a user's role."""
     now = datetime.now(UTC).isoformat()
     await db.execute(

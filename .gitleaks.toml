@@ -1,0 +1,16 @@
+# Gitleaks configuration for ExcbonCP repository
+title = "ExcbonCP Gitleaks Configuration"
+
+[allowlist]
+description = "Allowlist for test fixtures, documentation examples, and CI templates"
+paths = [
+    '''(?i)^\.env\.example$''',
+    '''(?i)^tests/.*''',
+    '''(?i)^docs/.*''',
+    '''(?i)^\.github/workflows/.*''',
+]
+regexes = [
+    '''dGVzdC1lbmNyeXB0aW9uLWtleS1mb3ItY2ktb25seTE=''',
+    '''test-secret-key-for-ci-only-not-production''',
+    '''test-jwt-secret-key-not-for-production-use-only-testing''',
+]

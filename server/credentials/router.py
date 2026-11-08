@@ -140,7 +140,4 @@ async def delete_own_credential(
 )
 async def list_providers() -> list[dict]:
     """Return the list of supported AI credential providers."""
-    return [
-        {"value": p.value, "label": p.name.replace("_", " ").title()}
-        for p in Provider
-    ]
+    return [{"value": p.value, "label": p.name.replace("_", " ").title()} for p in Provider]

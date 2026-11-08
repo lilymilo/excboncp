@@ -5,7 +5,9 @@ Tests for ExcbonCP Health Monitoring, System Metrics, and Audit Trails.
 from fastapi.testclient import TestClient
 
 
-def _get_or_create_user(client: TestClient, username: str, password: str = "StrongPassword123!") -> str:
+def _get_or_create_user(
+    client: TestClient, username: str, password: str = "StrongPassword123!"
+) -> str:
     client.post(
         "/api/auth/register",
         json={"username": username, "password": password, "display_name": username},
@@ -62,7 +64,11 @@ def test_audit_logs_role_enforcement(test_client: TestClient) -> None:
     test_client.post(
         "/api/auth/register",
         headers=headers_owner,
-        json={"username": "member_for_audit", "password": "StrongPassword123!", "display_name": "Member"},
+        json={
+            "username": "member_for_audit",
+            "password": "StrongPassword123!",
+            "display_name": "Member",
+        },
     )
     token_member = test_client.post(
         "/api/auth/login",

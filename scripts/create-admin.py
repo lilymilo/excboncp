@@ -45,7 +45,9 @@ async def async_main(args: argparse.Namespace) -> None:
         from server.database import close_db, get_db, init_db
     except ImportError as e:
         print(f"[ERROR] Could not import server modules: {e}")
-        print("        Make sure dependencies are installed: pip install -r server/requirements.txt")
+        print(
+            "        Make sure dependencies are installed: pip install -r server/requirements.txt"
+        )
         sys.exit(1)
 
     await init_db()
@@ -77,7 +79,9 @@ async def async_main(args: argparse.Namespace) -> None:
                 print(f"[ERROR] User '{username}' already exists.")
                 sys.exit(1)
 
-        display_name = args.display_name or (input("Display name (optional): ").strip() if not args.username else "")
+        display_name = args.display_name or (
+            input("Display name (optional): ").strip() if not args.username else ""
+        )
         display_name = display_name or username
 
         password = args.password

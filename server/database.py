@@ -145,9 +145,7 @@ async def get_db() -> aiosqlite.Connection:
     Raises *RuntimeError* if the database has not been initialised.
     """
     if _connection is None:
-        raise RuntimeError(
-            "Database not initialised.  Call init_db() during startup."
-        )
+        raise RuntimeError("Database not initialised.  Call init_db() during startup.")
     return _connection
 
 

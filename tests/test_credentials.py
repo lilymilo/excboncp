@@ -5,7 +5,9 @@ Tests for ExcbonCP Per-User AI Credential Vault.
 from fastapi.testclient import TestClient
 
 
-def _get_or_create_user(client: TestClient, username: str, password: str = "StrongPassword123!") -> str:
+def _get_or_create_user(
+    client: TestClient, username: str, password: str = "StrongPassword123!"
+) -> str:
     client.post(
         "/api/auth/register",
         json={"username": username, "password": password, "display_name": username},
@@ -36,14 +38,14 @@ def test_create_and_list_own_credential(test_client: TestClient) -> None:
         headers=headers_a,
         json={
             "provider": "anthropic",
-            "api_key": "sk-ant-api03-secret-super-sensitive-token-12345",
+            "api_key": "mock-secret-super-sensitive-token-12345",
             "display_label": "Alice Anthropic Work",
         },
     )
     assert create_resp.status_code == 201
     cred_data = create_resp.json()
     assert cred_data["provider"] == "anthropic"
-    assert "sk-ant-api03-secret-super-sensitive-token-12345" not in str(cred_data)
+    assert "mock-secret-super-sensitive-token-12345" not in str(cred_data)
     assert "api_key" not in cred_data
 
     # List credentials
@@ -69,7 +71,7 @@ def test_credential_user_isolation(test_client: TestClient) -> None:
         headers=headers_a,
         json={
             "provider": "anthropic",
-            "api_key": "sk-ant-alice-private-key-12345",
+            "api_key": "mock-alice-private-key-12345",
             "display_label": "Alice Key",
         },
     )

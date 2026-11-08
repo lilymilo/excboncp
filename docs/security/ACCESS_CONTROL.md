@@ -45,6 +45,7 @@ All authorization is verified server-side on every request using FastAPI depende
 ```python
 # Pattern: server/auth/dependencies.py
 
+
 async def require_role(allowed_roles: list[str]):
     async def role_checker(user: UserResponse = Depends(get_current_user)):
         if user.role not in allowed_roles:
@@ -53,7 +54,9 @@ async def require_role(allowed_roles: list[str]):
                 detail=f"Access denied. Requires one of roles: {allowed_roles}",
             )
         return user
+
     return role_checker
+
 
 def require_owner():
     return require_role(["owner"])

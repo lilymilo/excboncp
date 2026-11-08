@@ -20,11 +20,13 @@ def generate_fernet_key() -> str:
     """Generate a Fernet encryption key for credential encryption."""
     try:
         from cryptography.fernet import Fernet
+
         return Fernet.generate_key().decode()
     except ImportError:
         # Fallback: generate a valid Fernet-compatible key manually
         # Fernet keys are 32 bytes, URL-safe base64 encoded
         import base64
+
         key_bytes = secrets.token_bytes(32)
         return base64.urlsafe_b64encode(key_bytes).decode()
 

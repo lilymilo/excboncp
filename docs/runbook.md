@@ -65,7 +65,7 @@ curl -X POST http://localhost:8000/api/credentials \
   -H "Content-Type: application/json" \
   -d '{
     "provider": "anthropic",
-    "api_key": "sk-ant-api03-personal-key-here",
+    "api_key": "your-provider-api-key",
     "display_label": "Bagus Anthropic Key"
   }'
 ```

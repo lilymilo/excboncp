@@ -43,7 +43,7 @@ Authenticate and obtain a JWT access token.
 - **Response (200 OK):**
   ```json
   {
-    "access_token": "eyJhbGciOi...",
+    "access_token": "<jwt_access_token>",
     "token_type": "bearer",
     "expires_in_hours": 24,
     "user": {
@@ -90,7 +90,7 @@ List active credentials configured by the authenticated user.
     {
       "id": "cred-82a1...",
       "provider": "anthropic",
-      "display_label": "sk-ant-api03-****abcd",
+      "display_label": "anthropic-****abcd",
       "is_active": true,
       "created_at": "2026-11-08T12:00:00Z",
       "updated_at": "2026-11-08T12:00:00Z"
@@ -104,7 +104,7 @@ Register or update an AI provider API key.
   ```json
   {
     "provider": "anthropic",
-    "api_key": "sk-ant-api03-real-key-here",
+    "api_key": "your-provider-api-key",
     "display_label": "Bagus Anthropic Key"
   }
   ```

@@ -106,7 +106,11 @@ def test_get_current_user_profile(test_client: TestClient) -> None:
     """Profile endpoint returns details of the currently authenticated user."""
     test_client.post(
         "/api/auth/register",
-        json={"username": "profile_user", "password": "StrongPassword123!", "display_name": "Profile User"},
+        json={
+            "username": "profile_user",
+            "password": "StrongPassword123!",
+            "display_name": "Profile User",
+        },
     )
     login_resp = test_client.post(
         "/api/auth/login",
@@ -127,7 +131,11 @@ def test_owner_can_update_user_role(test_client: TestClient) -> None:
     # 1. Register owner
     test_client.post(
         "/api/auth/register",
-        json={"username": "owner_admin", "password": "StrongPassword123!", "display_name": "Owner Admin"},
+        json={
+            "username": "owner_admin",
+            "password": "StrongPassword123!",
+            "display_name": "Owner Admin",
+        },
     )
     login_resp = test_client.post(
         "/api/auth/login",
@@ -140,7 +148,11 @@ def test_owner_can_update_user_role(test_client: TestClient) -> None:
     reg_member = test_client.post(
         "/api/auth/register",
         headers=headers,
-        json={"username": "bagus_role_test", "password": "StrongPassword123!", "display_name": "Bagus"},
+        json={
+            "username": "bagus_role_test",
+            "password": "StrongPassword123!",
+            "display_name": "Bagus",
+        },
     )
     member_id = reg_member.json()["id"]
 
@@ -159,7 +171,11 @@ def test_member_cannot_update_roles(test_client: TestClient) -> None:
     # Register owner
     test_client.post(
         "/api/auth/register",
-        json={"username": "sys_owner", "password": "StrongPassword123!", "display_name": "Sys Owner"},
+        json={
+            "username": "sys_owner",
+            "password": "StrongPassword123!",
+            "display_name": "Sys Owner",
+        },
     )
     owner_token = test_client.post(
         "/api/auth/login",
@@ -196,7 +212,11 @@ def test_logout_revokes_token(test_client: TestClient) -> None:
     """Logout invalidates the session token."""
     test_client.post(
         "/api/auth/register",
-        json={"username": "logout_user", "password": "StrongPassword123!", "display_name": "Logout User"},
+        json={
+            "username": "logout_user",
+            "password": "StrongPassword123!",
+            "display_name": "Logout User",
+        },
     )
     login_resp = test_client.post(
         "/api/auth/login",

@@ -5,7 +5,9 @@ Tests for ExcbonCP 8 Specialized Agents and Orchestration Registry.
 from fastapi.testclient import TestClient
 
 
-def _get_or_create_user(client: TestClient, username: str, password: str = "StrongPassword123!") -> str:
+def _get_or_create_user(
+    client: TestClient, username: str, password: str = "StrongPassword123!"
+) -> str:
     # Try register
     client.post(
         "/api/auth/register",
@@ -84,7 +86,7 @@ def test_execute_agent_succeeds_with_credentials(test_client: TestClient) -> Non
         headers=headers,
         json={
             "provider": "anthropic",
-            "api_key": "sk-ant-test-key-for-execution-testing",
+            "api_key": "mock-anthropic-test-key-12345",
             "display_label": "Testing Key",
         },
     )

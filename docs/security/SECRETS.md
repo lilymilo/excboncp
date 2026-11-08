@@ -24,11 +24,14 @@ Per-user API keys are encrypted at rest using Fernet (AES-128-CBC with PKCS7 pad
 # server/credentials/service.py
 from cryptography.fernet import Fernet
 
+
 def _get_fernet() -> Fernet:
     return Fernet(settings.CREDENTIAL_ENCRYPTION_KEY.encode())
 
+
 def encrypt_api_key(raw_key: str) -> str:
     return _get_fernet().encrypt(raw_key.encode()).decode()
+
 
 def decrypt_api_key(encrypted_key: str) -> str:
     return _get_fernet().decrypt(encrypted_key.encode()).decode()
@@ -36,7 +39,7 @@ def decrypt_api_key(encrypted_key: str) -> str:
 
 ### Invariants:
 1. **Never Log:** The decrypted secret key must never appear in `logger` messages, exception tracebacks, or audit log entries.
-2. **Never Return to Frontend:** The API only exposes masked representations (e.g. `sk-ant-api03-****`).
+2. **Never Return to Frontend:** The API only exposes masked representations (e.g. `anthropic-****`).
 3. **Never Share Across Users:** Database queries always enforce `WHERE user_id = ? AND id = ?`.
 
 ---

@@ -49,9 +49,7 @@ def _row_to_response(row: aiosqlite.Row) -> TaskResponse:
 # ---------------------------------------------------------------------------
 
 
-async def create_task(
-    db: aiosqlite.Connection, data: TaskCreate, user_id: str
-) -> TaskResponse:
+async def create_task(db: aiosqlite.Connection, data: TaskCreate, user_id: str) -> TaskResponse:
     """Create a new task record in *pending* status."""
     task_id = str(uuid.uuid4())
     now = datetime.now(UTC).isoformat()
@@ -93,9 +91,7 @@ async def create_task(
     )
 
 
-async def get_task(
-    db: aiosqlite.Connection, task_id: str
-) -> TaskResponse | None:
+async def get_task(db: aiosqlite.Connection, task_id: str) -> TaskResponse | None:
     """Fetch a single task by ID."""
     async with db.execute("SELECT * FROM tasks WHERE id = ?", (task_id,)) as cur:
         row = await cur.fetchone()
@@ -126,9 +122,7 @@ async def list_tasks(
     return [_row_to_response(r) for r in rows]
 
 
-async def update_task(
-    db: aiosqlite.Connection, task_id: str, data: TaskUpdate
-) -> TaskResponse:
+async def update_task(db: aiosqlite.Connection, task_id: str, data: TaskUpdate) -> TaskResponse:
     """Update a task's status and/or result."""
     now = datetime.now(UTC).isoformat()
     fields: list[str] = []
@@ -186,9 +180,7 @@ async def cancel_task(db: aiosqlite.Connection, task_id: str) -> TaskResponse:
             "Only pending or running tasks can be cancelled."
         )
 
-    return await update_task(
-        db, task_id, TaskUpdate(status=TaskStatus.CANCELLED)
-    )
+    return await update_task(db, task_id, TaskUpdate(status=TaskStatus.CANCELLED))
 
 
 async def delete_task(db: aiosqlite.Connection, task_id: str) -> bool:
