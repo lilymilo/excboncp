@@ -2,6 +2,7 @@
 #include <PubSubClient.h>
 #include <DHTesp.h>
 #include <time.h>
+#include <mbedtls/md.h>
 
 #define PIN_DHT    15
 #define PIN_SOIL   34
@@ -24,6 +25,7 @@
 
 const int   MQTT_PORT     = 1883;
 const char* MQTT_TOPIC    = "CbonCP/node-1/telemetry";
+const char* SENSOR_SECRET = "cboncp-shared-device-secret";
 
 const char* NTP_SERVER          = "pool.ntp.org";
 const long  GMT_OFFSET_SEC       = 25200; // UTC+7 (WIB)
@@ -94,6 +96,58 @@ String getDetailedTimestampJSON() {
   return String(buffer);
 }
 
+String computeSignature(const char* data, const char* secret) {
+  byte hash[32];
+  mbedtls_md_context_t ctx;
+  mbedtls_md_init(&ctx);
+  mbedtls_md_setup(&ctx, mbedtls_md_info_from_type(MBEDTLS_MD_SHA256), 0);
+  mbedtls_md_starts(&ctx);
+  mbedtls_md_update(&ctx, (const unsigned char*)data, strlen(data));
+  mbedtls_md_update(&ctx, (const unsigned char*)secret, strlen(secret));
+  mbedtls_md_finish(&ctx, hash);
+  mbedtls_md_free(&ctx);
+
+  char hex[67];
+  hex[0] = '0';
+  hex[1] = 'x';
+  for (int i = 0; i < 32; i++) {
+    sprintf(&hex[2 + (i * 2)], "%02x", hash[i]);
+  }
+  hex[66] = '\0';
+  return String(hex);
+}
+
+void publishTelemetry(float soilMoisture, float suhu, bool currentFlame, const char* eventTag) {
+  time_t epochNow;
+  time(&epochNow);
+  unsigned long ts = (unsigned long)epochNow;
+
+  int smoke = currentFlame ? 500 : 25;
+  int sound = currentFlame ? 75 : 30;
+
+  char sigData[128];
+  snprintf(sigData, sizeof(sigData), "%s|%lu|%d|%.1f|%d", NODE_ID, ts, smoke, suhu, sound);
+  String signature = computeSignature(sigData, SENSOR_SECRET);
+
+  String timestampJSON = getDetailedTimestampJSON();
+
+  char payload[768];
+  snprintf(payload, sizeof(payload),
+           "{\"node_id\":\"%s\",\"device_id\":\"%s\",\"ts\":%lu,\"timestamp\":%s,"
+           "\"soil_moisture\":%.1f,\"temperature\":%.1f,\"temp_c\":%.1f,\"smoke\":%d,"
+           "\"sound\":%d,\"flame_detected\":%s,\"sig\":\"%s\"}",
+           NODE_ID, NODE_ID, ts, timestampJSON.c_str(),
+           soilMoisture, suhu, suhu, smoke, sound,
+           currentFlame ? "true" : "false", signature.c_str());
+
+  Serial.print("[");
+  Serial.print(eventTag);
+  Serial.print("] ");
+  Serial.println(payload);
+
+  mqttClient.publish(MQTT_TOPIC, payload);
+}
+
 bool tryConnectMQTT() {
   Serial.print("Mencoba hubungkan MQTT...");
   mqttClient.setSocketTimeout(5);
@@ -121,7 +175,7 @@ void setup() {
 
   connectWiFi();
   mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
-  mqttClient.setBufferSize(512); // Buffer sized for full JSON telemetry.
+  mqttClient.setBufferSize(768); // Accommodates ISO timestamp and SHA-256 signature fields.
 }
 
 void loop() {
@@ -144,20 +198,11 @@ void loop() {
   if (currentFlame != lastFlame && mqttClient.connected()) {
     int rawSoil = analogRead(PIN_SOIL);
     float soilMoisture = (rawSoil / 4095.0) * 100.0;
-    
+
     TempAndHumidity dhtData = dhtSensor.getTempAndHumidity();
     float suhu = isnan(dhtData.temperature) ? lastTemp : dhtData.temperature;
 
-    String timestampJSON = getDetailedTimestampJSON();
-
-    char payload[450];
-    snprintf(payload, sizeof(payload),
-             "{\"node_id\":\"%s\",\"timestamp\":%s,\"soil_moisture\":%.1f,\"temperature\":%.1f,\"flame_detected\":%s}",
-             NODE_ID, timestampJSON.c_str(), soilMoisture, suhu, currentFlame ? "true" : "false");
-
-    Serial.print("[FLAME STATE EVENT] ");
-    Serial.println(payload);
-    mqttClient.publish(MQTT_TOPIC, payload);
+    publishTelemetry(soilMoisture, suhu, currentFlame, "FLAME STATE EVENT");
 
     lastFlame = currentFlame;
     lastSoilMoisture = soilMoisture;
@@ -180,16 +225,7 @@ void loop() {
       bool heartbeat   = (now - lastHeartbeatTime >= 60000);
 
       if ((soilChanged || tempChanged || heartbeat) && mqttClient.connected()) {
-        String timestampJSON = getDetailedTimestampJSON();
-
-        char payload[450];
-        snprintf(payload, sizeof(payload),
-                 "{\"node_id\":\"%s\",\"timestamp\":%s,\"soil_moisture\":%.1f,\"temperature\":%.1f,\"flame_detected\":%s}",
-                 NODE_ID, timestampJSON.c_str(), soilMoisture, suhu, currentFlame ? "true" : "false");
-
-        Serial.print("[MQTT PUBLISH] ");
-        Serial.println(payload);
-        mqttClient.publish(MQTT_TOPIC, payload);
+        publishTelemetry(soilMoisture, suhu, currentFlame, "MQTT PUBLISH");
 
         lastSoilMoisture = soilMoisture;
         lastTemp = suhu;

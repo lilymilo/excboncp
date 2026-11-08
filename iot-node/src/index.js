@@ -1,6 +1,6 @@
 import http from 'node:http';
 import mqtt from 'mqtt';
-import { validateTelemetryPayload, toCanonicalIoTLayer } from './telemetry-validator.js';
+import { validateTelemetryPayload, toCanonicalIoTLayer, computeTelemetrySignature } from './telemetry-validator.js';
 
 const MQTT_BROKER = process.env.MQTT_BROKER || 'localhost';
 const MQTT_PORT = process.env.MQTT_PORT || '1883';
@@ -64,20 +64,30 @@ if (SIMULATION_MODE) {
   simulationTimer = setInterval(() => {
     if (!client.connected) return;
 
+    const flameDetected = Math.random() < 0.05;
+    const epoch = Math.floor(Date.now() / 1000);
+    const temp = Number((24 + Math.random() * 8).toFixed(1));
+
     const mockPayload = {
       node_id: 'ESP32-SIMULATED-01',
+      device_id: 'ESP32-SIMULATED-01',
+      ts: epoch,
       timestamp: {
         datetime: new Date().toISOString().replace('T', ' ').substring(0, 19),
         iso8601: new Date().toISOString(),
         timezone: 'Asia/Jakarta',
         timezone_abbr: 'WIB',
         utc_offset: '+07:00',
-        epoch: Math.floor(Date.now() / 1000)
+        epoch
       },
       soil_moisture: Number((40 + Math.random() * 30).toFixed(1)),
-      temperature: Number((24 + Math.random() * 8).toFixed(1)),
-      flame_detected: Math.random() < 0.05
+      temperature: temp,
+      temp_c: temp,
+      smoke: flameDetected ? 500 : 25,
+      sound: flameDetected ? 75 : 30,
+      flame_detected: flameDetected
     };
+    mockPayload.sig = computeTelemetrySignature(mockPayload);
 
     client.publish(MQTT_TOPIC_PUB, JSON.stringify(mockPayload));
   }, SIMULATION_INTERVAL_MS);
@@ -110,20 +120,27 @@ const server = http.createServer((req, res) => {
   }
 
   if (url.pathname === '/api/telemetry/simulate' && req.method === 'POST') {
+    const epoch = Math.floor(Date.now() / 1000);
     const mockPayload = {
       node_id: 'ESP32-TRIGGERED-01',
+      device_id: 'ESP32-TRIGGERED-01',
+      ts: epoch,
       timestamp: {
         datetime: new Date().toISOString().replace('T', ' ').substring(0, 19),
         iso8601: new Date().toISOString(),
         timezone: 'Asia/Jakarta',
         timezone_abbr: 'WIB',
         utc_offset: '+07:00',
-        epoch: Math.floor(Date.now() / 1000)
+        epoch
       },
       soil_moisture: 42.5,
       temperature: 28.0,
+      temp_c: 28.0,
+      smoke: 25,
+      sound: 30,
       flame_detected: false
     };
+    mockPayload.sig = computeTelemetrySignature(mockPayload);
 
     if (client.connected) {
       client.publish(MQTT_TOPIC_PUB, JSON.stringify(mockPayload));

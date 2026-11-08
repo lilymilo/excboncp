@@ -42,10 +42,10 @@ export function computeTelemetrySignature(payload) {
 
 export function toCanonicalIoTLayer(rawTelemetry) {
   return {
-    node_id: rawTelemetry.node_id,
+    node_id: rawTelemetry.device_id || rawTelemetry.node_id,
     chainsaw_detected: false,
-    smoke_ppm: rawTelemetry.flame_detected ? 500 : 0,
+    smoke_ppm: typeof rawTelemetry.smoke === 'number' ? rawTelemetry.smoke : (rawTelemetry.flame_detected ? 500 : 0),
     soil_moisture_pct: Number(rawTelemetry.soil_moisture.toFixed(2)),
-    sha256_signature: computeTelemetrySignature(rawTelemetry)
+    sha256_signature: rawTelemetry.sig || computeTelemetrySignature(rawTelemetry)
   };
 }

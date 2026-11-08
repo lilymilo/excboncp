@@ -69,5 +69,25 @@ describe('IoT Node Telemetry Validator', () => {
     assert.equal(typeof canonical.soil_moisture_pct, 'number');
     assert.ok(canonical.sha256_signature.startsWith('0x'));
   });
+
+  test('should support enriched payload with device_id, smoke, temp_c, sound, and sig', () => {
+    const enriched = {
+      ...samplePayload,
+      device_id: 'ESP32-PHYSICAL-NODE-01',
+      ts: 1793709000,
+      temp_c: 27.8,
+      smoke: 120,
+      sound: 45,
+      sig: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'
+    };
+
+    const validation = validateTelemetryPayload(enriched);
+    assert.equal(validation.valid, true);
+
+    const canonical = toCanonicalIoTLayer(enriched);
+    assert.equal(canonical.node_id, 'ESP32-PHYSICAL-NODE-01');
+    assert.equal(canonical.smoke_ppm, 120);
+    assert.equal(canonical.sha256_signature, enriched.sig);
+  });
 });
 
