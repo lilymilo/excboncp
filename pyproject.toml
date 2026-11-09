@@ -12,6 +12,9 @@ readme = "README.md"
 [tool.ruff]
 target-version = "py312"
 line-length = 100
+# The blueprint is an untracked reference document; its embedded snippets are not
+# project source and must not block repository-wide formatting checks.
+exclude = ["docs/Excboncp_Blueprint_System_Modeling_6_Hari_v5.md"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "N", "UP", "S", "B", "A", "C4", "SIM"]

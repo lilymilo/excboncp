@@ -20,6 +20,19 @@ chmod +x scripts/*.sh scripts/*.py
 ./.venv/bin/python3 scripts/create-admin.py --username revand --display-name "Revand Aqila"
 ```
 
+### 1.1.1 Loading Simulation-Only MRV Demo Data
+```bash
+# Local mode — choose a demo password or let the CLI generate one
+SEED_DEMO_PASSWORD='choose-a-demo-password' ./.venv/bin/python -m server.seed
+
+# Docker mode — the seed files are included in the server image
+docker compose exec server python -m server.seed
+```
+The seed is idempotent and creates parcels A/B, two zones, five demo accounts,
+consent for parcel A, simulated sensor readings, and status snapshots. All records
+are fictional. The password is hashed with the project's bcrypt helper and is never
+stored in `server/seed.json`.
+
 ### 1.2 Starting the Central Server
 ```bash
 # Mode A: Production / Staging using Docker Compose

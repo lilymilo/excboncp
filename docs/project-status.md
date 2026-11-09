@@ -27,10 +27,11 @@
 | **Central Server** | JWT Authentication & RBAC | `server/auth/` | Implemented & Tested | Bcrypt password hashing, session revocation. |
 | **Central Server** | Per-User Credential Vault | `server/credentials/` | Implemented & Tested | Fernet encryption at rest, masked key retrieval. |
 | **Central Server** | Task & Agent Orchestrator | `server/tasks/`, `server/agents/` | Implemented & Tested | Workspace isolation, file-level locking. |
-| **Central Server** | Operational Monitoring & Auditing | `server/monitoring/` | Implemented & Tested | `/api/health`, `/api/monitoring/metrics`. |
-| **Core MRV** | Deterministic Status Engine | `src/core/status_engine.py` | Partially Implemented | Algorithm defined in ADR-005 and state model. |
-| **Core MRV** | SHA-256 Hash Chain Ledger | `src/core/ledger.py` | Partially Implemented | Algorithm defined in `docs/contract.md`. |
-| **Core MRV** | CO2e Carbon Calculation | `src/core/co2e.py` | Partially Implemented | Formula documented in `docs/architecture/OVERVIEW.md`. |
+| **Central Server** | Operational Monitoring & Auditing | `server/monitoring/` | Implemented & Tested | `/health`, `/api/health`, `/api/monitoring/metrics`. |
+| **Central Server** | MRV Schema & Simulation Seed | `server/database.py`, `server/seed.py`, `server/seed.json` | Implemented & Tested | Blueprint v5 Model 6 tables, additive `users` migration, idempotent demo seed. |
+| **Core MRV** | Deterministic Status Engine | `src/core/status_engine.py` | Planned | Schema ready in `status_results`; implementation owned by Davin. |
+| **Core MRV** | SHA-256 Hash Chain Ledger | `src/core/ledger.py` | Planned | Schema ready in `ledger_blocks`; implementation owned by Revand (Day 2). |
+| **Core MRV** | CO2e Carbon Calculation | `src/core/co2e.py` | Planned | Ledger field ready; implementation owned by Bagus. |
 | **IoT Layer** | ESP32 Sensor Telemetry Firmware | `src/firmware/` | Planned | Bagus assigned; platformIO project initialized. |
 | **IoT Layer** | MQTT Broker Container | `docker-compose.yml` | Configured | Mosquitto broker setup prepared in Compose. |
 | **Frontend** | DApp Leaflet Map View | `src/dapp/` | Planned | Malik assigned; UX flowcharts completed. |
@@ -43,7 +44,7 @@
 
 ## 3. Human Team Milestones
 
-- **Revand:** Server core, credential vault, security threat model, and system architecture complete.
+- **Revand:** Server core, credential vault, security threat model, and system architecture complete; Day 1 MRV schema and simulation seed complete.
 - **Bagus:** Backend scaffolding complete; preparing MQTT broker configuration and ESP32 telemetry schema.
 - **Davin:** Status engine precedence hierarchy formalized; audit logging and RBAC dependencies complete.
 - **Malik:** DApp interaction flowcharts and screen inventory mapped to API routes.

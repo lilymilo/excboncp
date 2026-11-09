@@ -168,8 +168,10 @@ Permanently delete a task record and purge its workspace.
 
 ## 5. System Health & Monitoring
 
-### `GET /api/health`
-Unauthenticated health check returning database connectivity and service version.
+### `GET /health` and `GET /api/health`
+Unauthenticated health checks returning database connectivity and service version.
+`/api/health` is the canonical Docker/load-balancer endpoint; `/health` is an alias
+for simple external monitors.
 - **Response (200 OK):**
   ```json
   {

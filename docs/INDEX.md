@@ -36,7 +36,7 @@
 |----------|-------------|
 | [api-reference.md](api-reference.md) | REST API endpoint reference with request/response schemas |
 | [database-schema.md](database-schema.md) | SQLite database schema — tables, columns, constraints, indexes |
-| [contract.md](contract.md) | EAS smart contract schema and attestation documentation |
+| [contract.md](contract.md) | Model 3 data contracts, Model 6 persistence contract, and EAS attestation documentation |
 | [toolchain.md](toolchain.md) | Development toolchain versions and configuration |
 
 ## Project Management
@@ -46,7 +46,7 @@
 | [requirements-traceability.md](requirements-traceability.md) | R1–R29 traceability matrix — requirements to code to tests |
 | [project-status.md](project-status.md) | Current status dashboard with phase targets |
 | [team-ownership.md](team-ownership.md) | Team member responsibility matrix |
-| [decisions.md](decisions.md) | Architecture Decision Records (ADR-001 through ADR-008) |
+| [decisions.md](decisions.md) | Architecture Decision Records (ADR-001 through ADR-009) |
 
 ## Operations
 
