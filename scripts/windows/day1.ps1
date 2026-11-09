@@ -229,6 +229,9 @@ function Invoke-Tests {
 
 function Invoke-Seed {
     Assert-Venv
+
+    $hadSeedPassword = Test-Path Env:SEED_DEMO_PASSWORD
+    $previousSeedPassword = $env:SEED_DEMO_PASSWORD
     Import-DotEnv
 
     $password = $env:SEED_DEMO_PASSWORD
@@ -248,7 +251,11 @@ function Invoke-Seed {
     try {
         Invoke-VenvPython @("-m", "server.seed")
     } finally {
-        Remove-Item Env:SEED_DEMO_PASSWORD -ErrorAction SilentlyContinue
+        if ($hadSeedPassword) {
+            $env:SEED_DEMO_PASSWORD = $previousSeedPassword
+        } else {
+            Remove-Item Env:SEED_DEMO_PASSWORD -ErrorAction SilentlyContinue
+        }
     }
 
     Write-Success "Simulation seed loaded"
