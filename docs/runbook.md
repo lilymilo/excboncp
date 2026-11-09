@@ -33,6 +33,25 @@ consent for parcel A, simulated sensor readings, and status snapshots. All recor
 are fictional. The password is hashed with the project's bcrypt helper and is never
 stored in `server/seed.json`.
 
+### 1.1.2 Windows Setup Helper (PowerShell)
+```powershell
+# Run from the repository root
+.\scripts\windows\day1.ps1 setup   # .venv, dependencies, .env, data/
+.\scripts\windows\day1.ps1 test    # Ruff + pytest
+.\scripts\windows\day1.ps1 seed    # simulation-only demo data
+.\scripts\windows\day1.ps1 serve   # uvicorn on http://localhost:8000
+.\scripts\windows\day1.ps1 health  # GET /api/health
+```
+
+If PowerShell blocks local scripts, use the wrapper:
+```cmd
+.\scripts\windows\day1.cmd setup
+```
+
+The helper also supports `docker` (start Docker Compose) and `status` (Git
+branch/status/recent commits). It does not perform destructive Git operations
+such as reset, force-push, or merge.
+
 ### 1.2 Starting the Central Server
 ```bash
 # Mode A: Production / Staging using Docker Compose
@@ -119,3 +138,4 @@ Creates a timestamped, gzip-compressed snapshot of `./data/excboncp.db` and acti
 | `HTTP 401: Token has expired` | JWT token exceeded configured lifespan. | Re-authenticate via `/api/auth/login` to obtain a fresh access token. |
 | `HTTP 400: User has no active credential for provider` | Member attempted to run an agent requiring Anthropic or OpenAI without configuring their key. | Configure personal API key via `POST /api/credentials`. |
 | `Port 8000 already in use` | Existing server process running in background. | Find and kill occupying process: `lsof -i :8000` followed by `kill -9 <PID>`. |
+| `... cannot be loaded because running scripts is disabled` (Windows) | PowerShell execution policy blocks local `.ps1` files. | Run the wrapper `.\scripts\windows\day1.cmd <action>` or use `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\windows\day1.ps1 <action>`. |

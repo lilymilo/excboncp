@@ -39,6 +39,7 @@
 | **Blockchain** | EAS Schema & Attester | `src/blockchain/eas.py` | Planned | Base Sepolia schema defined in `docs/contract.md`. |
 | **Operations** | Docker Multi-Container Stack | `docker-compose.yml` | Implemented | Production & dev Compose files verified. |
 | **Operations** | Backup & Restore Automation | `scripts/backup.sh`, `scripts/restore.sh` | Implemented & Tested | Tested with SQLite snapshot compression. |
+| **Operations** | Windows Day 1 Helper | `scripts/windows/day1.ps1` | Implemented | PowerShell wrapper for setup, test, seed, serve, health, Docker, and Git status; `.cmd` wrapper included. |
 
 ---
 

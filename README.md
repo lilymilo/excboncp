@@ -86,6 +86,33 @@ pytest
 SEED_DEMO_PASSWORD='choose-a-demo-password' .venv/bin/python -m server.seed
 ```
 
+### Windows (PowerShell)
+
+Windows teammates can use the Day 1 helper instead of the Bash scripts:
+
+```powershell
+# 1. Create .venv, install dependencies, generate .env, and prepare data/
+.\scripts\windows\day1.ps1 setup
+
+# 2. Run Ruff and pytest
+.\scripts\windows\day1.ps1 test
+
+# 3. Load the simulation-only demo data (prompts for a demo password)
+.\scripts\windows\day1.ps1 seed
+
+# 4. Start the local server
+.\scripts\windows\day1.ps1 serve
+```
+
+If PowerShell blocks local scripts, use the wrapper:
+
+```cmd
+.\scripts\windows\day1.cmd setup
+```
+
+Run `.\scripts\windows\day1.ps1 help` to see all actions, including
+`health`, `docker`, and `status`.
+
 ### Docker Compose (Development)
 
 ```bash
