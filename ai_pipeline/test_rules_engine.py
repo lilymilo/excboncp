@@ -71,3 +71,4 @@ def test_explain_status_metadata_and_sellability():
     exp_verified = explain_status("granted", False, False)
     assert exp_verified["status"] == "VERIFIED"
     assert exp_verified["sellable"] is True
+
