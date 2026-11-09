@@ -81,6 +81,9 @@ python3 scripts/generate-secrets.py  # Copy output into .env
 
 # 5. Run tests
 pytest
+
+# 6. Optional: load simulation-only MRV demo data
+SEED_DEMO_PASSWORD='choose-a-demo-password' .venv/bin/python -m server.seed
 ```
 
 ### Docker Compose (Development)

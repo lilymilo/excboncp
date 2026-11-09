@@ -31,7 +31,7 @@
 | R8 | Satellite Data Integration — Fetch NDVI (Normalized Difference Vegetation Index) data for registered parcels from satellite provider. | Mandatory Demo | Davin | Data/AI | `src/satellite/ndvi.py` | `tests/satellite/test_ndvi.py` | 🔲 Planned |
 | R9 | AI Anomaly Detection — Detect discrepancies between sensor readings, satellite data, and historical baselines. Flag suspicious patterns. | Mandatory Demo | Davin | Data/AI | `src/ai/anomaly.py` | `tests/ai/test_anomaly.py` | 🔲 Planned |
 | R10 | AI Explanation System — Generate human-readable explanations for status decisions and detected anomalies using LLM. | Mandatory Demo | Davin | Data/AI | `src/ai/explainer.py` | `tests/ai/test_explainer.py` | 🔲 Planned |
-| R11 | SQLite Database — Single-file embedded database for all application data. Schema supports all entities. | Mandatory Demo | Revand | Backend | `src/db/schema.sql`, `src/db/database.py` | `tests/db/test_database.py` | 🔲 Planned |
+| R11 | SQLite Database — Single-file embedded database for all application data. Schema supports all entities. | Mandatory Demo | Revand | Backend | `server/database.py`, `server/seed.py` | `tests/test_schema.py`, `tests/test_seed.py` | 🟡 In Progress (schema + seed; MRV API wiring pending) |
 | R12 | RESTful API — FastAPI backend exposing all services as REST endpoints. JSON request/response. OpenAPI docs. | Mandatory Demo | Bagus | Backend | `src/api/` | `tests/api/` | 🔲 Planned |
 | R13 | DApp with Interactive Map — Browser-based SPA with Leaflet map showing parcels, color-coded by status. Drill-down to parcel details. | Mandatory Demo | Malik | Frontend | `src/dapp/` | `tests/e2e/test_map.js` | 🔲 Planned |
 | R14 | Simulated Carbon Market — UI for listing, buying, and selling verified carbon credits. Simulated economy (no real money). | Mandatory Demo | Malik | Frontend | `src/dapp/market/` | `tests/e2e/test_market.js` | 🔲 Planned |
@@ -72,11 +72,11 @@
 
 | Priority Group | Total | Planned | In Progress | Complete |
 |----------------|-------|---------|-------------|----------|
-| Mandatory Demo | 14 | 14 | 0 | 0 |
+| Mandatory Demo | 14 | 13 | 1 | 0 |
 | Secondary | 5 | 5 | 0 | 0 |
 | Application/Usability | 5 | 5 | 0 | 0 |
 | Finalist Deployment | 5 | 5 | 0 | 0 |
-| **Total** | **29** | **29** | **0** | **0** |
+| **Total** | **29** | **28** | **1** | **0** |
 
 ## Ownership Summary
 
