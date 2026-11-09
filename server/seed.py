@@ -2,7 +2,7 @@
 ExcbonCP — Simulation-only seed loader (Blueprint v5, Day 1).
 
 Loads ``server/seed.json`` and inserts demo zones, parcels, accounts,
-consent records, sensor readings, and status snapshots.
+consent records, sensor readings, status snapshots, and demo ledger blocks.
 
 The loader is idempotent: running it repeatedly does not duplicate rows.
 No password is stored in Git.  Set ``SEED_DEMO_PASSWORD`` before running the
@@ -26,6 +26,7 @@ from typing import Any
 import aiosqlite
 
 from server.auth.service import hash_password
+from server.ledger.service import append_block
 
 logger = logging.getLogger("excboncp.seed")
 
@@ -61,6 +62,50 @@ async def _insert_rows(
     for row in rows:
         cursor = await db.execute(sql, row)
         inserted += max(cursor.rowcount, 0)
+    return inserted
+
+
+async def _seed_ledger_blocks(
+    db: aiosqlite.Connection,
+    data: dict[str, Any],
+    user_ids: dict[str, str],
+) -> int:
+    """Append demo ledger blocks only when the chain is empty.
+
+    Seeding is skipped when any block already exists, so a real approval is
+    never mixed with demo data and the loader stays idempotent.
+    """
+    async with db.execute("SELECT COUNT(*) AS cnt FROM ledger_blocks") as cursor:
+        row = await cursor.fetchone()
+    if row is not None and row["cnt"] > 0:
+        return 0
+
+    inserted = 0
+    for entry in data.get("ledger_blocks", []):
+        payload = entry.get("payload")
+        if not isinstance(payload, dict):
+            logger.warning("Skipping ledger seed entry without a payload: %s", entry)
+            continue
+
+        approver_username = entry.get("approved_by")
+        approved_by = user_ids.get(approver_username) if approver_username else None
+        if approver_username and approved_by is None:
+            logger.warning(
+                "Skipping ledger seed entry for %s: unknown approver %s",
+                payload.get("parcel_id"),
+                approver_username,
+            )
+            continue
+
+        await append_block(
+            db,
+            payload,
+            approved_by=approved_by,
+            eas_uid=entry.get("eas_uid"),
+            commit=False,
+        )
+        inserted += 1
+
     return inserted
 
 
@@ -289,6 +334,8 @@ async def seed_demo_data(
             for result in data.get("status_results", [])
         ],
     )
+
+    counts["ledger_blocks"] = await _seed_ledger_blocks(db, data, user_ids)
 
     await db.commit()
     logger.info("Seed complete: %s", counts)

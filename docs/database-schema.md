@@ -286,6 +286,10 @@ the status rule; CO2e tonnage is persisted in `ledger_blocks` when a block is ap
 
 Append-only local SHA-256 hash chain. `current_hash` must equal
 `SHA-256(prev_hash || canonical_data)` according to the ledger implementation.
+`canonical_data` is UTF-8 JSON with lexicographically sorted keys, compact
+separators (`,` and `:`), no insignificant whitespace, and no `NaN`/`Infinity`.
+The genesis block stores 64 zero characters in `prev_hash`. `GET /verify/{id}`
+recomputes the hash and checks the link to the preceding block.
 
 | Column | Type | Nullable | Default | Description |
 |---|---|:---:|---|---|

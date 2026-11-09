@@ -46,7 +46,7 @@
 | [requirements-traceability.md](requirements-traceability.md) | R1–R29 traceability matrix — requirements to code to tests |
 | [project-status.md](project-status.md) | Current status dashboard with phase targets |
 | [team-ownership.md](team-ownership.md) | Team member responsibility matrix |
-| [decisions.md](decisions.md) | Architecture Decision Records (ADR-001 through ADR-009) |
+| [decisions.md](decisions.md) | Architecture Decision Records (ADR-001 through ADR-010) |
 
 ## Operations
 

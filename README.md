@@ -86,6 +86,10 @@ pytest
 SEED_DEMO_PASSWORD='choose-a-demo-password' .venv/bin/python -m server.seed
 ```
 
+The seed creates parcels A/B, demo accounts, simulated sensor readings, status
+snapshots, and two simulation-only ledger blocks. Verify them publicly at
+`GET /verify/1` and `GET /verify/2`.
+
 ### Windows (PowerShell)
 
 Windows teammates can use the Day 1 helper instead of the Bash scripts:

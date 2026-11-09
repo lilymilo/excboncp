@@ -194,3 +194,53 @@ Operational metrics: users by role, tasks by status, registered credentials by p
 ### `GET /api/monitoring/audit-logs`
 Query immutable audit logs with pagination and filters (`action`, `user_id`, `limit`, `offset`).
 - **Access:** `owner` and `auditor` roles only.
+
+---
+
+## 6. Public Ledger Verification
+
+### `GET /verify/{id}`
+Recompute one SHA-256 ledger block and check its link to the previous block.
+`id` is the integer `block_index` (`1`, `2`, ...). Public — no authentication.
+- **Response (200 OK):**
+  ```json
+  {
+    "id": 1,
+    "valid": true,
+    "hash_matches": true,
+    "link_matches": true,
+    "canonical": true,
+    "chain_valid": true,
+    "first_invalid_block": null,
+    "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "payload": {
+      "parcel_id": "PARCEL-A",
+      "timestamp": "2026-11-08T08:10:06Z",
+      "co2e_t": 142.85,
+      "status": "VERIFIED",
+      "sensor_summary": {
+        "avg_temp_c": 24.27,
+        "avg_humidity_pct": 82.53,
+        "avg_soil_pct": 57.1
+      },
+      "ndvi_mean": 0.78
+    },
+    "hash": "<stored SHA-256>",
+    "recomputed_hash": "<recomputed SHA-256>",
+    "eas_uid": null,
+    "approved_by": "auditor_demo",
+    "reason": null,
+    "message": "Cocok dengan ledger, belum dikunci ke EAS."
+  }
+  ```
+- **Not found (404):**
+  ```json
+  {"detail": "Entri ledger tidak ditemukan."}
+  ```
+- **Tampered block (200, `valid=false`):** `reason` is one of
+  `invalid_json`, `non_canonical`, `prev_hash_mismatch`, `hash_mismatch`, or
+  `earlier_block_invalid`. The response still includes the stored entry so the
+  L7 screen can show which value no longer matches.
+- **Demo data:** `python -m server.seed` appends two simulation `PARCEL-A`
+  blocks when the ledger is empty, so `/verify/1` and `/verify/2` work
+  immediately. Both have `eas_uid: null` until Day 3 anchoring.

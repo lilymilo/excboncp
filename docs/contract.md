@@ -240,6 +240,61 @@ in `ledger_blocks.co2e_metric_tons` when the result is approved for the ledger.
 
 ---
 
+### 2.6 Verification Response — `GET /verify/{id}`
+
+`GET /verify/{id}` is public. `id` is the integer `block_index` from
+`ledger_blocks`. The server returns the stored entry plus an independent
+recomputation of its hash and its link to the preceding block.
+
+```json
+{
+  "id": 1,
+  "valid": true,
+  "hash_matches": true,
+  "link_matches": true,
+  "canonical": true,
+  "chain_valid": true,
+  "first_invalid_block": null,
+  "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+  "payload": {
+    "parcel_id": "PARCEL-A",
+    "timestamp": "2026-11-08T08:10:06Z",
+    "co2e_t": 142.85,
+    "status": "VERIFIED",
+    "sensor_summary": {
+      "avg_temp_c": 24.27,
+      "avg_humidity_pct": 82.53,
+      "avg_soil_pct": 57.1
+    },
+    "ndvi_mean": 0.78
+  },
+  "hash": "<stored SHA-256>",
+  "recomputed_hash": "<recomputed SHA-256>",
+  "eas_uid": null,
+  "approved_by": "auditor_demo",
+  "reason": null,
+  "message": "Cocok dengan ledger, belum dikunci ke EAS."
+}
+```
+
+**Field rules:**
+
+- `valid` — `true` only when the block's own hash matches, its `prev_hash`
+  links to the preceding block, its stored JSON is canonical, and every earlier
+  block in the chain is valid.
+- `hash_matches` — `recomputed_hash == hash`.
+- `link_matches` — `prev_hash` equals the previous block's `current_hash`
+  (genesis uses 64 zero characters).
+- `canonical` — stored `canonical_data` is already canonical JSON.
+- `chain_valid` — the chain from genesis through this block is valid.
+- `first_invalid_block` — lowest invalid `block_index`, or `null`.
+- `reason` — `null`, `invalid_json`, `non_canonical`, `prev_hash_mismatch`,
+  `hash_mismatch`, or `earlier_block_invalid`.
+- `message` — human-readable Indonesian status for the L7 screen.
+- Missing `id` returns `404` with `{"detail": "Entri ledger tidak ditemukan."}`.
+
+---
+
 ## 3. Blueprint v5 Model 6 Persistence Contract
 
 The canonical table list is:
@@ -256,6 +311,10 @@ Day 1 operational endpoints already present in the central server:
 
 - `GET /health` — unauthenticated health alias.
 - `GET /api/health` — canonical Docker/load-balancer health endpoint.
+
+Day 2 operational endpoint:
+
+- `GET /verify/{id}` — public SHA-256 ledger verification; see section 2.6.
 
 The complete endpoint catalogue is maintained in `docs/api-reference.md`.
 
@@ -300,8 +359,15 @@ string parcelId, string parcelStatus, uint256 co2eMetricTons, bytes32 ledgerBloc
 All sensor evaluations and carbon calculations are appended to an internal
 SHA-256 hash chain before attestation:
 
-$$H_0 = \text{SHA-256}(\text{GENESIS\_PAYLOAD})$$
-$$H_i = \text{SHA-256}(\text{CanonicalJSON}(D_i) \parallel H_{i-1})$$
+$$\text{prev\_hash}_1 = \text{"0"}\times64$$
+$$H_i = \text{SHA-256}(\text{prev\_hash}_i \parallel \text{CanonicalJSON}(D_i))$$
+$$\text{prev\_hash}_{i+1} = H_i$$
+
+Canonical JSON is UTF-8 with lexicographically sorted object keys, compact
+separators (`,` and `:`), no insignificant whitespace, and no `NaN`/`Infinity`.
+There is no separator between `prev_hash` and the canonical JSON in the hash
+input. The genesis block uses 64 zero characters; there is no separate genesis
+payload block.
 
 Where $D_i$ contains:
 
@@ -326,6 +392,14 @@ Any auditor or judge can recompute the SHA-256 chain locally. If any telemetry
 point or status decision was retroactively modified, $H_i \neq H_i^{\text{recorded}}$,
 immediately exposing the tampering.
 
+The server performs the same check at `GET /verify/{id}`:
+`recomputed_hash = SHA-256(prev_hash || canonical_data)`; it also checks that
+`prev_hash` equals the previous block's stored hash and that every earlier block
+is valid. The browser may recompute independently with the canonicalisation
+rules above; the endpoint's `valid`, `hash_matches`, `link_matches`,
+`canonical`, and `chain_valid` fields are advisory aids, not a replacement for
+the published algorithm.
+
 ---
 
 ## 7. Human Approval Mandate (Rules 9 & 10)
@@ -343,5 +417,5 @@ immediately exposing the tampering.
 ## Metadata
 
 - **Source file:** `docs/contract.md`
-- **Related requirements:** R6, R7, R11, R12, R17, R19, R23
+- **Related requirements:** R6, R7, R8, R11, R12, R13, R17, R19, R23
 - **Responsible owner:** Revand (Architecture & Smart Contracts)

@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0",
-    "description": "Simulation-only seed data for ExcbonCP Day 1. All parcels, zones, accounts, and readings are fictional demo data.",
+    "description": "Simulation-only seed data for ExcbonCP Day 1-2. All parcels, zones, accounts, readings, and ledger blocks are fictional demo data.",
     "simulation": true,
     "source": "Blueprint v5 Model 6"
   },
@@ -232,6 +232,40 @@
       "consent_state": "none",
       "dispute_open": 0,
       "computed_at": "2026-11-08T08:10:06Z"
+    }
+  ],
+  "ledger_blocks": [
+    {
+      "payload": {
+        "parcel_id": "PARCEL-A",
+        "timestamp": "2026-11-08T08:10:06Z",
+        "co2e_t": 142.85,
+        "status": "VERIFIED",
+        "sensor_summary": {
+          "avg_temp_c": 24.27,
+          "avg_humidity_pct": 82.53,
+          "avg_soil_pct": 57.1
+        },
+        "ndvi_mean": 0.78
+      },
+      "approved_by": "auditor_demo",
+      "eas_uid": null
+    },
+    {
+      "payload": {
+        "parcel_id": "PARCEL-A",
+        "timestamp": "2026-11-08T09:10:06Z",
+        "co2e_t": 143.1,
+        "status": "VERIFIED",
+        "sensor_summary": {
+          "avg_temp_c": 24.3,
+          "avg_humidity_pct": 82.5,
+          "avg_soil_pct": 57.1
+        },
+        "ndvi_mean": 0.78
+      },
+      "approved_by": "auditor_demo",
+      "eas_uid": null
     }
   ]
 }

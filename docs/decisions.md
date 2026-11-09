@@ -17,6 +17,7 @@
 | **ADR-007** | Simulated Carbon Economy Enforced at Application Layer | Accepted | 2026-11-08 | Malik |
 | **ADR-008** | Pure Bcrypt Password Hashing over Passlib | Accepted | 2026-11-08 | Davin |
 | **ADR-009** | Blueprint v5 Model 3/6 as MRV Schema Authority | Accepted | 2026-11-09 | Revand |
+| **ADR-010** | Canonical JSON and Server-Side Ledger Verification | Accepted | 2026-11-09 | Revand |
 
 ---
 
@@ -172,3 +173,43 @@ Treat Blueprint v5 Model 3 and Model 6 as the authority for the MRV schema:
 - **Negative:** No destructive migration is provided for databases that may have
   been created from the old documented MRV tables; only the `users` columns are
   migrated additively.
+
+---
+
+## ADR-010: Canonical JSON and Server-Side Ledger Verification
+
+### Context
+Blueprint v5 Model 6 defines the ledger hash as `sha256(prev_hash + JSON
+kanonik)`, but did not pin the JSON encoding. Different encoders can order keys
+and insert whitespace differently, which would make independent verification
+fail even when the data is unchanged. The earlier text in `docs/contract.md`
+section 6 also showed `CanonicalJSON(D_i) || H_{i-1}`, reversing the
+concatenation order and contradicting Model 6.
+
+### Decision
+1. Canonical JSON is UTF-8 with lexicographically sorted keys, compact
+   separators (`,` and `:`), no insignificant whitespace, and no
+   `NaN`/`Infinity`.
+2. `current_hash = SHA-256(prev_hash || canonical_json(payload))`. There is no
+   separator between the two parts. The genesis `prev_hash` is 64 zero
+   characters; there is no separate genesis payload block.
+3. `canonical_data` is stored exactly as hashed. Re-encoding a parsed payload is
+   not used to verify, because that would hide formatting tampering.
+4. `GET /verify/{id}` is public and returns the stored block plus
+   `hash_matches`, `link_matches`, `canonical`, `chain_valid`,
+   `first_invalid_block`, `recomputed_hash`, `reason`, and a human-readable
+   Indonesian `message`.
+5. Seeding appends two simulation-only `PARCEL-A` blocks when the ledger is
+   empty. Seeding is skipped when any block already exists, so demo data never
+   mixes with real approvals.
+
+### Consequences
+- **Positive:** Any language can reproduce the hash from the documented rules.
+- **Positive:** The L7 screen can show a mismatch without hiding the stored row.
+- **Positive:** A tampered earlier block makes later verification fail too.
+- **Negative:** A writer that stores non-canonical JSON creates an invalid
+  block even if the JSON values are semantically equivalent; all writers must
+  use `server.ledger.canonical_json`.
+- **Negative:** Without an external anchor, a writer that rewrites the last
+  block and recomputes its hash cannot be detected locally. Day 3 EAS
+  anchoring closes this gap for attested blocks.

@@ -69,10 +69,10 @@ sequenceDiagram
     participant DB as SQLite DB
 
     Auditor->>DApp: Inspect parcel history & audit hash ledger
-    DApp->>API: GET /api/v1/ledger/verify/{parcel_id}
-    API->>Ledger: verify_chain(parcel_id)
-    Ledger-->>API: Chain valid: SHA-256 integrity verified
-    API-->>DApp: Return verification proof & latest block hash
+    DApp->>API: GET /verify/{block_id}
+    API->>Ledger: verify_block(block_id)
+    Ledger-->>API: valid, recomputed hash, chain status
+    API-->>DApp: entry, stored hash, recomputed hash, eas_uid
     Auditor->>DApp: Click "Approve & Attest On-Chain"
     DApp->>API: POST /api/v1/attestations/submit (parcel_id, auditor_id, block_hash)
     API->>EAS: attest(SchemaUID, AttestationRequest(recipient, data, revocable=true))
