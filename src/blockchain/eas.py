@@ -198,9 +198,19 @@ SCHEMA_REGISTRY_ABI = [
         "anonymous": False,
         "inputs": [
             {"indexed": True, "internalType": "bytes32", "name": "uid", "type": "bytes32"},
-            {"indexed": True, "internalType": "address", "name": "resolver", "type": "address"},
-            {"indexed": False, "internalType": "bool", "name": "revocable", "type": "bool"},
-            {"indexed": False, "internalType": "string", "name": "schema", "type": "string"},
+            {"indexed": True, "internalType": "address", "name": "registerer", "type": "address"},
+            {
+                "components": [
+                    {"internalType": "bytes32", "name": "uid", "type": "bytes32"},
+                    {"internalType": "address", "name": "resolver", "type": "address"},
+                    {"internalType": "bool", "name": "revocable", "type": "bool"},
+                    {"internalType": "string", "name": "schema", "type": "string"},
+                ],
+                "indexed": False,
+                "internalType": "struct ISchemaRecord",
+                "name": "schema",
+                "type": "tuple",
+            },
         ],
         "name": "Registered",
         "type": "event",
@@ -320,10 +330,17 @@ class EasClient:
             self.schema_registry_contract = self.w3.eth.contract(
                 address=EAS_SCHEMA_REGISTRY, abi=SCHEMA_REGISTRY_ABI
             )
+            on_chain_uid = os.environ.get(
+                "EAS_SCHEMA_UID",
+                "0x64e443d45df4a77a844017cbf7c08d315f93f55dce247c083ebfa75686e37996",
+            )
+            if on_chain_uid:
+                self.schema_id = on_chain_uid
             logger.info(
-                "EAS client connected to Base Sepolia. Account: %s | Chain ID: %s",
+                "EAS client connected to Base Sepolia. Account: %s | Chain ID: %s | Schema UID: %s",
                 self.account.address,
                 chain_id,
+                self.schema_id,
             )
         except Exception as exc:  # pragma: no cover - depends on external RPC
             logger.warning("Could not initialise live EAS client (%s); using simulation mode.", exc)
@@ -471,6 +488,11 @@ class EasClient:
                 return "0x" + bytes(events[0]["args"]["uid"]).hex()
         except Exception as exc:
             logger.warning("Could not parse schema registration event: %s", exc)
+        if hasattr(receipt, "logs") and receipt.logs:
+            for log in receipt.logs:
+                topics = getattr(log, "topics", [])
+                if len(topics) >= 2:
+                    return "0x" + bytes(topics[1]).hex()
         return None
 
     def _schema_bytes32(self) -> bytes:
@@ -733,6 +755,11 @@ class EasClient:
                 return "0x" + bytes(events[0]["args"]["uid"]).hex()
         except Exception as exc:
             logger.warning("Could not parse EAS Attested event: %s", exc)
+        if hasattr(receipt, "logs") and receipt.logs:
+            for log in receipt.logs:
+                data = getattr(log, "data", b"")
+                if len(data) >= 32:
+                    return "0x" + bytes(data[:32]).hex()
         return None
 
     def _encode_attestation_data(
