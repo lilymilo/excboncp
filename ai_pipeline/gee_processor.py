@@ -18,7 +18,17 @@ _IS_MOCK_MODE: bool = False
 
 
 def _get_cache_path() -> Path:
-    return Path(__file__).resolve().parent / "data" / "gee_cache.json"
+    base = Path(__file__).resolve().parent
+    candidates = [
+        base / "gee_cache_fallback.json",
+        base / "data" / "gee_cache.json",
+        base / "data" / "gee_cache_fallback.json",
+        base / "gee_cache.json",
+    ]
+    for c in candidates:
+        if c.exists():
+            return c
+    return base / "data" / "gee_cache.json"
 
 
 def load_cached_satellite_data(lat: float, lon: float) -> Dict[str, Any]:
