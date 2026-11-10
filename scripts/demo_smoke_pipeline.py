@@ -10,7 +10,7 @@ import paho.mqtt.client as mqtt
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from api.economy.settlement import settle
 
-BROKER = os.getenv("MQTT_BROKER", "localhost")
+BROKER = os.getenv("MQTT_BROKER", "broker.emqx.io")
 PORT = int(os.getenv("MQTT_PORT", 1883))
 TOPIC = os.getenv("MQTT_TOPIC", "CbonCP/node-1/telemetry")
 

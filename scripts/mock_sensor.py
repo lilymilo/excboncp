@@ -6,7 +6,7 @@ import json
 import os
 import time
 
-BROKER_DEFAULT = os.getenv("MQTT_BROKER", "localhost")
+BROKER_DEFAULT = os.getenv("MQTT_BROKER", "broker.emqx.io")
 PORT_DEFAULT = int(os.getenv("MQTT_PORT", 1883))
 TOPIC_DEFAULT = os.getenv("MQTT_TOPIC", "CbonCP/node-1/telemetry")
 SENSOR_SECRET = os.getenv("SENSOR_SECRET", "cboncp-shared-device-secret")

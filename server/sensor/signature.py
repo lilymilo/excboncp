@@ -66,9 +66,21 @@ def verify_telemetry_signature(
         if normalized_sig == c2:
             return True
 
-    # Candidate 3: JSON-normalized format from gateway.
+        # Candidate 3: Hardware ESP32 legacy format with smoke and sound.
+        smoke = 500 if flame == 1 else 25
+        sound = 75 if flame == 1 else 30
+        c_esp = (
+            "0x"
+            + hashlib.sha256(
+                f"{device_id}|{ts}|{smoke}|{temp_c:.1f}|{sound}{s}".encode()
+            ).hexdigest()
+        ).lower()
+        if normalized_sig == c_esp:
+            return True
+
+    # Candidate 4: JSON-normalized format from gateway.
     if soil_pct is not None:
-        c3 = compute_json_signature(
+        c4 = compute_json_signature(
             {
                 "device_id": device_id,
                 "soil_pct": soil_pct,
@@ -76,7 +88,7 @@ def verify_telemetry_signature(
                 "flame": flame,
             }
         ).lower()
-        if normalized_sig == c3:
+        if normalized_sig == c4:
             return True
 
     return False

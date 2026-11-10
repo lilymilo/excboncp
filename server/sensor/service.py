@@ -26,6 +26,8 @@ DEVICE_REGISTRY: dict[str, str] = {
     "esp-01": "PARCEL-A",
     "esp-02": "PARCEL-B",
     "esp32-physical-node-01": "PARCEL-A",
+    "esp32-wokwi-node-01": "PARCEL-A",
+    "esp32-mock-fallback-01": "PARCEL-A",
 }
 
 

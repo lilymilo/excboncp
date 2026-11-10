@@ -5,22 +5,24 @@
 #include <mbedtls/md.h>
 
 #define PIN_DHT    15
-#define PIN_SOIL   35
-#define PIN_FLAME  34
 
-// 0: Wokwi cloud simulation, 1: physical ESP32 on LAN.
+// 0: Wokwi cloud simulation, 1: physical ESP32 on Wi-Fi.
 #define USE_PHYSICAL_HARDWARE 0
 
 #if USE_PHYSICAL_HARDWARE
   const char* WIFI_SSID     = "GANTI_DENGAN_SSID_WIFI_ANDA";
   const char* WIFI_PASSWORD = "GANTI_DENGAN_PASSWORD_WIFI_ANDA";
-  const char* MQTT_BROKER   = "192.168.0.130";
+  const char* MQTT_BROKER   = "broker.emqx.io";
   const char* NODE_ID       = "ESP32-PHYSICAL-NODE-01";
+  #define PIN_SOIL   35
+  #define PIN_FLAME  34
 #else
   const char* WIFI_SSID     = "Wokwi-GUEST";
   const char* WIFI_PASSWORD = "";
   const char* MQTT_BROKER   = "broker.emqx.io";
   const char* NODE_ID       = "ESP32-WOKWI-NODE-01";
+  #define PIN_SOIL   34
+  #define PIN_FLAME  13
 #endif
 
 const int   MQTT_PORT     = 1883;
@@ -117,7 +119,7 @@ String computeSignature(const char* data, const char* secret) {
   return String(hex);
 }
 
-void publishTelemetry(float soilMoisture, float suhu, bool currentFlame, const char* eventTag) {
+void publishTelemetry(float soilMoisture, float suhu, float kelembapan, bool currentFlame, const char* eventTag) {
   time_t epochNow;
   time(&epochNow);
   unsigned long ts = (unsigned long)epochNow;
@@ -125,19 +127,29 @@ void publishTelemetry(float soilMoisture, float suhu, bool currentFlame, const c
   int smoke = currentFlame ? 500 : 25;
   int sound = currentFlame ? 75 : 30;
 
+  struct tm timeinfo;
+  char isoStr[32];
+  if (getLocalTime(&timeinfo, 100)) {
+    strftime(isoStr, sizeof(isoStr), "%Y-%m-%dT%H:%M:%SZ", &timeinfo);
+  } else {
+    snprintf(isoStr, sizeof(isoStr), "2026-11-10T12:00:00Z");
+  }
+
   char sigData[128];
-  snprintf(sigData, sizeof(sigData), "%s|%lu|%d|%.1f|%d", NODE_ID, ts, smoke, suhu, sound);
+  snprintf(sigData, sizeof(sigData), "%s|%s|%d|%.1f", NODE_ID, isoStr, currentFlame ? 1 : 0, suhu);
   String signature = computeSignature(sigData, SENSOR_SECRET);
 
   String timestampJSON = getDetailedTimestampJSON();
 
   char payload[768];
   snprintf(payload, sizeof(payload),
-           "{\"node_id\":\"%s\",\"device_id\":\"%s\",\"ts\":%lu,\"timestamp\":%s,"
-           "\"soil_moisture\":%.1f,\"temperature\":%.1f,\"temp_c\":%.1f,\"smoke\":%d,"
-           "\"sound\":%d,\"flame_detected\":%s,\"sig\":\"%s\"}",
-           NODE_ID, NODE_ID, ts, timestampJSON.c_str(),
-           soilMoisture, suhu, suhu, smoke, sound,
+           "{\"node_id\":\"%s\",\"device_id\":\"%s\",\"ts\":\"%s\",\"timestamp\":%s,"
+           "\"soil_moisture\":%.1f,\"soil_pct\":%.1f,\"temperature\":%.1f,\"temp_c\":%.1f,"
+           "\"humidity_pct\":%.1f,\"smoke\":%d,\"sound\":%d,\"flame\":%d,"
+           "\"flame_detected\":%s,\"source\":\"esp\",\"sig\":\"%s\"}",
+           NODE_ID, NODE_ID, isoStr, timestampJSON.c_str(),
+           soilMoisture, soilMoisture, suhu, suhu,
+           kelembapan, smoke, sound, currentFlame ? 1 : 0,
            currentFlame ? "true" : "false", signature.c_str());
 
   Serial.print("[");
@@ -171,7 +183,11 @@ void setup() {
 
   dhtSensor.setup(PIN_DHT, DHTesp::DHT22);
   pinMode(PIN_SOIL, INPUT);
+#if USE_PHYSICAL_HARDWARE
   pinMode(PIN_FLAME, INPUT);
+#else
+  pinMode(PIN_FLAME, INPUT_PULLUP);
+#endif
 
   connectWiFi();
   mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
@@ -201,8 +217,9 @@ void loop() {
 
     TempAndHumidity dhtData = dhtSensor.getTempAndHumidity();
     float suhu = isnan(dhtData.temperature) ? lastTemp : dhtData.temperature;
+    float hum = isnan(dhtData.humidity) ? 75.0 : dhtData.humidity;
 
-    publishTelemetry(soilMoisture, suhu, currentFlame, "FLAME STATE EVENT");
+    publishTelemetry(soilMoisture, suhu, hum, currentFlame, "FLAME STATE EVENT");
 
     lastFlame = currentFlame;
     lastSoilMoisture = soilMoisture;
@@ -218,6 +235,7 @@ void loop() {
 
     TempAndHumidity dhtData = dhtSensor.getTempAndHumidity();
     float suhu = dhtData.temperature;
+    float hum = isnan(dhtData.humidity) ? 75.0 : dhtData.humidity;
 
     if (!isnan(suhu)) {
       bool soilChanged = fabs(soilMoisture - lastSoilMoisture) >= SOIL_THRESHOLD;
@@ -225,7 +243,7 @@ void loop() {
       bool heartbeat   = (now - lastHeartbeatTime >= 60000);
 
       if ((soilChanged || tempChanged || heartbeat) && mqttClient.connected()) {
-        publishTelemetry(soilMoisture, suhu, currentFlame, "MQTT PUBLISH");
+        publishTelemetry(soilMoisture, suhu, hum, currentFlame, "MQTT PUBLISH");
 
         lastSoilMoisture = soilMoisture;
         lastTemp = suhu;

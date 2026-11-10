@@ -9,6 +9,7 @@ import logging
 import os
 import signal
 import sys
+from datetime import UTC, datetime
 from typing import Any
 
 import paho.mqtt.client as mqtt
@@ -20,18 +21,27 @@ from server.sensor.service import store_sensor_reading
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger("excboncp.sensor.mqtt")
 
-BROKER_HOST = os.getenv("MQTT_BROKER", "localhost")
+BROKER_HOST = os.getenv("MQTT_BROKER", "broker.emqx.io")
 BROKER_PORT = int(os.getenv("MQTT_PORT", "1883"))
 TOPIC_FILTER = os.getenv("MQTT_TOPIC_FILTER", "CbonCP/#")
 
 
-def _normalize_payload(raw: dict[str, Any]) -> dict[str, Any]:
-    # Maps legacy Wokwi/ESP payload variants to Model 3 wire standard.
-    device_id = raw.get("device_id") or raw.get("node_id") or "node-1"
-    ts = raw.get("ts") or raw.get("timestamp") or "2026-11-10T12:00:00Z"
-    if isinstance(ts, dict):
-        ts = ts.get("iso8601") or "2026-11-10T12:00:00Z"
-    elif isinstance(ts, (int, float)):
+def _normalize_payload(raw: dict[str, Any]) -> dict[str, Any] | None:
+    # Reject messages from other public broker publishers lacking our node identifier.
+    device_id = raw.get("device_id") or raw.get("node_id")
+    if not device_id:
+        return None
+
+    raw_ts = raw.get("timestamp")
+    if isinstance(raw_ts, dict) and raw_ts.get("iso8601"):
+        ts = raw_ts.get("iso8601")
+    elif isinstance(raw_ts, str) and raw_ts:
+        ts = raw_ts
+    elif raw.get("ts") and isinstance(raw.get("ts"), str):
+        ts = raw.get("ts")
+    elif isinstance(raw.get("ts"), (int, float)):
+        ts = datetime.fromtimestamp(float(raw["ts"]), tz=UTC).isoformat()
+    else:
         ts = "2026-11-10T12:00:00Z"
 
     temp = raw.get("temp_c") if raw.get("temp_c") is not None else raw.get("temperature", 25.0)
@@ -66,6 +76,8 @@ async def process_message(payload_bytes: bytes) -> None:
         return
 
     normalized = _normalize_payload(raw_dict)
+    if not normalized:
+        return
     try:
         wire = SensorReadingWire(**normalized)
     except Exception as exc:
@@ -97,8 +109,12 @@ def create_client(loop: asyncio.AbstractEventLoop) -> mqtt.Client:
         if (hasattr(rc, "is_failure") and not rc.is_failure) or rc == 0:
             logger.info("Connected to MQTT broker at %s:%d", BROKER_HOST, BROKER_PORT)
             c.subscribe(TOPIC_FILTER)
-            c.subscribe("sensor/#")
-            logger.info("Subscribed to '%s' and 'sensor/#'", TOPIC_FILTER)
+            c.subscribe("cboncp/#")
+            if BROKER_HOST in ("localhost", "127.0.0.1", "mosquitto"):
+                c.subscribe("sensor/#")
+                logger.info("Subscribed to '%s', 'cboncp/#', and 'sensor/#'", TOPIC_FILTER)
+            else:
+                logger.info("Subscribed to '%s' and 'cboncp/#'", TOPIC_FILTER)
         else:
             logger.error("MQTT connection rejected with code %s", rc)
 
