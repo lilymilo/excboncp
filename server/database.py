@@ -232,12 +232,23 @@ CREATE TABLE IF NOT EXISTS attestations (
     tx_hash     TEXT NOT NULL,
     schema_uid  TEXT NOT NULL,
     auditor_id  TEXT NOT NULL,
+    on_chain    INTEGER NOT NULL DEFAULT 0 CHECK (on_chain IN (0, 1)),
     attested_at TEXT NOT NULL,
     FOREIGN KEY (parcel_id) REFERENCES parcels(id) ON DELETE CASCADE,
     FOREIGN KEY (auditor_id) REFERENCES users(id) ON DELETE RESTRICT
 );
 
 CREATE INDEX IF NOT EXISTS idx_attest_parcel ON attestations(parcel_id);
+
+CREATE TABLE IF NOT EXISTS eas_registrations (
+    schema_id        TEXT PRIMARY KEY,
+    schema_name      TEXT NOT NULL,
+    transaction_hash TEXT,
+    network          TEXT NOT NULL DEFAULT 'base-sepolia',
+    registered_at    TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_eas_registered_at ON eas_registrations(registered_at DESC);
 
 CREATE TABLE IF NOT EXISTS market_orders (
     id                  TEXT PRIMARY KEY,
@@ -297,6 +308,12 @@ async def _migrate_schema(db: aiosqlite.Connection) -> None:
     )
     await db.execute("CREATE INDEX IF NOT EXISTS idx_users_parcel ON users(parcel_id)")
     await db.execute("CREATE INDEX IF NOT EXISTS idx_users_zone ON users(zone_id)")
+
+    # Day 3: distinguish simulated EAS records from real Base Sepolia anchors.
+    attestation_columns = await _table_columns(db, "attestations")
+    if attestation_columns and "on_chain" not in attestation_columns:
+        await db.execute("ALTER TABLE attestations ADD COLUMN on_chain INTEGER NOT NULL DEFAULT 0")
+        logger.info("Migrated attestations table: added column on_chain")
 
 
 # ---------------------------------------------------------------------------

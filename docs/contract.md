@@ -301,7 +301,7 @@ The canonical table list is:
 
 `zones`, `parcels`, `users`, `credentials`, `tasks`, `audit_logs`, `sessions`,
 `sensor_readings`, `satellite_observations`, `consent_records`, `status_results`,
-`ledger_blocks`, `attestations`, `market_orders`.
+`ledger_blocks`, `attestations`, `eas_registrations`, `market_orders`.
 
 Columns, constraints, indexes, and delete behavior are documented in
 `docs/database-schema.md`; the relationship diagram is in
@@ -338,8 +338,14 @@ The complete endpoint catalogue is maintained in `docs/api-reference.md`.
 ExcbonCP registers a deterministic schema with the EAS Schema Registry:
 
 ```solidity
-string parcelId, string parcelStatus, uint256 co2eMetricTons, bytes32 ledgerBlockHash, string metadataURI, address auditor
+string parcelId,string parcelStatus,uint256 co2eMetricTons,bytes32 ledgerBlockHash,string metadataURI,address auditor
 ```
+
+The schema string is the canonical EAS field list (no display name, no spaces
+after commas). `ParcelAttestation` is the human-readable name used in local
+records. In simulation mode the local schema identifier is
+`keccak256(schema)`; in live mode the client stores the UID emitted by the
+registry's `Registered` event.
 
 ### Schema Field Definitions
 
@@ -412,6 +418,47 @@ the published algorithm.
   explicitly tagged as simulated MRV proofs, with no legal carbon-credit
   equivalence claimed.
 
+### Day 3 Implementation (R7)
+
+The EAS attestation layer is implemented in `src/blockchain/eas.py` and
+`src/blockchain/service.py`, with the smart contract in
+`contracts/EasProof.sol`. The API router is at `src/blockchain/router.py`.
+
+Workflow:
+1. `POST /blockchain/register-schema` — auditor registers the EAS schema with
+   the Schema Registry on Base Sepolia. The call is idempotent: an existing
+   local `eas_registrations` record is reused.
+2. `POST /blockchain/attest/{block_index}?auditor_username=...` — the
+   authenticated auditor anchors a verified ledger block to Base Sepolia. The
+   service verifies the hash chain, rejects non-`VERIFIED` or already-anchored
+   blocks, checks the auditor role, registers the schema if needed, creates the
+   attestation, and updates `ledger_blocks.eas_uid`.
+3. `GET /blockchain/attestations` — list all attested blocks.
+4. `GET /blockchain/status/{block_index}` — check anchoring status.
+5. `GET /blockchain/simulation-status` — public simulation-mode report.
+
+`auditor_username` is optional. When supplied it must equal the authenticated
+auditor's username; the service always records the authenticated user as the
+human approver.
+
+Environment variables:
+- `EVM_PRIVATE_KEY` — auditor EVM private key (Base Sepolia)
+- `EVM_RPC_URL` — Base Sepolia RPC endpoint
+- `EVM_RPC_URL_PUBLIC` — public RPC fallback (`https://sepolia.base.org`)
+- `EVM_CHAIN_ID` — 84532 (Base Sepolia)
+- `EAS_SCHEMA_REGISTRY` — 0x4200000000000000000000000000000000000020
+- `EAS_ADDRESS` — 0x4200000000000000000000000000000000000021
+- `EVM_SIMULATION_MODE` — true (default) to run without Sepolia ETH
+- `AUDITOR_USERNAME` — default human auditor (`auditor_demo`)
+
+If `EVM_PRIVATE_KEY` is missing or malformed, the client logs a warning and
+forces simulation mode rather than failing requests. This keeps the public
+demo online while making it impossible to send an unsigned transaction.
+
+The attestation schema is `ParcelAttestation` with fields:
+`parcelId`, `parcelStatus`, `co2eMetricTons` (×1e18 fixed-point),
+`ledgerBlockHash` (bytes32 SHA-256), `metadataURI`, `auditor` (address).
+
 ---
 
 ## Metadata
@@ -419,3 +466,5 @@ the published algorithm.
 - **Source file:** `docs/contract.md`
 - **Related requirements:** R6, R7, R8, R11, R12, R13, R17, R19, R23
 - **Responsible owner:** Revand (Architecture & Smart Contracts)
+- **Day 3 implementation:** `src/blockchain/eas.py`, `src/blockchain/service.py`,
+  `src/blockchain/router.py`, `contracts/EasProof.sol`, `tests/blockchain/test_eas.py`

@@ -13,7 +13,7 @@
 | **Phase 2** | Central AI Engineering Server & Per-User Credentials | ✅ Verified | 100% |
 | **Phase 3** | System Models (All 8 Diagrams) & Shared Knowledge | ✅ Verified | 100% |
 | **Phase 4** | Requirements Traceability Matrix (R1–R29) | ✅ Verified | 100% |
-| **Phase 5** | Core MRV Application Implementation (FastAPI, SQLite, Ledger) | 🟡 In Progress | 65% |
+| **Phase 5** | Core MRV Application Implementation (FastAPI, SQLite, Ledger) | 🟡 In Progress | 70% |
 | **Phase 6** | IoT ESP32 Firmware & MQTT Broker Integration | 🔲 Planned | 15% |
 | **Phase 7** | Frontend DApp & Interactive Maps | 🔲 Planned | 20% |
 | **Phase 8** | Finalist Deployment & Competition Demo Script | 🔲 Planned | 30% |
@@ -36,7 +36,7 @@
 | **IoT Layer** | MQTT Broker Container | `docker-compose.yml` | Configured | Mosquitto broker setup prepared in Compose. |
 | **Frontend** | DApp Leaflet Map View | `src/dapp/` | Planned | Malik assigned; UX flowcharts completed. |
 | **Frontend** | Carbon Market Simulation | `src/dapp/market/` | Planned | Malik assigned; rules enforced server-side. |
-| **Blockchain** | EAS Schema & Attester | `src/blockchain/eas.py` | Planned | Base Sepolia schema defined in `docs/contract.md`. |
+| **Blockchain** | EAS Schema & Attester | `src/blockchain/eas.py`, `service.py`, `router.py`, `contracts/EasProof.sol` | Implemented & Tested (Day 3 — simulation end-to-end; live contract deployment pending Day 4) | Base Sepolia schema defined in `docs/contract.md`. |
 | **Operations** | Docker Multi-Container Stack | `docker-compose.yml` | Implemented | Production & dev Compose files verified. |
 | **Operations** | Backup & Restore Automation | `scripts/backup.sh`, `scripts/restore.sh` | Implemented & Tested | Tested with SQLite snapshot compression. |
 | **Operations** | Windows Day 1 Helper | `scripts/windows/day1.ps1` | Implemented | PowerShell wrapper for setup, test, seed, serve, health, Docker, and Git status; `.cmd` wrapper included. |
@@ -45,7 +45,7 @@
 
 ## 3. Human Team Milestones
 
-- **Revand:** Server core, credential vault, security threat model, and system architecture complete; Day 1 MRV schema and simulation seed complete; Day 2 SHA-256 ledger and public verification endpoint complete.
+- **Revand:** Server core, credential vault, security threat model, and system architecture complete; Day 1 MRV schema and simulation seed complete; Day 2 SHA-256 ledger and public verification endpoint complete; Day 3 EAS attestation layer (schema registration, auditor-gated anchoring, simulation mode, API + tests) complete, with live contract deployment scheduled for Day 4.
 - **Bagus:** Backend scaffolding complete; preparing MQTT broker configuration and ESP32 telemetry schema.
 - **Davin:** Status engine precedence hierarchy formalized; audit logging and RBAC dependencies complete.
 - **Malik:** DApp interaction flowcharts and screen inventory mapped to API routes.

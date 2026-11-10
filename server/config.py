@@ -55,6 +55,16 @@ class Settings:
     RATE_LIMIT_GENERAL: int = 100  # requests per minute
     RATE_LIMIT_AUTH: int = 10  # requests per minute for auth endpoints
 
+    # EVM / EAS (Base Sepolia)
+    EVM_PRIVATE_KEY: str = ""
+    EVM_RPC_URL: str = ""
+    EVM_RPC_URL_PUBLIC: str = "https://sepolia.base.org"
+    EVM_CHAIN_ID: int = 84532
+    EAS_SCHEMA_REGISTRY: str = "0x4200000000000000000000000000000000000020"
+    EAS_ADDRESS: str = "0x4200000000000000000000000000000000000021"
+    EVM_SIMULATION_MODE: bool = True
+    AUDITOR_USERNAME: str = "auditor_demo"
+
 
 def _load_settings() -> Settings:
     """Build a *Settings* instance from the environment."""
@@ -86,6 +96,23 @@ def _load_settings() -> Settings:
     cors_raw = os.environ.get("CORS_ORIGINS", "*")
     cors_origins = [o.strip() for o in cors_raw.split(",") if o.strip()]
 
+    evm_private_key = os.environ.get("EVM_PRIVATE_KEY", "")
+    evm_rpc_url = os.environ.get("EVM_RPC_URL", "")
+    if evm_private_key and (
+        len(evm_private_key) != 66 or not evm_private_key.lower().startswith("0x")
+    ):
+        print(
+            "WARNING: EVM_PRIVATE_KEY looks invalid (expected 0x + 64 hex chars). "
+            "Make sure it contains only your private key, no extra quotes or text.",
+            file=sys.stderr,
+        )
+    if evm_rpc_url and "YOUR_API_KEY" in evm_rpc_url:
+        print(
+            "WARNING: EVM_RPC_URL still contains 'YOUR_API_KEY'. "
+            "Set a real Base Sepolia RPC URL or keep EVM_SIMULATION_MODE=true.",
+            file=sys.stderr,
+        )
+
     port_raw = os.environ.get("SERVER_PORT", "8000")
     try:
         port = int(port_raw)
@@ -97,6 +124,13 @@ def _load_settings() -> Settings:
         expiry = int(expiry_raw)
     except ValueError:
         expiry = 24
+
+    evm_chain_id = int(os.environ.get("EVM_CHAIN_ID", "84532"))
+    eas_schema_registry = os.environ.get(
+        "EAS_SCHEMA_REGISTRY", "0x4200000000000000000000000000000000000020"
+    )
+    eas_address = os.environ.get("EAS_ADDRESS", "0x4200000000000000000000000000000000000021")
+    simulation_mode = os.environ.get("EVM_SIMULATION_MODE", "true").lower() == "true"
 
     return Settings(
         DATABASE_URL=os.environ.get("DATABASE_URL")
@@ -110,6 +144,14 @@ def _load_settings() -> Settings:
         CREDENTIAL_ENCRYPTION_KEY=encryption_key,
         LOG_LEVEL=os.environ.get("LOG_LEVEL", "INFO"),
         CORS_ORIGINS=cors_origins,
+        EVM_PRIVATE_KEY=evm_private_key,
+        EVM_RPC_URL=evm_rpc_url,
+        EVM_RPC_URL_PUBLIC=os.environ.get("EVM_RPC_URL_PUBLIC", "https://sepolia.base.org"),
+        EVM_CHAIN_ID=evm_chain_id,
+        EAS_SCHEMA_REGISTRY=eas_schema_registry,
+        EAS_ADDRESS=eas_address,
+        EVM_SIMULATION_MODE=simulation_mode,
+        AUDITOR_USERNAME=os.environ.get("AUDITOR_USERNAME", "auditor_demo"),
     )
 
 

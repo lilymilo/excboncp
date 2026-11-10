@@ -18,6 +18,7 @@
 | **ADR-008** | Pure Bcrypt Password Hashing over Passlib | Accepted | 2026-11-08 | Davin |
 | **ADR-009** | Blueprint v5 Model 3/6 as MRV Schema Authority | Accepted | 2026-11-09 | Revand |
 | **ADR-010** | Canonical JSON and Server-Side Ledger Verification | Accepted | 2026-11-09 | Revand |
+| **ADR-011** | EAS Attestation Anchoring for Ledger Integrity (Day 3) | Accepted + bug fixes | 2026-11-09 | Revand |
 
 ---
 
@@ -213,3 +214,42 @@ concatenation order and contradicting Model 6.
 - **Negative:** Without an external anchor, a writer that rewrites the last
   block and recomputes its hash cannot be detected locally. Day 3 EAS
   anchoring closes this gap for attested blocks.
+
+## ADR-011: EAS Attestation Anchoring for Ledger Integrity (Day 3)
+
+### Context
+The local SHA-256 hash chain (ADR-010) is tamper-evident but only visible
+within the ExcbonCP server. A malicious insider who can write to the server's
+file system could delete or rewrite ledger blocks and recompute all hashes,
+leaving no external proof. ADR-006 already decided to anchor state to Base
+Sepolia, and Day 3 implements this for the ledger layer.
+
+### Decision
+1. Register a deterministic EAS schema (`ParcelAttestation`) with the Schema
+   Registry on Base Sepolia (Chain ID 84532):
+   `parcelId`, `parcelStatus`, `co2eMetricTons` (×1e18),
+   `ledgerBlockHash` (bytes32), `metadataURI`, `auditor` (address).
+2. Store the schema and attestation record locally in the `attestations` table
+   and update `ledger_blocks.eas_uid` after anchoring.
+3. Require an `auditor` role for anchoring; the blockchain transaction is
+   signed by the auditor's EVM key — never by AI.
+4. Run in simulation mode by default (`EVM_SIMULATION_MODE=true`) so the
+   pipeline can be exercised without Sepolia ETH; switch to live mode by
+   setting `EVM_SIMULATION_MODE=false` and installing `web3`.
+5. The client and contract are complete enough for the simulation demo; actual
+   deployment of `contracts/EasProof.sol` to Base Sepolia remains the Day 4
+   milestone.
+
+### Consequences
+- **Positive:** Attested blocks now have an off-server proof that cannot be
+  erased by a local insider attack.
+- **Positive:** Simulation mode keeps the demo runnable without testnet funds.
+- **Positive:** The "VERIFIED only" rule is enforced in both the service layer
+  and the contract: non-`VERIFIED` parcels cannot be attested, and the same
+  ledger hash cannot be anchored twice.
+- **Positive:** A missing or malformed EVM key forces simulation mode, so the
+  public demo cannot accidentally send an unsigned transaction.
+- **Negative:** The schema is not yet registered on the live network; Day 4
+  must deploy `contracts/EasProof.sol` and call `registerSchema()`.
+- **Negative:** On-chain verification still requires an EAS indexer/subgraph;
+  Day 3 records the transaction and attestation UIDs locally.

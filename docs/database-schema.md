@@ -327,13 +327,32 @@ Base Sepolia EAS attestation records.
 | `tx_hash` | `TEXT` | No | — | Base Sepolia transaction hash. |
 | `schema_uid` | `TEXT` | No | — | EAS schema UID. |
 | `auditor_id` | `TEXT` | No | FK | References `users(id)` `ON DELETE RESTRICT`. |
+| `on_chain` | `INTEGER` | No | `0` | `1` = real Base Sepolia transaction; `0` = simulation mode. |
 | `attested_at` | `TEXT` | No | — | ISO-8601 UTC timestamp. |
 
 *Indexes:* `idx_attest_parcel` on `parcel_id`.
 
 ---
 
-### 4.7 `market_orders`
+### 4.7 `eas_registrations`
+
+Local cache of EAS schema registrations. It prevents duplicate schema
+transactions and lets the public status endpoint report whether the schema was
+registered in simulation or live mode.
+
+| Column | Type | Nullable | Default | Description |
+|---|---|:---:|---|---|
+| `schema_id` | `TEXT` | No | PK | EAS schema UID (or local keccak identifier in simulation mode). |
+| `schema_name` | `TEXT` | No | — | Human-readable name (`ParcelAttestation`). |
+| `transaction_hash` | `TEXT` | Yes | `NULL` | Base Sepolia transaction hash, or `NULL` in simulation. |
+| `network` | `TEXT` | No | `'base-sepolia'` | Mode and network, e.g. `simulation:84532` or `base-sepolia:84532`. |
+| `registered_at` | `TEXT` | No | — | ISO-8601 UTC timestamp. |
+
+*Indexes:* `idx_eas_registered_at` on `registered_at DESC`.
+
+---
+
+### 4.8 `market_orders`
 
 Simulated carbon-credit orders. No real money or on-chain settlement is represented.
 
@@ -388,7 +407,9 @@ Simulated carbon-credit orders. No real money or on-chain settlement is represen
 
 Databases created by earlier versions already contain `users`. The startup migration
 adds `email`, `parcel_id`, and `zone_id` with `ALTER TABLE ... ADD COLUMN` and creates
-the related indexes. Existing rows are never dropped or rewritten.
+the related indexes. Day 3 adds `attestations.on_chain`; the `eas_registrations`
+table is created by the idempotent schema script. Existing rows are never dropped
+or rewritten.
 
 This preserves compatibility with the central-server auth layer while adding the R23
 scope links required by the MRV blueprint.

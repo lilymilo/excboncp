@@ -24,6 +24,8 @@ os.environ.setdefault(
 )
 os.environ.setdefault("DATABASE_PATH", ":memory:")
 os.environ.setdefault("LOG_LEVEL", "warning")
+# Day 3 EAS tests must never contact Base Sepolia.
+os.environ["EVM_SIMULATION_MODE"] = "true"
 
 
 @pytest.fixture(scope="session")

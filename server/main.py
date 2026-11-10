@@ -24,6 +24,7 @@ from server.database import close_db, init_db
 from server.ledger.router import router as ledger_router
 from server.monitoring.router import router as monitoring_router
 from server.tasks.router import router as tasks_router
+from src.blockchain.router import router as blockchain_router
 
 # Configure logging
 logging.basicConfig(
@@ -74,6 +75,7 @@ app.include_router(agents_router)
 app.include_router(tasks_router)
 app.include_router(monitoring_router)
 app.include_router(ledger_router)
+app.include_router(blockchain_router)
 
 
 @app.get("/", summary="Root API discovery", tags=["discovery"])

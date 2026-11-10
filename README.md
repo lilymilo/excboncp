@@ -90,6 +90,53 @@ The seed creates parcels A/B, demo accounts, simulated sensor readings, status
 snapshots, and two simulation-only ledger blocks. Verify them publicly at
 `GET /verify/1` and `GET /verify/2`.
 
+### EAS Attestation (Day 3 / R7)
+
+The EAS attestation layer anchors local SHA-256 ledger blocks to Base Sepolia.
+It runs in **simulation mode by default** (`EVM_SIMULATION_MODE=true`) so the
+pipeline can be exercised without Sepolia ETH.
+
+```bash
+# 1. Configure your auditor wallet (Base Sepolia)
+cp .env.example .env
+# Edit .env: set EVM_PRIVATE_KEY (your real key), EVM_RPC_URL, and set
+# EVM_SIMULATION_MODE=false only when you have Sepolia ETH.
+
+# 2. Start the server
+./scripts/start-server.sh --mode local
+
+# 3. Register the EAS schema (auditor only)
+curl -X POST http://localhost:8000/blockchain/register-schema \
+  -H "Authorization: Bearer <auditor-token>"
+
+# 4. Anchor a verified ledger block to Base Sepolia (auditor only)
+curl -X POST "http://localhost:8000/blockchain/attest/1" \
+  -H "Authorization: Bearer <auditor-token>"
+
+# 5. Check anchoring status
+curl http://localhost:8000/blockchain/status/1 \
+  -H "Authorization: Bearer <any-user-token>"
+
+# 6. List all attested blocks
+curl http://localhost:8000/blockchain/attestations \
+  -H "Authorization: Bearer <any-user-token>"
+```
+
+In simulation mode, attestations are recorded locally (with fake UIDs) and the
+`ledger_blocks.eas_uid` field is updated — no blockchain transaction is sent.
+A missing or malformed `EVM_PRIVATE_KEY` automatically keeps the server in
+simulation mode, so the demo never crashes or sends an unsigned transaction.
+To go live, install `web3`, set a real Base Sepolia RPC URL, fund your wallet
+with Sepolia ETH (e.g., via https://sepoliafaucet.com), and set
+`EVM_SIMULATION_MODE=false`. Smart contract deployment (`contracts/EasProof.sol`)
+is a Day 4 milestone.
+
+Run the Day 3 tests with:
+
+```bash
+pytest tests/blockchain/ -v
+```
+
 ### Windows (PowerShell)
 
 Windows teammates can use the Day 1 helper instead of the Bash scripts:
@@ -137,6 +184,7 @@ excboncp/
 │   ├── tasks/           # Task management
 │   └── requirements.txt # Python dependencies
 ├── docker/              # Docker build files
+├── contracts/           # Smart contracts (EAS Attestation, Day 3)
 ├── scripts/             # Setup & maintenance scripts
 ├── tests/               # Test suite
 ├── docs/                # Documentation
@@ -144,11 +192,23 @@ excboncp/
 └── .github/             # CI/CD & templates
 ```
 
+## Day Breakdown
+
+| Day | Owner  | Feature |
+|-----|--------|---------|
+| Day 1 | Revand | MRV schema + seed, central server setup |
+| Day 2 | Revand | SHA-256 hash chain ledger + public verification (`GET /verify/{id}`) |
+| Day 3 | Revand | EAS blockchain attestation on Base Sepolia (R7) |
+| Day 4 | Revand | Deploy EAS contract to Sepolia, schema registration, auditor whitelist |
+| Day 5 | Bagus  | ESP32 firmware + MQTT telemetry |
+| Day 6 | Bagus  | MQTT broker integration + sensor data ingestion |
+| ... | ... | (see docs/requirements-traceability.md for full R1–R29 backlog) |
+
 ## Team
 
 | Member   | Responsibilities                              |
 |----------|-----------------------------------------------|
-| **Revand** | Architecture, Smart Contracts, Deployment   |
+| **Revand** | Architecture, Smart Contracts, Deployment, EAS Attestation (Day 3) |
 | **Bagus**  | IoT, MQTT, Sensors, Carbon Economy          |
 | **Davin**  | Status Engine, Satellite, AI, Anomaly Detection |
 | **Malik**  | DApp, Maps, UX, Presentations               |
