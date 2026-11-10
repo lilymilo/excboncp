@@ -1,0 +1,22 @@
+{
+  "default_parcel": {
+    "polygon_id": "CBONCP-SRNPPI-JBR-01",
+    "location_name": "Hutan Lindung Bogor, Jawa Barat",
+    "coordinates": {
+      "lat": -6.5971,
+      "lon": 106.7994
+    },
+    "date": "2026-11-04",
+    "source": "ESA Sentinel-1 SAR & Sentinel-2",
+    "collection": "COPERNICUS/S2_SR_HARMONIZED",
+    "image_id": "COPERNICUS/S2_SR_HARMONIZED/20261104T025901_20261104T030818_T48MYT",
+    "ndvi_mean": 0.84,
+    "sar_vv_db": -11.2,
+    "sar_cloud_penetrated": true,
+    "cloud_coverage_pct": 14.2,
+    "status": "cached",
+    "thumbnail_url": "https://browser.dataspace.copernicus.eu/?zoom=14&lat=-6.5971&lng=106.7994",
+    "cache_note": "Local resilient backup cache deployed per Blueprint Tangga Cadangan"
+  }
+}
+

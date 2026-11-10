@@ -1,0 +1,16 @@
+{
+  "7": "test_agents.py",
+  "10": "get_current_user",
+  "35": "get_db",
+  "41": "blockchain/router.py",
+  "44": "test_monitoring.py",
+  "55": "ledger/router.py",
+  "63": "test_credentials.py",
+  "65": "docs/models/ER_DIAGRAM.md",
+  "84": "get_db_context",
+  "85": "root_discovery",
+  "86": "test_root_discovery_endpoint",
+  "87": "CLAUDE.md",
+  "88": "GEMINI.md",
+  "89": "copilot-instructions.md"
+}

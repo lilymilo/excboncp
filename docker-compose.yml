@@ -1,8 +1,7 @@
-# ExcbonCP Docker Compose — Production Configuration
+# ExcbonCP Docker Compose Configuration
 # Usage: docker compose up -d
 
 services:
-  # ─── Central Engineering Server ───────────────────────────────────────
   server:
     build:
       context: .
@@ -24,47 +23,53 @@ services:
     networks:
       - excboncp-network
 
-  # ─── MQTT Broker (future) ────────────────────────────────────────────
-  # Uncomment when IoT integration is ready
-  #
-  # mosquitto:
-  #   image: eclipse-mosquitto:2
-  #   container_name: excboncp-mosquitto
-  #   ports:
-  #     - "1883:1883"
-  #     - "9001:9001"
-  #   volumes:
-  #     - ./docker/mosquitto/config:/mosquitto/config
-  #     - mosquitto-data:/mosquitto/data
-  #     - mosquitto-log:/mosquitto/log
-  #   restart: unless-stopped
-  #   networks:
-  #     - excboncp-network
+  mqtt-broker:
+    image: eclipse-mosquitto:2.0
+    container_name: cboncp-mqtt-broker
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 2 mosquitto_sub -t '$$SYS/#' -C 1 -i healthcheck || exit 0"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - excboncp-network
 
-  # ─── Frontend (future) ───────────────────────────────────────────────
-  # Uncomment when frontend DApp is ready
-  #
-  # frontend:
-  #   build:
-  #     context: .
-  #     dockerfile: docker/Dockerfile.frontend
-  #   container_name: excboncp-frontend
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     server:
-  #       condition: service_healthy
-  #   restart: unless-stopped
-  #   networks:
-  #     - excboncp-network
+  iot-node:
+    build:
+      context: ./iot-node
+      dockerfile: Dockerfile
+    container_name: cboncp-iot-node
+    restart: unless-stopped
+    depends_on:
+      mqtt-broker:
+        condition: service_started
+    ports:
+      - "${IOT_GATEWAY_PORT:-5050}:5050"
+    environment:
+      NODE_ENV: production
+      MQTT_BROKER: mqtt-broker
+      MQTT_PORT: 1883
+      MQTT_TOPIC_SUBSCRIPTION: "${MQTT_TOPIC_SUBSCRIPTION:-CbonCP/+/telemetry}"
+      MQTT_TOPIC_TELEMETRY: "${MQTT_TOPIC_TELEMETRY:-CbonCP/node-1/telemetry}"
+      IOT_GATEWAY_PORT: 5050
+      SIMULATION_MODE: "${SIMULATION_MODE:-false}"
+      SIMULATION_INTERVAL_MS: "${SIMULATION_INTERVAL_MS:-5000}"
+    networks:
+      - excboncp-network
 
 volumes:
   excboncp-data:
     driver: local
-  # mosquitto-data:
-  #   driver: local
-  # mosquitto-log:
-  #   driver: local
+  mosquitto_data:
+  mosquitto_log:
 
 networks:
   excboncp-network:

@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>excboncp — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 1338 nodes, 2351 edges, 84 communities. Commit: 3daf769</p>
+<p class="subtitle">Generated from graphify knowledge graph: 1344 nodes, 2354 edges, 90 communities. Commit: e54fadd</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
@@ -71,13 +71,13 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
     <a href="#serve-api">Serving API</a>
     <a href="#security-global">Security &amp; Global Graph</a>
     <a href="#tests-fixtures">Tests &amp; Fixtures</a>
+    <a href="#server-auth-modelspy">Server Auth Modelspy</a>
     <a href="#mrv-simulation-runbook">MRV Simulation Runbook</a>
     <a href="#docker-compose-module">Docker Compose Module</a>
     <a href="#docker-compose-module-d4ad63">Docker Compose Module</a>
     <a href="#architecture-overview">Architecture — Overview</a>
     <a href="#deployment-module">Deployment Module</a>
     <a href="#contracts-readme">Contracts — Readme</a>
-    <a href="#deployment-module-88721e">Deployment Module</a>
     <a href="#other">Other</a>
 </div>
 
@@ -88,20 +88,22 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    BUILD_GRAPH_321CBB04("Graph Build<br/><small>59 nodes</small>")
+    BUILD_GRAPH_321CBB04("Graph Build<br/><small>94 nodes</small>")
     class BUILD_GRAPH_321CBB04 module;
     OUTPUTS_DOCS_ED82387C("Outputs &amp; Docs<br/><small>9 nodes</small>")
     class OUTPUTS_DOCS_ED82387C module;
-    CLI_SKILLS_9964CBB8("CLI &amp; Skill Installers<br/><small>182 nodes</small>")
+    CLI_SKILLS_9964CBB8("CLI &amp; Skill Installers<br/><small>178 nodes</small>")
     class CLI_SKILLS_9964CBB8 module;
     INGEST_CACHE_UPDATE_FF457338("Ingestion &amp; Updates<br/><small>12 nodes</small>")
     class INGEST_CACHE_UPDATE_FF457338 module;
-    SERVE_API_35EC8E86("Serving API<br/><small>347 nodes</small>")
+    SERVE_API_35EC8E86("Serving API<br/><small>383 nodes</small>")
     class SERVE_API_35EC8E86 module;
     SECURITY_GLOBAL_5B9C6A04("Security &amp; Global Graph<br/><small>36 nodes</small>")
     class SECURITY_GLOBAL_5B9C6A04 module;
-    TESTS_FIXTURES_B84B1DCC("Tests &amp; Fixtures<br/><small>409 nodes</small>")
+    TESTS_FIXTURES_B84B1DCC("Tests &amp; Fixtures<br/><small>339 nodes</small>")
     class TESTS_FIXTURES_B84B1DCC module;
+    SERVER_AUTH_MODELSPY_A36CFD13("Server Auth Modelspy<br/><small>21 nodes</small>")
+    class SERVER_AUTH_MODELSPY_A36CFD13 module;
     MRV_SIMULATION_RUNBOOK_35CDB7EE("MRV Simulation Runbook<br/><small>19 nodes</small>")
     class MRV_SIMULATION_RUNBOOK_35CDB7EE module;
     DOCKER_COMPOSE_MODULE_B770A536("Docker Compose Module<br/><small>17 nodes</small>")
@@ -110,26 +112,24 @@ flowchart LR
     class DOCKER_COMPOSE_MODULE_D4AD63_D9DABB92 module;
     ARCHITECTURE_OVERVIEW_383D40AF("Architecture — Overview<br/><small>15 nodes</small>")
     class ARCHITECTURE_OVERVIEW_383D40AF module;
-    DEPLOYMENT_MODULE_64017062("Deployment Module<br/><small>14 nodes</small>")
+    DEPLOYMENT_MODULE_64017062("Deployment Module<br/><small>13 nodes</small>")
     class DEPLOYMENT_MODULE_64017062 module;
     CONTRACTS_README_929D844C("Contracts — Readme<br/><small>11 nodes</small>")
     class CONTRACTS_README_929D844C module;
-    DEPLOYMENT_MODULE_88721E_DC04EA65("Deployment Module<br/><small>11 nodes</small>")
-    class DEPLOYMENT_MODULE_88721E_DC04EA65 module;
     OTHER_D0941E68("Other<br/><small>182 nodes</small>")
     class OTHER_D0941E68 module;
     SERVE_API_35EC8E86 -->|imports x49| TESTS_FIXTURES_B84B1DCC
-    CLI_SKILLS_9964CBB8 -->|imports x42| SERVE_API_35EC8E86
-    TESTS_FIXTURES_B84B1DCC -->|imports x32| SERVE_API_35EC8E86
-    TESTS_FIXTURES_B84B1DCC -->|imports x27| CLI_SKILLS_9964CBB8
-    CLI_SKILLS_9964CBB8 -->|imports x14| TESTS_FIXTURES_B84B1DCC
-    SERVE_API_35EC8E86 -->|imports x8| CLI_SKILLS_9964CBB8
+    TESTS_FIXTURES_B84B1DCC -->|imports x38| SERVE_API_35EC8E86
+    SERVE_API_35EC8E86 -->|imports x36| SERVER_AUTH_MODELSPY_A36CFD13
+    CLI_SKILLS_9964CBB8 -->|imports x33| SERVE_API_35EC8E86
+    SERVE_API_35EC8E86 -->|imports x28| CLI_SKILLS_9964CBB8
+    TESTS_FIXTURES_B84B1DCC -->|imports x20| CLI_SKILLS_9964CBB8
+    TESTS_FIXTURES_B84B1DCC -->|uses x20| BUILD_GRAPH_321CBB04
+    SERVE_API_35EC8E86 -->|calls x12| BUILD_GRAPH_321CBB04
+    CLI_SKILLS_9964CBB8 -->|calls x9| TESTS_FIXTURES_B84B1DCC
+    OTHER_D0941E68 -->|calls x6| SERVE_API_35EC8E86
     MRV_SIMULATION_RUNBOOK_35CDB7EE -->|references x5| OTHER_D0941E68
-    OTHER_D0941E68 -->|references x5| TESTS_FIXTURES_B84B1DCC
-    OTHER_D0941E68 -->|contains x4| INGEST_CACHE_UPDATE_FF457338
-    SERVE_API_35EC8E86 -->|references x4| DOCKER_COMPOSE_MODULE_D4AD63_D9DABB92
-    TESTS_FIXTURES_B84B1DCC -->|method x3| OTHER_D0941E68
-    DEPLOYMENT_MODULE_88721E_DC04EA65 -->|calls x3| TESTS_FIXTURES_B84B1DCC
+    BUILD_GRAPH_321CBB04 -->|references x4| SERVE_API_35EC8E86
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -146,19 +146,19 @@ flowchart LR
     <h4>Architecture Layers</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>Layer</th><th>Nodes</th><th>Communities</th></tr>
-      <tr><td>Graph Build</td><td>59</td><td><code>16, 27, 28</code></td></tr><tr><td>Outputs &amp; Docs</td><td>9</td><td><code>46</code></td></tr><tr><td>CLI &amp; Skill Installers</td><td>182</td><td><code>5, 11, 14, 17, 24, 31, 37, 61</code></td></tr><tr><td>Ingestion &amp; Updates</td><td>12</td><td><code>34</code></td></tr><tr><td>Serving API</td><td>347</td><td><code>1, 2, 3, 6, 8, 10, 21, 35, 43, 53, 54</code></td></tr><tr><td>Security &amp; Global Graph</td><td>36</td><td><code>18, 50, 59</code></td></tr><tr><td>Tests &amp; Fixtures</td><td>409</td><td><code>0, 4, 7, 9, 12, 13, 15, 19, 20, 23, 25, 33, 44, 55, 83</code></td></tr><tr><td>MRV Simulation Runbook</td><td>19</td><td><code>22</code></td></tr><tr><td>Docker Compose Module</td><td>17</td><td><code>26</code></td></tr><tr><td>Docker Compose Module</td><td>15</td><td><code>29</code></td></tr><tr><td>Architecture — Overview</td><td>15</td><td><code>30</code></td></tr><tr><td>Deployment Module</td><td>14</td><td><code>32</code></td></tr><tr><td>Contracts — Readme</td><td>11</td><td><code>36</code></td></tr><tr><td>Deployment Module</td><td>11</td><td><code>38</code></td></tr><tr><td>Other</td><td>182</td><td><code>39, 40, 41, 42, 45, 47, 48, 49, 51, 52, 56, 57, 58, 60, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82</code></td></tr>
+      <tr><td>Graph Build</td><td>94</td><td><code>9, 16, 28, 27</code></td></tr><tr><td>Outputs &amp; Docs</td><td>9</td><td><code>46</code></td></tr><tr><td>CLI &amp; Skill Installers</td><td>178</td><td><code>5, 11, 14, 24, 17, 31, 37, 61, 85, 87, 89</code></td></tr><tr><td>Ingestion &amp; Updates</td><td>12</td><td><code>34</code></td></tr><tr><td>Serving API</td><td>383</td><td><code>1, 2, 3, 6, 8, 41, 35, 21, 43, 55, 53, 54</code></td></tr><tr><td>Security &amp; Global Graph</td><td>36</td><td><code>18, 50, 59</code></td></tr><tr><td>Tests &amp; Fixtures</td><td>339</td><td><code>0, 4, 12, 25, 15, 19, 20, 13, 23, 33, 44, 7, 63, 86, 83</code></td></tr><tr><td>Server Auth Modelspy</td><td>21</td><td><code>10</code></td></tr><tr><td>MRV Simulation Runbook</td><td>19</td><td><code>22</code></td></tr><tr><td>Docker Compose Module</td><td>17</td><td><code>26</code></td></tr><tr><td>Docker Compose Module</td><td>15</td><td><code>29</code></td></tr><tr><td>Architecture — Overview</td><td>15</td><td><code>30</code></td></tr><tr><td>Deployment Module</td><td>13</td><td><code>32</code></td></tr><tr><td>Contracts — Readme</td><td>11</td><td><code>36</code></td></tr><tr><td>Other</td><td>182</td><td><code>38, 39, 40, 42, 45, 47, 48, 49, 51, 52, 56, 57, 58, 60, 62, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 84, 75, 88, 76, 77, 78, 79, 80, 81, 82</code></td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Core Flow</h4>
-    <div class="arrow-chain">Graph Build -&gt; CLI &amp; Skill Installers -&gt; Serving API -&gt; Tests &amp; Fixtures -&gt; Other -&gt; Ingestion &amp; Updates -&gt; Outputs &amp; Docs</div>
+    <div class="arrow-chain">Outputs &amp; Docs -&gt; Graph Build -&gt; Serving API -&gt; Tests &amp; Fixtures -&gt; CLI &amp; Skill Installers -&gt; Other -&gt; Ingestion &amp; Updates</div>
   </div>
 </div>
 <div class="grid">
   <div class="card">
     <h4>Graph Report Highlights</h4>
     <ul>
-      <li>1338 nodes · 2351 edges · 84 communities (71 shown, 13 thin omitted)</li>
+      <li>1344 nodes · 2354 edges · 90 communities (71 shown, 19 thin omitted)</li>
       <li>Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 109 edges (avg confidence: 0.94)</li>
       <li>Token cost: 0 input · 0 output</li>
       <li>1. `UserResponse` - 48 edges</li>
@@ -170,66 +170,73 @@ flowchart LR
 <hr>
 <!-- ====== 2. Graph Build ====== -->
 <h2 id="build-graph">2. Graph Build</h2>
-<p>Graph Build groups implementation around docs, database, schemamd, contractmd, mostly in docs/database-schema.md, docs/contract.md, docs/decisions.md. This section covers 59 nodes and 56 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Graph Build groups implementation around docs, blockchain, easpy, database, mostly in src/blockchain/eas.py, docs/database-schema.md, docs/decisions.md. This section covers 94 nodes and 119 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Graph Build (59 nodes, 56 edges)
-    subgraph build_graph_docs_database_schema_md_420020c9["docs/database-schema.md"]
-        docs_database_schema_doc_18877ea7("docs/database-schema.md")
-        docs_database_schema_excboncp_database_schema_re_585d9d1c("ExcbonCP Database Schema Reference<br/><small>docs/database-schema.md</small>")
-        docs_database_schema_2_4_audit_logs_d2d1ec64("2.4 audit_logs<br/><small>docs/database-schema.md</small>")
-        docs_database_schema_1_engine_configuration_40b6a618("1. Engine &amp; Configuration<br/><small>docs/database-schema.md</small>")
-        docs_database_schema_2_5_sessions_42929df1("2.5 sessions<br/><small>docs/database-schema.md</small>")
-        docs_database_schema_3_mrv_reference_tables_19f3e09c("3. MRV Reference Tables<br/><small>docs/database-schema.md</small>")
-        docs_database_schema_3_1_zones_c91e8507("3.1 zones<br/><small>docs/database-schema.md</small>")
-        docs_database_schema_3_2_parcels_44bd8607("3.2 parcels<br/><small>docs/database-schema.md</small>")
-        docs_database_schema_4_mrv_event_decision_tables_d4909655("4. MRV Event &amp; Decision Tables<br/><small>docs/database-schema.md</small>")
-        docs_database_schema_4_1_sensor_readings_5acdf233("4.1 sensor_readings<br/><small>docs/database-schema.md</small>")
-        docs_database_schema_4_2_satellite_observations_af846553("4.2 satellite_observations<br/><small>docs/database-schema.md</small>")
-        docs_database_schema_4_3_consent_records_8583910d("4.3 consent_records<br/><small>docs/database-schema.md</small>")
-        docs_database_schema_4_4_status_results_2a1219a6("4.4 status_results<br/><small>docs/database-schema.md</small>")
-        docs_database_schema_4_5_ledger_blocks_1c5faab6("4.5 ledger_blocks<br/><small>docs/database-schema.md</small>")
-        docs_database_schema_2_central_server_tables_2968cd18("2. Central Server Tables<br/><small>docs/database-schema.md</small>")
-        docs_database_schema_2_1_users_e07449a6("2.1 users<br/><small>docs/database-schema.md</small>")
-    end
-    docs_contract_doc_9dc5f1da("docs/contract.md")
-    docs_decisions_doc_02cf0365("docs/decisions.md")
-    docs_database_schema_doc_18877ea7 -->|references| docs_database_schema_excboncp_database_schema_re_585d9d1c
-    docs_database_schema_doc_18877ea7 -->|references| docs_database_schema_2_4_audit_logs_d2d1ec64
-    docs_database_schema_doc_18877ea7 -->|references| docs_database_schema_1_engine_configuration_40b6a618
-    docs_database_schema_doc_18877ea7 -->|references| docs_database_schema_2_5_sessions_42929df1
-    docs_database_schema_doc_18877ea7 -->|references| docs_database_schema_3_mrv_reference_tables_19f3e09c
-    docs_database_schema_doc_18877ea7 -->|references| docs_database_schema_3_1_zones_c91e8507
-    docs_database_schema_doc_18877ea7 -->|references| docs_database_schema_3_2_parcels_44bd8607
-    docs_database_schema_doc_18877ea7 -->|references| docs_database_schema_4_mrv_event_decision_tables_d4909655
-    docs_database_schema_doc_18877ea7 -->|references| docs_database_schema_4_1_sensor_readings_5acdf233
-    docs_database_schema_doc_18877ea7 -->|references| docs_database_schema_4_2_satellite_observations_af846553
-    docs_database_schema_doc_18877ea7 -->|references| docs_database_schema_4_3_consent_records_8583910d
-    docs_database_schema_doc_18877ea7 -->|references| docs_database_schema_4_4_status_results_2a1219a6
-    docs_database_schema_doc_18877ea7 -->|references| docs_database_schema_4_5_ledger_blocks_1c5faab6
-    docs_database_schema_doc_18877ea7 -->|references| docs_database_schema_2_central_server_tables_2968cd18
-    docs_database_schema_doc_18877ea7 -->|references| docs_database_schema_2_1_users_e07449a6
-    %% Omitted for readability: 41 nodes, 0 edges
-    class docs_database_schema_doc_18877ea7 concept;
-    class docs_database_schema_excboncp_database_schema_re_585d9d1c klass;
-    class docs_database_schema_2_4_audit_logs_d2d1ec64 function;
-    class docs_database_schema_1_engine_configuration_40b6a618 function;
-    class docs_database_schema_2_5_sessions_42929df1 function;
-    class docs_database_schema_3_mrv_reference_tables_19f3e09c function;
-    class docs_database_schema_3_1_zones_c91e8507 function;
-    class docs_database_schema_3_2_parcels_44bd8607 function;
-    class docs_database_schema_4_mrv_event_decision_tables_d4909655 function;
-    class docs_database_schema_4_1_sensor_readings_5acdf233 function;
-    class docs_database_schema_4_2_satellite_observations_af846553 function;
-    class docs_database_schema_4_3_consent_records_8583910d function;
-    class docs_database_schema_4_4_status_results_2a1219a6 function;
-    class docs_database_schema_4_5_ledger_blocks_1c5faab6 function;
-    class docs_database_schema_2_central_server_tables_2968cd18 function;
-    class docs_database_schema_2_1_users_e07449a6 function;
-    class docs_contract_doc_9dc5f1da concept;
-    class docs_decisions_doc_02cf0365 concept;
+    %% Section: Graph Build (94 nodes, 119 edges)
+    src_blockchain_eas_easclient_0c851b03("EasClient<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_attest_f87954a2("attest()<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_register_schema_6d946539("register_schema()<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_init_77ddc19d("__init__()<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_send_attest_transac_23e31043("_send_attest_transaction()<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_get_schema_register_9c8a6495("get_schema_registered()<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_validate_private_ke_5f147057("_validate_private_key()<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_connect_live_c1df9ee8("_connect_live()<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_local_registration_3226695e("_local_registration_exists()<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_record_registration_44f0a204("_record_registration()<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_network_label_7d84d68b("_network_label()<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_send_register_trans_84647a30("_send_register_transaction()<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_extract_schema_uid_1dc66639("_extract_schema_uid()<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_schema_bytes32_d8423a78("_schema_bytes32()<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_validate_attestatio_8cf55ff2("_validate_attestation()<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_record_attestation_438f568c("_record_attestation()<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_base_tx_options_73ea2c08("_base_tx_options()<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_wait_for_receipt_ea412071("_wait_for_receipt()<br/><small>src/blockchain/eas.py</small>")
+    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_init_77ddc19d
+    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_validate_private_ke_5f147057
+    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_connect_live_c1df9ee8
+    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_register_schema_6d946539
+    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_get_schema_register_9c8a6495
+    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_local_registration_3226695e
+    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_record_registration_44f0a204
+    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_network_label_7d84d68b
+    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_send_register_trans_84647a30
+    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_extract_schema_uid_1dc66639
+    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_schema_bytes32_d8423a78
+    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_attest_f87954a2
+    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_validate_attestatio_8cf55ff2
+    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_record_attestation_438f568c
+    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_base_tx_options_73ea2c08
+    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_send_attest_transac_23e31043
+    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_wait_for_receipt_ea412071
+    src_blockchain_eas_easclient_attest_f87954a2 -->|calls| src_blockchain_eas_easclient_validate_attestatio_8cf55ff2
+    src_blockchain_eas_easclient_attest_f87954a2 -->|calls| src_blockchain_eas_easclient_record_attestation_438f568c
+    src_blockchain_eas_easclient_get_schema_register_9c8a6495 -->|calls| src_blockchain_eas_easclient_schema_bytes32_d8423a78
+    src_blockchain_eas_easclient_init_77ddc19d -->|calls| src_blockchain_eas_easclient_validate_private_ke_5f147057
+    src_blockchain_eas_easclient_init_77ddc19d -->|calls| src_blockchain_eas_easclient_connect_live_c1df9ee8
+    src_blockchain_eas_easclient_local_registration_3226695e -->|calls| src_blockchain_eas_easclient_network_label_7d84d68b
+    src_blockchain_eas_easclient_record_registration_44f0a204 -->|calls| src_blockchain_eas_easclient_network_label_7d84d68b
+    %% Omitted for readability: 76 nodes, 6 edges
+    class src_blockchain_eas_easclient_0c851b03 entry;
+    class src_blockchain_eas_easclient_attest_f87954a2 function;
+    class src_blockchain_eas_easclient_register_schema_6d946539 function;
+    class src_blockchain_eas_easclient_init_77ddc19d function;
+    class src_blockchain_eas_easclient_send_attest_transac_23e31043 function;
+    class src_blockchain_eas_easclient_get_schema_register_9c8a6495 function;
+    class src_blockchain_eas_easclient_validate_private_ke_5f147057 function;
+    class src_blockchain_eas_easclient_connect_live_c1df9ee8 function;
+    class src_blockchain_eas_easclient_local_registration_3226695e function;
+    class src_blockchain_eas_easclient_record_registration_44f0a204 function;
+    class src_blockchain_eas_easclient_network_label_7d84d68b function;
+    class src_blockchain_eas_easclient_send_register_trans_84647a30 function;
+    class src_blockchain_eas_easclient_extract_schema_uid_1dc66639 function;
+    class src_blockchain_eas_easclient_schema_bytes32_d8423a78 function;
+    class src_blockchain_eas_easclient_validate_attestatio_8cf55ff2 function;
+    class src_blockchain_eas_easclient_record_attestation_438f568c function;
+    class src_blockchain_eas_easclient_base_tx_options_73ea2c08 function;
+    class src_blockchain_eas_easclient_wait_for_receipt_ea412071 function;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -253,243 +260,243 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>1. Engine &amp; Configuration</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Reads, resolves, or persists project configuration.</td>
+  <td><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>_eas_dependency()</code><br><small style="color:var(--muted)">src/blockchain/router.py</small><br><code>anchor_block_to_eas()</code><br><small style="color:var(--muted)">src/blockchain/service.py</small><br><code>attest_block()</code><br><small style="color:var(--muted)">src/blockchain/router.py</small><br>+22 more</td>
+  <td><code>__init__()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>_base_tx_options()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>_connect_live()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br>+17 more</td>
+  <td>EasClient node in src/blockchain/eas.py.</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>2.1 users</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
+  <td><code>EasClientError</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td><code>_encode_attestation_data()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>_record_attestation()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>_schema_bytes32()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br>+2 more</td>
   <td>No direct outbound edge</td>
-  <td>2.1 users node in docs/database-schema.md.</td>
+  <td>EasClientError node in src/blockchain/eas.py.</td>
 </tr>
 <tr>
   <td>3</td>
-  <td><code>2.2 credentials</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
+  <td><code>._wait_for_receipt()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
+  <td><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td>No direct outbound edge</td>
-  <td>2.2 credentials node in docs/database-schema.md.</td>
+  <td>._wait_for_receipt() node in src/blockchain/eas.py.</td>
 </tr>
 <tr>
   <td>4</td>
-  <td><code>2.3 tasks</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
+  <td><code>.attest()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>2.3 tasks node in docs/database-schema.md.</td>
+  <td><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>non verified status()</code><br><small style="color:var(--muted)">tests/blockchain/test_eas.py</small><br><code>rejects duplicate block()</code><br><small style="color:var(--muted)">tests/blockchain/test_eas.py</small><br>+1 more</td>
+  <td><code>_encode_attestation_data()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>_extract_attestation_uid()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>_record_attestation()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br>+3 more</td>
+  <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
   <td>5</td>
-  <td><code>2.4 audit_logs</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
+  <td><code>._base_tx_options()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
+  <td><code>_send_attest_transaction()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>_send_register_transaction()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td>No direct outbound edge</td>
-  <td>2.4 audit_logs node in docs/database-schema.md.</td>
+  <td>._base_tx_options() node in src/blockchain/eas.py.</td>
 </tr>
 <tr>
   <td>6</td>
-  <td><code>2.5 sessions</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
+  <td><code>._connect_live()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
+  <td><code>__init__()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td>No direct outbound edge</td>
-  <td>2.5 sessions node in docs/database-schema.md.</td>
+  <td>._connect_live() node in src/blockchain/eas.py.</td>
 </tr>
 <tr>
   <td>7</td>
-  <td><code>2. Central Server Tables</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
+  <td><code>._encode_attestation_data()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>2. Central Server Tables node in docs/database-schema.md.</td>
+  <td><code>attest()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><code>EasClientError</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
   <td>8</td>
-  <td><code>3.1 zones</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
+  <td><code>._extract_attestation_uid()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>3.1 zones node in docs/database-schema.md.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>3.2 parcels</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>3.2 parcels node in docs/database-schema.md.</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>3. MRV Reference Tables</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>3. MRV Reference Tables node in docs/database-schema.md.</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>4.1 sensor_readings</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>4.1 sensor_readings node in docs/database-schema.md.</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>4.2 satellite_observations</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>4.2 satellite_observations node in docs/database-schema.md.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>4.3 consent_records</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>4.3 consent_records node in docs/database-schema.md.</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>4.4 status_results</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>4.4 status_results node in docs/database-schema.md.</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>4.5 ledger_blocks</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>4.5 ledger_blocks node in docs/database-schema.md.</td>
-</tr>
-<tr>
-  <td>16</td>
-  <td><code>4.6 attestations</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
+  <td><code>attest()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td>No direct outbound edge</td>
   <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
-  <td>17</td>
-  <td><code>4.7 eas_registrations</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
+  <td>9</td>
+  <td><code>._extract_schema_uid()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
+  <td><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>register_schema()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td>No direct outbound edge</td>
-  <td>4.7 eas_registrations node in docs/database-schema.md.</td>
+  <td>._extract_schema_uid() node in src/blockchain/eas.py.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>.get_schema_registered()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><code>_schema_bytes32()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td>.get_schema_registered() node in src/blockchain/eas.py.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>.__init__()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><code>_connect_live()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>_validate_private_key()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td>.__init__() node in src/blockchain/eas.py.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>._local_registration_exists()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>register_schema()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><code>_network_label()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td>._local_registration_exists() node in src/blockchain/eas.py.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>._network_label()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>_local_registration_exists()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>_record_registration()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>._network_label() node in src/blockchain/eas.py.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>._record_attestation()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>attest()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><code>EasClientError</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td>Verifies imports, entry points, or version behavior.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>._record_registration()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>register_schema()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><code>_network_label()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td>._record_registration() node in src/blockchain/eas.py.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>.register_schema()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>register schema simulation()</code><br><small style="color:var(--muted)">tests/blockchain/test_eas.py</small><br><code>register_schema()</code><br><small style="color:var(--muted)">src/blockchain/router.py</small></td>
+  <td><code>_extract_schema_uid()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>_local_registration_exists()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>_record_registration()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br>+1 more</td>
+  <td>.register_schema() node in src/blockchain/eas.py.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>._schema_bytes32()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>_send_attest_transaction()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>get_schema_registered()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><code>EasClientError</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td>._schema_bytes32() node in src/blockchain/eas.py.</td>
 </tr>
 <tr>
   <td>18</td>
-  <td><code>4.8 market_orders</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
+  <td><code>._send_attest_transaction()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>4.8 market_orders node in docs/database-schema.md.</td>
+  <td><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><code>_base_tx_options()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>_schema_bytes32()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
   <td>19</td>
-  <td><code>4. MRV Event &amp; Decision Tables</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
+  <td><code>._send_register_transaction()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>4. MRV Event &amp; Decision Tables node in docs/database-schema.md.</td>
+  <td><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><code>_base_tx_options()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td>._send_register_transaction() node in src/blockchain/eas.py.</td>
 </tr>
 <tr>
   <td>20</td>
-  <td><code>5. Relationship Summary</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
+  <td><code>._validate_attestation()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
+  <td><code>attest()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td>No direct outbound edge</td>
-  <td>5. Relationship Summary node in docs/database-schema.md.</td>
+  <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
   <td>21</td>
-  <td><code>6.1 Additive migrations</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
+  <td><code>._validate_private_key()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
+  <td><code>__init__()</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small><br><code>EasClient</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td>No direct outbound edge</td>
-  <td>6.1 Additive migrations node in docs/database-schema.md.</td>
+  <td>._validate_private_key() node in src/blockchain/eas.py.</td>
 </tr>
 <tr>
   <td>22</td>
-  <td><code>6.2 Simulation seed</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>6.2 Simulation seed node in docs/database-schema.md.</td>
-</tr>
-<tr>
-  <td>23</td>
-  <td><code>6. Migration &amp; Seed Policy</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>6. Migration &amp; Seed Policy node in docs/database-schema.md.</td>
-</tr>
-<tr>
-  <td>24</td>
-  <td><code>ExcbonCP Database Schema Reference</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
+  <td><code>Any</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>ExcbonCP Database Schema Reference node in docs/database-schema.md.</td>
+  <td>Any node in project.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>Connection</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Connection node in project.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>Exception</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Exception node in project.</td>
 </tr>
 <tr>
   <td>25</td>
-  <td><code>docs/database-schema.md</code><br><small style="color:var(--muted)">docs/database-schema.md</small></td>
+  <td><code>Error raised by the EAS client.</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
   <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Documentation node describing docs/database-schema.md.</td>
+  <td>Design note for Error raised by the EAS client..</td>
 </tr>
 <tr>
   <td>26</td>
-  <td><code>1. Scope and Authority</code><br><small style="color:var(--muted)">docs/contract.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
+  <td><code>Client for EAS operations on Base Sepolia. The client runs in simulation mode…</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>1. Scope and Authority node in docs/contract.md.</td>
+  <td>Design note for Client for EAS operations on Base Sepolia. The client runs in simulation mode….</td>
 </tr>
 <tr>
   <td>27</td>
-  <td><code>2.1 Sensor Reading — ESP32 → P1</code><br><small style="color:var(--muted)">docs/contract.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
+  <td><code>Initialize the EAS client. Args: private_key: EVM private key (auditor…</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>2.1 Sensor Reading — ESP32 → P1 node in docs/contract.md.</td>
+  <td>Design note for Initialize the EAS client. Args: private_key: EVM private key (auditor….</td>
 </tr>
 <tr>
   <td>28</td>
-  <td><code>2.2 Satellite Observation — Sentinel → P2</code><br><small style="color:var(--muted)">docs/contract.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
+  <td><code>Return True only for a well-formed ``0x`` + 32-byte hex key.</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>2.2 Satellite Observation — Sentinel → P2 node in docs/contract.md.</td>
+  <td>Design note for Return True only for a well-formed ``0x`` + 32-byte hex key..</td>
 </tr>
 <tr>
   <td>29</td>
-  <td><code>2.3 Consent — Community → P3</code><br><small style="color:var(--muted)">docs/contract.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
+  <td><code>Prepare a live Web3 connection. Blocking calls are kept at startup.</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>2.3 Consent — Community → P3 node in docs/contract.md.</td>
+  <td>Design note for Prepare a live Web3 connection. Blocking calls are kept at startup..</td>
 </tr>
 <tr>
   <td>30</td>
-  <td><code>2.4 Status Result — P4 → P5</code><br><small style="color:var(--muted)">docs/contract.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
+  <td><code>Register the ExcbonCP schema, idempotently. In simulation mode this writes a…</code><br><small style="color:var(--muted)">src/blockchain/eas.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>2.4 Status Result — P4 → P5 node in docs/contract.md.</td>
+  <td>Design note for Register the ExcbonCP schema, idempotently. In simulation mode this writes a….</td>
 </tr>
 </table>
 
@@ -498,14 +505,15 @@ flowchart LR
     <h4>Key Files</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>docs/database-schema.md</code></td><td>25 nodes</td></tr>
-<tr><td><code>docs/contract.md</code></td><td>17 nodes</td></tr>
+      <tr><td><code>src/blockchain/eas.py</code></td><td>33 nodes</td></tr>
+<tr><td><code>docs/database-schema.md</code></td><td>25 nodes</td></tr>
 <tr><td><code>docs/decisions.md</code></td><td>17 nodes</td></tr>
+<tr><td><code>docs/contract.md</code></td><td>16 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: references x56. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: references x67, calls x20, method x19, explains x12. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -656,28 +664,28 @@ flowchart LR
 
 <!-- ====== 4. CLI & Skill Installers ====== -->
 <h2 id="cli-skills">4. CLI &amp; Skill Installers</h2>
-<p>CLI &amp; Skill Installers groups implementation around readmemd, docs, server, agent, mostly in README.md, docs/architecture/CENTRAL_SERVER.md, src/blockchain/README.md. This section covers 182 nodes and 229 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>CLI &amp; Skill Installers groups implementation around readmemd, docs, server, agent, mostly in README.md, docs/architecture/CENTRAL_SERVER.md, src/blockchain/README.md. This section covers 178 nodes and 206 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: CLI &amp; Skill Installers (182 nodes, 229 edges)
+    %% Section: CLI &amp; Skill Installers (178 nodes, 206 edges)
     subgraph cli_skills_External_generated_0c226fa1["External / generated"]
         sys_b4c56ee8("sys")
         re_c387c982("re")
         getpass_e7e5cd59("getpass")
-        argparse_e750ee7c("argparse")
         asyncio_4f5a0f01("asyncio")
     end
     subgraph cli_skills_scripts_create_admin_py_23156772["scripts/create-admin.py"]
         scripts_create_admin_5f2a7842("create-admin.py")
         scripts_create_admin_async_main_acfac740("async_main()<br/><small>scripts/create-admin.py</small>")
-        scripts_create_admin_main_0f24590c("main()<br/><small>scripts/create-admin.py</small>")
         scripts_create_admin_validate_password_fa1ad66d("validate_password()<br/><small>scripts/create-admin.py</small>")
+        scripts_create_admin_main_0f24590c("main()<br/><small>scripts/create-admin.py</small>")
     end
     subgraph cli_skills_server_agents_router_py_72392335["server/agents/router.py"]
-        server_agents_router_59d439ed("router.py")
         server_agents_router_get_agent_details_f3e0b6fe("get_agent_details()<br/><small>server/agents/router.py</small>")
+        server_agents_router_execute_agent_61d76366("execute_agent()<br/><small>server/agents/router.py</small>")
+        server_agents_router_execute_agent_direct_2f3be044("execute_agent_direct()<br/><small>server/agents/router.py</small>")
     end
     subgraph cli_skills_server_database_py_d6ccbea9["server/database.py"]
         server_database_close_db_888423cc("close_db()<br/><small>server/database.py</small>")
@@ -695,35 +703,33 @@ flowchart LR
     scripts_create_admin_async_main_acfac740 -->|calls| re_c387c982
     scripts_create_admin_async_main_acfac740 -->|calls| getpass_e7e5cd59
     scripts_create_admin_async_main_acfac740 -->|calls| scripts_create_admin_validate_password_fa1ad66d
-    scripts_create_admin_main_0f24590c -->|calls| argparse_e750ee7c
     scripts_create_admin_main_0f24590c -->|calls| asyncio_4f5a0f01
     scripts_create_admin_main_0f24590c -->|calls| scripts_create_admin_async_main_acfac740
     scripts_create_admin_validate_password_fa1ad66d -->|calls| re_c387c982
     scripts_deploy_eas_main_abf82466 -->|calls| sys_b4c56ee8
     server_config_get_env_aef50080 -->|calls| sys_b4c56ee8
-    scripts_create_admin_5f2a7842 -->|imports| argparse_e750ee7c
+    server_agents_router_execute_agent_61d76366 -->|calls| server_agents_registry_get_agent_61233d89
+    server_agents_router_execute_agent_direct_2f3be044 -->|calls| server_agents_router_execute_agent_61d76366
     scripts_create_admin_5f2a7842 -->|imports| asyncio_4f5a0f01
     scripts_create_admin_5f2a7842 -->|imports| getpass_e7e5cd59
     scripts_create_admin_5f2a7842 -->|imports| re_c387c982
     scripts_create_admin_5f2a7842 -->|imports| sys_b4c56ee8
     scripts_create_admin_5f2a7842 -->|imports| server_database_close_db_888423cc
     scripts_create_admin_5f2a7842 -->|imports| server_database_init_db_6780e4dd
-    server_agents_router_59d439ed -->|imports| server_agents_registry_get_agent_61233d89
     server_main_a6c2e85e -->|imports| server_database_close_db_888423cc
     server_main_a6c2e85e -->|imports| server_database_init_db_6780e4dd
-    server_main_a6c2e85e -->|imports| server_agents_router_59d439ed
-    %% Omitted for readability: 164 nodes, 0 edges
+    %% Omitted for readability: 160 nodes, 0 edges
     class sys_b4c56ee8 function;
     class re_c387c982 function;
     class getpass_e7e5cd59 function;
-    class argparse_e750ee7c function;
     class asyncio_4f5a0f01 async;
     class scripts_create_admin_5f2a7842 module;
     class scripts_create_admin_async_main_acfac740 async;
-    class scripts_create_admin_main_0f24590c function;
     class scripts_create_admin_validate_password_fa1ad66d function;
-    class server_agents_router_59d439ed api;
+    class scripts_create_admin_main_0f24590c function;
     class server_agents_router_get_agent_details_f3e0b6fe function;
+    class server_agents_router_execute_agent_61d76366 function;
+    class server_agents_router_execute_agent_direct_2f3be044 function;
     class server_database_close_db_888423cc function;
     class server_database_init_db_6780e4dd function;
     class scripts_deploy_eas_main_abf82466 function;
@@ -1004,14 +1010,14 @@ flowchart LR
 <tr><td><code>src/blockchain/README.md</code></td><td>16 nodes</td></tr>
 <tr><td><code>docs/toolchain.md</code></td><td>14 nodes</td></tr>
 <tr><td><code>docs/agent-workflow.md</code></td><td>11 nodes</td></tr>
-<tr><td><code>server/agents/router.py</code></td><td>10 nodes</td></tr>
-<tr><td><code>server/agents/models.py</code></td><td>8 nodes</td></tr>
+<tr><td><code>server/agents/router.py</code></td><td>8 nodes</td></tr>
 <tr><td><code>server/main.py</code></td><td>8 nodes</td></tr>
+<tr><td><code>scripts/create-admin.py</code></td><td>6 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: references x119, explains x23, calls x22, contains x19. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: references x115, calls x21, explains x21, contains x14. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -1195,23 +1201,22 @@ flowchart LR
 
 <!-- ====== 6. Serving API ====== -->
 <h2 id="serve-api">6. Serving API</h2>
-<p>Serving API groups implementation around server, auth, docs, servicepy, mostly in docs/Excboncp_Blueprint_System_Modeling_6_Hari_v5.md, docs/api-reference.md, server/auth/service.py. This section covers 347 nodes and 688 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Serving API groups implementation around server, docs, auth, routerpy, mostly in docs/Excboncp_Blueprint_System_Modeling_6_Hari_v5.md, docs/api-reference.md, server/auth/service.py. This section covers 383 nodes and 750 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Serving API (347 nodes, 688 edges)
-    subgraph serve_api_server_auth_dependencies_py_0dee72f6["server/auth/dependencies.py"]
-        server_auth_dependencies_f3818057("dependencies.py")
-        server_auth_dependencies_require_owner_f1cbe837("require_owner()<br/><small>server/auth/dependencies.py</small>")
-        server_auth_dependencies_require_role_d15e440e("require_role()<br/><small>server/auth/dependencies.py</small>")
-        server_auth_dependencies_audit_auth_action_860d9f42("audit_auth_action()<br/><small>server/auth/dependencies.py</small>")
-    end
+    %% Section: Serving API (383 nodes, 750 edges)
     subgraph serve_api_server_credentials_service_py_1fc7b048["server/credentials/service.py"]
         server_credentials_service_create_credential_9b3b687c("create_credential()<br/><small>server/credentials/service.py</small>")
         server_credentials_service_update_credential_8041a33a("update_credential()<br/><small>server/credentials/service.py</small>")
         server_credentials_service_encrypt_credential_6d09375c("encrypt_credential()<br/><small>server/credentials/service.py</small>")
         server_credentials_service_row_to_response_0c16f26d("_row_to_response()<br/><small>server/credentials/service.py</small>")
+    end
+    subgraph serve_api_server_auth_dependencies_py_0dee72f6["server/auth/dependencies.py"]
+        server_auth_dependencies_require_owner_f1cbe837("require_owner()<br/><small>server/auth/dependencies.py</small>")
+        server_auth_dependencies_require_role_d15e440e("require_role()<br/><small>server/auth/dependencies.py</small>")
+        server_auth_dependencies_audit_auth_action_860d9f42("audit_auth_action()<br/><small>server/auth/dependencies.py</small>")
     end
     subgraph serve_api_server_credentials_router_py_1d235d53["server/credentials/router.py"]
         server_credentials_router_040fb571("router.py")
@@ -1219,12 +1224,13 @@ flowchart LR
         server_credentials_router_update_own_credential_d89b5e69("update_own_credential()<br/><small>server/credentials/router.py</small>")
     end
     uuid_48e3462c("uuid")
+    server_agents_router_59d439ed("router.py")
     server_auth_router_b540df10("router.py")
-    server_auth_service_9fb20c34("service.py")
     server_credentials_models_credentialresponse_f9fae775("CredentialResponse<br/><small>server/credentials/models.py</small>")
     server_database_get_db_303c3b4d("get_db()<br/><small>server/database.py</small>")
     server_monitoring_router_43361955("router.py")
     server_tasks_router_47371691("router.py")
+    src_blockchain_router_f0db55dc("router.py")
     server_auth_dependencies_require_owner_f1cbe837 -->|calls| server_auth_dependencies_require_role_d15e440e
     server_credentials_router_save_credential_14a112eb -->|calls| server_database_get_db_303c3b4d
     server_credentials_router_save_credential_14a112eb -->|calls| server_credentials_service_create_credential_9b3b687c
@@ -1242,32 +1248,32 @@ flowchart LR
     server_auth_router_b540df10 -->|imports| server_auth_dependencies_audit_auth_action_860d9f42
     server_auth_router_b540df10 -->|imports| server_auth_dependencies_require_owner_f1cbe837
     server_auth_router_b540df10 -->|imports| server_database_get_db_303c3b4d
-    server_auth_router_b540df10 -->|imports| server_auth_dependencies_f3818057
-    server_auth_router_b540df10 -->|imports| server_auth_service_9fb20c34
-    server_auth_service_9fb20c34 -->|imports| uuid_48e3462c
-    server_auth_dependencies_f3818057 -->|imports| server_database_get_db_303c3b4d
-    server_auth_dependencies_f3818057 -->|imports| server_auth_service_9fb20c34
-    server_credentials_router_040fb571 -->|imports| server_auth_dependencies_audit_auth_action_860d9f42
-    server_credentials_router_040fb571 -->|imports| server_credentials_models_credentialresponse_f9fae775
-    %% Omitted for readability: 329 nodes, 14 edges
-    class server_auth_dependencies_f3818057 module;
-    class server_auth_dependencies_require_owner_f1cbe837 function;
-    class server_auth_dependencies_require_role_d15e440e function;
-    class server_auth_dependencies_audit_auth_action_860d9f42 function;
+    server_agents_router_59d439ed -->|imports| server_auth_dependencies_audit_auth_action_860d9f42
+    server_agents_router_59d439ed -->|imports| server_database_get_db_303c3b4d
+    server_monitoring_router_43361955 -->|imports| server_auth_dependencies_require_role_d15e440e
+    server_monitoring_router_43361955 -->|imports| server_database_get_db_303c3b4d
+    server_tasks_router_47371691 -->|imports| server_auth_dependencies_audit_auth_action_860d9f42
+    server_tasks_router_47371691 -->|imports| server_auth_dependencies_require_owner_f1cbe837
+    server_tasks_router_47371691 -->|imports| server_database_get_db_303c3b4d
+    %% Omitted for readability: 365 nodes, 10 edges
     class server_credentials_service_create_credential_9b3b687c function;
     class server_credentials_service_update_credential_8041a33a function;
     class server_credentials_service_encrypt_credential_6d09375c function;
     class server_credentials_service_row_to_response_0c16f26d function;
+    class server_auth_dependencies_require_owner_f1cbe837 function;
+    class server_auth_dependencies_require_role_d15e440e function;
+    class server_auth_dependencies_audit_auth_action_860d9f42 function;
     class server_credentials_router_040fb571 api;
     class server_credentials_router_save_credential_14a112eb function;
     class server_credentials_router_update_own_credential_d89b5e69 function;
     class uuid_48e3462c function;
+    class server_agents_router_59d439ed api;
     class server_auth_router_b540df10 api;
-    class server_auth_service_9fb20c34 module;
     class server_credentials_models_credentialresponse_f9fae775 klass;
     class server_database_get_db_303c3b4d function;
     class server_monitoring_router_43361955 api;
     class server_tasks_router_47371691 api;
+    class src_blockchain_router_f0db55dc api;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -1291,30 +1297,6 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>RoleUpdate</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>change_role()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>RoleUpdate node in server/auth/models.py.</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>StatusUpdate</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>change_status()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>StatusUpdate node in server/auth/models.py.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>TokenResponse</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>create_access_token()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br><code>login()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small><br>+1 more</td>
-  <td>No direct outbound edge</td>
-  <td>TokenResponse node in server/auth/models.py.</td>
-</tr>
-<tr>
-  <td>4</td>
   <td><code>UserCreate</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td><code>async_main()</code><br><small style="color:var(--muted)">scripts/create-admin.py</small><br><code>create-admin.py</code><br><small style="color:var(--muted)">scripts/create-admin.py</small><br><code>create_user()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br>+3 more</td>
@@ -1322,15 +1304,7 @@ flowchart LR
   <td>UserCreate node in server/auth/models.py.</td>
 </tr>
 <tr>
-  <td>5</td>
-  <td><code>UserLogin</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>login()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>UserLogin node in server/auth/models.py.</td>
-</tr>
-<tr>
-  <td>6</td>
+  <td>2</td>
   <td><code>UserResponse</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td><code>_row_to_user()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br><code>attest_block()</code><br><small style="color:var(--muted)">src/blockchain/router.py</small><br><code>attestation_status()</code><br><small style="color:var(--muted)">src/blockchain/router.py</small><br>+42 more</td>
@@ -1338,7 +1312,7 @@ flowchart LR
   <td>UserResponse node in server/auth/models.py.</td>
 </tr>
 <tr>
-  <td>7</td>
+  <td>3</td>
   <td><code>UserUpdate</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>service.py</code><br><small style="color:var(--muted)">server/auth/service.py</small><br><code>update_me()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br>+1 more</td>
@@ -1346,7 +1320,7 @@ flowchart LR
   <td>UserUpdate node in server/auth/models.py.</td>
 </tr>
 <tr>
-  <td>8</td>
+  <td>4</td>
   <td><code>login()</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1354,15 +1328,7 @@ flowchart LR
   <td>login() node in server/auth/router.py.</td>
 </tr>
 <tr>
-  <td>9</td>
-  <td><code>create_access_token()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>login()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
-  <td><code>jwt</code><br><code>TokenResponse</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
-  <td>create_access_token() node in server/auth/service.py.</td>
-</tr>
-<tr>
-  <td>10</td>
+  <td>5</td>
   <td><code>change_role()</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1370,7 +1336,7 @@ flowchart LR
   <td>change_role() node in server/auth/router.py.</td>
 </tr>
 <tr>
-  <td>11</td>
+  <td>6</td>
   <td><code>change_status()</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1378,7 +1344,7 @@ flowchart LR
   <td>change_status() node in server/auth/router.py.</td>
 </tr>
 <tr>
-  <td>12</td>
+  <td>7</td>
   <td><code>me()</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1386,7 +1352,7 @@ flowchart LR
   <td>me() node in server/auth/router.py.</td>
 </tr>
 <tr>
-  <td>13</td>
+  <td>8</td>
   <td><code>register()</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1394,7 +1360,7 @@ flowchart LR
   <td>register() node in server/auth/router.py.</td>
 </tr>
 <tr>
-  <td>14</td>
+  <td>9</td>
   <td><code>update_me()</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1402,7 +1368,7 @@ flowchart LR
   <td>update_me() node in server/auth/router.py.</td>
 </tr>
 <tr>
-  <td>15</td>
+  <td>10</td>
   <td><code>authenticate_user()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>account can authenticate()</code><br><small style="color:var(--muted)">tests/test_seed.py</small><br><code>login()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small><br>+1 more</td>
@@ -1410,7 +1376,7 @@ flowchart LR
   <td>authenticate_user() node in server/auth/service.py.</td>
 </tr>
 <tr>
-  <td>16</td>
+  <td>11</td>
   <td><code>create_user()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>async_main()</code><br><small style="color:var(--muted)">scripts/create-admin.py</small><br><code>create-admin.py</code><br><small style="color:var(--muted)">scripts/create-admin.py</small><br><code>register()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br>+1 more</td>
@@ -1418,7 +1384,7 @@ flowchart LR
   <td>create_user() node in server/auth/service.py.</td>
 </tr>
 <tr>
-  <td>17</td>
+  <td>12</td>
   <td><code>get_user_by_id()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>change_role()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>change_status()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>dependencies.py</code><br><small style="color:var(--muted)">server/auth/dependencies.py</small><br>+5 more</td>
@@ -1426,7 +1392,7 @@ flowchart LR
   <td>get_user_by_id() node in server/auth/service.py.</td>
 </tr>
 <tr>
-  <td>18</td>
+  <td>13</td>
   <td><code>get_user_by_username()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>async_main()</code><br><small style="color:var(--muted)">scripts/create-admin.py</small><br><code>create-admin.py</code><br><small style="color:var(--muted)">scripts/create-admin.py</small></td>
@@ -1434,7 +1400,7 @@ flowchart LR
   <td>get_user_by_username() node in server/auth/service.py.</td>
 </tr>
 <tr>
-  <td>19</td>
+  <td>14</td>
   <td><code>_row_to_user()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>authenticate_user()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br><code>get_user_by_id()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br><code>get_user_by_username()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br>+1 more</td>
@@ -1442,7 +1408,7 @@ flowchart LR
   <td>_row_to_user() node in server/auth/service.py.</td>
 </tr>
 <tr>
-  <td>20</td>
+  <td>15</td>
   <td><code>update_user()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>update_me()</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
@@ -1450,7 +1416,7 @@ flowchart LR
   <td>update_user() node in server/auth/service.py.</td>
 </tr>
 <tr>
-  <td>21</td>
+  <td>16</td>
   <td><code>update_user_role()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>change_role()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
@@ -1458,7 +1424,7 @@ flowchart LR
   <td>update_user_role() node in server/auth/service.py.</td>
 </tr>
 <tr>
-  <td>22</td>
+  <td>17</td>
   <td><code>update_user_status()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>change_status()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>deactivate_user()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
@@ -1466,7 +1432,7 @@ flowchart LR
   <td>update_user_status() node in server/auth/service.py.</td>
 </tr>
 <tr>
-  <td>23</td>
+  <td>18</td>
   <td><code>get_users()</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1474,7 +1440,7 @@ flowchart LR
   <td>get_users() node in server/auth/router.py.</td>
 </tr>
 <tr>
-  <td>24</td>
+  <td>19</td>
   <td><code>logout()</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1482,7 +1448,7 @@ flowchart LR
   <td>logout() node in server/auth/router.py.</td>
 </tr>
 <tr>
-  <td>25</td>
+  <td>20</td>
   <td><code>create_session()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>login()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
@@ -1490,7 +1456,7 @@ flowchart LR
   <td>create_session() node in server/auth/service.py.</td>
 </tr>
 <tr>
-  <td>26</td>
+  <td>21</td>
   <td><code>deactivate_user()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1498,7 +1464,15 @@ flowchart LR
   <td>deactivate_user() node in server/auth/service.py.</td>
 </tr>
 <tr>
-  <td>27</td>
+  <td>22</td>
+  <td><code>hash_password()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>_seed_api_database()</code><br><small style="color:var(--muted)">tests/blockchain/test_blockchain_api.py</small><br><code>create_user()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br><code>hashing and verification()</code><br><small style="color:var(--muted)">tests/test_security.py</small><br>+6 more</td>
+  <td><code>bcrypt</code></td>
+  <td>Caches analysis results or computes cache keys.</td>
+</tr>
+<tr>
+  <td>23</td>
   <td><code>_hash_token()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>create_session()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br><code>is_session_active()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br><code>revoke_session()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
@@ -1506,7 +1480,15 @@ flowchart LR
   <td>Caches analysis results or computes cache keys.</td>
 </tr>
 <tr>
-  <td>28</td>
+  <td>24</td>
+  <td><code>is_session_active()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>dependencies.py</code><br><small style="color:var(--muted)">server/auth/dependencies.py</small><br><code>get_current_user()</code><br><small style="color:var(--muted)">server/auth/dependencies.py</small></td>
+  <td><code>_hash_token()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
+  <td>is_session_active() node in server/auth/service.py.</td>
+</tr>
+<tr>
+  <td>25</td>
   <td><code>list_users()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>get_users()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
@@ -1514,7 +1496,7 @@ flowchart LR
   <td>list_users() node in server/auth/service.py.</td>
 </tr>
 <tr>
-  <td>29</td>
+  <td>26</td>
   <td><code>revoke_session()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>logout()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
@@ -1522,12 +1504,36 @@ flowchart LR
   <td>revoke_session() node in server/auth/service.py.</td>
 </tr>
 <tr>
-  <td>30</td>
+  <td>27</td>
   <td><code>_user_count()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>create_user()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
   <td>No direct outbound edge</td>
   <td>_user_count() node in server/auth/service.py.</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>verify_password()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>account can authenticate()</code><br><small style="color:var(--muted)">tests/test_seed.py</small><br><code>authenticate_user()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br><code>hashing and verification()</code><br><small style="color:var(--muted)">tests/test_security.py</small><br>+3 more</td>
+  <td><code>bcrypt</code></td>
+  <td>verify_password() node in server/auth/service.py.</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>test_bcrypt_long_password_truncation_safety()</code><br><small style="color:var(--muted)">tests/test_security.py</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>hash_password()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br><code>verify_password()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
+  <td>Verifies imports, entry points, or version behavior.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>test_bcrypt_password_hashing_and_verification()</code><br><small style="color:var(--muted)">tests/test_security.py</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>hash_password()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br><code>verify_password()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
+  <td>Caches analysis results or computes cache keys.</td>
 </tr>
 </table>
 
@@ -1540,15 +1546,15 @@ flowchart LR
 <tr><td><code>docs/api-reference.md</code></td><td>38 nodes</td></tr>
 <tr><td><code>server/auth/service.py</code></td><td>36 nodes</td></tr>
 <tr><td><code>server/tasks/service.py</code></td><td>21 nodes</td></tr>
-<tr><td><code>server/auth/models.py</code></td><td>18 nodes</td></tr>
 <tr><td><code>server/auth/router.py</code></td><td>18 nodes</td></tr>
-<tr><td><code>server/credentials/service.py</code></td><td>15 nodes</td></tr>
+<tr><td><code>server/credentials/service.py</code></td><td>17 nodes</td></tr>
 <tr><td><code>server/tasks/router.py</code></td><td>14 nodes</td></tr>
+<tr><td><code>src/blockchain/router.py</code></td><td>14 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: references x185, calls x107, explains x97, imports x91. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: references x197, calls x112, explains x112, imports x101. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -1897,71 +1903,73 @@ flowchart LR
 
 <!-- ====== 8. Tests & Fixtures ====== -->
 <h2 id="tests-fixtures">8. Tests &amp; Fixtures</h2>
-<p>Tests &amp; Fixtures groups implementation around test, tests, blockchain, easpy, mostly in tests/blockchain/test_eas.py, src/blockchain/eas.py, tests/test_ledger.py. This section covers 409 nodes and 821 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Tests &amp; Fixtures groups implementation around test, tests, blockchain, ledger, mostly in tests/blockchain/test_eas.py, tests/test_ledger.py, server/ledger/service.py. This section covers 339 nodes and 638 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Tests &amp; Fixtures (409 nodes, 821 edges)
-    subgraph tests_fixtures_src_blockchain_eas_py_ab42a93d["src/blockchain/eas.py"]
-        src_blockchain_eas_easclient_0c851b03("EasClient<br/><small>src/blockchain/eas.py</small>")
-        src_blockchain_eas_easclient_register_schema_6d946539("register_schema()<br/><small>src/blockchain/eas.py</small>")
-        src_blockchain_eas_easclient_get_schema_register_9c8a6495("get_schema_registered()<br/><small>src/blockchain/eas.py</small>")
-        src_blockchain_eas_easclient_local_registration_3226695e("_local_registration_exists()<br/><small>src/blockchain/eas.py</small>")
-        src_blockchain_eas_easclient_record_registration_44f0a204("_record_registration()<br/><small>src/blockchain/eas.py</small>")
-        src_blockchain_eas_easclient_network_label_7d84d68b("_network_label()<br/><small>src/blockchain/eas.py</small>")
-        src_blockchain_eas_easclient_send_register_trans_84647a30("_send_register_transaction()<br/><small>src/blockchain/eas.py</small>")
-        src_blockchain_eas_easclient_extract_schema_uid_1dc66639("_extract_schema_uid()<br/><small>src/blockchain/eas.py</small>")
-        src_blockchain_eas_easclient_schema_bytes32_d8423a78("_schema_bytes32()<br/><small>src/blockchain/eas.py</small>")
-        src_blockchain_eas_easclient_attest_f87954a2("attest()<br/><small>src/blockchain/eas.py</small>")
-        src_blockchain_eas_easclient_validate_attestatio_8cf55ff2("_validate_attestation()<br/><small>src/blockchain/eas.py</small>")
-        src_blockchain_eas_easclient_record_attestation_438f568c("_record_attestation()<br/><small>src/blockchain/eas.py</small>")
+    %% Section: Tests &amp; Fixtures (339 nodes, 638 edges)
+    subgraph tests_fixtures_tests_blockchain_conftest_py_b95709af["tests/blockchain/conftest.py"]
+        tests_blockchain_conftest_reset_eas_singleton_6b2a3515("_reset_eas_singleton()<br/><small>tests/blockchain/conftest.py</small>")
+        tests_blockchain_conftest_sample_ledger_blocks_294dfc91("sample_ledger_blocks()<br/><small>tests/blockchain/conftest.py</small>")
+        tests_blockchain_conftest_eas_client_e154ab7d("eas_client()<br/><small>tests/blockchain/conftest.py</small>")
     end
+    subgraph tests_fixtures_tests_blockchain_test_blockchain_b49b6a5e["tests/blockchain/test_blockchain_api.py"]
+        tests_blockchain_test_blockchain_api_526546ac("test_blockchain_api.py")
+        tests_blockchain_test_blockchain_api_blockchain_56cde83e("blockchain_client()<br/><small>tests/blockchain/test_blockchain_api.py</small>")
+        tests_blockchain_test_blockchain_api_seed_api_da_e4c4e7d5("_seed_api_database()<br/><small>tests/blockchain/test_blockchain_api.py</small>")
+    end
+    subgraph tests_fixtures_src_blockchain_service_py_8978d88b["src/blockchain/service.py"]
+        src_blockchain_service_anchor_block_to_eas_1a433f60("anchor_block_to_eas()<br/><small>src/blockchain/service.py</small>")
+        src_blockchain_service_verify_auditor_9bda9cb6("verify_auditor()<br/><small>src/blockchain/service.py</small>")
+    end
+    subgraph tests_fixtures_tests_conftest_py_b1a1d686["tests/conftest.py"]
+        tests_conftest_test_db_bbd47cc7("test_db()<br/><small>tests/conftest.py</small>")
+        tests_conftest_test_client_c7e0b2a5("test_client()<br/><small>tests/conftest.py</small>")
+    end
+    pytest_0eaa389e("pytest")
+    server_ledger_init_86e31e9d("__init__.py")
+    server_ledger_service_append_block_731eac18("append_block()<br/><small>server/ledger/service.py</small>")
     server_seed_06ba7b43("seed.py")
-    src_blockchain_service_fc92d9b6("service.py")
-    tests_blockchain_test_blockchain_api_526546ac("test_blockchain_api.py")
+    src_blockchain_eas_reset_eas_client_641d9c9f("reset_eas_client()<br/><small>src/blockchain/eas.py</small>")
     tests_blockchain_test_eas_93da22c2("test_eas.py")
     tests_test_ledger_16a3e7f8("test_ledger.py")
     tests_test_seed_996cedb4("test_seed.py")
-    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_register_schema_6d946539
-    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_get_schema_register_9c8a6495
-    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_local_registration_3226695e
-    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_record_registration_44f0a204
-    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_network_label_7d84d68b
-    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_send_register_trans_84647a30
-    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_extract_schema_uid_1dc66639
-    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_schema_bytes32_d8423a78
-    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_attest_f87954a2
-    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_validate_attestatio_8cf55ff2
-    src_blockchain_eas_easclient_0c851b03 -->|method| src_blockchain_eas_easclient_record_attestation_438f568c
-    src_blockchain_eas_easclient_attest_f87954a2 -->|calls| src_blockchain_eas_easclient_validate_attestatio_8cf55ff2
-    src_blockchain_eas_easclient_attest_f87954a2 -->|calls| src_blockchain_eas_easclient_record_attestation_438f568c
-    src_blockchain_eas_easclient_get_schema_register_9c8a6495 -->|calls| src_blockchain_eas_easclient_schema_bytes32_d8423a78
-    src_blockchain_eas_easclient_local_registration_3226695e -->|calls| src_blockchain_eas_easclient_network_label_7d84d68b
-    src_blockchain_eas_easclient_record_registration_44f0a204 -->|calls| src_blockchain_eas_easclient_network_label_7d84d68b
-    src_blockchain_eas_easclient_register_schema_6d946539 -->|calls| src_blockchain_eas_easclient_local_registration_3226695e
-    src_blockchain_eas_easclient_register_schema_6d946539 -->|calls| src_blockchain_eas_easclient_record_registration_44f0a204
-    src_blockchain_eas_easclient_register_schema_6d946539 -->|calls| src_blockchain_eas_easclient_extract_schema_uid_1dc66639
+    tests_blockchain_conftest_reset_eas_singleton_6b2a3515 -->|calls| src_blockchain_eas_reset_eas_client_641d9c9f
+    tests_blockchain_conftest_sample_ledger_blocks_294dfc91 -->|calls| server_ledger_service_append_block_731eac18
+    tests_conftest_test_db_bbd47cc7 -->|calls| pytest_0eaa389e
+    tests_blockchain_test_blockchain_api_blockchain_56cde83e -->|calls| tests_blockchain_test_blockchain_api_seed_api_da_e4c4e7d5
+    tests_conftest_test_client_c7e0b2a5 -->|calls| pytest_0eaa389e
+    tests_blockchain_conftest_eas_client_e154ab7d -->|calls| src_blockchain_eas_reset_eas_client_641d9c9f
+    src_blockchain_service_anchor_block_to_eas_1a433f60 -->|calls| src_blockchain_service_verify_auditor_9bda9cb6
+    server_ledger_init_86e31e9d -->|imports| server_ledger_service_append_block_731eac18
+    tests_test_ledger_16a3e7f8 -->|imports| pytest_0eaa389e
+    tests_test_ledger_16a3e7f8 -->|imports| server_ledger_service_append_block_731eac18
+    server_seed_06ba7b43 -->|imports| server_ledger_service_append_block_731eac18
+    tests_test_seed_996cedb4 -->|imports| pytest_0eaa389e
     tests_test_seed_996cedb4 -->|imports| server_seed_06ba7b43
-    src_blockchain_service_fc92d9b6 -->|imports| src_blockchain_eas_easclient_0c851b03
-    tests_blockchain_test_eas_93da22c2 -->|imports| src_blockchain_eas_easclient_0c851b03
-    tests_blockchain_test_eas_93da22c2 -->|imports| src_blockchain_service_fc92d9b6
-    %% Omitted for readability: 391 nodes, 0 edges
-    class src_blockchain_eas_easclient_0c851b03 entry;
-    class src_blockchain_eas_easclient_register_schema_6d946539 function;
-    class src_blockchain_eas_easclient_get_schema_register_9c8a6495 function;
-    class src_blockchain_eas_easclient_local_registration_3226695e function;
-    class src_blockchain_eas_easclient_record_registration_44f0a204 function;
-    class src_blockchain_eas_easclient_network_label_7d84d68b function;
-    class src_blockchain_eas_easclient_send_register_trans_84647a30 function;
-    class src_blockchain_eas_easclient_extract_schema_uid_1dc66639 function;
-    class src_blockchain_eas_easclient_schema_bytes32_d8423a78 function;
-    class src_blockchain_eas_easclient_attest_f87954a2 function;
-    class src_blockchain_eas_easclient_validate_attestatio_8cf55ff2 function;
-    class src_blockchain_eas_easclient_record_attestation_438f568c function;
-    class server_seed_06ba7b43 module;
-    class src_blockchain_service_fc92d9b6 module;
+    tests_blockchain_test_blockchain_api_526546ac -->|imports| pytest_0eaa389e
+    tests_blockchain_test_eas_93da22c2 -->|imports| pytest_0eaa389e
+    tests_blockchain_test_eas_93da22c2 -->|imports| server_ledger_service_append_block_731eac18
+    tests_blockchain_test_eas_93da22c2 -->|imports| src_blockchain_eas_reset_eas_client_641d9c9f
+    tests_blockchain_test_eas_93da22c2 -->|imports| src_blockchain_service_anchor_block_to_eas_1a433f60
+    tests_blockchain_test_eas_93da22c2 -->|imports| src_blockchain_service_verify_auditor_9bda9cb6
+    %% Omitted for readability: 321 nodes, 0 edges
+    class tests_blockchain_conftest_reset_eas_singleton_6b2a3515 test;
+    class tests_blockchain_conftest_sample_ledger_blocks_294dfc91 test;
+    class tests_blockchain_conftest_eas_client_e154ab7d test;
     class tests_blockchain_test_blockchain_api_526546ac test;
+    class tests_blockchain_test_blockchain_api_blockchain_56cde83e test;
+    class tests_blockchain_test_blockchain_api_seed_api_da_e4c4e7d5 test;
+    class src_blockchain_service_anchor_block_to_eas_1a433f60 function;
+    class src_blockchain_service_verify_auditor_9bda9cb6 function;
+    class tests_conftest_test_db_bbd47cc7 test;
+    class tests_conftest_test_client_c7e0b2a5 test;
+    class pytest_0eaa389e function;
+    class server_ledger_init_86e31e9d module;
+    class server_ledger_service_append_block_731eac18 function;
+    class server_seed_06ba7b43 module;
+    class src_blockchain_eas_reset_eas_client_641d9c9f entry;
     class tests_blockchain_test_eas_93da22c2 test;
     class tests_test_ledger_16a3e7f8 test;
     class tests_test_seed_996cedb4 test;
@@ -1988,14 +1996,6 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>LedgerVerifyResponse</code><br><small style="color:var(--muted)">server/ledger/models.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>router.py</code><br><small style="color:var(--muted)">server/ledger/router.py</small><br><code>verify_ledger_block()</code><br><small style="color:var(--muted)">server/ledger/router.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>LedgerVerifyResponse node in server/ledger/models.py.</td>
-</tr>
-<tr>
-  <td>2</td>
   <td><code>LedgerValidationError</code><br><small style="color:var(--muted)">server/ledger/service.py</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td><code>__init__.py</code><br><small style="color:var(--muted)">server/ledger/__init__.py</small><br><code>_validate_payload()</code><br><small style="color:var(--muted)">server/ledger/service.py</small><br><code>canonical_json()</code><br><small style="color:var(--muted)">server/ledger/service.py</small><br>+2 more</td>
@@ -2003,7 +2003,7 @@ flowchart LR
   <td>LedgerValidationError node in server/ledger/service.py.</td>
 </tr>
 <tr>
-  <td>3</td>
+  <td>2</td>
   <td><code>ledger_client()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
@@ -2011,15 +2011,7 @@ flowchart LR
   <td>ledger_client() node in tests/test_ledger.py.</td>
 </tr>
 <tr>
-  <td>4</td>
-  <td><code>verify_ledger_block()</code><br><small style="color:var(--muted)">server/ledger/router.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>get_db()</code><br><small style="color:var(--muted)">server/database.py</small><br><code>LedgerVerifyResponse</code><br><small style="color:var(--muted)">server/ledger/models.py</small><br><code>verify_block()</code><br><small style="color:var(--muted)">server/ledger/service.py</small></td>
-  <td>verify_ledger_block() node in server/ledger/router.py.</td>
-</tr>
-<tr>
-  <td>5</td>
+  <td>3</td>
   <td><code>_get_append_lock()</code><br><small style="color:var(--muted)">server/ledger/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>append_block()</code><br><small style="color:var(--muted)">server/ledger/service.py</small></td>
@@ -2027,7 +2019,7 @@ flowchart LR
   <td>_get_append_lock() node in server/ledger/service.py.</td>
 </tr>
 <tr>
-  <td>6</td>
+  <td>4</td>
   <td><code>append_block()</code><br><small style="color:var(--muted)">server/ledger/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>__init__.py</code><br><small style="color:var(--muted)">server/ledger/__init__.py</small><br><code>_seed_ledger_blocks()</code><br><small style="color:var(--muted)">server/seed.py</small><br><code>and contract hash()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small><br>+12 more</td>
@@ -2035,7 +2027,7 @@ flowchart LR
   <td>append_block() node in server/ledger/service.py.</td>
 </tr>
 <tr>
-  <td>7</td>
+  <td>5</td>
   <td><code>canonical_json()</code><br><small style="color:var(--muted)">server/ledger/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>__init__.py</code><br><small style="color:var(--muted)">server/ledger/__init__.py</small><br><code>_insert_http_ledger_block()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small><br><code>_seed_api_database()</code><br><small style="color:var(--muted)">tests/blockchain/test_blockchain_api.py</small><br>+11 more</td>
@@ -2043,7 +2035,7 @@ flowchart LR
   <td>canonical_json() node in server/ledger/service.py.</td>
 </tr>
 <tr>
-  <td>8</td>
+  <td>6</td>
   <td><code>compute_hash()</code><br><small style="color:var(--muted)">server/ledger/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>__init__.py</code><br><small style="color:var(--muted)">server/ledger/__init__.py</small><br><code>_insert_http_ledger_block()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small><br><code>_seed_api_database()</code><br><small style="color:var(--muted)">tests/blockchain/test_blockchain_api.py</small><br>+7 more</td>
@@ -2051,7 +2043,7 @@ flowchart LR
   <td>Caches analysis results or computes cache keys.</td>
 </tr>
 <tr>
-  <td>9</td>
+  <td>7</td>
   <td><code>get_block()</code><br><small style="color:var(--muted)">server/ledger/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>__init__.py</code><br><small style="color:var(--muted)">server/ledger/__init__.py</small><br><code>verify_block()</code><br><small style="color:var(--muted)">server/ledger/service.py</small></td>
@@ -2059,7 +2051,7 @@ flowchart LR
   <td>get_block() node in server/ledger/service.py.</td>
 </tr>
 <tr>
-  <td>10</td>
+  <td>8</td>
   <td><code>_parse_canonical_data()</code><br><small style="color:var(--muted)">server/ledger/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>get_block()</code><br><small style="color:var(--muted)">server/ledger/service.py</small><br><code>verify_chain()</code><br><small style="color:var(--muted)">server/ledger/service.py</small></td>
@@ -2067,7 +2059,7 @@ flowchart LR
   <td>_parse_canonical_data() node in server/ledger/service.py.</td>
 </tr>
 <tr>
-  <td>11</td>
+  <td>9</td>
   <td><code>_validate_payload()</code><br><small style="color:var(--muted)">server/ledger/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>append_block()</code><br><small style="color:var(--muted)">server/ledger/service.py</small></td>
@@ -2075,7 +2067,7 @@ flowchart LR
   <td>_validate_payload() node in server/ledger/service.py.</td>
 </tr>
 <tr>
-  <td>12</td>
+  <td>10</td>
   <td><code>verify_block()</code><br><small style="color:var(--muted)">server/ledger/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>__init__.py</code><br><small style="color:var(--muted)">server/ledger/__init__.py</small><br><code>anchor_block_to_eas()</code><br><small style="color:var(--muted)">src/blockchain/service.py</small><br><code>attest_block()</code><br><small style="color:var(--muted)">src/blockchain/router.py</small><br>+10 more</td>
@@ -2083,7 +2075,7 @@ flowchart LR
   <td>verify_block() node in server/ledger/service.py.</td>
 </tr>
 <tr>
-  <td>13</td>
+  <td>11</td>
   <td><code>verify_chain()</code><br><small style="color:var(--muted)">server/ledger/service.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>__init__.py</code><br><small style="color:var(--muted)">server/ledger/__init__.py</small><br><code>accounts and readings()</code><br><small style="color:var(--muted)">tests/test_seed.py</small><br><code>test_ledger.py</code><br><small style="color:var(--muted)">tests/test_ledger.py</small><br>+3 more</td>
@@ -2091,7 +2083,7 @@ flowchart LR
   <td>verify_chain() node in server/ledger/service.py.</td>
 </tr>
 <tr>
-  <td>14</td>
+  <td>12</td>
   <td><code>_insert_http_ledger_block()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td><code>endpoint reports tampering()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small><br><code>mentions eas lock()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small><br><code>public and valid()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small></td>
@@ -2099,7 +2091,7 @@ flowchart LR
   <td>_insert_http_ledger_block() node in tests/test_ledger.py.</td>
 </tr>
 <tr>
-  <td>15</td>
+  <td>13</td>
   <td><code>_insert_parcel_and_auditor()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td><code>and contract hash()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small><br><code>detects earlier tampering()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small><br><code>detects payload tampering()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small><br>+5 more</td>
@@ -2107,7 +2099,7 @@ flowchart LR
   <td>_insert_parcel_and_auditor() node in tests/test_ledger.py.</td>
 </tr>
 <tr>
-  <td>16</td>
+  <td>14</td>
   <td><code>test_append_block_uses_genesis_and_contract_hash()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
@@ -2115,7 +2107,7 @@ flowchart LR
   <td>Caches analysis results or computes cache keys.</td>
 </tr>
 <tr>
-  <td>17</td>
+  <td>15</td>
   <td><code>test_append_rejects_invalid_payload()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
@@ -2123,7 +2115,7 @@ flowchart LR
   <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
-  <td>18</td>
+  <td>16</td>
   <td><code>test_canonical_json_is_order_independent()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
@@ -2131,7 +2123,7 @@ flowchart LR
   <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
-  <td>19</td>
+  <td>17</td>
   <td><code>test_second_block_links_to_the_first()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
@@ -2139,7 +2131,7 @@ flowchart LR
   <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
-  <td>20</td>
+  <td>18</td>
   <td><code>test_verify_block_detects_earlier_tampering()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
@@ -2147,7 +2139,7 @@ flowchart LR
   <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
-  <td>21</td>
+  <td>19</td>
   <td><code>test_verify_block_detects_payload_tampering()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
@@ -2155,7 +2147,7 @@ flowchart LR
   <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
-  <td>22</td>
+  <td>20</td>
   <td><code>test_verify_block_detects_prev_hash_tampering()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
@@ -2163,7 +2155,7 @@ flowchart LR
   <td>Caches analysis results or computes cache keys.</td>
 </tr>
 <tr>
-  <td>23</td>
+  <td>21</td>
   <td><code>test_verify_block_reports_valid_entry()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
@@ -2171,7 +2163,7 @@ flowchart LR
   <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
-  <td>24</td>
+  <td>22</td>
   <td><code>test_verify_block_returns_none_for_unknown_entry()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
@@ -2179,7 +2171,7 @@ flowchart LR
   <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
-  <td>25</td>
+  <td>23</td>
   <td><code>test_verify_endpoint_is_public_and_valid()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
@@ -2187,7 +2179,7 @@ flowchart LR
   <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
-  <td>26</td>
+  <td>24</td>
   <td><code>test_verify_endpoint_mentions_eas_lock()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
@@ -2195,7 +2187,7 @@ flowchart LR
   <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
-  <td>27</td>
+  <td>25</td>
   <td><code>test_verify_endpoint_reports_tampering()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
@@ -2203,7 +2195,7 @@ flowchart LR
   <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
-  <td>28</td>
+  <td>26</td>
   <td><code>test_verify_endpoint_returns_404_for_unknown_entry()</code><br><small style="color:var(--muted)">tests/test_ledger.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
@@ -2211,7 +2203,7 @@ flowchart LR
   <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
-  <td>29</td>
+  <td>27</td>
   <td><code>Lock</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -2219,12 +2211,28 @@ flowchart LR
   <td>Lock node in project.</td>
 </tr>
 <tr>
-  <td>30</td>
+  <td>28</td>
   <td><code>parametrize</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
   <td>parametrize node in project.</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>ledger/__init__.py</code><br><small style="color:var(--muted)">server/ledger/__init__.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>append_block()</code><br><small style="color:var(--muted)">server/ledger/service.py</small><br><code>canonical_json()</code><br><small style="color:var(--muted)">server/ledger/service.py</small><br><code>compute_hash()</code><br><small style="color:var(--muted)">server/ledger/service.py</small><br>+4 more</td>
+  <td>Module file in server/ledger/__init__.py.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>ledger/service.py</code><br><small style="color:var(--muted)">server/ledger/service.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>conftest.py</code><br><small style="color:var(--muted)">tests/blockchain/conftest.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/ledger/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">src/blockchain/router.py</small><br>+6 more</td>
+  <td><code>aiosqlite</code><br><code>asyncio</code><br><code>hashlib</code><br>+4 more</td>
+  <td>Module file in server/ledger/service.py.</td>
 </tr>
 </table>
 
@@ -2233,25 +2241,293 @@ flowchart LR
     <h4>Key Files</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>tests/blockchain/test_eas.py</code></td><td>40 nodes</td></tr>
-<tr><td><code>src/blockchain/eas.py</code></td><td>39 nodes</td></tr>
+      <tr><td><code>tests/blockchain/test_eas.py</code></td><td>36 nodes</td></tr>
 <tr><td><code>tests/test_ledger.py</code></td><td>34 nodes</td></tr>
 <tr><td><code>server/ledger/service.py</code></td><td>22 nodes</td></tr>
 <tr><td><code>scripts/windows/day1.ps1</code></td><td>18 nodes</td></tr>
 <tr><td><code>tests/test_auth.py</code></td><td>18 nodes</td></tr>
 <tr><td><code>tests/conftest.py</code></td><td>16 nodes</td></tr>
 <tr><td><code>tests/blockchain/test_blockchain_api.py</code></td><td>15 nodes</td></tr>
+<tr><td><code>server/seed.py</code></td><td>14 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: calls x194, references x168, explains x156, contains x149. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: calls x156, references x149, contains x128, explains x124. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
 
-<!-- ====== 9. MRV Simulation Runbook ====== -->
-<h2 id="mrv-simulation-runbook">9. MRV Simulation Runbook</h2>
+<!-- ====== 9. Server Auth Modelspy ====== -->
+<h2 id="server-auth-modelspy">9. Server Auth Modelspy</h2>
+<p>Server Auth Modelspy groups implementation around server, auth, modelspy, token, mostly in server/auth/models.py, server/auth/service.py, server/auth/dependencies.py. This section covers 21 nodes and 23 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Server Auth Modelspy (21 nodes, 23 edges)
+    subgraph server_auth_modelspy_server_auth_models_py_b94e8cf3["server/auth/models.py"]
+        server_auth_models_tokenpayload_d4432619("TokenPayload<br/><small>server/auth/models.py</small>")
+        server_auth_models_tokenresponse_37c9a0ae("TokenResponse<br/><small>server/auth/models.py</small>")
+        server_auth_models_roleupdate_92158576("RoleUpdate<br/><small>server/auth/models.py</small>")
+        server_auth_models_statusupdate_696a7771("StatusUpdate<br/><small>server/auth/models.py</small>")
+        server_auth_models_userlogin_8fab7381("UserLogin<br/><small>server/auth/models.py</small>")
+        server_auth_models_rationale_82_125f5fb2("Claims decoded from a JWT token.<br/><small>server/auth/models.py</small>")
+        server_auth_models_rationale_68_f8e2ede3("JWT token returned after successful aut...<br/><small>server/auth/models.py</small>")
+        server_auth_models_rationale_40_b54b9fb2("Payload for changing a user's role (own...<br/><small>server/auth/models.py</small>")
+        server_auth_models_rationale_46_388b9639("Payload for toggling a user's active st...<br/><small>server/auth/models.py</small>")
+    end
+    subgraph server_auth_modelspy_server_auth_dependencies_py_247fe01a["server/auth/dependencies.py"]
+        server_auth_dependencies_get_current_user_9b0b20dd("get_current_user()<br/><small>server/auth/dependencies.py</small>")
+        server_auth_dependencies_extract_token_0c1dd13b("_extract_token()<br/><small>server/auth/dependencies.py</small>")
+        server_auth_dependencies_rationale_38_abebe9d7("FastAPI dependency — resolve the authen...<br/><small>server/auth/dependencies.py</small>")
+        server_auth_dependencies_rationale_26_69bf73c0("Pull the Bearer token from the Authoriz...<br/><small>server/auth/dependencies.py</small>")
+    end
+    subgraph server_auth_modelspy_External_generated_31d36d96["External / generated"]
+        jwt_5038e187("jwt")
+        server_auth_models_py_basemodel_adeaaa93("BaseModel")
+        server_auth_dependencies_py_request_8bec5419("Request")
+    end
+    subgraph server_auth_modelspy_server_auth_service_py_13889484["server/auth/service.py"]
+        server_auth_service_create_access_token_2a7c59f2("create_access_token()<br/><small>server/auth/service.py</small>")
+        server_auth_service_decode_access_token_1b5147d0("decode_access_token()<br/><small>server/auth/service.py</small>")
+    end
+    server_auth_service_decode_access_token_1b5147d0 -->|calls| jwt_5038e187
+    server_auth_service_decode_access_token_1b5147d0 -->|calls| server_auth_models_tokenpayload_d4432619
+    server_auth_service_create_access_token_2a7c59f2 -->|calls| jwt_5038e187
+    server_auth_service_create_access_token_2a7c59f2 -->|calls| server_auth_models_tokenresponse_37c9a0ae
+    server_auth_dependencies_get_current_user_9b0b20dd -->|calls| server_auth_dependencies_extract_token_0c1dd13b
+    server_auth_dependencies_get_current_user_9b0b20dd -->|calls| server_auth_service_decode_access_token_1b5147d0
+    server_auth_dependencies_get_current_user_9b0b20dd -->|uses| server_auth_models_tokenpayload_d4432619
+    %% Omitted for readability: 3 nodes, 0 edges
+    class server_auth_models_tokenpayload_d4432619 klass;
+    class server_auth_models_tokenresponse_37c9a0ae klass;
+    class server_auth_models_roleupdate_92158576 klass;
+    class server_auth_models_statusupdate_696a7771 klass;
+    class server_auth_models_userlogin_8fab7381 klass;
+    class server_auth_models_rationale_82_125f5fb2 concept;
+    class server_auth_models_rationale_68_f8e2ede3 concept;
+    class server_auth_models_rationale_40_b54b9fb2 concept;
+    class server_auth_models_rationale_46_388b9639 concept;
+    class server_auth_dependencies_get_current_user_9b0b20dd function;
+    class server_auth_dependencies_extract_token_0c1dd13b function;
+    class server_auth_dependencies_rationale_38_abebe9d7 concept;
+    class server_auth_dependencies_rationale_26_69bf73c0 concept;
+    class jwt_5038e187 function;
+    class server_auth_models_py_basemodel_adeaaa93 klass;
+    class server_auth_dependencies_py_request_8bec5419 klass;
+    class server_auth_service_create_access_token_2a7c59f2 function;
+    class server_auth_service_decode_access_token_1b5147d0 function;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>RoleUpdate</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>change_role()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>RoleUpdate node in server/auth/models.py.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>StatusUpdate</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>change_status()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>StatusUpdate node in server/auth/models.py.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>TokenPayload</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>decode_access_token()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br><code>dependencies.py</code><br><small style="color:var(--muted)">server/auth/dependencies.py</small><br><code>get_current_user()</code><br><small style="color:var(--muted)">server/auth/dependencies.py</small><br>+1 more</td>
+  <td>No direct outbound edge</td>
+  <td>TokenPayload node in server/auth/models.py.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>TokenResponse</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>create_access_token()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br><code>login()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small><br>+1 more</td>
+  <td>No direct outbound edge</td>
+  <td>TokenResponse node in server/auth/models.py.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>UserLogin</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>login()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>UserLogin node in server/auth/models.py.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>decode_access_token()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>dependencies.py</code><br><small style="color:var(--muted)">server/auth/dependencies.py</small><br><code>get_current_user()</code><br><small style="color:var(--muted)">server/auth/dependencies.py</small></td>
+  <td><code>jwt</code><br><code>TokenPayload</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
+  <td>decode_access_token() node in server/auth/service.py.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>create_access_token()</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>login()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/auth/router.py</small></td>
+  <td><code>jwt</code><br><code>TokenResponse</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
+  <td>create_access_token() node in server/auth/service.py.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>get_current_user()</code><br><small style="color:var(--muted)">server/auth/dependencies.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>register()</code><br><small style="color:var(--muted)">server/auth/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/tasks/router.py</small><br><code>router.py</code><br><small style="color:var(--muted)">server/agents/router.py</small><br>+4 more</td>
+  <td><code>_extract_token()</code><br><small style="color:var(--muted)">server/auth/dependencies.py</small><br><code>decode_access_token()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br><code>get_db()</code><br><small style="color:var(--muted)">server/database.py</small><br>+4 more</td>
+  <td>get_current_user() node in server/auth/dependencies.py.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>_extract_token()</code><br><small style="color:var(--muted)">server/auth/dependencies.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>get_current_user()</code><br><small style="color:var(--muted)">server/auth/dependencies.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>_extract_token() node in server/auth/dependencies.py.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>Request</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Request node in project.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>BaseModel</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>BaseModel node in project.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>Pull the Bearer token from the Authorization header.</code><br><small style="color:var(--muted)">server/auth/dependencies.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Pull the Bearer token from the Authorization header..</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>FastAPI dependency — resolve the authenticated user from the JWT. Also verifies…</code><br><small style="color:var(--muted)">server/auth/dependencies.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for FastAPI dependency — resolve the authenticated user from the JWT. Also verifies….</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>Payload for user login.</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Payload for user login..</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>Payload for changing a user&#x27;s role (owner-only).</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Payload for changing a user&#x27;s role (owner-only)..</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>Payload for toggling a user&#x27;s active status (owner-only).</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Payload for toggling a user&#x27;s active status (owner-only)..</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>JWT token returned after successful authentication.</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for JWT token returned after successful authentication..</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>Claims decoded from a JWT token.</code><br><small style="color:var(--muted)">server/auth/models.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Claims decoded from a JWT token..</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>Generate a signed JWT for the given user. Returns a *TokenResponse* containing…</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Generate a signed JWT for the given user. Returns a *TokenResponse* containing….</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>Decode and validate a JWT. Raises *jwt.PyJWTError* on failure.</code><br><small style="color:var(--muted)">server/auth/service.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Decode and validate a JWT. Raises *jwt.PyJWTError* on failure..</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>jwt</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>create_access_token()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br><code>decode_access_token()</code><br><small style="color:var(--muted)">server/auth/service.py</small><br><code>dependencies.py</code><br><small style="color:var(--muted)">server/auth/dependencies.py</small><br>+1 more</td>
+  <td>No direct outbound edge</td>
+  <td>jwt node in project.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>server/auth/models.py</code></td><td>10 nodes</td></tr>
+<tr><td><code>server/auth/dependencies.py</code></td><td>4 nodes</td></tr>
+<tr><td><code>server/auth/service.py</code></td><td>4 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: explains x9, calls x6, inherits x5, references x2. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 10. MRV Simulation Runbook ====== -->
+<h2 id="mrv-simulation-runbook">10. MRV Simulation Runbook</h2>
 <p>MRV Simulation Runbook groups implementation around docs, runbookmd, server, mode, mostly in docs/runbook.md. This section covers 19 nodes and 18 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -2502,8 +2778,8 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 10. Docker Compose Module ====== -->
-<h2 id="docker-compose-module">10. Docker Compose Module</h2>
+<!-- ====== 11. Docker Compose Module ====== -->
+<h2 id="docker-compose-module">11. Docker Compose Module</h2>
 <p>Docker Compose Module groups implementation around docker, composeyml, context, dockerfile, mostly in docker-compose.yml. This section covers 17 nodes and 16 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -2734,8 +3010,8 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 11. Docker Compose Module ====== -->
-<h2 id="docker-compose-module-d4ad63">11. Docker Compose Module</h2>
+<!-- ====== 12. Docker Compose Module ====== -->
+<h2 id="docker-compose-module-d4ad63">12. Docker Compose Module</h2>
 <p>Docker Compose Module groups implementation around docker, composeyml, excboncp, docs, mostly in docker-compose.yml, docs/Excboncp_Blueprint_System_Modeling_6_Hari_v5.md, docker-compose.dev.yml. This section covers 15 nodes and 15 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -2955,8 +3231,8 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 12. Architecture — Overview ====== -->
-<h2 id="architecture-overview">12. Architecture — Overview</h2>
+<!-- ====== 13. Architecture — Overview ====== -->
+<h2 id="architecture-overview">13. Architecture — Overview</h2>
 <p>Architecture — Overview groups implementation around architecture, docs, overviewmd, layer, mostly in docs/architecture/OVERVIEW.md. This section covers 15 nodes and 14 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -3165,14 +3441,14 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 13. Deployment Module ====== -->
-<h2 id="deployment-module">13. Deployment Module</h2>
-<p>Deployment Module groups implementation around docs, deploymentmd, server, host, mostly in docs/deployment.md. This section covers 14 nodes and 13 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<!-- ====== 14. Deployment Module ====== -->
+<h2 id="deployment-module">14. Deployment Module</h2>
+<p>Deployment Module groups implementation around docs, deploymentmd, server, host, mostly in docs/deployment.md. This section covers 13 nodes and 12 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Deployment Module (14 nodes, 13 edges)
+    %% Section: Deployment Module (13 nodes, 12 edges)
     docs_deployment_doc_5909637d("docs/deployment.md")
     docs_deployment_excboncp_deployment_guide_bb3ab9e8("ExcbonCP Deployment Guide<br/><small>docs/deployment.md</small>")
     docs_deployment_2_central_team_server_deployment_9a3303a0("2. Central Team Server Deployment<br/><small>docs/deployment.md</small>")
@@ -3185,7 +3461,6 @@ flowchart LR
     docs_deployment_1_environment_topology_25d0da55("1. Environment Topology<br/><small>docs/deployment.md</small>")
     docs_deployment_4_resetting_system_for_live_demo_01848fa1("4. Resetting System for Live Demonstrat...<br/><small>docs/deployment.md</small>")
     docs_deployment_1_stop_containers_8d467696("1. Stop containers<br/><small>docs/deployment.md</small>")
-    docs_deployment_2_reset_database_and_run_migrati_e9e1c8c2("2. Reset database and run migrations<br/><small>docs/deployment.md</small>")
     docs_deployment_3_restart_server_f2ad4f4c("3. Restart server<br/><small>docs/deployment.md</small>")
     docs_deployment_doc_5909637d -->|references| docs_deployment_excboncp_deployment_guide_bb3ab9e8
     docs_deployment_doc_5909637d -->|references| docs_deployment_2_central_team_server_deployment_9a3303a0
@@ -3198,7 +3473,6 @@ flowchart LR
     docs_deployment_doc_5909637d -->|references| docs_deployment_1_environment_topology_25d0da55
     docs_deployment_doc_5909637d -->|references| docs_deployment_4_resetting_system_for_live_demo_01848fa1
     docs_deployment_doc_5909637d -->|references| docs_deployment_1_stop_containers_8d467696
-    docs_deployment_doc_5909637d -->|references| docs_deployment_2_reset_database_and_run_migrati_e9e1c8c2
     docs_deployment_doc_5909637d -->|references| docs_deployment_3_restart_server_f2ad4f4c
     class docs_deployment_doc_5909637d concept;
     class docs_deployment_excboncp_deployment_guide_bb3ab9e8 klass;
@@ -3212,7 +3486,6 @@ flowchart LR
     class docs_deployment_1_environment_topology_25d0da55 function;
     class docs_deployment_4_resetting_system_for_live_demo_01848fa1 function;
     class docs_deployment_1_stop_containers_8d467696 function;
-    class docs_deployment_2_reset_database_and_run_migrati_e9e1c8c2 function;
     class docs_deployment_3_restart_server_f2ad4f4c function;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
@@ -3285,14 +3558,6 @@ flowchart LR
 </tr>
 <tr>
   <td>7</td>
-  <td><code>2. Reset database and run migrations</code><br><small style="color:var(--muted)">docs/deployment.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>2. Reset database and run migrations node in docs/deployment.md.</td>
-</tr>
-<tr>
-  <td>8</td>
   <td><code>3. Build and launch container stack</code><br><small style="color:var(--muted)">docs/deployment.md</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -3300,7 +3565,7 @@ flowchart LR
   <td>3. Build and launch container stack node in docs/deployment.md.</td>
 </tr>
 <tr>
-  <td>9</td>
+  <td>8</td>
   <td><code>3. Restart server</code><br><small style="color:var(--muted)">docs/deployment.md</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -3308,7 +3573,7 @@ flowchart LR
   <td>3. Restart server node in docs/deployment.md.</td>
 </tr>
 <tr>
-  <td>10</td>
+  <td>9</td>
   <td><code>4. Resetting System for Live Demonstrations</code><br><small style="color:var(--muted)">docs/deployment.md</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -3316,7 +3581,7 @@ flowchart LR
   <td>4. Resetting System for Live Demonstrations node in docs/deployment.md.</td>
 </tr>
 <tr>
-  <td>11</td>
+  <td>10</td>
   <td><code>ExcbonCP Deployment Guide</code><br><small style="color:var(--muted)">docs/deployment.md</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -3324,7 +3589,7 @@ flowchart LR
   <td>ExcbonCP Deployment Guide node in docs/deployment.md.</td>
 </tr>
 <tr>
-  <td>12</td>
+  <td>11</td>
   <td><code>Paste generated JWT_SECRET and CREDENTIAL_ENCRYPTION_KEY into .env</code><br><small style="color:var(--muted)">docs/deployment.md</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -3332,7 +3597,7 @@ flowchart LR
   <td>Paste generated JWT_SECRET and CREDENTIAL_ENCRYPTION_KEY into .env node in docs/deployment.md.</td>
 </tr>
 <tr>
-  <td>13</td>
+  <td>12</td>
   <td><code>Set server host and production CORS</code><br><small style="color:var(--muted)">docs/deployment.md</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -3340,7 +3605,7 @@ flowchart LR
   <td>Set server host and production CORS node in docs/deployment.md.</td>
 </tr>
 <tr>
-  <td>14</td>
+  <td>13</td>
   <td><code>docs/deployment.md</code><br><small style="color:var(--muted)">docs/deployment.md</small></td>
   <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
@@ -3354,18 +3619,18 @@ flowchart LR
     <h4>Key Files</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>docs/deployment.md</code></td><td>14 nodes</td></tr>
+      <tr><td><code>docs/deployment.md</code></td><td>13 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: references x13. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: references x12. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
 
-<!-- ====== 14. Contracts — Readme ====== -->
-<h2 id="contracts-readme">14. Contracts — Readme</h2>
+<!-- ====== 15. Contracts — Readme ====== -->
+<h2 id="contracts-readme">15. Contracts — Readme</h2>
 <p>Contracts — Readme groups implementation around contracts, readmemd, deployment, excboncpattestation, mostly in contracts/README.md. This section covers 11 nodes and 10 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -3530,40 +3795,73 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 15. Deployment Module ====== -->
-<h2 id="deployment-module-88721e">15. Deployment Module</h2>
-<p>Deployment Module groups implementation around generate, secretspy, scripts, fernet, mostly in scripts/generate-secrets.py, docs/deployment.md, docs/runbook.md. This section covers 11 nodes and 12 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<!-- ====== 16. Other ====== -->
+<h2 id="other">16. Other</h2>
+<p>Other groups implementation around docs, github, models, diagrammd, mostly in .github/workflows/ci.yml, AGENTS.md, docs/INDEX.md. This section covers 182 nodes and 175 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Deployment Module (11 nodes, 12 edges)
-    subgraph deployment_module_88721e_scripts_generate_secret_4fb3c10e["scripts/generate-secrets.py"]
+    %% Section: Other (182 nodes, 175 edges)
+    subgraph other_scripts_setup_sh_eed429f9["scripts/setup.sh"]
+        scripts_setup_sh_entry_ffc654c2("setup.sh script<br/><small>scripts/setup.sh</small>")
+        scripts_setup_check_cmd_f727573c("check_cmd()<br/><small>scripts/setup.sh</small>")
+        scripts_setup_success_43411bf6("success()<br/><small>scripts/setup.sh</small>")
+        scripts_setup_warn_6ccbeb48("warn()<br/><small>scripts/setup.sh</small>")
+        scripts_setup_info_2c065357("info()<br/><small>scripts/setup.sh</small>")
+        scripts_setup_error_eb13d158("error()<br/><small>scripts/setup.sh</small>")
+    end
+    subgraph other_scripts_restore_sh_082b8c82["scripts/restore.sh"]
+        scripts_restore_sh_entry_5705b250("restore.sh script<br/><small>scripts/restore.sh</small>")
+        scripts_restore_info_7a0d0601("info()<br/><small>scripts/restore.sh</small>")
+        scripts_restore_warn_2af2f472("warn()<br/><small>scripts/restore.sh</small>")
+        scripts_restore_error_2eb3caf1("error()<br/><small>scripts/restore.sh</small>")
+        scripts_restore_success_0391bb3b("success()<br/><small>scripts/restore.sh</small>")
+    end
+    subgraph other_scripts_generate_secrets_py_86a4cee3["scripts/generate-secrets.py"]
         scripts_generate_secrets_main_4c331f67("main()<br/><small>scripts/generate-secrets.py</small>")
         scripts_generate_secrets_generate_jwt_secret_19eb9f7b("generate_jwt_secret()<br/><small>scripts/generate-secrets.py</small>")
         scripts_generate_secrets_generate_fernet_key_4e2376b5("generate_fernet_key()<br/><small>scripts/generate-secrets.py</small>")
-        scripts_generate_secrets_d661e341("generate-secrets.py")
-        scripts_generate_secrets_rationale_2_b9cf6a7c("ExcbonCP — Secret Generator. Generates...<br/><small>scripts/generate-secrets.py</small>")
-        scripts_generate_secrets_rationale_15_f9136e3c("Generate a 64-byte URL-safe random stri...<br/><small>scripts/generate-secrets.py</small>")
-        scripts_generate_secrets_rationale_20_34e7efdd("Generate a Fernet encryption key for cr...<br/><small>scripts/generate-secrets.py</small>")
-        scripts_generate_secrets_rationale_35_daa7bab9("Generate and display secrets for .env c...<br/><small>scripts/generate-secrets.py</small>")
     end
-    readme_3_copy_environment_config_b18c3c7d("3. Copy environment config<br/><small>README.md</small>")
-    docs_deployment_2_configure_environment_edeceec6("2. Configure environment<br/><small>docs/deployment.md</small>")
-    docs_runbook_4_troubleshooting_guide_2a765fbb("4. Troubleshooting Guide<br/><small>docs/runbook.md</small>")
+    subgraph other_scripts_health_check_sh_bf3bc789["scripts/health-check.sh"]
+        scripts_health_check_sh_entry_ac21721e("health-check.sh script<br/><small>scripts/health-check.sh</small>")
+        scripts_health_check_check_8c15f147("check()<br/><small>scripts/health-check.sh</small>")
+    end
+    github_issue_template_task_acceptance_criteria_acd5b3f2("Acceptance Criteria<br/><small>.github/ISSUE_TEMPLATE/task.md</small>")
+    server_database_py_connection_bb8c42c0("Connection")
     scripts_generate_secrets_main_4c331f67 -->|calls| scripts_generate_secrets_generate_jwt_secret_19eb9f7b
     scripts_generate_secrets_main_4c331f67 -->|calls| scripts_generate_secrets_generate_fernet_key_4e2376b5
+    scripts_setup_check_cmd_f727573c -->|calls| scripts_setup_success_43411bf6
+    scripts_setup_check_cmd_f727573c -->|calls| scripts_setup_warn_6ccbeb48
+    scripts_setup_sh_entry_ffc654c2 -->|calls| scripts_setup_info_2c065357
+    scripts_setup_sh_entry_ffc654c2 -->|calls| scripts_setup_check_cmd_f727573c
+    scripts_setup_sh_entry_ffc654c2 -->|calls| scripts_setup_success_43411bf6
+    scripts_setup_sh_entry_ffc654c2 -->|calls| scripts_setup_warn_6ccbeb48
+    scripts_setup_sh_entry_ffc654c2 -->|calls| scripts_setup_error_eb13d158
+    scripts_restore_sh_entry_5705b250 -->|calls| scripts_restore_info_7a0d0601
+    scripts_restore_sh_entry_5705b250 -->|calls| scripts_restore_warn_2af2f472
+    scripts_restore_sh_entry_5705b250 -->|calls| scripts_restore_error_2eb3caf1
+    scripts_restore_sh_entry_5705b250 -->|calls| scripts_restore_success_0391bb3b
+    scripts_health_check_sh_entry_ac21721e -->|calls| scripts_health_check_check_8c15f147
+    %% Omitted for readability: 164 nodes, 0 edges
+    class scripts_setup_sh_entry_ffc654c2 function;
+    class scripts_setup_check_cmd_f727573c function;
+    class scripts_setup_success_43411bf6 function;
+    class scripts_setup_warn_6ccbeb48 function;
+    class scripts_setup_info_2c065357 function;
+    class scripts_setup_error_eb13d158 function;
+    class scripts_restore_sh_entry_5705b250 ui;
+    class scripts_restore_info_7a0d0601 function;
+    class scripts_restore_warn_2af2f472 function;
+    class scripts_restore_error_2eb3caf1 function;
+    class scripts_restore_success_0391bb3b function;
     class scripts_generate_secrets_main_4c331f67 function;
     class scripts_generate_secrets_generate_jwt_secret_19eb9f7b function;
     class scripts_generate_secrets_generate_fernet_key_4e2376b5 function;
-    class scripts_generate_secrets_d661e341 module;
-    class scripts_generate_secrets_rationale_2_b9cf6a7c concept;
-    class scripts_generate_secrets_rationale_15_f9136e3c concept;
-    class scripts_generate_secrets_rationale_20_34e7efdd concept;
-    class scripts_generate_secrets_rationale_35_daa7bab9 concept;
-    class readme_3_copy_environment_config_b18c3c7d function;
-    class docs_deployment_2_configure_environment_edeceec6 function;
-    class docs_runbook_4_troubleshooting_guide_2a765fbb function;
+    class scripts_health_check_sh_entry_ac21721e function;
+    class scripts_health_check_check_8c15f147 function;
+    class github_issue_template_task_acceptance_criteria_acd5b3f2 klass;
+    class server_database_py_connection_bb8c42c0 klass;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -3673,117 +3971,8 @@ flowchart LR
   <td>No direct outbound edge</td>
   <td>Reads, resolves, or persists project configuration.</td>
 </tr>
-</table>
-
-<div class="grid">
-  <div class="card">
-    <h4>Key Files</h4>
-    <table style="width:100%;font-size:0.85rem;">
-      <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>scripts/generate-secrets.py</code></td><td>8 nodes</td></tr>
-<tr><td><code>README.md</code></td><td>1 nodes</td></tr>
-<tr><td><code>docs/deployment.md</code></td><td>1 nodes</td></tr>
-<tr><td><code>docs/runbook.md</code></td><td>1 nodes</td></tr>
-    </table>
-  </div>
-  <div class="card">
-    <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: explains x4, contains x3, references x3, calls x2. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
-  </div>
-</div>
-<hr>
-
-<!-- ====== 16. Other ====== -->
-<h2 id="other">16. Other</h2>
-<p>Other groups implementation around docs, github, models, ciyml, mostly in .github/workflows/ci.yml, AGENTS.md, docs/INDEX.md. This section covers 182 nodes and 179 internal edges; the diagram shows only representative relationships to stay readable.</p>
-
-<div class="mermaid">
-%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
-flowchart LR
-    %% Section: Other (182 nodes, 179 edges)
-    subgraph other_scripts_setup_sh_eed429f9["scripts/setup.sh"]
-        scripts_setup_sh_entry_ffc654c2("setup.sh script<br/><small>scripts/setup.sh</small>")
-        scripts_setup_check_cmd_f727573c("check_cmd()<br/><small>scripts/setup.sh</small>")
-        scripts_setup_success_43411bf6("success()<br/><small>scripts/setup.sh</small>")
-        scripts_setup_warn_6ccbeb48("warn()<br/><small>scripts/setup.sh</small>")
-        scripts_setup_info_2c065357("info()<br/><small>scripts/setup.sh</small>")
-        scripts_setup_error_eb13d158("error()<br/><small>scripts/setup.sh</small>")
-    end
-    subgraph other_scripts_backup_sh_bfffff1e["scripts/backup.sh"]
-        scripts_backup_sh_entry_941779f4("backup.sh script<br/><small>scripts/backup.sh</small>")
-        scripts_backup_info_4998fb55("info()<br/><small>scripts/backup.sh</small>")
-        scripts_backup_success_c05a2194("success()<br/><small>scripts/backup.sh</small>")
-        scripts_backup_warn_35262191("warn()<br/><small>scripts/backup.sh</small>")
-    end
-    subgraph other_scripts_restore_sh_082b8c82["scripts/restore.sh"]
-        scripts_restore_sh_entry_5705b250("restore.sh script<br/><small>scripts/restore.sh</small>")
-        scripts_restore_info_7a0d0601("info()<br/><small>scripts/restore.sh</small>")
-        scripts_restore_warn_2af2f472("warn()<br/><small>scripts/restore.sh</small>")
-        scripts_restore_error_2eb3caf1("error()<br/><small>scripts/restore.sh</small>")
-    end
-    subgraph other_src_blockchain_eas_py_28866895["src/blockchain/eas.py"]
-        src_blockchain_eas_easclient_init_77ddc19d("__init__()<br/><small>src/blockchain/eas.py</small>")
-        src_blockchain_eas_easclient_validate_private_ke_5f147057("_validate_private_key()<br/><small>src/blockchain/eas.py</small>")
-        src_blockchain_eas_easclient_connect_live_c1df9ee8("_connect_live()<br/><small>src/blockchain/eas.py</small>")
-    end
-    scripts_health_check_sh_entry_ac21721e("health-check.sh script<br/><small>scripts/health-check.sh</small>")
-    src_blockchain_eas_easclient_init_77ddc19d -->|calls| src_blockchain_eas_easclient_validate_private_ke_5f147057
-    src_blockchain_eas_easclient_init_77ddc19d -->|calls| src_blockchain_eas_easclient_connect_live_c1df9ee8
-    scripts_setup_check_cmd_f727573c -->|calls| scripts_setup_success_43411bf6
-    scripts_setup_check_cmd_f727573c -->|calls| scripts_setup_warn_6ccbeb48
-    scripts_setup_sh_entry_ffc654c2 -->|calls| scripts_setup_info_2c065357
-    scripts_setup_sh_entry_ffc654c2 -->|calls| scripts_setup_check_cmd_f727573c
-    scripts_setup_sh_entry_ffc654c2 -->|calls| scripts_setup_success_43411bf6
-    scripts_setup_sh_entry_ffc654c2 -->|calls| scripts_setup_warn_6ccbeb48
-    scripts_setup_sh_entry_ffc654c2 -->|calls| scripts_setup_error_eb13d158
-    scripts_backup_sh_entry_941779f4 -->|calls| scripts_backup_info_4998fb55
-    scripts_backup_sh_entry_941779f4 -->|calls| scripts_backup_success_c05a2194
-    scripts_backup_sh_entry_941779f4 -->|calls| scripts_backup_warn_35262191
-    scripts_restore_sh_entry_5705b250 -->|calls| scripts_restore_info_7a0d0601
-    scripts_restore_sh_entry_5705b250 -->|calls| scripts_restore_warn_2af2f472
-    scripts_restore_sh_entry_5705b250 -->|calls| scripts_restore_error_2eb3caf1
-    %% Omitted for readability: 164 nodes, 0 edges
-    class scripts_setup_sh_entry_ffc654c2 function;
-    class scripts_setup_check_cmd_f727573c function;
-    class scripts_setup_success_43411bf6 function;
-    class scripts_setup_warn_6ccbeb48 function;
-    class scripts_setup_info_2c065357 function;
-    class scripts_setup_error_eb13d158 function;
-    class scripts_backup_sh_entry_941779f4 function;
-    class scripts_backup_info_4998fb55 function;
-    class scripts_backup_success_c05a2194 function;
-    class scripts_backup_warn_35262191 function;
-    class scripts_restore_sh_entry_5705b250 ui;
-    class scripts_restore_info_7a0d0601 function;
-    class scripts_restore_warn_2af2f472 function;
-    class scripts_restore_error_2eb3caf1 function;
-    class src_blockchain_eas_easclient_init_77ddc19d function;
-    class src_blockchain_eas_easclient_validate_private_ke_5f147057 function;
-    class src_blockchain_eas_easclient_connect_live_c1df9ee8 function;
-    class scripts_health_check_sh_entry_ac21721e function;
-    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
-    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
-    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
-    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
-    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
-    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
-    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
-    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
-    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
-</div>
-
-<h3>Call Details</h3>
-<table class="call-table">
 <tr>
-  <th style="width:5%">#</th>
-  <th style="width:28%">Node</th>
-  <th style="width:10%">Type</th>
-  <th style="width:17%">Caller</th>
-  <th style="width:20%">Callees</th>
-  <th style="width:20%">Description</th>
-</tr>
-<tr>
-  <td>1</td>
+  <td>12</td>
   <td><code>1. Architect</code><br><small style="color:var(--muted)">AGENTS.md</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -3791,7 +3980,7 @@ flowchart LR
   <td>1. Architect node in AGENTS.md.</td>
 </tr>
 <tr>
-  <td>2</td>
+  <td>13</td>
   <td><code>2. Backend</code><br><small style="color:var(--muted)">AGENTS.md</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -3799,7 +3988,7 @@ flowchart LR
   <td>2. Backend node in AGENTS.md.</td>
 </tr>
 <tr>
-  <td>3</td>
+  <td>14</td>
   <td><code>3. Frontend</code><br><small style="color:var(--muted)">AGENTS.md</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -3807,7 +3996,7 @@ flowchart LR
   <td>3. Frontend node in AGENTS.md.</td>
 </tr>
 <tr>
-  <td>4</td>
+  <td>15</td>
   <td><code>4. IoT</code><br><small style="color:var(--muted)">AGENTS.md</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -3815,7 +4004,7 @@ flowchart LR
   <td>4. IoT node in AGENTS.md.</td>
 </tr>
 <tr>
-  <td>5</td>
+  <td>16</td>
   <td><code>5. Data/AI</code><br><small style="color:var(--muted)">AGENTS.md</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -3823,7 +4012,7 @@ flowchart LR
   <td>5. Data/AI node in AGENTS.md.</td>
 </tr>
 <tr>
-  <td>6</td>
+  <td>17</td>
   <td><code>6. Blockchain</code><br><small style="color:var(--muted)">AGENTS.md</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -3831,7 +4020,7 @@ flowchart LR
   <td>6. Blockchain node in AGENTS.md.</td>
 </tr>
 <tr>
-  <td>7</td>
+  <td>18</td>
   <td><code>7. Security</code><br><small style="color:var(--muted)">AGENTS.md</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -3839,7 +4028,7 @@ flowchart LR
   <td>7. Security node in AGENTS.md.</td>
 </tr>
 <tr>
-  <td>8</td>
+  <td>19</td>
   <td><code>8. Reviewer</code><br><small style="color:var(--muted)">AGENTS.md</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -3847,7 +4036,7 @@ flowchart LR
   <td>8. Reviewer node in AGENTS.md.</td>
 </tr>
 <tr>
-  <td>9</td>
+  <td>20</td>
   <td><code>ExcbonCP Agent Configuration</code><br><small style="color:var(--muted)">AGENTS.md</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -3855,7 +4044,7 @@ flowchart LR
   <td>Reads, resolves, or persists project configuration.</td>
 </tr>
 <tr>
-  <td>10</td>
+  <td>21</td>
   <td><code>AGENTS.md</code><br><small style="color:var(--muted)">AGENTS.md</small></td>
   <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
@@ -3863,7 +4052,7 @@ flowchart LR
   <td>Documentation node describing AGENTS.md.</td>
 </tr>
 <tr>
-  <td>11</td>
+  <td>22</td>
   <td><code>setup.sh</code><br><small style="color:var(--muted)">scripts/setup.sh</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -3871,7 +4060,7 @@ flowchart LR
   <td>setup.sh node in scripts/setup.sh.</td>
 </tr>
 <tr>
-  <td>12</td>
+  <td>23</td>
   <td><code>check_cmd()</code><br><small style="color:var(--muted)">scripts/setup.sh</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>setup.sh script</code><br><small style="color:var(--muted)">scripts/setup.sh</small></td>
@@ -3879,7 +4068,7 @@ flowchart LR
   <td>check_cmd() node in scripts/setup.sh.</td>
 </tr>
 <tr>
-  <td>13</td>
+  <td>24</td>
   <td><code>error()</code><br><small style="color:var(--muted)">scripts/setup.sh</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>setup.sh script</code><br><small style="color:var(--muted)">scripts/setup.sh</small></td>
@@ -3887,7 +4076,7 @@ flowchart LR
   <td>error() node in scripts/setup.sh.</td>
 </tr>
 <tr>
-  <td>14</td>
+  <td>25</td>
   <td><code>info()</code><br><small style="color:var(--muted)">scripts/setup.sh</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>setup.sh script</code><br><small style="color:var(--muted)">scripts/setup.sh</small></td>
@@ -3895,7 +4084,7 @@ flowchart LR
   <td>info() node in scripts/setup.sh.</td>
 </tr>
 <tr>
-  <td>15</td>
+  <td>26</td>
   <td><code>setup.sh script</code><br><small style="color:var(--muted)">scripts/setup.sh</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -3903,7 +4092,7 @@ flowchart LR
   <td>setup.sh script node in scripts/setup.sh.</td>
 </tr>
 <tr>
-  <td>16</td>
+  <td>27</td>
   <td><code>success()</code><br><small style="color:var(--muted)">scripts/setup.sh</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>check_cmd()</code><br><small style="color:var(--muted)">scripts/setup.sh</small><br><code>setup.sh script</code><br><small style="color:var(--muted)">scripts/setup.sh</small></td>
@@ -3911,7 +4100,7 @@ flowchart LR
   <td>success() node in scripts/setup.sh.</td>
 </tr>
 <tr>
-  <td>17</td>
+  <td>28</td>
   <td><code>warn()</code><br><small style="color:var(--muted)">scripts/setup.sh</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>check_cmd()</code><br><small style="color:var(--muted)">scripts/setup.sh</small><br><code>setup.sh script</code><br><small style="color:var(--muted)">scripts/setup.sh</small></td>
@@ -3919,7 +4108,7 @@ flowchart LR
   <td>warn() node in scripts/setup.sh.</td>
 </tr>
 <tr>
-  <td>18</td>
+  <td>29</td>
   <td><code>Getting Started</code><br><small style="color:var(--muted)">CONTRIBUTING.md</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -3927,100 +4116,12 @@ flowchart LR
   <td>Getting Started node in CONTRIBUTING.md.</td>
 </tr>
 <tr>
-  <td>19</td>
+  <td>30</td>
   <td><code>2. Run automated setup script</code><br><small style="color:var(--muted)">docs/runbook.md</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
   <td>2. Run automated setup script node in docs/runbook.md.</td>
-</tr>
-<tr>
-  <td>20</td>
-  <td><code>2. Run setup (generates secrets, installs deps)</code><br><small style="color:var(--muted)">README.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>2. Run setup (generates secrets, installs deps) node in README.md.</td>
-</tr>
-<tr>
-  <td>21</td>
-  <td><code>backup.sh</code><br><small style="color:var(--muted)">scripts/backup.sh</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>backup.sh node in scripts/backup.sh.</td>
-</tr>
-<tr>
-  <td>22</td>
-  <td><code>error()</code><br><small style="color:var(--muted)">scripts/backup.sh</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>error() node in scripts/backup.sh.</td>
-</tr>
-<tr>
-  <td>23</td>
-  <td><code>info()</code><br><small style="color:var(--muted)">scripts/backup.sh</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>backup.sh script</code><br><small style="color:var(--muted)">scripts/backup.sh</small></td>
-  <td>No direct outbound edge</td>
-  <td>info() node in scripts/backup.sh.</td>
-</tr>
-<tr>
-  <td>24</td>
-  <td><code>backup.sh script</code><br><small style="color:var(--muted)">scripts/backup.sh</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>info()</code><br><small style="color:var(--muted)">scripts/backup.sh</small><br><code>success()</code><br><small style="color:var(--muted)">scripts/backup.sh</small><br><code>warn()</code><br><small style="color:var(--muted)">scripts/backup.sh</small></td>
-  <td>backup.sh script node in scripts/backup.sh.</td>
-</tr>
-<tr>
-  <td>25</td>
-  <td><code>success()</code><br><small style="color:var(--muted)">scripts/backup.sh</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>backup.sh script</code><br><small style="color:var(--muted)">scripts/backup.sh</small></td>
-  <td>No direct outbound edge</td>
-  <td>success() node in scripts/backup.sh.</td>
-</tr>
-<tr>
-  <td>26</td>
-  <td><code>warn()</code><br><small style="color:var(--muted)">scripts/backup.sh</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>backup.sh script</code><br><small style="color:var(--muted)">scripts/backup.sh</small></td>
-  <td>No direct outbound edge</td>
-  <td>warn() node in scripts/backup.sh.</td>
-</tr>
-<tr>
-  <td>27</td>
-  <td><code>3. Pre-Demo Security Hardening Checklist</code><br><small style="color:var(--muted)">docs/deployment.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>3. Pre-Demo Security Hardening Checklist node in docs/deployment.md.</td>
-</tr>
-<tr>
-  <td>28</td>
-  <td><code>Berkas dan dokumen non-kode</code><br><small style="color:var(--muted)">docs/Excboncp_Blueprint_System_Modeling_6_Hari_v5.md</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Berkas dan dokumen non-kode node in docs/Excboncp_Blueprint_System_Modeling_6_Hari_v5.md.</td>
-</tr>
-<tr>
-  <td>29</td>
-  <td><code>Jadwal F-5 sampai F0 (centang saat selesai)</code><br><small style="color:var(--muted)">docs/Excboncp_Blueprint_System_Modeling_6_Hari_v5.md</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Jadwal F-5 sampai F0 (centang saat selesai) node in docs/Excboncp_Blueprint_System_Modeling_6_Hari_v5.md.</td>
-</tr>
-<tr>
-  <td>30</td>
-  <td><code>3.2 Creating a Snapshot Backup</code><br><small style="color:var(--muted)">docs/runbook.md</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>3.2 Creating a Snapshot Backup node in docs/runbook.md.</td>
 </tr>
 </table>
 
@@ -4035,13 +4136,13 @@ flowchart LR
 <tr><td><code>docs/requirements-traceability.md</code></td><td>9 nodes</td></tr>
 <tr><td><code>.github/ISSUE_TEMPLATE/task.md</code></td><td>8 nodes</td></tr>
 <tr><td><code>docker-compose.dev.yml</code></td><td>8 nodes</td></tr>
+<tr><td><code>scripts/generate-secrets.py</code></td><td>8 nodes</td></tr>
 <tr><td><code>scripts/setup.sh</code></td><td>7 nodes</td></tr>
-<tr><td><code>docs/models/DEPLOYMENT_DIAGRAM.md</code></td><td>6 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: references x88, contains x57, calls x17, defines x14. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: references x86, contains x60, calls x14, defines x10. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -4052,17 +4153,17 @@ flowchart LR
   <div class="card">
     <h4>Graph</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>Nodes</td><td>1338</td></tr>
-      <tr><td>Edges</td><td>2351</td></tr>
+      <tr><td>Nodes</td><td>1344</td></tr>
+      <tr><td>Edges</td><td>2354</td></tr>
       <tr><td>Hyperedges</td><td>0</td></tr>
-      <tr><td>Communities</td><td>84</td></tr>
+      <tr><td>Communities</td><td>90</td></tr>
       <tr><td>Documented Sections</td><td>15</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Edge Confidence</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>EXTRACTED</td><td>2242</td></tr>
+      <tr><td>EXTRACTED</td><td>2245</td></tr>
       <tr><td>INFERRED</td><td>109</td></tr>
       <tr><td>AMBIGUOUS</td><td>0</td></tr>
     </table>
@@ -4071,7 +4172,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>excboncp — Architecture Documentation</p>
-  <p>Generated: 2026-11-10 11:37 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-11-10 13:20 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->

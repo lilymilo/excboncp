@@ -137,6 +137,22 @@ Run the Day 3 tests with:
 pytest tests/blockchain/ -v
 ```
 
+### IoT Node & ESP32 Firmware
+
+ESP32 firmware (`iot-node/sketch.ino`) supports both physical ESP32 and Wokwi simulation:
+
+| Sensor / Component | ESP32 Pin | Description |
+| :--- | :--- | :--- |
+| **DHT22** (Temp/Humidity) | GPIO 15 | Digital temperature & relative humidity sensor |
+| **Soil Moisture** | GPIO 35 (or 34 in Wokwi) | ADC analog input for soil moisture calibration |
+| **Flame Detector** | GPIO 34 (or 13 in Wokwi) | Digital input for flame / fire detection alarm |
+
+Run mock sensor publisher for testing without physical hardware:
+```bash
+python scripts/mock_sensor.py --mode normal
+python scripts/mock_sensor.py --mode smoke
+```
+
 ### Windows (PowerShell)
 
 Windows teammates can use the Day 1 helper instead of the Bash scripts:
@@ -183,6 +199,7 @@ excboncp/
 │   ├── credentials/     # Per-user credential vault
 │   ├── tasks/           # Task management
 │   └── requirements.txt # Python dependencies
+├── iot-node/            # ESP32 firmware & telemetry gateway
 ├── docker/              # Docker build files
 ├── contracts/           # Smart contracts (EAS Attestation, Day 3)
 ├── scripts/             # Setup & maintenance scripts
