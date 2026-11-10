@@ -4,24 +4,24 @@ Implements Blueprint Model 5 deterministic state transitions:
 "Kode yang memutuskan, AI yang menjelaskan".
 """
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 
 def compute_status(consent: str, dispute_open: bool, sensor_flag: bool) -> str:
     """
     Computes the deterministic land status following strict priority order.
-    
+
     Priority hierarchy:
     1. consent == "none" -> "BLOCKED"
     2. consent == "revoked" or dispute_open == True -> "DISPUTE"
     3. sensor_flag == True (temp > 30.0 or flame detected) -> "WARNING"
     4. Otherwise -> "VERIFIED"
-    
+
     Args:
         consent: Community consent state ("granted", "none", "revoked").
         dispute_open: Boolean indicating whether an open dispute is filed.
         sensor_flag: Boolean indicating whether physical sensors breached safe thresholds.
-        
+
     Returns:
         One of the 4 absolute status strings: "BLOCKED", "DISPUTE", "WARNING", "VERIFIED".
     """
@@ -40,21 +40,18 @@ def compute_status(consent: str, dispute_open: bool, sensor_flag: bool) -> str:
 
 
 def explain_status(
-    consent: str,
-    dispute_open: bool,
-    sensor_flag: bool,
-    metrics: Optional[Dict[str, Any]] = None
-) -> Dict[str, Any]:
+    consent: str, dispute_open: bool, sensor_flag: bool, metrics: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """
     Produces human-readable explanation and metadata for a computed status.
     AI Explainer adheres to the principle: 'Kode memutuskan, AI menjelaskan'.
-    
+
     Args:
         consent: Community consent state.
         dispute_open: Whether dispute is currently open.
         sensor_flag: Whether sensor anomaly flag is active.
         metrics: Optional sensor telemetry or satellite data.
-        
+
     Returns:
         Structured dictionary containing status, human label, icon, and explanation.
     """
@@ -74,7 +71,9 @@ def explain_status(
             "human_label": "Ditahan, ada sengketa",
             "icon": "pause",
             "badge_color": "orange",
-            "reason_code": "CONSENT_REVOKED_OR_DISPUTE_ACTIVE" if consent == "revoked" else "DISPUTE_OPEN",
+            "reason_code": "CONSENT_REVOKED_OR_DISPUTE_ACTIVE"
+            if consent == "revoked"
+            else "DISPUTE_OPEN",
             "explanation": "Terdapat keberatan aktif atau persetujuan komunitas dicabut. Seluruh penguncian dan transaksi dihentikan sementara.",
             "sellable": False,
         },
@@ -109,4 +108,3 @@ def explain_status(
         info["metrics"] = metrics_data
 
     return info
-

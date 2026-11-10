@@ -7,9 +7,9 @@ resilient fallback to local JSON cache per Blueprint Tangga Cadangan.
 import json
 import logging
 import os
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 logger = logging.getLogger("gee_processor")
 
@@ -21,24 +21,26 @@ def _get_cache_path() -> Path:
     return Path(__file__).resolve().parent / "data" / "gee_cache.json"
 
 
-def load_cached_satellite_data(lat: float, lon: float) -> Dict[str, Any]:
+def load_cached_satellite_data(lat: float, lon: float) -> dict[str, Any]:
     """
     Retrieves satellite metrics from local JSON cache.
     Guarantees backend zero-downtime resilience if Earth Engine is unreachable.
     """
     cache_file = _get_cache_path()
-    now_iso = datetime.now(timezone.utc).isoformat()
+    now_iso = datetime.now(UTC).isoformat()
 
     if cache_file.exists():
         try:
-            with open(cache_file, "r", encoding="utf-8") as f:
+            with open(cache_file, encoding="utf-8") as f:
                 data = json.load(f)
             parcel = data.get("default_parcel", {})
             return {
                 "status": "cached",
                 "source": parcel.get("source", "ESA Sentinel-1 SAR & Sentinel-2"),
                 "collection": parcel.get("collection", "COPERNICUS/S2_SR_HARMONIZED"),
-                "image_id": parcel.get("image_id", "COPERNICUS/S2_SR_HARMONIZED/20261104T025901_20261104T030818_T48MYT"),
+                "image_id": parcel.get(
+                    "image_id", "COPERNICUS/S2_SR_HARMONIZED/20261104T025901_20261104T030818_T48MYT"
+                ),
                 "acquisition_date": parcel.get("date", "2026-11-04"),
                 "ndvi_mean": parcel.get("ndvi_mean", 0.84),
                 "sar_vv_db": parcel.get("sar_vv_db", -11.2),
@@ -71,7 +73,7 @@ def load_cached_satellite_data(lat: float, lon: float) -> Dict[str, Any]:
 
 def _is_placeholder_credential(key_path: Path) -> bool:
     try:
-        with open(key_path, "r", encoding="utf-8") as f:
+        with open(key_path, encoding="utf-8") as f:
             data = json.load(f)
             private_key = data.get("private_key", "")
             return "REPLACE_WITH_REAL" in private_key or not private_key
@@ -79,10 +81,7 @@ def _is_placeholder_credential(key_path: Path) -> bool:
         return True
 
 
-def initialize_gee(
-    key_path: Optional[str] = None,
-    project_id: Optional[str] = None
-) -> bool:
+def initialize_gee(key_path: str | None = None, project_id: str | None = None) -> bool:
     """
     Initializes Google Earth Engine with service account credentials.
     Defaults to project ID 'exboncp' or resolves from environment.
@@ -107,7 +106,7 @@ def initialize_gee(
         logger.warning(
             "Service account credential is empty or placeholder at %s. "
             "Running GEE processor in mock simulation mode.",
-            resolved_path
+            resolved_path,
         )
         _GEE_INITIALIZED = True
         _IS_MOCK_MODE = True
@@ -116,13 +115,15 @@ def initialize_gee(
     try:
         import ee
 
-        with open(resolved_path, "r", encoding="utf-8") as f:
+        with open(resolved_path, encoding="utf-8") as f:
             sa_data = json.load(f)
         sa_email = sa_data.get("client_email")
         sa_project = sa_data.get("project_id", resolved_project)
 
         # Fallback to sa project if specified project differs from key
-        target_project = sa_project if resolved_project in ["exboncp", "cboncp"] else resolved_project
+        target_project = (
+            sa_project if resolved_project in ["exboncp", "cboncp"] else resolved_project
+        )
 
         credentials = ee.ServiceAccountCredentials(sa_email, str(resolved_path))
         ee.Initialize(credentials=credentials, project=target_project)
@@ -147,8 +148,8 @@ def fetch_satellite_data(
     lon: float,
     date_range_days: int = 14,
     collection_id: str = "COPERNICUS/S2_SR_HARMONIZED",
-    max_cloud_percent: float = 20.0
-) -> Dict[str, Any]:
+    max_cloud_percent: float = 20.0,
+) -> dict[str, Any]:
     """
     Queries Sentinel-2 optical imagery around the given coordinate.
     If Earth Engine is offline, times out, or fails, gracefully falls back
@@ -162,7 +163,7 @@ def fetch_satellite_data(
             logger.warning("Live GEE initialization failed. Activating local JSON cache.")
             return load_cached_satellite_data(lat, lon)
 
-    now_utc = datetime.now(timezone.utc)
+    now_utc = datetime.now(UTC)
     start_utc = now_utc - timedelta(days=date_range_days)
 
     if _IS_MOCK_MODE:
@@ -188,7 +189,10 @@ def fetch_satellite_data(
 
         image_count = col.size().getInfo()
         if image_count == 0:
-            logger.info("No cloud-free Sentinel-2 images found within %d days, relaxing cloud filter", date_range_days)
+            logger.info(
+                "No cloud-free Sentinel-2 images found within %d days, relaxing cloud filter",
+                date_range_days,
+            )
             col = (
                 ee.ImageCollection(collection_id)
                 .filterBounds(buffer_region)
@@ -211,7 +215,7 @@ def fetch_satellite_data(
             "max": 3000,
             "bands": ["B4", "B3", "B2"],
             "dimensions": 512,
-            "region": buffer_region
+            "region": buffer_region,
         }
 
         # Generate direct visual viewer link, falling back to Copernicus browser
@@ -222,8 +226,9 @@ def fetch_satellite_data(
 
         raw_time = props.get("system:time_start")
         acq_date = (
-            datetime.fromtimestamp(raw_time / 1000.0, tz=timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
-            if raw_time else date_end_str
+            datetime.fromtimestamp(raw_time / 1000.0, tz=UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
+            if raw_time
+            else date_end_str
         )
 
         return {
@@ -243,5 +248,7 @@ def fetch_satellite_data(
         }
 
     except Exception as exc:
-        logger.error("Live GEE query failed for (%f, %f): %s. Falling back to local cache.", lat, lon, exc)
+        logger.error(
+            "Live GEE query failed for (%f, %f): %s. Falling back to local cache.", lat, lon, exc
+        )
         return load_cached_satellite_data(lat, lon)

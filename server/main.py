@@ -21,6 +21,7 @@ from server.auth.router import router as auth_router
 from server.config import settings
 from server.credentials.router import router as credentials_router
 from server.database import close_db, init_db
+from server.market.router import router as market_router
 from server.monitoring.router import router as monitoring_router
 from server.tasks.router import router as tasks_router
 
@@ -72,6 +73,7 @@ app.include_router(credentials_router)
 app.include_router(agents_router)
 app.include_router(tasks_router)
 app.include_router(monitoring_router)
+app.include_router(market_router)
 
 
 @app.get("/", summary="Root API discovery", tags=["discovery"])

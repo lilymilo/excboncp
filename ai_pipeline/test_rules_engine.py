@@ -3,7 +3,6 @@ Unit tests for exboncp rules engine (compute_status and explain_status).
 Covers all 7 state transitions from Blueprint Model 5.
 """
 
-import pytest
 from ai_pipeline.rules_engine import compute_status, explain_status
 
 
@@ -71,4 +70,3 @@ def test_explain_status_metadata_and_sellability():
     exp_verified = explain_status("granted", False, False)
     assert exp_verified["status"] == "VERIFIED"
     assert exp_verified["sellable"] is True
-

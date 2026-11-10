@@ -1,6 +1,5 @@
 import json
 import unittest
-from unittest.mock import patch
 
 from ai_pipeline.gee_processor import fetch_satellite_data, initialize_gee
 from ai_pipeline.mock_publisher import generate_payload
@@ -105,7 +104,6 @@ class TestAIPipeline(unittest.TestCase):
         self.assertIn(res["status"], ["simulated", "success", "cached"])
         self.assertIn("thumbnail_url", res)
         self.assertIn("image_id", res)
-
 
     def test_mock_publisher_payload_scenarios(self):
         normal_p = generate_payload("normal")
