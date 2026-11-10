@@ -3,7 +3,7 @@ import json
 import logging
 import os
 import time
-from datetime import UTC, datetime, timezone, timedelta
+from datetime import UTC, datetime, timedelta, timezone
 from pathlib import Path
 
 import paho.mqtt.client as mqtt
@@ -143,8 +143,12 @@ def run_publisher():
         help="Telemetry scenario to simulate",
     )
     parser.add_argument("--stream", action="store_true", help="Publish continuously")
-    parser.add_argument("--interval", type=float, default=3.0, help="Interval in seconds for stream mode")
-    parser.add_argument("--topic", default=os.getenv("MQTT_TELEMETRY_TOPIC", "CbonCP/node-1/telemetry"))
+    parser.add_argument(
+        "--interval", type=float, default=3.0, help="Interval in seconds for stream mode"
+    )
+    parser.add_argument(
+        "--topic", default=os.getenv("MQTT_TELEMETRY_TOPIC", "CbonCP/node-1/telemetry")
+    )
     parser.add_argument("--lat", type=float, default=None, help="Override latitude")
     parser.add_argument("--lon", type=float, default=None, help="Override longitude")
     args = parser.parse_args()
@@ -172,7 +176,9 @@ def run_publisher():
         while True:
             payload = generate_payload(args.mode, lat=args.lat, lon=args.lon)
             data_str = json.dumps(payload, indent=2)
-            logger.info("Publishing %s payload to '%s':\n%s", args.mode.upper(), args.topic, data_str)
+            logger.info(
+                "Publishing %s payload to '%s':\n%s", args.mode.upper(), args.topic, data_str
+            )
             client.publish(args.topic, json.dumps(payload), qos=0)
 
             if not args.stream:

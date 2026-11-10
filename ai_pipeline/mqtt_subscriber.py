@@ -87,7 +87,11 @@ def validate_telemetry(raw_payload: Any) -> tuple[bool, dict[str, Any] | None, s
         return False, None, "Missing or non-numeric temperature field (temp_c or temperature)"
 
     # Accept either Wokwi alias (soil_pct) or legacy (soil_moisture)
-    soil = parsed.get("soil_pct") if parsed.get("soil_pct") is not None else parsed.get("soil_moisture")
+    soil = (
+        parsed.get("soil_pct")
+        if parsed.get("soil_pct") is not None
+        else parsed.get("soil_moisture")
+    )
     if soil is None or not isinstance(soil, (int, float)):
         return False, None, "Missing or non-numeric soil field (soil_pct or soil_moisture)"
 
@@ -132,11 +136,19 @@ def parse_and_analyze_telemetry(payload: dict[str, Any]) -> dict[str, Any]:
     lon = float(lon_raw) if lon_raw is not None else cfg["default_lon"]
 
     # --- Temperature: prefer temp_c (Wokwi), fallback to temperature ---
-    temp_raw = payload.get("temp_c") if payload.get("temp_c") is not None else payload.get("temperature", 0.0)
+    temp_raw = (
+        payload.get("temp_c")
+        if payload.get("temp_c") is not None
+        else payload.get("temperature", 0.0)
+    )
     temp = float(temp_raw)
 
     # --- Soil: prefer soil_pct (Wokwi), fallback to soil_moisture ---
-    soil_raw = payload.get("soil_pct") if payload.get("soil_pct") is not None else payload.get("soil_moisture", 0.0)
+    soil_raw = (
+        payload.get("soil_pct")
+        if payload.get("soil_pct") is not None
+        else payload.get("soil_moisture", 0.0)
+    )
     soil = float(soil_raw)
 
     # --- Fire level: prefer fire_level (Wokwi), fallback to flame int ---
@@ -201,7 +213,11 @@ def evaluate_sensor_flag(
     """
     reasons: list[str] = []
 
-    temp_raw = telemetry.get("temp_c") if telemetry.get("temp_c") is not None else telemetry.get("temperature", 0.0)
+    temp_raw = (
+        telemetry.get("temp_c")
+        if telemetry.get("temp_c") is not None
+        else telemetry.get("temperature", 0.0)
+    )
     temperature = float(temp_raw)
 
     if temperature > temp_threshold:
@@ -219,7 +235,9 @@ def evaluate_sensor_flag(
     smoke = int(telemetry.get("smoke") or 0)
     cfg = get_config()
     if smoke > cfg["smoke_threshold_warning"]:
-        reasons.append(f"Smoke Concentration Elevated (smoke={smoke} > {cfg['smoke_threshold_warning']})")
+        reasons.append(
+            f"Smoke Concentration Elevated (smoke={smoke} > {cfg['smoke_threshold_warning']})"
+        )
 
     has_anomaly = len(reasons) > 0
     return has_anomaly, reasons
@@ -251,12 +269,17 @@ def format_telemetry_report(
     tz_abbr = parsed["tz_abbr"]
     tz_name = parsed["tz_name"]
 
-    if satellite_res and satellite_res.get("status") in ("success", "cached", "cached_emergency", "simulated"):
+    if satellite_res and satellite_res.get("status") in (
+        "success",
+        "cached",
+        "cached_emergency",
+        "simulated",
+    ):
         sat_line = f"[OK] Citra Satelit GEE Terverifikasi pada koordinat ({lat:.5f}, {lon:.5f})"
     elif satellite_res:
         sat_line = f"[GAGAL] GEE tidak tersedia — fallback cache aktif pada ({lat:.5f}, {lon:.5f})"
     else:
-        sat_line = f"[SKIP] Satelit tidak diquery (kondisi sensor NORMAL)"
+        sat_line = "[SKIP] Satelit tidak diquery (kondisi sensor NORMAL)"
 
     lines = [
         "-" * 50,
@@ -330,7 +353,11 @@ def handle_telemetry_message(
     if land_status == "VERIFIED":
         logger.info(
             "[STATUS: VERIFIED] Node: %s | Temp: %.1f°C | Soil: %.1f%% | Flame: %s | Fire: %s",
-            node_id, temp, soil, flame, parsed["fire_status"],
+            node_id,
+            temp,
+            soil,
+            flame,
+            parsed["fire_status"],
         )
         report = format_telemetry_report(parsed, land_status, satellite_res)
         logger.info("\n%s", report)
@@ -350,7 +377,13 @@ def handle_telemetry_message(
     logger.warning("[EXPLANATION] %s", explanation.get("explanation"))
     if anomaly_reasons:
         logger.warning("[SENSOR TRIGGERS] %s", ", ".join(anomaly_reasons))
-    logger.warning("[METRICS] Temp: %.1f°C | Soil: %.1f%% | Flame: %s | Smoke: %d", temp, soil, flame, parsed["smoke"])
+    logger.warning(
+        "[METRICS] Temp: %.1f°C | Soil: %.1f%% | Flame: %s | Smoke: %d",
+        temp,
+        soil,
+        flame,
+        parsed["smoke"],
+    )
     logger.info("[ACTION] Querying Earth Engine for (%f, %f)...", lat, lon)
     logger.warning("=" * 60)
 

@@ -201,40 +201,82 @@ def test_fire_status_normal():
 
 def test_fire_status_warning_high_temp():
     # temp > 30.0 triggers WARNING
-    p = {**WOKWI_PAYLOAD, "temp_c": 31.0, "temperature": 31.0, "smoke": 20, "fire_level": 0, "flame_detected": False}
+    p = {
+        **WOKWI_PAYLOAD,
+        "temp_c": 31.0,
+        "temperature": 31.0,
+        "smoke": 20,
+        "fire_level": 0,
+        "flame_detected": False,
+    }
     result = parse_and_analyze_telemetry(p)
     assert result["fire_status"] == "WARNING"
 
 
 def test_fire_status_warning_smoke():
     # smoke > 50 triggers WARNING
-    p = {**WOKWI_PAYLOAD, "temp_c": 25.0, "temperature": 25.0, "smoke": 55, "fire_level": 0, "flame_detected": False}
+    p = {
+        **WOKWI_PAYLOAD,
+        "temp_c": 25.0,
+        "temperature": 25.0,
+        "smoke": 55,
+        "fire_level": 0,
+        "flame_detected": False,
+    }
     result = parse_and_analyze_telemetry(p)
     assert result["fire_status"] == "WARNING"
 
 
 def test_fire_status_critical_flame_detected():
-    p = {**WOKWI_PAYLOAD, "temp_c": 25.0, "temperature": 25.0, "smoke": 20, "fire_level": 0, "flame_detected": True}
+    p = {
+        **WOKWI_PAYLOAD,
+        "temp_c": 25.0,
+        "temperature": 25.0,
+        "smoke": 20,
+        "fire_level": 0,
+        "flame_detected": True,
+    }
     result = parse_and_analyze_telemetry(p)
     assert result["fire_status"] == "CRITICAL"
 
 
 def test_fire_status_critical_fire_level():
-    p = {**WOKWI_PAYLOAD, "temp_c": 25.0, "temperature": 25.0, "smoke": 20, "fire_level": 2, "flame_detected": False}
+    p = {
+        **WOKWI_PAYLOAD,
+        "temp_c": 25.0,
+        "temperature": 25.0,
+        "smoke": 20,
+        "fire_level": 2,
+        "flame_detected": False,
+    }
     result = parse_and_analyze_telemetry(p)
     assert result["fire_status"] == "CRITICAL"
 
 
 def test_fire_status_critical_high_temp():
     # temp > 35.0 triggers CRITICAL regardless of fire_level
-    p = {**WOKWI_PAYLOAD, "temp_c": 36.0, "temperature": 36.0, "smoke": 10, "fire_level": 0, "flame_detected": False}
+    p = {
+        **WOKWI_PAYLOAD,
+        "temp_c": 36.0,
+        "temperature": 36.0,
+        "smoke": 10,
+        "fire_level": 0,
+        "flame_detected": False,
+    }
     result = parse_and_analyze_telemetry(p)
     assert result["fire_status"] == "CRITICAL"
 
 
 def test_fire_status_critical_wins_over_warning():
     # flame_detected overrides temp > 30.0 WARNING — still CRITICAL
-    p = {**WOKWI_PAYLOAD, "temp_c": 31.0, "temperature": 31.0, "smoke": 55, "fire_level": 1, "flame_detected": True}
+    p = {
+        **WOKWI_PAYLOAD,
+        "temp_c": 31.0,
+        "temperature": 31.0,
+        "smoke": 55,
+        "fire_level": 1,
+        "flame_detected": True,
+    }
     result = parse_and_analyze_telemetry(p)
     assert result["fire_status"] == "CRITICAL"
 
