@@ -20,7 +20,7 @@ from server.sensor.service import store_sensor_reading
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger("excboncp.sensor.mqtt")
 
-BROKER_HOST = os.getenv("MQTT_BROKER", "broker.emqx.io")
+BROKER_HOST = os.getenv("MQTT_BROKER", "localhost")
 BROKER_PORT = int(os.getenv("MQTT_PORT", "1883"))
 TOPIC_FILTER = os.getenv("MQTT_TOPIC_FILTER", "CbonCP/#")
 
