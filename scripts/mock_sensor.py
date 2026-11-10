@@ -4,7 +4,6 @@ import argparse
 import hashlib
 import json
 import os
-import sys
 import time
 
 BROKER_DEFAULT = os.getenv("MQTT_BROKER", "broker.emqx.io")
@@ -57,7 +56,9 @@ def generate_payload(mode: str) -> dict:
 
 def main():
     parser = argparse.ArgumentParser(description="Mock sensor publisher for CbonCP MQTT fallback")
-    parser.add_argument("--mode", choices=["normal", "smoke", "loop"], default="normal", help="Simulation mode")
+    parser.add_argument(
+        "--mode", choices=["normal", "smoke", "loop"], default="normal", help="Simulation mode"
+    )
     parser.add_argument("--broker", default=BROKER_DEFAULT, help="MQTT broker address")
     parser.add_argument("--port", type=int, default=PORT_DEFAULT, help="MQTT broker port")
     parser.add_argument("--topic", default=TOPIC_DEFAULT, help="MQTT topic")
