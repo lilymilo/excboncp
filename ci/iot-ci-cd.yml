@@ -1,0 +1,107 @@
+name: IoT-Node DevOps CI/CD
+
+on:
+  push:
+    branches:
+      - feat/IoT-node
+      - main
+      - feat/iot-esp32
+    paths:
+      - 'iot-node/**'
+      - 'mosquitto/**'
+      - 'docker-compose.yml'
+      - 'shared-schemas/**'
+      - 'ci/iot-ci-cd.yml'
+  pull_request:
+    branches:
+      - feat/IoT-node
+      - main
+    paths:
+      - 'iot-node/**'
+      - 'mosquitto/**'
+      - 'docker-compose.yml'
+      - 'shared-schemas/**'
+      - 'ci/iot-ci-cd.yml'
+  workflow_dispatch:
+
+jobs:
+  verify-firmware:
+    name: Verify ESP32 Firmware & Diagrams
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify Firmware Files & Configs
+        run: |
+          test -f iot-node/sketch.ino
+          test -f iot-node/diagram.json
+          test -f iot-node/libraries.txt
+          test -f mosquitto/config/mosquitto.conf
+          test -f shared-schemas/attestation_payload.json
+
+      - name: Validate JSON Files
+        run: |
+          python3 -c "import json; json.load(open('iot-node/diagram.json'))"
+          python3 -c "import json; json.load(open('shared-schemas/attestation_payload.json'))"
+
+  test-and-lint:
+    name: IoT Gateway Unit Tests & Schema Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: iot-node/package.json
+
+      - name: Install Gateway Dependencies
+        working-directory: ./iot-node
+        run: npm install
+
+      - name: Run Syntax & Lint Checks
+        working-directory: ./iot-node
+        run: npm run lint
+
+      - name: Run Telemetry Unit Tests
+        working-directory: ./iot-node
+        run: npm test
+
+  docker-ci:
+    name: Docker Build & Compose Integration Test
+    needs: [verify-firmware, test-and-lint]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Validate Compose Config
+        run: docker compose config
+
+      - name: Build Docker Stack
+        run: docker compose build
+
+      - name: Launch Stack
+        run: SIMULATION_MODE=true docker compose up -d
+
+      - name: Await Healthcheck
+        run: |
+          for i in {1..30}; do
+            if curl -s http://localhost:5050/health | grep -q '"status":"UP"'; then
+              break
+            fi
+            sleep 2
+          done
+
+      - name: Smoke Test
+        run: |
+          curl -s http://localhost:5050/health
+          curl -s -X POST http://localhost:5050/api/telemetry/simulate
+          sleep 3
+          curl -s http://localhost:5050/api/telemetry
+
+      - name: Teardown
+        if: always()
+        run: docker compose down -v

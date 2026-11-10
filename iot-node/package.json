@@ -1,0 +1,29 @@
+{
+  "name": "@cboncp/iot-node",
+  "version": "1.0.0",
+  "description": "CbonCP IoT Node Telemetry Gateway and ESP32 MQTT Ingest Service",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test test/**/*.test.js",
+    "lint": "node --check src/index.js src/telemetry-validator.js test/telemetry.test.js"
+  },
+  "dependencies": {
+    "mqtt": "^5.10.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "keywords": [
+    "iot",
+    "esp32",
+    "mqtt",
+    "telemetry",
+    "cboncp",
+    "dmrv"
+  ],
+  "author": "Bagus Pambudi <baguspamb0403@gmail.com>",
+  "license": "MIT"
+}
+
