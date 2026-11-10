@@ -5,11 +5,11 @@
 #include <mbedtls/md.h>
 
 #define PIN_DHT    15
-#define PIN_SOIL   34
-#define PIN_FLAME  13
+#define PIN_SOIL   35
+#define PIN_FLAME  34
 
-// 1: physical ESP32 on LAN, 0: Wokwi cloud simulation.
-#define USE_PHYSICAL_HARDWARE 1
+// 0: Wokwi cloud simulation, 1: physical ESP32 on LAN.
+#define USE_PHYSICAL_HARDWARE 0
 
 #if USE_PHYSICAL_HARDWARE
   const char* WIFI_SSID     = "GANTI_DENGAN_SSID_WIFI_ANDA";
@@ -171,7 +171,7 @@ void setup() {
 
   dhtSensor.setup(PIN_DHT, DHTesp::DHT22);
   pinMode(PIN_SOIL, INPUT);
-  pinMode(PIN_FLAME, INPUT_PULLUP);
+  pinMode(PIN_FLAME, INPUT);
 
   connectWiFi();
   mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
