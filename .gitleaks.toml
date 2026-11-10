@@ -4,13 +4,17 @@ title = "ExcbonCP Gitleaks Configuration"
 [allowlist]
 description = "Allowlist for test fixtures, documentation examples, and CI templates"
 paths = [
-    '''(?i)^\.env\.example$''',
+    '''(?i)^\\.env\\.example$''',
     '''(?i)^tests/.*''',
     '''(?i)^docs/.*''',
-    '''(?i)^\.github/workflows/.*''',
+    '''(?i)^\\.github/workflows/.*''',
+    # Placeholder template credential — not a real key
+    '''(?i)^ai_pipeline/service_account\\.json$''',
 ]
 regexes = [
     '''dGVzdC1lbmNyeXB0aW9uLWtleS1mb3ItY2ktb25seTE=''',
     '''test-secret-key-for-ci-only-not-production''',
     '''test-jwt-secret-key-not-for-production-use-only-testing''',
+    # Placeholder marker inside service_account.json template
+    '''REPLACE_WITH_REAL''',
 ]

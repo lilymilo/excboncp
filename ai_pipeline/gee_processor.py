@@ -36,6 +36,7 @@ def load_cached_satellite_data(lat: float, lon: float) -> dict[str, Any]:
             parcel = data.get("default_parcel", {})
             return {
                 "status": "cached",
+                "satellite_status_label": "Cache Aktif",
                 "source": parcel.get("source", "ESA Sentinel-1 SAR & Sentinel-2"),
                 "collection": parcel.get("collection", "COPERNICUS/S2_SR_HARMONIZED"),
                 "image_id": parcel.get(
@@ -57,6 +58,7 @@ def load_cached_satellite_data(lat: float, lon: float) -> dict[str, Any]:
     # In-memory emergency fallback if file is missing or unreadable
     return {
         "status": "cached_emergency",
+        "satellite_status_label": "Cache Darurat",
         "source": "ESA Sentinel-1 SAR & Sentinel-2",
         "collection": "COPERNICUS/S2_SR_HARMONIZED",
         "image_id": "COPERNICUS/S2_SR_HARMONIZED/20261104T025901_20261104T030818_T48MYT",
@@ -233,6 +235,7 @@ def fetch_satellite_data(
 
         return {
             "status": "success",
+            "satellite_status_label": "GEE Live",
             "provider": "Google Earth Engine",
             "source": "ESA Sentinel-1 SAR & Sentinel-2",
             "collection": collection_id,
