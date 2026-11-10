@@ -56,6 +56,9 @@ coverage.xml
 .pioenvs/
 .piolibdeps/
 
+# TypeScript cache
+*.tsbuildinfo
+
 # OS and IDE files
 .DS_Store
 Thumbs.db
