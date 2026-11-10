@@ -18,10 +18,10 @@
     "semantic_hash": "b7532dca13550fb060bef08827cb8fc8"
   },
   "docker-compose.yml": {
-    "mtime": 1794146588.2635145,
-    "seen": 1794310637.6373131,
-    "ast_hash": "b5e89b6b9ddbe0be3eb675acf28243cb",
-    "semantic_hash": "b5e89b6b9ddbe0be3eb675acf28243cb"
+    "mtime": 1794316944.5472589,
+    "seen": 1794317160.6908784,
+    "ast_hash": "3ed3d631868f93033aa8d72adfefa5c1",
+    "semantic_hash": ""
   },
   "pyproject.toml": {
     "mtime": 1794198629.3794866,
@@ -204,10 +204,10 @@
     "semantic_hash": "1d0e8059cb620654e3bb441858a7bbfe"
   },
   "server/main.py": {
-    "mtime": 1794206601.286817,
-    "seen": 1794310637.637451,
-    "ast_hash": "162a7c98c2880e919a342e10f66d7634",
-    "semantic_hash": "162a7c98c2880e919a342e10f66d7634"
+    "mtime": 1794316981.483627,
+    "seen": 1794317160.6909792,
+    "ast_hash": "08f0ce2e6ca99c97662357d8a1691f0b",
+    "semantic_hash": ""
   },
   "server/monitoring/__init__.py": {
     "mtime": 1794146553.1127753,
@@ -390,9 +390,9 @@
     "semantic_hash": "523c7b8a10d624c2f29f08d9a6f7fed1"
   },
   "AGENTS.md": {
-    "mtime": 1794310681.6000059,
-    "seen": 1794316822.6770852,
-    "ast_hash": "fb5e355b28b72f1a6896b98d29640df3",
+    "mtime": 1794316981.485282,
+    "seen": 1794317160.6910818,
+    "ast_hash": "03abb3c33bdc67dd252bb08d03e3728b",
     "semantic_hash": ""
   },
   "CONTRIBUTING.md": {
@@ -402,10 +402,10 @@
     "semantic_hash": "370642ca9fa840728ab9f1d562e91583"
   },
   "README.md": {
-    "mtime": 1794222382.6555007,
-    "seen": 1794310637.6375816,
-    "ast_hash": "45e91b3bd938294f1979cb663f82b180",
-    "semantic_hash": "45e91b3bd938294f1979cb663f82b180"
+    "mtime": 1794316981.4840875,
+    "seen": 1794317160.6910925,
+    "ast_hash": "f0f3c7458f9bd93f0e64404d78eabd18",
+    "semantic_hash": ""
   },
   "contracts/README.md": {
     "mtime": 1794222124.2588866,
@@ -627,6 +627,186 @@
     "mtime": 1794310682.4998257,
     "seen": 1794316822.6770961,
     "ast_hash": "67d88e9d0760c3ba54c75dfd9551c1c5",
+    "semantic_hash": ""
+  },
+  "ai_pipeline/__init__.py": {
+    "mtime": 1794316944.5431662,
+    "seen": 1794317160.6908393,
+    "ast_hash": "9191616ce82f700ab7ae69188f2ab21d",
+    "semantic_hash": ""
+  },
+  "ai_pipeline/data/gee_cache.json": {
+    "mtime": 1794316944.543446,
+    "seen": 1794317160.690843,
+    "ast_hash": "00a8bdb98b8b3023aa1061122c3c62a7",
+    "semantic_hash": ""
+  },
+  "ai_pipeline/gee_processor.py": {
+    "mtime": 1794316944.5437033,
+    "seen": 1794317160.6908462,
+    "ast_hash": "f8ee1eb386bd65ba9350eca35124a375",
+    "semantic_hash": ""
+  },
+  "ai_pipeline/mock_publisher.py": {
+    "mtime": 1794316944.544752,
+    "seen": 1794317160.6908486,
+    "ast_hash": "30dc102586072a8188456e6d2c1f423d",
+    "semantic_hash": ""
+  },
+  "ai_pipeline/mqtt_subscriber.py": {
+    "mtime": 1794316944.5452185,
+    "seen": 1794317160.6908505,
+    "ast_hash": "d163ba1986337fb22e1594489f4de4c6",
+    "semantic_hash": ""
+  },
+  "ai_pipeline/rules_engine.py": {
+    "mtime": 1794316944.5455542,
+    "seen": 1794317160.6908526,
+    "ast_hash": "a92443132e4b6ac64787023d104d595b",
+    "semantic_hash": ""
+  },
+  "ai_pipeline/test_pipeline.py": {
+    "mtime": 1794316944.5458677,
+    "seen": 1794317160.690855,
+    "ast_hash": "2cf0384125b0a08580d566f7a7a55845",
+    "semantic_hash": ""
+  },
+  "ai_pipeline/test_rules_engine.py": {
+    "mtime": 1794316944.5460181,
+    "seen": 1794317160.6908574,
+    "ast_hash": "f39783de1f67ecd2d730284e6ca63415",
+    "semantic_hash": ""
+  },
+  "api/__init__.py": {
+    "mtime": 1794316944.5461485,
+    "seen": 1794317160.6908598,
+    "ast_hash": "68b329da9893e34099c7d8ad5cb9c940",
+    "semantic_hash": ""
+  },
+  "api/economy/__init__.py": {
+    "mtime": 1794316944.5462587,
+    "seen": 1794317160.6908622,
+    "ast_hash": "68b329da9893e34099c7d8ad5cb9c940",
+    "semantic_hash": ""
+  },
+  "api/economy/settlement.py": {
+    "mtime": 1794316944.5463955,
+    "seen": 1794317160.6908643,
+    "ast_hash": "594aad51b550492c759d9be169d5581b",
+    "semantic_hash": ""
+  },
+  "api/economy/test_settlement.py": {
+    "mtime": 1794316944.5466075,
+    "seen": 1794317160.6908667,
+    "ast_hash": "bf400eaf2b778b63890a540672c5d40a",
+    "semantic_hash": ""
+  },
+  "ci/iot-ci-cd.yml": {
+    "mtime": 1794316944.546717,
+    "seen": 1794317160.6908689,
+    "ast_hash": "ac0336f887f122a2ff1bcdaca536b8db",
+    "semantic_hash": ""
+  },
+  "iot-node/diagram.json": {
+    "mtime": 1794316944.5477567,
+    "seen": 1794317160.6908808,
+    "ast_hash": "c0f099275031ca9bea87e9184f84a696",
+    "semantic_hash": ""
+  },
+  "iot-node/package.json": {
+    "mtime": 1794316944.5484948,
+    "seen": 1794317160.6908834,
+    "ast_hash": "24d16ff9c32fa84a25cbd82037ca5e16",
+    "semantic_hash": ""
+  },
+  "iot-node/src/index.js": {
+    "mtime": 1794316944.5487344,
+    "seen": 1794317160.6908855,
+    "ast_hash": "cf60a5d161b02d496d6af458beb07ae1",
+    "semantic_hash": ""
+  },
+  "iot-node/src/telemetry-validator.js": {
+    "mtime": 1794316944.5488994,
+    "seen": 1794317160.6908877,
+    "ast_hash": "23bfb83dcb054dbb083a9d1168e5e2c4",
+    "semantic_hash": ""
+  },
+  "iot-node/test/telemetry.test.js": {
+    "mtime": 1794316944.5490863,
+    "seen": 1794317160.69089,
+    "ast_hash": "fe830eca4302d03b2d4205ceae80b6cb",
+    "semantic_hash": ""
+  },
+  "scripts/mock_sensor.py": {
+    "mtime": 1794316944.5497122,
+    "seen": 1794317160.6909106,
+    "ast_hash": "ffff5d34b9e0f22040fbe1df942f9f66",
+    "semantic_hash": ""
+  },
+  "server/market/__init__.py": {
+    "mtime": 1794316944.550259,
+    "seen": 1794317160.6909816,
+    "ast_hash": "80dec37f003f16ebbf946bfbeb4f5c10",
+    "semantic_hash": ""
+  },
+  "server/market/models.py": {
+    "mtime": 1794316944.550408,
+    "seen": 1794317160.690984,
+    "ast_hash": "4e37b3cfd55485905459b30d60a89726",
+    "semantic_hash": ""
+  },
+  "server/market/router.py": {
+    "mtime": 1794316944.550612,
+    "seen": 1794317160.690986,
+    "ast_hash": "ac28252eb8e292d649ea055ba38690e9",
+    "semantic_hash": ""
+  },
+  "server/market/service.py": {
+    "mtime": 1794316944.5507433,
+    "seen": 1794317160.6909883,
+    "ast_hash": "faba151cac4260b999a17a6c6e3bfdce",
+    "semantic_hash": ""
+  },
+  "shared-schemas/attestation_payload.json": {
+    "mtime": 1794316944.5508816,
+    "seen": 1794317160.6910157,
+    "ast_hash": "1a49cfdd79ca05c8f8a3393c10725e5d",
+    "semantic_hash": ""
+  },
+  "tests/test_market.py": {
+    "mtime": 1794316944.551103,
+    "seen": 1794317160.6910508,
+    "ast_hash": "2d93faed4058375fa07f64a95900d828",
+    "semantic_hash": ""
+  },
+  "ai_pipeline/README.md": {
+    "mtime": 1794316944.5423675,
+    "seen": 1794317160.6910946,
+    "ast_hash": "e987429c3c6450ba59f64008dbc75959",
+    "semantic_hash": ""
+  },
+  "ai_pipeline/requirements.txt": {
+    "mtime": 1794316944.5453975,
+    "seen": 1794317160.691097,
+    "ast_hash": "fdaeb0ecc13a5bb48c93e7082bc2777c",
+    "semantic_hash": ""
+  },
+  "iot-node/libraries.txt": {
+    "mtime": 1794316944.5479126,
+    "seen": 1794317160.691177,
+    "ast_hash": "1e38c3d19440c9438e64708dd87508ee",
+    "semantic_hash": ""
+  },
+  "iot-node/wokwi-project.txt": {
+    "mtime": 1794316944.5492868,
+    "seen": 1794317160.6911793,
+    "ast_hash": "db08a0b884dcd46015abbf5a85f646e1",
+    "semantic_hash": ""
+  },
+  "iot-node/package-lock.json": {
+    "mtime": 1794316944.5482635,
+    "seen": 1794317160.6911895,
+    "ast_hash": "e80a97d34799b41c943897cd992e1332",
     "semantic_hash": ""
   }
 }

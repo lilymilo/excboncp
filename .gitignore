@@ -77,4 +77,7 @@ graphify-out/.graphify_semantic.json
 graphify-out/.graphify_analysis.json
 graphify-out/.graphify_chunk_*.json
 graphify-out/.graphify_partial.txt
+graphify-out/.graphify_build_state.json
+graphify-out/.graphify_labels.*
 graphify-out/.needs_update
+graphify-out/20*/

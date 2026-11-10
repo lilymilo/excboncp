@@ -53,9 +53,7 @@ def main():
     print("  4. Deploy ExcbonCPAttestation(eas, schemaRegistry)")
     print("  5. Run npx hardhat run scripts/deploy.ts --network baseSepolia")
 
-    print(
-        "\nNote: Keep EVM_SIMULATION_MODE=true until deployment is complete."
-    )
+    print("\nNote: Keep EVM_SIMULATION_MODE=true until deployment is complete.")
 
 
 if __name__ == "__main__":
