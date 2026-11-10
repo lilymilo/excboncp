@@ -10,6 +10,7 @@ services:
       dockerfile: docker/Dockerfile.server
     volumes:
       - ./server:/app/server:ro
+      - ./src:/app/src:ro
       - excboncp-data:/app/data
     ports:
       - "${SERVER_PORT:-8000}:8000"
@@ -24,4 +25,5 @@ services:
       --port 8000
       --reload
       --reload-dir /app/server
+      --reload-dir /app/src
       --log-level debug
