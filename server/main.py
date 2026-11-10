@@ -24,6 +24,7 @@ from server.database import close_db, init_db
 from server.ledger.router import router as ledger_router
 from server.market.router import router as market_router
 from server.monitoring.router import router as monitoring_router
+from server.sensor.router import router as sensor_router
 from server.tasks.router import router as tasks_router
 from src.blockchain.router import router as blockchain_router
 
@@ -78,6 +79,7 @@ app.include_router(monitoring_router)
 app.include_router(ledger_router)
 app.include_router(blockchain_router)
 app.include_router(market_router)
+app.include_router(sensor_router)
 
 
 @app.get("/", summary="Root API discovery", tags=["discovery"])

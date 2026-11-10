@@ -70,3 +70,11 @@ async def create_order(payload: MarketOrderCreate) -> MarketOrderResponse:
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(exc),
         )
+
+
+# Blueprint Model 8 contract path; registered last so it never shadows /orders.
+@router.get("/{parcel_id}", response_model=ParcelMarketResponse, include_in_schema=False)
+async def get_parcel_market_alias(
+    parcel_id: str, unit_price_idr: int = Query(40_000, ge=0)
+) -> ParcelMarketResponse:
+    return await get_parcel_settlement(parcel_id, unit_price_idr=unit_price_idr)

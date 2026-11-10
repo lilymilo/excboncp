@@ -5,12 +5,28 @@ import hashlib
 import json
 import os
 import time
+import urllib.request
+from functools import lru_cache
 
 BROKER_DEFAULT = os.getenv("MQTT_BROKER", "broker.emqx.io")
 PORT_DEFAULT = int(os.getenv("MQTT_PORT", 1883))
 TOPIC_DEFAULT = os.getenv("MQTT_TOPIC", "CbonCP/node-1/telemetry")
 SENSOR_SECRET = os.getenv("SENSOR_SECRET", "cboncp-shared-device-secret")
 NODE_ID = os.getenv("NODE_ID", "ESP32-MOCK-FALLBACK-01")
+
+
+@lru_cache(maxsize=1)
+def detect_location() -> dict:
+    # Same IP geolocation the ESP32 uses; offline runs simply omit lat/lon.
+    try:
+        url = "http://ip-api.com/json/?fields=status,lat,lon"
+        with urllib.request.urlopen(url, timeout=2) as resp:
+            data = json.load(resp)
+        if data.get("status") == "success":
+            return {"lat": data["lat"], "lon": data["lon"]}
+    except (OSError, ValueError, KeyError):
+        pass
+    return {}
 
 
 def generate_payload(mode: str) -> dict:
@@ -23,6 +39,15 @@ def generate_payload(mode: str) -> dict:
     smoke = 500 if is_smoke else 25
     sound = 75 if is_smoke else 30
     flame = is_smoke
+
+    if flame or temp_c >= 65.0:
+        fire_level, fire_status = 3, "BAHAYA"
+    elif temp_c >= 55.0 or (temp_c >= 48.0 and soil_moisture < 20.0):
+        fire_level, fire_status = 2, "SIAGA"
+    elif temp_c >= 42.0 or (temp_c >= 35.0 and soil_moisture < 50.0):
+        fire_level, fire_status = 1, "WASPADA"
+    else:
+        fire_level, fire_status = 0, "NORMAL"
 
     # shortcut: signature concatenation matches ESP32 sketch.ino computeSignature format
     sig_raw = f"{NODE_ID}|{ts}|{smoke}|{temp_c:.1f}|{sound}{SENSOR_SECRET}"
@@ -50,7 +75,10 @@ def generate_payload(mode: str) -> dict:
         "smoke": smoke,
         "sound": sound,
         "flame_detected": flame,
+        "fire_level": fire_level,
+        "fire_status": fire_status,
         "sig": sig,
+        **detect_location(),
     }
 
 
