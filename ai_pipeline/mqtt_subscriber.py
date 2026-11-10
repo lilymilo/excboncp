@@ -11,10 +11,10 @@ import os
 import signal
 import sys
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
-from dotenv import load_dotenv
 import paho.mqtt.client as mqtt
+from dotenv import load_dotenv
 
 from .gee_processor import fetch_satellite_data, initialize_gee
 from .rules_engine import compute_status, explain_status
@@ -25,14 +25,11 @@ if env_path.exists():
 else:
     load_dotenv()
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger("ai_pipeline.mqtt")
 
 
-def get_config() -> Dict[str, Any]:
+def get_config() -> dict[str, Any]:
     """Loads configuration values with defaults."""
     return {
         "broker_host": os.getenv("MQTT_BROKER_HOST", "broker.emqx.io"),
@@ -49,7 +46,7 @@ def get_config() -> Dict[str, Any]:
     }
 
 
-def validate_telemetry(raw_payload: Any) -> Tuple[bool, Optional[Dict[str, Any]], Optional[str]]:
+def validate_telemetry(raw_payload: Any) -> tuple[bool, dict[str, Any] | None, str | None]:
     """
     Safely validates and parses incoming MQTT telemetry payload.
     Guarantees no unhandled exception on corrupted, non-JSON, or malformed bytes.
@@ -95,7 +92,9 @@ def validate_telemetry(raw_payload: Any) -> Tuple[bool, Optional[Dict[str, Any]]
     return True, parsed, None
 
 
-def evaluate_sensor_flag(telemetry: Dict[str, Any], temp_threshold: float = 30.0) -> Tuple[bool, list[str]]:
+def evaluate_sensor_flag(
+    telemetry: dict[str, Any], temp_threshold: float = 30.0
+) -> tuple[bool, list[str]]:
     """Evaluates whether physical sensors crossed danger thresholds."""
     reasons: list[str] = []
     temperature = float(telemetry["temperature"])
@@ -114,7 +113,7 @@ def evaluate_sensor_flag(telemetry: Dict[str, Any], temp_threshold: float = 30.0
 evaluate_anomaly = evaluate_sensor_flag
 
 
-def _save_event_record(record: Dict[str, Any]) -> None:
+def _save_event_record(record: dict[str, Any]) -> None:
     try:
         data_dir = Path(__file__).resolve().parent / "data"
         data_dir.mkdir(parents=True, exist_ok=True)
@@ -126,9 +125,8 @@ def _save_event_record(record: Dict[str, Any]) -> None:
 
 
 def handle_telemetry_message(
-    payload_bytes: bytes,
-    config: Optional[Dict[str, Any]] = None
-) -> Dict[str, Any]:
+    payload_bytes: bytes, config: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """
     Core pipeline processor:
     Validates telemetry -> evaluates sensor flag -> computes land status ->
@@ -160,7 +158,7 @@ def handle_telemetry_message(
         consent=consent,
         dispute_open=dispute_open,
         sensor_flag=sensor_flag,
-        metrics={"temperature": temp, "soil_moisture": soil, "flame_detected": flame}
+        metrics={"temperature": temp, "soil_moisture": soil, "flame_detected": flame},
     )
 
     lat = float(telemetry.get("latitude", cfg["default_lat"]))
@@ -169,13 +167,16 @@ def handle_telemetry_message(
     if land_status == "VERIFIED":
         logger.info(
             "[STATUS: VERIFIED] Node: %s | Temp: %.1f°C | Soil: %.1f%% | Flame: %s | Units Sellable: True",
-            node_id, temp, soil, flame
+            node_id,
+            temp,
+            soil,
+            flame,
         )
         return {
             "status": "normal",
             "land_status": land_status,
             "explanation": explanation,
-            "telemetry": telemetry
+            "telemetry": telemetry,
         }
 
     # Anomaly or Restricted state: trigger GEE satellite verification
@@ -191,7 +192,11 @@ def handle_telemetry_message(
 
     try:
         satellite_res = fetch_satellite_data(lat=lat, lon=lon)
-        logger.info("[GEE VERIFICATION] Status: %s | Provider: %s", satellite_res.get("status"), satellite_res.get("provider", "GEE"))
+        logger.info(
+            "[GEE VERIFICATION] Status: %s | Provider: %s",
+            satellite_res.get("status"),
+            satellite_res.get("provider", "GEE"),
+        )
         if satellite_res.get("image_id"):
             logger.info("[GEE IMAGE ID] %s", satellite_res.get("image_id"))
         if satellite_res.get("thumbnail_url"):
@@ -203,7 +208,7 @@ def handle_telemetry_message(
             "explanation": explanation,
             "anomalies": anomaly_reasons,
             "telemetry": telemetry,
-            "satellite_verification": satellite_res
+            "satellite_verification": satellite_res,
         }
         _save_event_record(res_payload)
         return res_payload
@@ -216,7 +221,7 @@ def handle_telemetry_message(
             "explanation": explanation,
             "anomalies": anomaly_reasons,
             "telemetry": telemetry,
-            "error": str(exc)
+            "error": str(exc),
         }
 
 
@@ -224,6 +229,7 @@ def create_mqtt_client(client_id: str = "exboncp-ai-pipeline") -> mqtt.Client:
     """Creates an MQTT client with version fallback."""
     try:
         from paho.mqtt.enums import CallbackAPIVersion
+
         client = mqtt.Client(CallbackAPIVersion.VERSION2, client_id=client_id)
     except (ImportError, AttributeError):
         client = mqtt.Client(client_id=client_id)
@@ -245,7 +251,9 @@ def start_subscriber() -> None:
     def on_connect(mqtt_client, userdata, flags, *args):
         rc = args[0] if args else 0
         if (hasattr(rc, "is_failure") and not rc.is_failure) or rc == 0:
-            logger.info("Connected to MQTT Broker at %s:%d", config["broker_host"], config["broker_port"])
+            logger.info(
+                "Connected to MQTT Broker at %s:%d", config["broker_host"], config["broker_port"]
+            )
             mqtt_client.subscribe(config["topic"], qos=0)
             logger.info("Subscribed to topic '%s' (QoS 0)", config["topic"])
         else:
