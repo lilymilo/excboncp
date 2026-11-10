@@ -194,3 +194,188 @@ Operational metrics: users by role, tasks by status, registered credentials by p
 ### `GET /api/monitoring/audit-logs`
 Query immutable audit logs with pagination and filters (`action`, `user_id`, `limit`, `offset`).
 - **Access:** `owner` and `auditor` roles only.
+
+---
+
+## 6. Public Ledger Verification
+
+### `GET /verify/{id}`
+Recompute one SHA-256 ledger block and check its link to the previous block.
+`id` is the integer `block_index` (`1`, `2`, ...). Public — no authentication.
+- **Response (200 OK):**
+  ```json
+  {
+    "id": 1,
+    "valid": true,
+    "hash_matches": true,
+    "link_matches": true,
+    "canonical": true,
+    "chain_valid": true,
+    "first_invalid_block": null,
+    "prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "payload": {
+      "parcel_id": "PARCEL-A",
+      "timestamp": "2026-11-08T08:10:06Z",
+      "co2e_t": 142.85,
+      "status": "VERIFIED",
+      "sensor_summary": {
+        "avg_temp_c": 24.27,
+        "avg_humidity_pct": 82.53,
+        "avg_soil_pct": 57.1
+      },
+      "ndvi_mean": 0.78
+    },
+    "hash": "<stored SHA-256>",
+    "recomputed_hash": "<recomputed SHA-256>",
+    "eas_uid": null,
+    "approved_by": "auditor_demo",
+    "reason": null,
+    "message": "Cocok dengan ledger, belum dikunci ke EAS."
+  }
+  ```
+- **Not found (404):**
+  ```json
+  {"detail": "Entri ledger tidak ditemukan."}
+  ```
+- **Tampered block (200, `valid=false`):** `reason` is one of
+  `invalid_json`, `non_canonical`, `prev_hash_mismatch`, `hash_mismatch`, or
+  `earlier_block_invalid`. The response still includes the stored entry so the
+  L7 screen can show which value no longer matches.
+- **Demo data:** `python -m server.seed` appends two simulation `PARCEL-A`
+  blocks when the ledger is empty, so `/verify/1` and `/verify/2` work
+  immediately. Both have `eas_uid: null` until Day 3 anchoring.
+
+---
+
+## 7. Blockchain — EAS Attestation (Day 3, R7)
+
+Schema registration and anchoring require an authenticated user with the
+`auditor` role. Listing and status endpoints accept any authenticated role;
+`simulation-status` is public.
+
+### `POST /blockchain/register-schema`
+
+Register the ExcbonCP EAS schema (`ParcelAttestation`) with the Schema Registry
+on Base Sepolia. Idempotent: a second call reuses the existing local
+`eas_registrations` row and does not send another transaction.
+
+- **Request:** none (auditor role enforced via JWT)
+- **Response (200 OK):**
+  ```json
+  {
+    "registered": true,
+    "schema_id": "0x3f...a7",
+    "schema_name": "ParcelAttestation",
+    "schema": "string parcelId,string parcelStatus,uint256 co2eMetricTons,bytes32 ledgerBlockHash,string metadataURI,address auditor",
+    "transaction_hash": null,
+    "message": "Schema registered (simulation mode)."
+  }
+  ```
+- **Simulation mode:** `transaction_hash` is `null` and the schema UID is the
+  local `keccak256(schema)` identifier.
+- **502 Bad Gateway:** schema registration failed.
+
+### `POST /blockchain/attest/{block_index}?auditor_username=...`
+
+Anchor a verified ledger block to Base Sepolia via EAS. The service verifies
+the local hash chain first, rejects non-`VERIFIED` and already-anchored blocks,
+checks the auditor role, registers the schema if needed, creates the
+attestation, and updates `ledger_blocks.eas_uid`.
+
+- **Path parameter:** `block_index` — integer ledger block index (e.g. `1`)
+- **Query parameter:** `auditor_username` — optional; when supplied it must
+  match the authenticated auditor. The service records the authenticated user.
+- **Access:** auditor only
+- **Response (200 OK):**
+  ```json
+  {
+    "success": true,
+    "block_index": 1,
+    "eas_attestation_uid": "0x1a...3f",
+    "transaction_hash": "0x9b...2c",
+    "on_chain": true,
+    "message": "Attestation anchored to Base Sepolia."
+  }
+  ```
+- **Simulation mode:** `on_chain` is `false`, the UID/tx hash are local
+  simulation values, and no gas is spent.
+- **403:** authenticated user is not an auditor, or `auditor_username` does not
+  match the token identity.
+- **404:** ledger block not found.
+- **409 Conflict:** block already attested.
+- **400 Bad Request:** hash verification failed, block is not `VERIFIED`, or
+  CO2e is not positive.
+
+### `GET /blockchain/attestations`
+
+List ledger blocks that have been attested to EAS.
+
+- **Query parameter:** `limit` — max rows (default 50, max 100)
+- **Access:** any authenticated role
+- **Response (200 OK):** array of
+  `{ id, parcel_id, hash, eas_uid, tx_hash, schema_uid, on_chain, attested_at, block_index }`
+
+### `GET /blockchain/status/{block_index}`
+
+Check anchoring status of a specific ledger block.
+
+- **Path parameter:** `block_index` — integer ledger block index
+- **Access:** any authenticated role
+- **Response (200 OK):**
+  ```json
+  {
+    "block_index": 1,
+    "attested": "true",
+    "eas_uid": "0x1a...3f",
+    "on_chain": "true",
+    "hash": "9f...ab",
+    "tx_hash": "0x9b...2c",
+    "attested_at": "2026-11-12T12:05:00+00:00",
+    "message": "Block 1 anchored to EAS (UID: 0x1a...3f)"
+  }
+  ```
+  or
+  ```json
+  {
+    "block_index": 2,
+    "attested": "false",
+    "eas_uid": null,
+    "on_chain": "false",
+    "hash": "8a...cd",
+    "tx_hash": null,
+    "attested_at": null,
+    "message": "Block 2 not yet anchored to EAS"
+  }
+  ```
+- **Not found (404):** ledger block does not exist
+
+### `GET /blockchain/simulation-status`
+
+Return the current EAS simulation mode status (no authentication required).
+
+- **Response (200 OK):**
+  ```json
+  {
+    "simulation_mode": true,
+    "chain_id": 84532,
+    "rpc": "https://sepolia.base.org",
+    "auditor_configured": false,
+    "message": "Simulation mode: no real blockchain transactions..."
+  }
+  ```
+
+### Environment Variables
+
+- `EVM_PRIVATE_KEY` — auditor EVM private key (Base Sepolia)
+- `EVM_RPC_URL` — Base Sepolia RPC endpoint (Alchemy/Infura recommended)
+- `EVM_RPC_URL_PUBLIC` — public RPC fallback (`https://sepolia.base.org`)
+- `EVM_CHAIN_ID` — 84532 (Base Sepolia)
+- `EAS_SCHEMA_REGISTRY` — 0x4200000000000000000000000000000000000020
+- `EAS_ADDRESS` — 0x4200000000000000000000000000000000000021
+- `EVM_SIMULATION_MODE` — true (default) or false
+- `AUDITOR_USERNAME` — default human auditor (`auditor_demo`)
+
+A missing or malformed `EVM_PRIVATE_KEY` forces simulation mode; the server
+stays online and never sends an unsigned transaction.
+
+See `docs/contract.md` §7 for the full Day 3 implementation notes.

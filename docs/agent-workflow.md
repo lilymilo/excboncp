@@ -33,7 +33,7 @@ To ensure clear traceability and context transfer between specialized agents, al
   "from": "architect",
   "to": "backend",
   "decision": "ADR-006",
-  "action": "Implement SHA-256 hash chaining algorithm in src/core/ledger.py",
+  "action": "Implement SHA-256 hash chaining algorithm in server/ledger/service.py",
   "acceptance_criteria": [
     "Canonical JSON formatting enforced",
     "Previous block hash validated before appending",

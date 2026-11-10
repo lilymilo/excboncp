@@ -21,9 +21,11 @@ from server.auth.router import router as auth_router
 from server.config import settings
 from server.credentials.router import router as credentials_router
 from server.database import close_db, init_db
+from server.ledger.router import router as ledger_router
 from server.market.router import router as market_router
 from server.monitoring.router import router as monitoring_router
 from server.tasks.router import router as tasks_router
+from src.blockchain.router import router as blockchain_router
 
 # Configure logging
 logging.basicConfig(
@@ -73,6 +75,8 @@ app.include_router(credentials_router)
 app.include_router(agents_router)
 app.include_router(tasks_router)
 app.include_router(monitoring_router)
+app.include_router(ledger_router)
+app.include_router(blockchain_router)
 app.include_router(market_router)
 
 

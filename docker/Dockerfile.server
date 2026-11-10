@@ -21,6 +21,8 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # Copy server code
 COPY server/ ./server/
+# Copy shared modules imported by server.main (e.g. src.blockchain, Day 3 EAS)
+COPY src/ ./src/
 
 # Create data directory with correct ownership
 RUN mkdir -p /app/data && chown -R excboncp:excboncp /app

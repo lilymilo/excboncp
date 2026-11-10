@@ -13,6 +13,7 @@ import aiosqlite
 import pytest
 
 from server.auth.service import authenticate_user, verify_password
+from server.ledger.service import GENESIS_HASH, verify_chain
 from server.seed import load_seed_data, seed_demo_data
 
 SEED_PASSWORD = "SeedTestPassword123!"
@@ -30,6 +31,7 @@ async def test_seed_loads_parcels_accounts_and_readings(
     assert counts["consent_records"] == 1
     assert counts["sensor_readings"] == 6
     assert counts["status_results"] == 2
+    assert counts["ledger_blocks"] == 2
 
     async with test_db.execute("SELECT id, current_status FROM parcels ORDER BY id") as cursor:
         parcels = {row["id"]: row["current_status"] for row in await cursor.fetchall()}
@@ -80,6 +82,20 @@ async def test_seed_loads_parcels_accounts_and_readings(
     assert reading["soil_raw"] == 2310
     assert reading["soil_pct"] == 57.0
     assert reading["source"] == "simulator"
+
+    async with test_db.execute(
+        "SELECT block_index, prev_hash, current_hash, eas_uid FROM ledger_blocks ORDER BY block_index"
+    ) as cursor:
+        blocks = await cursor.fetchall()
+
+    assert len(blocks) == 2
+    assert blocks[0]["prev_hash"] == GENESIS_HASH
+    assert blocks[1]["prev_hash"] == blocks[0]["current_hash"]
+    assert all(block["eas_uid"] is None for block in blocks)
+
+    chain = await verify_chain(test_db)
+    assert chain["valid"] is True
+    assert chain["blocks_checked"] == 2
 
 
 async def test_seeded_account_can_authenticate(test_db: aiosqlite.Connection) -> None:

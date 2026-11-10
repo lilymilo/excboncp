@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "BeforeTool": [
+      {
+        "matcher": "read_file|list_directory",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v graphify >/dev/null 2>&1 && graphify hook-guard gemini || true"
+          }
+        ]
+      }
+    ]
+  }
+}

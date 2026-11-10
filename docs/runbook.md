@@ -29,9 +29,21 @@ SEED_DEMO_PASSWORD='choose-a-demo-password' ./.venv/bin/python -m server.seed
 docker compose exec server python -m server.seed
 ```
 The seed is idempotent and creates parcels A/B, two zones, five demo accounts,
-consent for parcel A, simulated sensor readings, and status snapshots. All records
-are fictional. The password is hashed with the project's bcrypt helper and is never
-stored in `server/seed.json`.
+consent for parcel A, simulated sensor readings, status snapshots, and two
+simulation-only ledger blocks for parcel A. All records are fictional. The
+password is hashed with the project's bcrypt helper and is never stored in
+`server/seed.json`.
+
+Verify the demo ledger without logging in:
+
+```bash
+curl -s http://localhost:8000/verify/1 | python3 -m json.tool
+curl -s http://localhost:8000/verify/2 | python3 -m json.tool
+```
+
+`valid: true` means the stored hash, the link to the previous block, and every
+earlier block match. Both demo blocks have `eas_uid: null` until Day 3 EAS
+anchoring. If the ledger already contains any block, the seed leaves it alone.
 
 ### 1.1.2 Windows Setup Helper (PowerShell)
 ```powershell
