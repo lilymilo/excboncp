@@ -1,5 +1,6 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <HTTPClient.h>
 #include <DHTesp.h>
 #include <time.h>
 #include <mbedtls/md.h>
@@ -50,6 +51,35 @@ const float TEMP_THRESHOLD = 0.5;
 unsigned long lastSampleTime    = 0;
 unsigned long lastHeartbeatTime = 0;
 unsigned long lastMqttRetry     = 0;
+unsigned long lastLocationTry   = 0;
+
+// Location comes from network IP geolocation with initial centroid fallback.
+float nodeLat = -0.12345;
+float nodeLon = 109.12345;
+bool  hasLocation = false;
+
+bool readJsonNumber(const String& json, const char* key, float& out) {
+  int at = json.indexOf(String("\"") + key + "\":");
+  if (at < 0) return false;
+  out = json.substring(at + strlen(key) + 3).toFloat();
+  return true;
+}
+
+void autoDetectLocation() {
+  lastLocationTry = millis();
+  HTTPClient http;
+  http.setTimeout(3000);
+  http.begin("http://ip-api.com/json/?fields=status,lat,lon");
+  if (http.GET() == 200) {
+    String body = http.getString();
+    if (body.indexOf("\"success\"") >= 0 && readJsonNumber(body, "lat", nodeLat) &&
+        readJsonNumber(body, "lon", nodeLon)) {
+      hasLocation = true;
+      Serial.printf("[OK] Lokasi terdeteksi: %.5f, %.5f\n", nodeLat, nodeLon);
+    }
+  }
+  http.end();
+}
 
 void connectWiFi() {
   Serial.print("Menghubungkan ke Wi-Fi");
@@ -71,6 +101,9 @@ void connectWiFi() {
   if (getLocalTime(&timeinfo, 5000)) {
     Serial.println("[OK] Waktu NTP berhasil disinkronkan.");
   }
+
+  Serial.println("Mendeteksi lokasi jaringan...");
+  autoDetectLocation();
 }
 
 String getDetailedTimestampJSON() {
@@ -119,13 +152,35 @@ String computeSignature(const char* data, const char* secret) {
   return String(hex);
 }
 
+int computeFireLevel(float temp, bool flame, float soil) {
+  if (flame || temp >= 65.0) return 3; // BAHAYA (Api nyata atau panas ekstrem)
+  if (temp >= 55.0 || (temp >= 48.0 && soil < 20.0)) return 2; // SIAGA
+  if (temp >= 42.0 || (temp >= 35.0 && soil < 50.0)) return 1; // WASPADA (Panas + tanah mengering)
+  return 0; // NORMAL (Suhu sejuk < 35C atau tanah lembap meredam panas)
+}
+
+const char* getFireStatus(int level) {
+  switch (level) {
+    case 3: return "BAHAYA";
+    case 2: return "SIAGA";
+    case 1: return "WASPADA";
+    default: return "NORMAL";
+  }
+}
+
 void publishTelemetry(float soilMoisture, float suhu, float kelembapan, bool currentFlame, const char* eventTag) {
   time_t epochNow;
   time(&epochNow);
   unsigned long ts = (unsigned long)epochNow;
 
-  int smoke = currentFlame ? 500 : 25;
-  int sound = currentFlame ? 75 : 30;
+  int fireLevel = computeFireLevel(suhu, currentFlame, soilMoisture);
+  const char* fireStatus = getFireStatus(fireLevel);
+
+  // Jika level mencapai BAHAYA (panas api nyata >= 65C atau sensor optik), flame otomatis aktif.
+  bool isFlameActive = currentFlame || (fireLevel == 3);
+
+  int smoke = isFlameActive ? 500 : 25;
+  int sound = isFlameActive ? 75 : 30;
 
   struct tm timeinfo;
   char isoStr[32];
@@ -136,21 +191,25 @@ void publishTelemetry(float soilMoisture, float suhu, float kelembapan, bool cur
   }
 
   char sigData[128];
-  snprintf(sigData, sizeof(sigData), "%s|%s|%d|%.1f", NODE_ID, isoStr, currentFlame ? 1 : 0, suhu);
+  snprintf(sigData, sizeof(sigData), "%s|%s|%d|%.1f", NODE_ID, isoStr, isFlameActive ? 1 : 0, suhu);
   String signature = computeSignature(sigData, SENSOR_SECRET);
 
   String timestampJSON = getDetailedTimestampJSON();
 
-  char payload[768];
+  char payload[1024];
   snprintf(payload, sizeof(payload),
            "{\"node_id\":\"%s\",\"device_id\":\"%s\",\"ts\":\"%s\",\"timestamp\":%s,"
+           "\"lat\":%.5f,\"lon\":%.5f,"
+           "\"fire_level\":%d,\"fire_status\":\"%s\","
            "\"soil_moisture\":%.1f,\"soil_pct\":%.1f,\"temperature\":%.1f,\"temp_c\":%.1f,"
            "\"humidity_pct\":%.1f,\"smoke\":%d,\"sound\":%d,\"flame\":%d,"
            "\"flame_detected\":%s,\"source\":\"esp\",\"sig\":\"%s\"}",
            NODE_ID, NODE_ID, isoStr, timestampJSON.c_str(),
+           nodeLat, nodeLon,
+           fireLevel, fireStatus,
            soilMoisture, soilMoisture, suhu, suhu,
-           kelembapan, smoke, sound, currentFlame ? 1 : 0,
-           currentFlame ? "true" : "false", signature.c_str());
+           kelembapan, smoke, sound, isFlameActive ? 1 : 0,
+           isFlameActive ? "true" : "false", signature.c_str());
 
   Serial.print("[");
   Serial.print(eventTag);
@@ -191,12 +250,17 @@ void setup() {
 
   connectWiFi();
   mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
-  mqttClient.setBufferSize(768); // Accommodates ISO timestamp and SHA-256 signature fields.
+  mqttClient.setBufferSize(1024); // Accommodates ISO timestamp, SHA-256 signature and location fields.
 }
 
 void loop() {
   if (WiFi.status() != WL_CONNECTED) {
     connectWiFi();
+  }
+
+  // Retry until the first successful lookup, then keep the cached fix.
+  if (!hasLocation && millis() - lastLocationTry >= 30000) {
+    autoDetectLocation();
   }
 
   if (!mqttClient.connected()) {

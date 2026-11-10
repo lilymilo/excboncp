@@ -55,28 +55,35 @@ def verify_telemetry_signature(
     if not normalized_sig.startswith("0x"):
         normalized_sig = "0x" + normalized_sig
 
+    ts_variants = [ts]
+    if "+07:00" in ts:
+        ts_variants.append(ts.replace("+07:00", "Z"))
+    elif ts.endswith("Z"):
+        ts_variants.append(ts[:-1] + "+07:00")
+
     secrets = [secret, "cboncp-shared-device-secret", "EXCBONCP_DEMO_SECRET"]
     for s in secrets:
-        c1 = compute_wire_signature(device_id, ts, flame, temp_c, s).lower()
-        if normalized_sig == c1:
-            return True
+        for t in ts_variants:
+            c1 = compute_wire_signature(device_id, t, flame, temp_c, s).lower()
+            if normalized_sig == c1:
+                return True
 
-        sig_raw_alt = f"{device_id}|{ts}|{flame}|{temp_c}{s}"
-        c2 = ("0x" + hashlib.sha256(sig_raw_alt.encode("utf-8")).hexdigest()).lower()
-        if normalized_sig == c2:
-            return True
+            sig_raw_alt = f"{device_id}|{t}|{flame}|{temp_c}{s}"
+            c2 = ("0x" + hashlib.sha256(sig_raw_alt.encode("utf-8")).hexdigest()).lower()
+            if normalized_sig == c2:
+                return True
 
-        # Candidate 3: Hardware ESP32 legacy format with smoke and sound.
-        smoke = 500 if flame == 1 else 25
-        sound = 75 if flame == 1 else 30
-        c_esp = (
-            "0x"
-            + hashlib.sha256(
-                f"{device_id}|{ts}|{smoke}|{temp_c:.1f}|{sound}{s}".encode()
-            ).hexdigest()
-        ).lower()
-        if normalized_sig == c_esp:
-            return True
+            # Candidate 3: Hardware ESP32 legacy format with smoke and sound.
+            smoke = 500 if flame == 1 else 25
+            sound = 75 if flame == 1 else 30
+            c_esp = (
+                "0x"
+                + hashlib.sha256(
+                    f"{device_id}|{t}|{smoke}|{temp_c:.1f}|{sound}{s}".encode()
+                ).hexdigest()
+            ).lower()
+            if normalized_sig == c_esp:
+                return True
 
     # Candidate 4: JSON-normalized format from gateway.
     if soil_pct is not None:

@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 
 from server.database import get_db
 from server.seed import seed_demo_data
+from server.sensor.service import evaluate_fire_level, resolve_sensor_flag
 from server.sensor.signature import compute_wire_signature, verify_telemetry_signature
 
 
@@ -126,15 +127,10 @@ def test_accept_simulator_null_signature(test_client: TestClient, seeded_sensor_
     assert resp.json()["parcel_id"] == "PARCEL-A"
 
 
-def test_sensor_flag_triggered_on_fire_and_heat(
-    test_client: TestClient, seeded_sensor_db: None
-) -> None:
+def _post_reading(
+    client: TestClient, ts: str, temp: float, flame: int, soil: float = 55.0, **extra: object
+) -> dict:
     device = "node-1"
-    ts = "2026-11-10T10:25:00Z"
-    flame = 1
-    temp = 41.5
-    sig = compute_wire_signature(device, ts, flame, temp)
-
     payload = {
         "device_id": device,
         "ts": ts,
@@ -142,21 +138,81 @@ def test_sensor_flag_triggered_on_fire_and_heat(
         "humidity_pct": 45.0,
         "flame": flame,
         "soil_raw": 1800,
-        "soil_pct": 30.0,
+        "soil_pct": soil,
         "source": "esp",
-        "sig": sig,
+        "sig": compute_wire_signature(device, ts, flame, temp),
+        **extra,
     }
-    resp = test_client.post("/api/sensor/readings", json=payload)
+    resp = client.post("/api/sensor/readings", json=payload)
     assert resp.status_code == 201
-    data = resp.json()
+    return resp.json()
 
-    assert data["sensor_flag"] is True
-    assert len(data["warning_reasons"]) >= 2
+
+def test_fire_level_matrix() -> None:
+    # Cool temperatures (< 35°C) are always NORMAL even with dry soil.
+    assert evaluate_fire_level(24.0, 0, 10.0, [])[0] == 0
+    assert evaluate_fire_level(27.0, 0, 60.0, [])[0] == 0
+
+    # WASPADA triggers when heat (>= 35°C) meets dry soil (< 50%), or on scorching heat (>= 42°C).
+    assert evaluate_fire_level(38.0, 0, 30.0, [])[0] == 1
+    assert evaluate_fire_level(43.0, 0, 60.0, [])[0] == 1
+    # Wet soil absorbs warm heat (36°C with 60% soil remains NORMAL).
+    assert evaluate_fire_level(36.0, 0, 60.0, [])[0] == 0
+
+    # SIAGA triggers on high heat with arid soil, pre-fire thermal, or single flame flicker.
+    assert evaluate_fire_level(50.0, 0, 15.0, [])[0] == 2
+    assert evaluate_fire_level(56.0, 0, 60.0, [])[0] == 2
+    assert evaluate_fire_level(27.0, 1, 60.0, [])[0] == 2
+    assert evaluate_fire_level(27.0, 1, 60.0, [1])[0] == 2
+
+    # BAHAYA triggers on 3 consecutive flames or actual fire combustion temperature (>= 65°C).
+    assert evaluate_fire_level(27.0, 1, 60.0, [1, 1])[0] == 3
+    assert evaluate_fire_level(66.0, 0, 60.0, [])[0] == 3
+
+
+def test_sensor_flag_clears_after_ten_normal_readings() -> None:
+    assert resolve_sensor_flag(0, True, [0] * 8) is True  # only 9 normal in a row
+    assert resolve_sensor_flag(0, True, [0] * 9) is False
+    assert resolve_sensor_flag(1, True, [0] * 9) is True
+    assert resolve_sensor_flag(2, False, [0] * 9) is False
+
+
+def test_fire_needs_three_consecutive_flames(
+    test_client: TestClient, seeded_sensor_db: None
+) -> None:
+    first = _post_reading(test_client, "2026-11-10T10:25:00Z", 41.5, 1)
+    assert first["fire_level"] == 2
+    assert first["fire_status"] == "SIAGA"
+    assert first["sensor_flag"] is False
+
+    _post_reading(test_client, "2026-11-10T10:25:05Z", 41.5, 1)
+    third = _post_reading(test_client, "2026-11-10T10:25:10Z", 41.5, 1)
+    assert third["fire_level"] == 3
+    assert third["fire_status"] == "BAHAYA"
+    assert third["sensor_flag"] is True
+    assert len(third["warning_reasons"]) >= 1
 
     # Verify parcel transitioned to WARNING.
     summary_resp = test_client.get("/api/market/parcels/PARCEL-A/settlement")
     assert summary_resp.status_code == 200
     assert summary_resp.json()["current_status"] == "WARNING"
+
+
+def test_location_is_stored_or_falls_back_to_parcel_centroid(
+    test_client: TestClient, seeded_sensor_db: None
+) -> None:
+    sent = _post_reading(test_client, "2026-11-10T11:00:00Z", 27.0, 0, lat=-6.2, lon=106.8)
+    assert (sent["lat"], sent["lon"]) == (-6.2, 106.8)
+
+    fallback = _post_reading(test_client, "2026-11-10T11:00:05Z", 27.0, 0)
+    assert fallback["lat"] == pytest.approx(0.1)
+    assert fallback["lon"] == pytest.approx(100.1)
+
+
+def test_market_alias_route(test_client: TestClient, seeded_sensor_db: None) -> None:
+    resp = test_client.get("/api/market/PARCEL-A")
+    assert resp.status_code == 200
+    assert resp.json()["parcel_id"] == "PARCEL-A"
 
 
 def test_reject_unregistered_device(test_client: TestClient, seeded_sensor_db: None) -> None:

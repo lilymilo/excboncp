@@ -150,6 +150,10 @@ CREATE TABLE IF NOT EXISTS sensor_readings (
     source       TEXT NOT NULL CHECK (source IN ('esp', 'simulator')),
     sig          TEXT,
     received_at  TEXT NOT NULL,
+    lat          REAL,
+    lon          REAL,
+    fire_level   INTEGER NOT NULL DEFAULT 0 CHECK (fire_level BETWEEN 0 AND 3),
+    sensor_flag  INTEGER NOT NULL DEFAULT 0 CHECK (sensor_flag IN (0, 1)),
     FOREIGN KEY (parcel_id) REFERENCES parcels(id) ON DELETE CASCADE
 );
 
@@ -277,6 +281,18 @@ async def _migrate_schema(db: aiosqlite.Connection) -> None:
     The users table existed before R23 introduced ``email``, ``parcel_id`` and
     ``zone_id``.  These columns are added without dropping or rewriting data.
     """
+    sensor_columns = await _table_columns(db, "sensor_readings")
+    sensor_additions = {
+        "lat": "REAL",
+        "lon": "REAL",
+        "fire_level": "INTEGER NOT NULL DEFAULT 0",
+        "sensor_flag": "INTEGER NOT NULL DEFAULT 0",
+    }
+    for column, column_type in sensor_additions.items():
+        if sensor_columns and column not in sensor_columns:
+            await db.execute(f"ALTER TABLE sensor_readings ADD COLUMN {column} {column_type}")
+            logger.info("Migrated sensor_readings table: added column %s", column)
+
     columns = await _table_columns(db, "users")
     if not columns:
         return

@@ -17,6 +17,10 @@ class SensorReadingWire(BaseModel):
     soil_pct: float = Field(..., ge=0, le=100, description="Calibrated soil percentage")
     source: Literal["esp", "simulator"] = Field("esp", description="Data source provider")
     sig: str | None = Field(None, description="SHA-256 signature when enabled")
+    lat: float | None = Field(None, ge=-90, le=90, description="Auto-detected latitude")
+    lon: float | None = Field(None, ge=-180, le=180, description="Auto-detected longitude")
+    fire_level: int | None = Field(None, ge=0, le=3, description="Edge-computed fire level")
+    fire_status: str | None = Field(None, description="Edge-computed fire status label")
 
 
 class SensorReadingResponse(BaseModel):
@@ -32,6 +36,10 @@ class SensorReadingResponse(BaseModel):
     source: str
     sig: str | None = None
     received_at: str
+    lat: float | None = None
+    lon: float | None = None
+    fire_level: int = Field(0, ge=0, le=3, description="0=NORMAL, 1=WASPADA, 2=SIAGA, 3=BAHAYA")
+    fire_status: str = "NORMAL"
     sensor_flag: bool = False
     warning_reasons: list[str] = Field(default_factory=list)
 

@@ -32,15 +32,17 @@ def _normalize_payload(raw: dict[str, Any]) -> dict[str, Any] | None:
     if not device_id:
         return None
 
-    raw_ts = raw.get("timestamp")
-    if isinstance(raw_ts, dict) and raw_ts.get("iso8601"):
-        ts = raw_ts.get("iso8601")
-    elif isinstance(raw_ts, str) and raw_ts:
-        ts = raw_ts
-    elif raw.get("ts") and isinstance(raw.get("ts"), str):
-        ts = raw.get("ts")
+    # Prioritize top-level wire timestamp string 'ts' per Blueprint v5 Model 3 contract.
+    if raw.get("ts") and isinstance(raw["ts"], str):
+        ts = raw["ts"]
+    elif isinstance(raw.get("timestamp"), dict) and raw["timestamp"].get("iso8601"):
+        ts = raw["timestamp"]["iso8601"]
+    elif isinstance(raw.get("timestamp"), str) and raw["timestamp"]:
+        ts = raw["timestamp"]
     elif isinstance(raw.get("ts"), (int, float)):
-        ts = datetime.fromtimestamp(float(raw["ts"]), tz=UTC).isoformat()
+        ts = datetime.fromtimestamp(float(raw["ts"]), tz=UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+    elif isinstance(raw.get("timestamp"), (int, float)):
+        ts = datetime.fromtimestamp(float(raw["timestamp"]), tz=UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
     else:
         ts = "2026-11-10T12:00:00Z"
 
@@ -55,6 +57,10 @@ def _normalize_payload(raw: dict[str, Any]) -> dict[str, Any] | None:
     if flame_val is None:
         flame_val = 1 if raw.get("flame_detected") is True else 0
 
+    geo = raw.get("location") if isinstance(raw.get("location"), dict) else raw
+    lat = geo.get("lat", geo.get("latitude"))
+    lon = geo.get("lon", geo.get("longitude"))
+
     return {
         "device_id": str(device_id),
         "ts": str(ts),
@@ -65,6 +71,10 @@ def _normalize_payload(raw: dict[str, Any]) -> dict[str, Any] | None:
         "soil_pct": float(soil),
         "source": raw.get("source", "esp"),
         "sig": raw.get("sig"),
+        "lat": lat,
+        "lon": lon,
+        "fire_level": raw.get("fire_level"),
+        "fire_status": raw.get("fire_status"),
     }
 
 
@@ -87,14 +97,29 @@ async def process_message(payload_bytes: bytes) -> None:
     db = await get_db()
     try:
         saved = await store_sensor_reading(db, wire)
-        logger.info(
-            "Stored reading %s for parcel %s (temp=%.1fC, flame=%d, flag=%s)",
-            saved.id,
-            saved.parcel_id,
-            saved.temp_c,
-            saved.flame,
-            saved.sensor_flag,
-        )
+        if saved.sensor_flag or saved.fire_level >= 2:
+            logger.warning(
+                "[%s] Stored reading %s for parcel %s (temp=%.1fC, flame=%d, flag=%s, reasons=%s)",
+                saved.fire_status,
+                saved.id,
+                saved.parcel_id,
+                saved.temp_c,
+                saved.flame,
+                saved.sensor_flag,
+                "; ".join(saved.warning_reasons)
+                if saved.warning_reasons
+                else "Bahaya terkonfirmasi",
+            )
+        else:
+            logger.info(
+                "[%s] Stored reading %s for parcel %s (temp=%.1fC, flame=%d, flag=%s)",
+                saved.fire_status,
+                saved.id,
+                saved.parcel_id,
+                saved.temp_c,
+                saved.flame,
+                saved.sensor_flag,
+            )
     except ValueError as exc:
         logger.warning("Rejected sensor message: %s", exc)
 
