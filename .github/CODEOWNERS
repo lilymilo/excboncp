@@ -1,0 +1,19 @@
+# Default owner
+* @lilymilo
+
+# Server
+/server/ @lilymilo
+/docker/ @lilymilo
+
+# IoT/Firmware
+/firmware/ @lilymilo
+
+# Frontend
+/frontend/ @lilymilo
+
+# Documentation
+/docs/ @lilymilo
+
+# Infrastructure
+/scripts/ @lilymilo
+/.github/ @lilymilo

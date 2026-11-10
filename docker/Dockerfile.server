@@ -1,0 +1,36 @@
+FROM python:3.14-slim
+
+LABEL maintainer="ExcbonCP Team"
+LABEL description="ExcbonCP Central Engineering Server"
+
+WORKDIR /app
+
+# Security: create non-root user
+RUN groupadd -r excboncp && \
+    useradd -r -g excboncp -d /app -s /sbin/nologin excboncp
+
+# Install system dependencies (if needed) and clean up
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies first (cache layer)
+COPY server/requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy server code
+COPY server/ ./server/
+
+# Create data directory with correct ownership
+RUN mkdir -p /app/data && chown -R excboncp:excboncp /app
+
+# Switch to non-root user
+USER excboncp
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')" || exit 1
+
+CMD ["python", "-m", "uvicorn", "server.main:app", "--host", "0.0.0.0", "--port", "8000"]

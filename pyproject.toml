@@ -1,0 +1,50 @@
+[project]
+name = "excboncp"
+version = "0.1.0"
+description = "ExcbonCP — Decentralized MRV Forest System"
+requires-python = ">=3.12"
+license = {text = "MIT"}
+authors = [
+    {name = "ExcbonCP Team"},
+]
+readme = "README.md"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+# The blueprint is an untracked reference document; its embedded snippets are not
+# project source and must not block repository-wide formatting checks.
+exclude = ["docs/Excboncp_Blueprint_System_Modeling_6_Hari_v5.md"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "S", "B", "A", "C4", "SIM"]
+ignore = ["S101", "S104", "S105", "S106", "S603", "S607", "S608", "B008", "E501", "B904"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101", "S105", "S106", "S107"]
+"scripts/**/*.py" = ["S603", "S607"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "-v --tb=short"
+
+[tool.coverage.run]
+source = ["server"]
+omit = ["tests/*", "scripts/*"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 60
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+]

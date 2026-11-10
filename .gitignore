@@ -1,32 +1,66 @@
-# Environment files
+# Environment variables and secrets
 .env
 .env.*
 !.env.example
-
-# Node dependencies and artifacts
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-coverage/
-dist/
-build/
-
-# Mosquitto persistence data
-mosquitto/data/
-mosquitto/log/
-*.db
+service_account.live.json
+*.private_key.json
 
 # Python artifacts
 __pycache__/
 *.py[cod]
 *$py.class
-.pytest_cache/
+*.so
+.Python
+env/
+venv/
+.venv/
+build/
+dist/
+.eggs/
+*.egg-info/
+*.egg
 
-# OS & Editor
+# Node.js
+node_modules/
+dist/
+build/
+.next/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Mosquitto
+mosquitto/data/
+mosquitto/log/
+
+# SQLite & Data
+*.db
+*.sqlite
+*.sqlite3
+data/
+!data/.gitkeep
+ai_pipeline/data/*.jsonl
+ai_pipeline/data/*.html
+!ai_pipeline/data/gee_cache.json
+
+# Logs & Testing
+logs/
+*.log
+.coverage
+htmlcov/
+.pytest_cache/
+coverage.xml
+
+# PlatformIO & IoT
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# OS and IDE files
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
 *.swp
-
+*.bak
+*.tmp

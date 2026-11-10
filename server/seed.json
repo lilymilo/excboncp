@@ -1,0 +1,237 @@
+{
+  "meta": {
+    "version": "1.0",
+    "description": "Simulation-only seed data for ExcbonCP Day 1. All parcels, zones, accounts, and readings are fictional demo data.",
+    "simulation": true,
+    "source": "Blueprint v5 Model 6"
+  },
+  "zones": [
+    {
+      "id": "ZONE-DEMO-A",
+      "name": "Zona contoh A (KEK) — simulasi",
+      "type": "kek",
+      "jurisdiction": "Simulasi",
+      "created_at": "2026-11-08T00:00:00Z"
+    },
+    {
+      "id": "ZONE-DEMO-B",
+      "name": "Zona contoh B (kota hijau) — simulasi",
+      "type": "kota",
+      "jurisdiction": "Simulasi",
+      "created_at": "2026-11-08T00:00:00Z"
+    }
+  ],
+  "parcels": [
+    {
+      "id": "PARCEL-A",
+      "name": "Lahan Demo A (simulasi)",
+      "polygon_geojson": "{\"type\":\"Polygon\",\"coordinates\":[[[100.0,0.0],[100.2,0.0],[100.2,0.2],[100.0,0.2],[100.0,0.0]]],\"properties\":{\"simulation\":true,\"label\":\"Lahan Demo A\"}}",
+      "area_hectares": 120.5,
+      "vegetation_type": "hutan sekunder (simulasi)",
+      "baseline_ndvi": 0.78,
+      "current_status": "VERIFIED",
+      "owner_wallet": "sim-wallet-parcel-a",
+      "created_at": "2026-11-08T00:00:00Z"
+    },
+    {
+      "id": "PARCEL-B",
+      "name": "Lahan Demo B (simulasi)",
+      "polygon_geojson": "{\"type\":\"Polygon\",\"coordinates\":[[[100.3,0.0],[100.5,0.0],[100.5,0.2],[100.3,0.2],[100.3,0.0]]],\"properties\":{\"simulation\":true,\"label\":\"Lahan Demo B\"}}",
+      "area_hectares": 85.0,
+      "vegetation_type": "hutan sekunder (simulasi)",
+      "baseline_ndvi": 0.72,
+      "current_status": "BLOCKED",
+      "owner_wallet": "sim-wallet-parcel-b",
+      "created_at": "2026-11-08T00:00:00Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "username": "revand",
+      "display_name": "Revand (seed owner — simulasi)",
+      "email": "revand@demo.excboncp.test",
+      "role": "owner",
+      "parcel_id": null,
+      "zone_id": null,
+      "is_active": 1,
+      "created_at": "2026-11-08T00:00:00Z",
+      "updated_at": "2026-11-08T00:00:00Z"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000002",
+      "username": "auditor_demo",
+      "display_name": "Auditor Demo (simulasi)",
+      "email": "auditor@demo.excboncp.test",
+      "role": "auditor",
+      "parcel_id": null,
+      "zone_id": null,
+      "is_active": 1,
+      "created_at": "2026-11-08T00:00:00Z",
+      "updated_at": "2026-11-08T00:00:00Z"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000003",
+      "username": "komunitas_a",
+      "display_name": "Komunitas Lahan A (simulasi)",
+      "email": "komunitas.a@demo.excboncp.test",
+      "role": "community",
+      "parcel_id": "PARCEL-A",
+      "zone_id": null,
+      "is_active": 1,
+      "created_at": "2026-11-08T00:00:00Z",
+      "updated_at": "2026-11-08T00:00:00Z"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000004",
+      "username": "pengelola_a",
+      "display_name": "Pengelola Lahan A (simulasi)",
+      "email": "pengelola.a@demo.excboncp.test",
+      "role": "manager",
+      "parcel_id": "PARCEL-A",
+      "zone_id": null,
+      "is_active": 1,
+      "created_at": "2026-11-08T00:00:00Z",
+      "updated_at": "2026-11-08T00:00:00Z"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000005",
+      "username": "penerima_a",
+      "display_name": "Penerima Zona A (simulasi)",
+      "email": "penerima.a@demo.excboncp.test",
+      "role": "receiver",
+      "parcel_id": null,
+      "zone_id": "ZONE-DEMO-A",
+      "is_active": 1,
+      "created_at": "2026-11-08T00:00:00Z",
+      "updated_at": "2026-11-08T00:00:00Z"
+    }
+  ],
+  "consent_records": [
+    {
+      "id": "CONSENT-A-GRANTED",
+      "parcel_id": "PARCEL-A",
+      "username": "komunitas_a",
+      "consent_state": "granted",
+      "signature": "simulated-signature-not-cryptographic",
+      "terms_version": "demo-v1",
+      "recorded_at": "2026-11-08T08:00:00Z"
+    }
+  ],
+  "sensor_readings": [
+    {
+      "id": "SEED-READ-A-001",
+      "parcel_id": "PARCEL-A",
+      "device_id": "sim-esp-a-01",
+      "ts": "2026-11-08T08:00:00Z",
+      "temp_c": 24.2,
+      "humidity_pct": 82.5,
+      "flame": 0,
+      "soil_raw": 2310,
+      "soil_pct": 57.0,
+      "source": "simulator",
+      "sig": null,
+      "received_at": "2026-11-08T08:00:05Z"
+    },
+    {
+      "id": "SEED-READ-A-002",
+      "parcel_id": "PARCEL-A",
+      "device_id": "sim-esp-a-01",
+      "ts": "2026-11-08T08:05:00Z",
+      "temp_c": 24.5,
+      "humidity_pct": 82.1,
+      "flame": 0,
+      "soil_raw": 2305,
+      "soil_pct": 57.5,
+      "source": "simulator",
+      "sig": null,
+      "received_at": "2026-11-08T08:05:05Z"
+    },
+    {
+      "id": "SEED-READ-A-003",
+      "parcel_id": "PARCEL-A",
+      "device_id": "sim-esp-a-01",
+      "ts": "2026-11-08T08:10:00Z",
+      "temp_c": 24.1,
+      "humidity_pct": 83.0,
+      "flame": 0,
+      "soil_raw": 2315,
+      "soil_pct": 56.8,
+      "source": "simulator",
+      "sig": null,
+      "received_at": "2026-11-08T08:10:05Z"
+    },
+    {
+      "id": "SEED-READ-B-001",
+      "parcel_id": "PARCEL-B",
+      "device_id": "sim-esp-b-01",
+      "ts": "2026-11-08T08:00:00Z",
+      "temp_c": 25.0,
+      "humidity_pct": 80.0,
+      "flame": 0,
+      "soil_raw": 2450,
+      "soil_pct": 52.0,
+      "source": "simulator",
+      "sig": null,
+      "received_at": "2026-11-08T08:00:05Z"
+    },
+    {
+      "id": "SEED-READ-B-002",
+      "parcel_id": "PARCEL-B",
+      "device_id": "sim-esp-b-01",
+      "ts": "2026-11-08T08:05:00Z",
+      "temp_c": 25.2,
+      "humidity_pct": 79.8,
+      "flame": 0,
+      "soil_raw": 2445,
+      "soil_pct": 52.3,
+      "source": "simulator",
+      "sig": null,
+      "received_at": "2026-11-08T08:05:05Z"
+    },
+    {
+      "id": "SEED-READ-B-003",
+      "parcel_id": "PARCEL-B",
+      "device_id": "sim-esp-b-01",
+      "ts": "2026-11-08T08:10:00Z",
+      "temp_c": 25.1,
+      "humidity_pct": 80.2,
+      "flame": 0,
+      "soil_raw": 2460,
+      "soil_pct": 51.8,
+      "source": "simulator",
+      "sig": null,
+      "received_at": "2026-11-08T08:10:05Z"
+    }
+  ],
+  "status_results": [
+    {
+      "id": "SEED-STATUS-A-001",
+      "parcel_id": "PARCEL-A",
+      "status": "VERIFIED",
+      "reasons": [
+        "Data simulasi Hari 1",
+        "Persetujuan komunitas tercatat"
+      ],
+      "rule_version": "seed-v0",
+      "sensor_flag": 0,
+      "consent_state": "granted",
+      "dispute_open": 0,
+      "computed_at": "2026-11-08T08:10:06Z"
+    },
+    {
+      "id": "SEED-STATUS-B-001",
+      "parcel_id": "PARCEL-B",
+      "status": "BLOCKED",
+      "reasons": [
+        "Data simulasi Hari 1",
+        "Belum ada persetujuan komunitas"
+      ],
+      "rule_version": "seed-v0",
+      "sensor_flag": 0,
+      "consent_state": "none",
+      "dispute_open": 0,
+      "computed_at": "2026-11-08T08:10:06Z"
+    }
+  ]
+}

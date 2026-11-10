@@ -1,123 +1,179 @@
-# CbonCP — IoT Node & DevOps CI/CD
+# ExcbonCP — Decentralized MRV Forest System
 
-Branch ini (`feat/IoT-node`) berisi konfigurasi dan implementasi lengkap modul **IoT Node** untuk sistem dMRV CbonCP, mencakup firmware ESP32, MQTT broker (Mosquitto), IoT Telemetry Gateway, kontainerisasi Docker, serta pipeline DevOps CI/CD berbasis GitHub Actions.
+[![CI](https://github.com/lilymilo/excboncp/actions/workflows/ci.yml/badge.svg)](https://github.com/lilymilo/excboncp/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
----
+## Overview
 
-## 🏗 Arsitektur Sistem
+ExcbonCP is a decentralized Monitoring, Reporting, and Verification (MRV) system for forest carbon credits. It combines IoT sensors, satellite imagery, blockchain attestation, and AI-powered anomaly detection to create a transparent and verifiable carbon credit ecosystem.
+
+## Architecture
 
 ```
-[ ESP32 Hardware / Wokwi Simulator ]
-                │
-         (Wi-Fi / TCP 1883)
-                ▼
-   [ Mosquitto MQTT Broker ] ◄─── (Port 9001: WebSockets)
-                │
-         (Internal Docker Net)
-                ▼
-  [ IoT Node Gateway & Ingest ] ───► HTTP API / Healthcheck (Port 5050)
-                │
-                └─► Canonical Attestation Schema (shared-schemas/)
+┌─────────────┐     ┌──────────────┐     ┌────────────────┐
+│  IoT Layer  │────▶│   Backend    │────▶│   Blockchain   │
+│ ESP32+MQTT  │     │ FastAPI+SQLite│     │ Base Sepolia   │
+└─────────────┘     └──────┬───────┘     └────────────────┘
+                           │
+                    ┌──────┴───────┐
+                    │   AI / ML    │
+                    │ Anomaly Det. │
+                    └──────┬───────┘
+                           │
+                    ┌──────┴───────┐
+                    │  Frontend    │
+                    │  DApp + Maps │
+                    └──────────────┘
 ```
 
-### Komponen:
-1. **ESP32 Firmware (`iot-node/sketch.ino`)**:
-   - Mendukung mode **Hardware Fisik** dan mode **Simulasi Wokwi**.
-   - Pembacaan sensor DHT22 (Suhu), Soil Moisture (Analog GPIO 34), dan Flame Detector (Active LOW GPIO 13).
-   - Sinkronisasi waktu presisi via NTP (WIB / Asia/Jakarta UTC+7).
-   - Mengirimkan event telemetri real-time melalui MQTT topic `CbonCP/node-1/telemetry`.
-2. **Mosquitto MQTT Broker (`mosquitto/`)**:
-   - Port 1883 (Standard MQTT TCP) untuk perangkat IoT.
-   - Port 9001 (MQTT over WebSockets) untuk dashboard web.
-3. **IoT Gateway Service (`iot-node/src/`)**:
-   - Microservice Node.js ringan (Alpine Linux) untuk menangani pesan telemetri.
-   - Validasi payload dan konversi ke skema kanonikal attestation payload (`toCanonicalIoTLayer()`).
-   - Perhitungan tanda tangan SHA-256 untuk integritas data.
-   - Endpoint HTTP `/health` dan `/api/telemetry`.
-   - Built-in simulator mode untuk CI/CD dan local testing tanpa hardware fisik.
+- **IoT Layer:** ESP32 sensors (DHT22, soil moisture, GPS) → MQTT
+- **Backend:** FastAPI REST API with SQLite, deterministic status engine
+- **Blockchain:** SHA-256 hash chain ledger, EAS attestation on Base Sepolia
+- **AI/ML:** Anomaly detection, satellite NDVI analysis, explainable AI
+- **Frontend:** DApp with interactive maps, carbon market simulation
+- **Engineering Server:** Multi-user AI agent orchestration with per-user credentials
 
----
+## Quick Start
 
-## 🔌 Pinout ESP32 (Hardware & Wokwi)
+### Prerequisites
 
-| Komponen / Sensor | Pin ESP32 | Keterangan |
-| :--- | :--- | :--- |
-| **DHT22** (Suhu) | GPIO 15 | Digital Data Sensor Suhu & Kelembaban |
-| **Soil Moisture** | GPIO 34 | ADC Input (Potensiometer simulasi kelembaban tanah) |
-| **Flame Detector** | GPIO 13 | Digital Input Active LOW (Pushbutton alarm api) |
-| **VCC Sensor** | 3V3 | Catu daya logika |
-| **GND** | GND | Ground bersama |
+- Docker and Docker Compose
+- Git
+- Python 3.12+ (for local development)
 
----
+### Central Engineering Server
 
-## 🐳 Menjalankan dengan Docker & Docker Compose
-
-### 1. Salin Konfigurasi Environment
 ```bash
+# 1. Clone the repository
+git clone https://github.com/lilymilo/excboncp.git
+cd excboncp
+
+# 2. Run setup (generates secrets, installs deps)
+chmod +x scripts/setup.sh
+./scripts/setup.sh
+
+# 3. Start the server with Docker
+./scripts/start-server.sh --mode docker
+
+# 4. Create the initial admin user
+python3 scripts/create-admin.py
+
+# 5. Access the server
+open http://localhost:8000/docs
+```
+
+### Development Setup
+
+```bash
+# 1. Create and activate a virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# 2. Install dependencies
+pip install -r server/requirements.txt
+
+# 3. Copy environment config
 cp .env.example .env
+python3 scripts/generate-secrets.py  # Copy output into .env
+
+# 4. Start in local mode with hot reload
+./scripts/start-server.sh --mode local
+
+# 5. Run tests
+pytest
+
+# 6. Optional: load simulation-only MRV demo data
+SEED_DEMO_PASSWORD='choose-a-demo-password' .venv/bin/python -m server.seed
 ```
 
-### 2. Jalankan Stack Kontainer
+### IoT Node & ESP32 Firmware
+
+ESP32 firmware (`iot-node/sketch.ino`) supports both physical ESP32 and Wokwi simulation:
+
+| Sensor / Component | ESP32 Pin | Description |
+| :--- | :--- | :--- |
+| **DHT22** (Temp/Humidity) | GPIO 15 | Digital temperature & relative humidity sensor |
+| **Soil Moisture** | GPIO 35 (or 34 in Wokwi) | ADC analog input for soil moisture calibration |
+| **Flame Detector** | GPIO 34 (or 13 in Wokwi) | Digital input for flame / fire detection alarm |
+
+Run mock sensor publisher for testing without physical hardware:
 ```bash
-docker compose up -d --build
+python scripts/mock_sensor.py --mode normal
+python scripts/mock_sensor.py --mode smoke
 ```
 
-### 3. Memeriksa Status Kontainer & Healthcheck
+### Windows (PowerShell)
+
+Windows teammates can use the Day 1 helper instead of the Bash scripts:
+
+```powershell
+# 1. Create .venv, install dependencies, generate .env, and prepare data/
+.\scripts\windows\day1.ps1 setup
+
+# 2. Run Ruff and pytest
+.\scripts\windows\day1.ps1 test
+
+# 3. Load the simulation-only demo data (prompts for a demo password)
+.\scripts\windows\day1.ps1 seed
+
+# 4. Start the local server
+.\scripts\windows\day1.ps1 serve
+```
+
+If PowerShell blocks local scripts, use the wrapper:
+
+```cmd
+.\scripts\windows\day1.cmd setup
+```
+
+Run `.\scripts\windows\day1.ps1 help` to see all actions, including
+`health`, `docker`, and `status`.
+
+### Docker Compose (Development)
+
 ```bash
-docker compose ps
+# Start with live code reload
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up
 ```
 
-### 4. Uji Endpoint Healthcheck & Telemetri
-- **Healthcheck:**
-  ```bash
-  curl http://localhost:5050/health
-  ```
-- **Data Telemetri Terbaru:**
-  ```bash
-  curl http://localhost:5050/api/telemetry
-  ```
-- **Simulasikan Injeksi Telemetri (Manual):**
-  ```bash
-  curl -X POST http://localhost:5050/api/telemetry/simulate
-  ```
+## Project Structure
 
----
-
-## 🧪 Pengujian Unit & Skema Lokal
-
-Jalankan test suite menggunakan Node.js test runner bawaan:
-
-```bash
-cd iot-node
-npm test
+```
+excboncp/
+├── server/              # FastAPI central engineering server
+│   ├── main.py          # Application entrypoint
+│   ├── config.py        # Configuration management
+│   ├── database.py      # SQLite database layer
+│   ├── auth/            # Authentication & authorization
+│   ├── credentials/     # Per-user credential vault
+│   ├── tasks/           # Task management
+│   └── requirements.txt # Python dependencies
+├── iot-node/            # ESP32 firmware & telemetry gateway
+├── docker/              # Docker build files
+├── scripts/             # Setup & maintenance scripts
+├── tests/               # Test suite
+├── docs/                # Documentation
+├── data/                # Runtime data (gitignored except .gitkeep)
+└── .github/             # CI/CD & templates
 ```
 
-Hasil verifikasi:
-```text
-✔ should successfully validate valid JSON string payload
-✔ should successfully validate valid Buffer payload
-✔ should reject malformed JSON
-✔ should reject payload missing required fields
-✔ should compute deterministic SHA-256 signature with 0x prefix
-✔ should project into Canonical IoT Layer matching attestation schema
-```
+## Team
 
----
+| Member   | Responsibilities                              |
+|----------|-----------------------------------------------|
+| **Revand** | Architecture, Smart Contracts, Deployment   |
+| **Bagus**  | IoT, MQTT, Sensors, Carbon Economy          |
+| **Davin**  | Status Engine, Satellite, AI, Anomaly Detection |
+| **Malik**  | DApp, Maps, UX, Presentations               |
 
-## 🚀 DevOps CI/CD Pipeline (`ci/iot-ci-cd.yml`)
+## Documentation
 
-Pipeline GitHub Actions otomatis berjalan pada setiap `push` dan `pull_request` ke branch `feat/IoT-node`:
+See [docs/INDEX.md](docs/INDEX.md) for full documentation.
 
-1. **Verify ESP32 Firmware & Diagrams**:
-   - Memastikan kelengkapan berkas firmware (`sketch.ino`), library Wokwi (`libraries.txt`), skema diagram (`diagram.json`), dan skema payload.
-   - Validasi sintaks JSON.
-2. **IoT Gateway Unit Tests & Schema Check**:
-   - Menjalankan linter kode gateway.
-   - Menjalankan unit test validasi telemetri & kanonikal attestation.
-3. **Docker Build & Compose Integration Test**:
-   - Memvalidasi sintaks `docker-compose.yml`.
-   - Membangun image Docker `iot-node` secara multi-stage.
-   - Menjalankan seluruh stack kontainer (`SIMULATION_MODE=true`).
-   - Memeriksa kesiapan healthcheck `/health` dan smoke test pengiriman pesan telemetri MQTT.
-   - Melakukan teardown otomatis yang bersih.
+## Contributing
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on branch naming, commit messages, PR process, and code review requirements.
+
+## License
+
+MIT License — see [LICENSE](LICENSE)

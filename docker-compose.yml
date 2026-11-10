@@ -1,6 +1,28 @@
-name: cboncp-iot
+# ExcbonCP Docker Compose Configuration
+# Usage: docker compose up -d
 
 services:
+  server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.server
+    container_name: excboncp-server
+    ports:
+      - "${SERVER_PORT:-8000}:8000"
+    env_file:
+      - .env
+    volumes:
+      - excboncp-data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - excboncp-network
+
   mqtt-broker:
     image: eclipse-mosquitto:2.0
     container_name: cboncp-mqtt-broker
@@ -18,7 +40,7 @@ services:
       timeout: 5s
       retries: 3
     networks:
-      - cboncp-net
+      - excboncp-network
 
   iot-node:
     build:
@@ -41,12 +63,14 @@ services:
       SIMULATION_MODE: "${SIMULATION_MODE:-false}"
       SIMULATION_INTERVAL_MS: "${SIMULATION_INTERVAL_MS:-5000}"
     networks:
-      - cboncp-net
+      - excboncp-network
 
 volumes:
+  excboncp-data:
+    driver: local
   mosquitto_data:
   mosquitto_log:
 
 networks:
-  cboncp-net:
+  excboncp-network:
     driver: bridge
