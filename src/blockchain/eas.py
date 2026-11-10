@@ -479,7 +479,7 @@ class EasClient:
         tx = registry.build_transaction(self._base_tx_options())
         signed = self.w3.eth.account.sign_transaction(tx, self.private_key)
         tx_hash = self.w3.eth.send_raw_transaction(signed.raw_transaction)
-        return tx_hash.hex()
+        return "0x" + tx_hash.hex().removeprefix("0x")
 
     def _extract_schema_uid(self, receipt: Any) -> str | None:  # pragma: no cover - external RPC
         try:
@@ -737,11 +737,11 @@ class EasClient:
             ),
         )
         tx = self.eas_contract.functions.attest(request).build_transaction(
-            {**self._base_tx_options(), "gas": 350_000}
+            {**self._base_tx_options(), "gas": 500_000}
         )
         signed = self.w3.eth.account.sign_transaction(tx, self.private_key)
         tx_hash = self.w3.eth.send_raw_transaction(signed.raw_transaction)
-        return tx_hash.hex()
+        return "0x" + tx_hash.hex().removeprefix("0x")
 
     def _wait_for_receipt(self, tx_hash: str) -> Any:  # pragma: no cover - external RPC
         return self.w3.eth.wait_for_transaction_receipt(tx_hash, timeout=300)

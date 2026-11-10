@@ -1,6 +1,8 @@
 """Bridge module for backwards-compatible imports of settlement logic."""
 
-from server.market.service import calculate_settlement
+from server.market.service import calculate_co2e, calculate_settlement
+
+__all__ = ["calculate_co2e", "settle"]
 
 
 def settle(

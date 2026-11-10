@@ -6,7 +6,10 @@ import time
 from datetime import UTC, datetime
 from pathlib import Path
 
-import paho.mqtt.client as mqtt
+try:
+    import paho.mqtt.client as mqtt
+except ImportError:  # pragma: no cover - optional when only payload generation is tested
+    mqtt = None  # type: ignore[assignment]
 from dotenv import load_dotenv
 
 env_path = Path(__file__).resolve().parent / ".env"

@@ -67,10 +67,11 @@ def calculate_settlement(
 async def get_parcel_market_summary(
     db: aiosqlite.Connection, parcel_id: str, unit_price_idr: int = 40_000
 ) -> ParcelMarketResponse | None:
+    resolved_id = "PARCEL-A" if parcel_id == "CBONCP-SRNPPI-JBR-01" else parcel_id
     async with db.execute(
         "SELECT id, name, area_hectares, vegetation_type, baseline_ndvi, current_status "
-        "FROM parcels WHERE id = ?",
-        (parcel_id,),
+        "FROM parcels WHERE id = ? OR id = ?",
+        (parcel_id, resolved_id),
     ) as cursor:
         row = await cursor.fetchone()
 

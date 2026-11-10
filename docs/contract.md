@@ -450,6 +450,7 @@ Environment variables:
 - `EAS_ADDRESS` — 0x4200000000000000000000000000000000000021
 - `EVM_SIMULATION_MODE` — true (default) to run without Sepolia ETH
 - `AUDITOR_USERNAME` — default human auditor (`auditor_demo`)
+- `EAS_SCHEMA_UID` — live Base Sepolia schema UID (`0x64e443d45df4a77a844017cbf7c08d315f93f55dce247c083ebfa75686e37996`)
 
 If `EVM_PRIVATE_KEY` is missing or malformed, the client logs a warning and
 forces simulation mode rather than failing requests. This keeps the public
@@ -459,12 +460,46 @@ The attestation schema is `ParcelAttestation` with fields:
 `parcelId`, `parcelStatus`, `co2eMetricTons` (×1e18 fixed-point),
 `ledgerBlockHash` (bytes32 SHA-256), `metadataURI`, `auditor` (address).
 
+### Day 4 Implementation (R9 & R10 — Human-in-the-Loop Auditor Approval)
+
+Screen L6 and Diagram 8C (`Manusia dalam Alur`) are implemented in
+`server/ledger/router.py`, `server/ledger/service.py`, and
+`server/ledger/models.py`:
+
+1. `POST /approve` (requires `auditor` role):
+   - Evaluates parcel status (`status_results` / `parcels.current_status`);
+     rejects `BLOCKED`, `DISPUTE`, and `WARNING` parcels with `409 Conflict`
+     without writing a ledger block.
+   - Computes canonical JSON (`server.ledger.canonical_json`) with sensor
+     summary, satellite NDVI, and `calculate_co2e` tonnage, then appends a new
+     SHA-256 hash-chain block with `approved_by` set to the human auditor's
+     `users.id`.
+   - Records an audit log entry (`parcel.approve`).
+   - Triggers `anchor_block_to_eas()`. If EAS RPC is unavailable, the ledger
+     block remains saved with `eas_uid: null` and `anchoring_status: "pending"`
+     ("menunggu, tombol Coba lagi").
+2. `POST /approve/{block_index}/retry` (requires `auditor` role):
+   - Retries EAS anchoring for a previously approved block whose `eas_uid` is
+     still `null`.
+3. `GET /approvals`:
+   - Returns the ordered list of approved ledger blocks with auditor identity,
+     `eas_uid`, `transaction_hash`, `explorer_url`, `eas_scan_url`,
+     `anchoring_status`, and `label: "Simulasi, testnet"`.
+4. `GET /market/{parcel_id}`:
+   - Blueprint L4 route alias returning parcel market settlement and 70/20/10
+     revenue split (`server/market/router.py`).
+5. Live Base Sepolia Anchors (Chain ID `84532`):
+   - **Auditor Wallet:** `0x848854FcE3BB804AaB66eE6159d9E6E9c39d65c3`
+   - **Schema UID:** `0x64e443d45df4a77a844017cbf7c08d315f93f55dce247c083ebfa75686e37996` (Tx: `0x0f703c0d1fe0aaa5548d529206740612b0e35e1a746aa41d5fc782665bddce40`)
+   - **Sample Live Attestation UID (`PARCEL-A`):** `0x4483c82f7ca671e4c7b12027090fdf397fb97d6f15764b0814665bb46a57d3af` (Tx: `0x1758d62c0fd49fd2b74175b120c88e1f7fdcc516f2a5b5c058725872c4a93238`, cached in `shared-schemas/cached_eas_tx.json`).
+
 ---
 
 ## Metadata
 
 - **Source file:** `docs/contract.md`
-- **Related requirements:** R6, R7, R8, R11, R12, R13, R17, R19, R23
+- **Related requirements:** R6, R7, R8, R9, R10, R11, R12, R13, R17, R19, R23
 - **Responsible owner:** Revand (Architecture & Smart Contracts)
-- **Day 3 implementation:** `src/blockchain/eas.py`, `src/blockchain/service.py`,
-  `src/blockchain/router.py`, `contracts/EasProof.sol`, `tests/blockchain/test_eas.py`
+- **Day 3–4 implementation:** `src/blockchain/eas.py`, `src/blockchain/service.py`,
+  `src/blockchain/router.py`, `server/ledger/router.py`, `server/ledger/service.py`,
+  `contracts/EasProof.sol`, `tests/blockchain/test_eas.py`, `tests/test_approve.py`

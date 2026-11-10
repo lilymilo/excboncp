@@ -13,7 +13,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
-import paho.mqtt.client as mqtt
+try:
+    import paho.mqtt.client as mqtt
+except ImportError:  # pragma: no cover - optional when only telemetry validation is tested
+    mqtt = None  # type: ignore[assignment]
 from dotenv import load_dotenv
 
 from .gee_processor import fetch_satellite_data, initialize_gee
