@@ -154,13 +154,19 @@ def parse_and_analyze_telemetry(payload: dict[str, Any]) -> dict[str, Any]:
     ts_data = payload.get("timestamp")
     if isinstance(ts_data, dict):
         dt_str = ts_data.get("datetime") or ts_data.get("iso8601") or "2026-11-10 20:25:22"
+        iso8601 = ts_data.get("iso8601") or dt_str
         tz_name = ts_data.get("timezone", "Asia/Jakarta")
         tz_abbr = ts_data.get("timezone_abbr", "WIB")
+        utc_offset = ts_data.get("utc_offset", "+07:00")
+        epoch = ts_data.get("epoch", 1794317122)
     else:
         raw_ts = str(payload.get("ts", ""))
         dt_str = raw_ts.replace("T", " ").replace("Z", "") if raw_ts else "2026-11-10 20:25:22"
+        iso8601 = raw_ts or "2026-11-10T20:25:22+07:00"
         tz_name = "Asia/Jakarta"
         tz_abbr = "WIB"
+        utc_offset = "+07:00"
+        epoch = 1794317122
 
     consent = str(payload.get("consent", cfg["default_consent"]))
     dispute_open = bool(payload.get("dispute_open", cfg["default_dispute"]))
@@ -182,8 +188,11 @@ def parse_and_analyze_telemetry(payload: dict[str, Any]) -> dict[str, Any]:
         "flame": int(flame_detected),
         "flame_detected": flame_detected,
         "dt_str": dt_str,
+        "iso8601": iso8601,
         "tz_name": tz_name,
         "tz_abbr": tz_abbr,
+        "utc_offset": utc_offset,
+        "epoch": epoch,
         "consent": consent,
         "dispute_open": dispute_open,
         "source": payload.get("source", "esp"),
