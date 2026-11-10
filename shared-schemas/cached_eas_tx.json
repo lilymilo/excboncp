@@ -1,0 +1,19 @@
+{
+  "network": "Base Sepolia (Chain ID 84532)",
+  "eas_contract": "0x4200000000000000000000000000000000000021",
+  "schema_registry": "0x4200000000000000000000000000000000000020",
+  "schema_uid": "0x64e443d45df4a77a844017cbf7c08d315f93f55dce247c083ebfa75686e37996",
+  "schema_registration_tx": "0x0f703c0d1fe0aaa5548d529206740612b0e35e1a746aa41d5fc782665bddce40",
+  "auditor_wallet": "0x848854FcE3BB804AaB66eE6159d9E6E9c39d65c3",
+  "parcel_id": "PARCEL-A",
+  "status": "VERIFIED",
+  "co2e_t": 1840.25,
+  "ledger_block_hash": "8bc01a85ff2404fd6ae443de5df2395620c102875b450fe44d7dc15f7782231c",
+  "attestation_uid": "0x4483c82f7ca671e4c7b12027090fdf397fb97d6f15764b0814665bb46a57d3af",
+  "transaction_hash": "0x1758d62c0fd49fd2b74175b120c88e1f7fdcc516f2a5b5c058725872c4a93238",
+  "on_chain": true,
+  "timestamp": "2026-11-10T15:18:20.306446+00:00",
+  "explorer_url": "https://sepolia.basescan.org/tx/0x1758d62c0fd49fd2b74175b120c88e1f7fdcc516f2a5b5c058725872c4a93238",
+  "eas_scan_url": "https://base-sepolia.easscan.org/attestation/view/0x4483c82f7ca671e4c7b12027090fdf397fb97d6f15764b0814665bb46a57d3af",
+  "label": "Simulasi, testnet (cadangan transaksi on-chain Base Sepolia)"
+}

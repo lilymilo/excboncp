@@ -1,6 +1,7 @@
 {
   "default_parcel": {
     "polygon_id": "CBONCP-SRNPPI-JBR-01",
+    "parcel_id": "PARCEL-A",
     "location_name": "Hutan Lindung Bogor, Jawa Barat",
     "coordinates": {
       "lat": -6.5971,
@@ -17,6 +18,41 @@
     "status": "cached",
     "thumbnail_url": "https://browser.dataspace.copernicus.eu/?zoom=14&lat=-6.5971&lng=106.7994",
     "cache_note": "Local resilient backup cache deployed per Blueprint Tangga Cadangan"
+  },
+  "parcels": {
+    "PARCEL-A": {
+      "polygon_id": "PARCEL-A",
+      "location_name": "Long Isun — Blok Hutan Adat Utara (Simulasi)",
+      "coordinates": {
+        "lat": 0.422,
+        "lon": 114.618
+      },
+      "date": "2026-11-08",
+      "source": "ESA Sentinel-1 SAR & Sentinel-2",
+      "collection": "COPERNICUS/S2_SR_HARMONIZED",
+      "image_id": "COPERNICUS/S2_SR_HARMONIZED/20261108T025500_T50NKL",
+      "ndvi_mean": 0.78,
+      "sar_vv_db": -11.4,
+      "sar_cloud_penetrated": true,
+      "cloud_coverage_pct": 12.0,
+      "status": "cached"
+    },
+    "PARCEL-B": {
+      "polygon_id": "PARCEL-B",
+      "location_name": "Long Isun — Blok Hutan Adat Selatan (Simulasi)",
+      "coordinates": {
+        "lat": 0.405,
+        "lon": 114.622
+      },
+      "date": "2026-11-08",
+      "source": "ESA Sentinel-1 SAR & Sentinel-2",
+      "collection": "COPERNICUS/S2_SR_HARMONIZED",
+      "image_id": "COPERNICUS/S2_SR_HARMONIZED/20261108T025500_T50NKL",
+      "ndvi_mean": 0.72,
+      "sar_vv_db": -12.1,
+      "sar_cloud_penetrated": true,
+      "cloud_coverage_pct": 15.5,
+      "status": "cached"
+    }
   }
 }
-

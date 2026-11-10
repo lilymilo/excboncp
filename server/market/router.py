@@ -20,11 +20,16 @@ from server.market.service import (
 
 logger = logging.getLogger("excboncp.market.router")
 
-router = APIRouter(prefix="/api/market", tags=["market"])
+router = APIRouter(tags=["market"])
 
 
 @router.get(
-    "/parcels/{parcel_id}/settlement",
+    "/market/{parcel_id}",
+    response_model=ParcelMarketResponse,
+    summary="Get parcel market summary and settlement distribution (Blueprint L4 — GET /market/{id})",
+)
+@router.get(
+    "/api/market/parcels/{parcel_id}/settlement",
     response_model=ParcelMarketResponse,
     summary="Get parcel market summary and settlement distribution",
 )
@@ -43,7 +48,7 @@ async def get_parcel_settlement(
 
 
 @router.get(
-    "/orders",
+    "/api/market/orders",
     response_model=list[MarketOrderResponse],
     summary="List simulated carbon market orders",
 )
@@ -56,7 +61,7 @@ async def get_orders(
 
 
 @router.post(
-    "/orders",
+    "/api/market/orders",
     response_model=MarketOrderResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Create simulated carbon market order",

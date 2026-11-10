@@ -20,16 +20,24 @@ import asyncio
 import hashlib
 import json
 import logging
+import uuid
 import weakref
+from datetime import UTC, datetime
 from typing import Any
 
 import aiosqlite
+
+from ai_pipeline.rules_engine import explain_status
+from server.market.service import calculate_co2e
 
 logger = logging.getLogger("excboncp.ledger")
 
 GENESIS_HASH = "0" * 64
 ALLOWED_STATUSES = frozenset({"VERIFIED", "WARNING", "DISPUTE", "BLOCKED"})
 REQUIRED_PAYLOAD_FIELDS = ("parcel_id", "timestamp", "co2e_t", "status")
+PARCEL_ID_ALIASES = {
+    "CBONCP-SRNPPI-JBR-01": "PARCEL-A",
+}
 
 # Locks are per event loop.  This keeps the append operation atomic without
 # binding a module-level asyncio.Lock to the first loop that imports the module
@@ -41,6 +49,18 @@ _append_locks: weakref.WeakKeyDictionary[asyncio.AbstractEventLoop, asyncio.Lock
 
 class LedgerValidationError(ValueError):
     """Raised when a ledger payload violates the documented contract."""
+
+
+class ParcelApprovalError(ValueError):
+    """Raised when a parcel cannot be approved by an auditor (Diagram 8C)."""
+
+    def __init__(
+        self, message: str, *, status_code: int = 409, reason: str = "not_eligible"
+    ) -> None:
+        super().__init__(message)
+        self.message = message
+        self.status_code = status_code
+        self.reason = reason
 
 
 def canonical_json(payload: dict[str, Any]) -> str:
@@ -336,4 +356,419 @@ async def verify_block(db: aiosqlite.Connection, block_index: int) -> dict[str, 
         "recomputed_hash": own["recomputed_hash"],
         "reason": reason,
         "message": message,
+    }
+
+
+def _explorer_urls(
+    tx_hash: str | None, eas_uid: str | None, on_chain: bool
+) -> tuple[str | None, str | None]:
+    """Build BaseScan and EASScan URLs when a block has an attestation."""
+    if not tx_hash and not eas_uid:
+        return None, None
+    clean_tx = (tx_hash or "").removeprefix("0x")
+    tx_url = f"https://sepolia.basescan.org/tx/0x{clean_tx}" if clean_tx and on_chain else None
+    eas_url = (
+        f"https://base-sepolia.easscan.org/attestation/view/{eas_uid}"
+        if eas_uid and on_chain
+        else None
+    )
+    return tx_url, eas_url
+
+
+async def _resolve_parcel_row(db: aiosqlite.Connection, parcel_id: str) -> aiosqlite.Row | None:
+    """Look up a parcel by ID or known cross-module alias."""
+    candidate_ids = [parcel_id]
+    alias = PARCEL_ID_ALIASES.get(parcel_id)
+    if alias and alias not in candidate_ids:
+        candidate_ids.append(alias)
+
+    for candidate in candidate_ids:
+        async with db.execute(
+            "SELECT id, name, area_hectares, baseline_ndvi, current_status "
+            "FROM parcels WHERE id = ?",
+            (candidate,),
+        ) as cursor:
+            row = await cursor.fetchone()
+            if row is not None:
+                return row
+    return None
+
+
+async def _evaluate_parcel_status(
+    db: aiosqlite.Connection, parcel_row: aiosqlite.Row
+) -> tuple[str, str]:
+    """Return ``(status, human_reason)`` for a parcel before approval."""
+    parcel_id = parcel_row["id"]
+    async with db.execute(
+        "SELECT status, reasons, consent_state, dispute_open, sensor_flag "
+        "FROM status_results WHERE parcel_id = ? ORDER BY computed_at DESC LIMIT 1",
+        (parcel_id,),
+    ) as cursor:
+        sr = await cursor.fetchone()
+
+    if sr is not None:
+        info = explain_status(
+            consent=sr["consent_state"],
+            dispute_open=bool(sr["dispute_open"]),
+            sensor_flag=bool(sr["sensor_flag"]),
+        )
+        status = sr["status"]
+        return status, info["explanation"]
+
+    current = parcel_row["current_status"]
+    if current == "BLOCKED":
+        return current, "Lahan belum memiliki persetujuan komunitas (BLOCKED)."
+    if current == "DISPUTE":
+        return current, "Lahan sedang dalam sengketa aktif atau izin dicabut (DISPUTE)."
+    if current == "WARNING":
+        return current, "Sensor lapangan mendeteksi kondisi tidak biasa (WARNING)."
+    return current, "Seluruh bukti lengkap dan terverifikasi."
+
+
+async def _collect_sensor_and_ndvi(
+    db: aiosqlite.Connection, parcel_id: str, fallback_ndvi: float
+) -> tuple[dict[str, float], float]:
+    """Gather recent sensor averages and latest NDVI for canonical ledger payload."""
+    async with db.execute(
+        """
+        SELECT AVG(temp_c) AS avg_temp_c,
+               AVG(humidity_pct) AS avg_humidity_pct,
+               AVG(soil_pct) AS avg_soil_pct
+          FROM (
+                SELECT temp_c, humidity_pct, soil_pct
+                  FROM sensor_readings
+                 WHERE parcel_id = ?
+                 ORDER BY ts DESC
+                 LIMIT 10
+          )
+        """,
+        (parcel_id,),
+    ) as cursor:
+        srow = await cursor.fetchone()
+
+    if srow is not None and srow["avg_temp_c"] is not None:
+        sensor_summary = {
+            "avg_temp_c": round(float(srow["avg_temp_c"]), 2),
+            "avg_humidity_pct": round(float(srow["avg_humidity_pct"]), 2),
+            "avg_soil_pct": round(float(srow["avg_soil_pct"]), 2),
+        }
+    else:
+        sensor_summary = {
+            "avg_temp_c": 24.2,
+            "avg_humidity_pct": 82.5,
+            "avg_soil_pct": 57.1,
+        }
+
+    async with db.execute(
+        "SELECT ndvi_mean FROM satellite_observations "
+        "WHERE parcel_id = ? ORDER BY observed_at DESC LIMIT 1",
+        (parcel_id,),
+    ) as cursor:
+        ndvi_row = await cursor.fetchone()
+
+    ndvi_mean = (
+        round(float(ndvi_row["ndvi_mean"]), 4)
+        if ndvi_row is not None and ndvi_row["ndvi_mean"] is not None
+        else round(float(fallback_ndvi), 4)
+    )
+    return sensor_summary, ndvi_mean
+
+
+async def approve_parcel(
+    db: aiosqlite.Connection,
+    *,
+    parcel_id: str,
+    auditor_user: dict[str, Any],
+    co2e_t: float | None = None,
+    notes: str | None = None,
+    anchor_to_eas: bool = True,
+    ip_address: str | None = None,
+    eas_client: Any = None,
+) -> dict[str, Any]:
+    """Approve a VERIFIED parcel, append its hash-chain block, and anchor to EAS (R10, Diagram 8C)."""
+    parcel_row = await _resolve_parcel_row(db, parcel_id.strip())
+    if parcel_row is None:
+        raise ParcelApprovalError(
+            f"Lahan '{parcel_id}' tidak ditemukan.",
+            status_code=404,
+            reason="not_found",
+        )
+
+    resolved_id = str(parcel_row["id"])
+    parcel_status, explanation = await _evaluate_parcel_status(db, parcel_row)
+
+    # Diagram 8C: Reject BLOCKED, DISPUTE, or non-VERIFIED parcels before writing to ledger
+    if parcel_status != "VERIFIED":
+        await db.execute(
+            "INSERT INTO audit_logs (id, user_id, action, resource_type, resource_id, details, ip_address, created_at) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                uuid.uuid4().hex,
+                auditor_user["id"],
+                "parcel_approval_rejected",
+                "parcel",
+                resolved_id,
+                f"Rejected approval for status={parcel_status}: {explanation}",
+                ip_address,
+                datetime.now(UTC).isoformat(),
+            ),
+        )
+        await db.commit()
+        raise ParcelApprovalError(
+            f"Lahan {resolved_id} berstatus {parcel_status} dan tidak dapat disetujui: {explanation}",
+            status_code=409,
+            reason=f"status_{parcel_status.lower()}",
+        )
+
+    # Resolve CO2e tonnage if not explicitly overridden
+    resolved_co2e = (
+        round(float(co2e_t), 2)
+        if co2e_t is not None and co2e_t > 0
+        else calculate_co2e(float(parcel_row["area_hectares"]))
+    )
+    sensor_summary, ndvi_mean = await _collect_sensor_and_ndvi(
+        db, resolved_id, float(parcel_row["baseline_ndvi"])
+    )
+    now_iso = datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+    payload: dict[str, Any] = {
+        "parcel_id": resolved_id,
+        "timestamp": now_iso,
+        "co2e_t": resolved_co2e,
+        "status": "VERIFIED",
+        "sensor_summary": sensor_summary,
+        "ndvi_mean": ndvi_mean,
+    }
+    if notes and notes.strip():
+        payload["notes"] = notes.strip()
+
+    block = await append_block(
+        db,
+        payload,
+        approved_by=auditor_user["id"],
+        eas_uid=None,
+        commit=True,
+    )
+
+    await db.execute(
+        "INSERT INTO audit_logs (id, user_id, action, resource_type, resource_id, details, ip_address, created_at) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+        (
+            uuid.uuid4().hex,
+            auditor_user["id"],
+            "parcel_approved",
+            "ledger_block",
+            str(block["id"]),
+            f"Approved parcel {resolved_id} (block={block['id']}, hash={block['hash'][:16]}...)",
+            ip_address,
+            datetime.now(UTC).isoformat(),
+        ),
+    )
+    await db.commit()
+
+    eas_uid: str | None = None
+    tx_hash: str | None = None
+    on_chain = False
+    anchoring_status = "skipped"
+    message = "Disetujui dan dicatat di ledger lokal."
+
+    if anchor_to_eas:
+        try:
+            from src.blockchain.service import anchor_block_to_eas
+
+            anchor_res = await anchor_block_to_eas(
+                block_index=block["id"],
+                auditor_username=auditor_user["username"],
+                client=eas_client,
+                db=db,
+            )
+            if anchor_res.success and anchor_res.eas_attestation_uid:
+                eas_uid = anchor_res.eas_attestation_uid
+                tx_hash = anchor_res.transaction_hash
+                on_chain = anchor_res.on_chain
+                anchoring_status = "anchored" if on_chain else "simulated"
+                message = (
+                    "Disetujui dan hash berhasil dikunci ke EAS Base Sepolia."
+                    if on_chain
+                    else "Disetujui dan dicatat di ledger (simulasi EAS testnet)."
+                )
+            else:
+                anchoring_status = "pending"
+                message = (
+                    "Entri tersimpan di ledger, menunggu penguncian EAS. Gunakan tombol Coba lagi."
+                )
+        except Exception as exc:
+            logger.warning(
+                "EAS anchoring failed after ledger append for block %s: %s", block["id"], exc
+            )
+            anchoring_status = "pending"
+            message = (
+                "Entri tersimpan di ledger, menunggu penguncian EAS. Gunakan tombol Coba lagi."
+            )
+
+    explorer_url, eas_scan_url = _explorer_urls(tx_hash, eas_uid, on_chain)
+    return {
+        "id": block["id"],
+        "parcel_id": resolved_id,
+        "status": "VERIFIED",
+        "co2e_t": resolved_co2e,
+        "prev_hash": block["prev_hash"],
+        "payload": payload,
+        "hash": block["hash"],
+        "approved_by": auditor_user["username"],
+        "eas_uid": eas_uid,
+        "transaction_hash": tx_hash,
+        "on_chain": on_chain,
+        "explorer_url": explorer_url,
+        "eas_scan_url": eas_scan_url,
+        "anchoring_status": anchoring_status,
+        "label": "Simulasi, testnet",
+        "message": message,
+    }
+
+
+async def list_approvals(
+    db: aiosqlite.Connection, parcel_id: str | None = None
+) -> list[dict[str, Any]]:
+    """Return ledger approval history with attestation status for Screen L6."""
+    sql = """
+        SELECT b.block_index,
+               b.parcel_id,
+               b.timestamp,
+               b.co2e_metric_tons,
+               b.parcel_status,
+               b.prev_hash,
+               b.current_hash,
+               b.eas_uid,
+               u.username AS approved_by_username,
+               b.approved_by,
+               a.tx_hash,
+               a.on_chain
+          FROM ledger_blocks AS b
+          LEFT JOIN users AS u ON u.id = b.approved_by
+          LEFT JOIN attestations AS a ON a.block_hash = b.current_hash
+    """
+    params: list[Any] = []
+    if parcel_id:
+        resolved = PARCEL_ID_ALIASES.get(parcel_id, parcel_id)
+        sql += " WHERE b.parcel_id = ?"
+        params.append(resolved)
+    sql += " ORDER BY b.block_index DESC"
+
+    async with db.execute(sql, tuple(params)) as cursor:
+        rows = await cursor.fetchall()
+
+    entries: list[dict[str, Any]] = []
+    for row in rows:
+        eas_uid = row["eas_uid"]
+        tx_hash = row["tx_hash"]
+        on_chain = bool(row["on_chain"]) if row["on_chain"] is not None else False
+        anchoring_status = "pending"
+        if eas_uid:
+            anchoring_status = "anchored" if on_chain else "simulated"
+        explorer_url, eas_scan_url = _explorer_urls(tx_hash, eas_uid, on_chain)
+        entries.append(
+            {
+                "id": int(row["block_index"]),
+                "parcel_id": row["parcel_id"],
+                "timestamp": row["timestamp"],
+                "co2e_t": float(row["co2e_metric_tons"]),
+                "status": row["parcel_status"],
+                "prev_hash": row["prev_hash"],
+                "hash": row["current_hash"],
+                "approved_by": row["approved_by_username"] or row["approved_by"],
+                "eas_uid": eas_uid,
+                "transaction_hash": tx_hash,
+                "on_chain": on_chain,
+                "explorer_url": explorer_url,
+                "eas_scan_url": eas_scan_url,
+                "anchoring_status": anchoring_status,
+                "label": "Simulasi, testnet",
+            }
+        )
+    return entries
+
+
+async def retry_anchor_approval(
+    db: aiosqlite.Connection,
+    *,
+    block_index: int,
+    auditor_user: dict[str, Any],
+    eas_client: Any = None,
+) -> dict[str, Any]:
+    """Retry EAS anchoring for a pending ledger block (Blueprint Diagram 8C 'Coba lagi')."""
+    if str(auditor_user.get("role", "")) != "auditor":
+        raise ParcelApprovalError(
+            "Hanya pengguna dengan peran auditor yang diizinkan mengunci entri ledger.",
+            status_code=403,
+        )
+
+    async with db.execute(
+        """
+        SELECT block_index, parcel_id, co2e_metric_tons, parcel_status,
+               canonical_data, prev_hash, current_hash, eas_uid
+          FROM ledger_blocks
+         WHERE block_index = ?
+        """,
+        (block_index,),
+    ) as cursor:
+        block = await cursor.fetchone()
+
+    if block is None:
+        raise ParcelApprovalError(f"Entri ledger '{block_index}' tidak ditemukan.", status_code=404)
+
+    if block["eas_uid"]:
+        raise ParcelApprovalError(
+            f"Entri ledger '{block_index}' sudah memiliki EAS UID ({block['eas_uid']}).",
+            status_code=409,
+        )
+
+    from src.blockchain.service import anchor_block_to_eas
+
+    anchor_res = await anchor_block_to_eas(
+        block_index=block_index,
+        auditor_username=auditor_user["username"],
+        client=eas_client,
+        db=db,
+    )
+    if not anchor_res.success or not anchor_res.eas_attestation_uid:
+        raise ParcelApprovalError(
+            f"Penguncian EAS gagal: {anchor_res.message}",
+            status_code=502,
+        )
+
+    tx_hash = anchor_res.transaction_hash
+    eas_uid = anchor_res.eas_attestation_uid
+    on_chain = anchor_res.on_chain
+    explorer_url, eas_scan_url = _explorer_urls(tx_hash, eas_uid, on_chain)
+
+    payload_dict: dict[str, Any] = {}
+    try:
+        parsed = json.loads(block["canonical_data"])
+        if isinstance(parsed, dict):
+            payload_dict = parsed
+    except Exception:
+        payload_dict = {}
+
+    return {
+        "id": int(block["block_index"]),
+        "parcel_id": block["parcel_id"],
+        "status": block["parcel_status"],
+        "co2e_t": float(block["co2e_metric_tons"]),
+        "prev_hash": block["prev_hash"],
+        "payload": payload_dict,
+        "hash": block["current_hash"],
+        "approved_by": auditor_user["username"],
+        "eas_uid": eas_uid,
+        "transaction_hash": tx_hash,
+        "on_chain": on_chain,
+        "explorer_url": explorer_url,
+        "eas_scan_url": eas_scan_url,
+        "anchoring_status": "anchored" if on_chain else "simulated",
+        "label": "Simulasi, testnet",
+        "message": (
+            "Hash berhasil dikunci ke EAS Base Sepolia."
+            if on_chain
+            else "Hash berhasil dikunci (simulasi EAS testnet)."
+        ),
     }

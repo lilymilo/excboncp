@@ -19,6 +19,7 @@
 | **ADR-009** | Blueprint v5 Model 3/6 as MRV Schema Authority | Accepted | 2026-11-09 | Revand |
 | **ADR-010** | Canonical JSON and Server-Side Ledger Verification | Accepted | 2026-11-09 | Revand |
 | **ADR-011** | EAS Attestation Anchoring for Ledger Integrity (Day 3) | Accepted + bug fixes | 2026-11-09 | Revand |
+| **ADR-012** | Human-in-the-Loop Auditor Approval (`POST /approve`) and Live Base Sepolia Anchoring (Day 4) | Accepted | 2026-11-10 | Revand |
 
 ---
 
@@ -253,3 +254,44 @@ Sepolia, and Day 3 implements this for the ledger layer.
   must deploy `contracts/EasProof.sol` and call `registerSchema()`.
 - **Negative:** On-chain verification still requires an EAS indexer/subgraph;
   Day 3 records the transaction and attestation UIDs locally.
+
+---
+
+## ADR-012: Human-in-the-Loop Auditor Approval (`POST /approve`) and Live Base Sepolia Anchoring (Day 4)
+
+### Context
+Blueprint v5 Diagram 8C (`Manusia dalam Alur`, R10) requires a single atomic
+auditor workflow (`POST /approve`) that verifies a parcel is `VERIFIED`, writes
+the canonical SHA-256 ledger block attributed to the human auditor, and locks
+the hash on Base Sepolia EAS while keeping the local ledger entry intact (`eas_uid = null`,
+status `"pending"`) if external RPC connectivity fails temporarily. Additionally,
+the schema and first live attestation needed to be registered and verified on
+Base Sepolia (Chain ID `84532`).
+
+### Decision
+1. Implement `POST /approve`, `GET /approvals`, and `POST /approve/{block_index}/retry`
+   in `server/ledger/router.py` and `server/ledger/service.py`:
+   - Enforce `require_role("auditor")` so community/guest accounts receive `403`/`401`.
+   - Reject `BLOCKED`, `DISPUTE`, and `WARNING` parcels with `409 Conflict` without
+     appending to `ledger_blocks`.
+   - Combine sensor summaries, satellite NDVI, Davin's deterministic `explain_status`,
+     and Bagus's `calculate_co2e` into the canonical JSON payload, append to the
+     SHA-256 hash chain, and trigger `anchor_block_to_eas()`.
+   - If EAS anchoring fails, keep the ledger block with `eas_uid = null` and
+     `anchoring_status = "pending"` so the auditor can retry via
+     `POST /approve/{block_index}/retry` ("tombol Coba lagi").
+2. Register the `ParcelAttestation` schema live on Base Sepolia:
+   - Schema UID: `0x64e443d45df4a77a844017cbf7c08d315f93f55dce247c083ebfa75686e37996`
+   - Registration Tx: `0x0f703c0d1fe0aaa5548d529206740612b0e35e1a746aa41d5fc782665bddce40`
+3. Anchor a live Base Sepolia attestation for `PARCEL-A` (with gas limit raised
+   to `500,000` for OP-Stack precompile/EAS storage safety) and store the
+   verified fallback record in `shared-schemas/cached_eas_tx.json`:
+   - Attestation UID: `0x4483c82f7ca671e4c7b12027090fdf397fb97d6f15764b0814665bb46a57d3af`
+   - Transaction Hash: `0x1758d62c0fd49fd2b74175b120c88e1f7fdcc516f2a5b5c058725872c4a93238`
+4. Support cross-team parcel alias resolution (`"CBONCP-SRNPPI-JBR-01" -> "PARCEL-A"`)
+   and Blueprint L4 route alias `GET /market/{parcel_id}`.
+
+### Consequences
+- **Positive:** Complete end-to-end Diagram 8C compliance with graceful offline/RPC fallback.
+- **Positive:** Real, publicly verifiable Base Sepolia Schema UID and Attestation UID on BaseScan and EAS Scan.
+- **Positive:** Full compatibility across `ai_pipeline`, `api/economy`, `server/market`, and `server/ledger`.
