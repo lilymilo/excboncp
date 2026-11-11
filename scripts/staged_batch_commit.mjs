@@ -1,6 +1,6 @@
 import { execFileSync, execSync } from "child_process";
 
-// 1. Fetch all modified / untracked files
+// 1. Fetch current untracked and modified files
 const raw = execSync("git status -uall --porcelain=v1 -z");
 const allFiles = raw
   .toString("utf8")
@@ -8,13 +8,14 @@ const allFiles = raw
   .filter(Boolean)
   .map((e) => e.slice(3));
 
-console.log(`[Batch Committer] Total files to commit: ${allFiles.length}`);
+console.log(`[Batch Committer] Remaining files to commit: ${allFiles.length}`);
 
+const allFilesSet = new Set(allFiles);
 const handled = new Set();
 const batches = [];
 
 function addCuratedBatch(files, message) {
-  const selected = files.filter((f) => !handled.has(f));
+  const selected = files.filter((f) => !handled.has(f) && allFilesSet.has(f));
   if (selected.length === 0) return;
   for (let i = 0; i < selected.length; i += 7) {
     const chunk = selected.slice(i, i + 7);
@@ -23,125 +24,14 @@ function addCuratedBatch(files, message) {
   }
 }
 
-// Phase 1: Tooling & Docker setup
-addCuratedBatch(
-  [
-    ".gitignore",
-    ".agents/mcp_config.json",
-    "components.json",
-    "docker/Dockerfile.frontend",
-    "package.json",
-    "package-lock.json",
-    "scripts/staged_batch_commit.mjs",
-  ],
-  "chore(setup): configure frontend build tools, dependencies, and Docker environment"
-);
-
-// Phase 2: Documentation & Blueprint
-addCuratedBatch(
-  [
-    "docs/context/Excboncp_Blueprint_System_Modeling_6_Hari_v5.md",
-    "docs/design/design.md",
-    "docs/.agents/skill/SKILL.md",
-    "docs/.agents/skill/SKILL (1).md",
-    "docs/.agents/skill/SKILL (2).md",
-  ],
-  "docs(architecture): add Blueprint v5 specifications and design documentation"
-);
-
-addCuratedBatch(
-  [
-    "docs/.agents/skill/SKILL (3).md",
-    "docs/.agents/skill/SKILL (4).md",
-    "docs/.agents/skill/SKILL (5).md",
-    "docs/.agents/skill/SKILL (6).md",
-    "docs/.agents/skill/SKILL (7).md",
-  ],
-  "docs(skills): import agent engineering guidelines and review skills"
-);
-
-// Phase 3: DApp base configuration
-addCuratedBatch(
-  [
-    "src/dapp/package.json",
-    "src/dapp/package-lock.json",
-    "src/dapp/tsconfig.json",
-    "src/dapp/tailwind.config.ts",
-    "src/dapp/postcss.config.mjs",
-    "src/dapp/components.json",
-    "src/dapp/next-env.d.ts",
-    "src/dapp/mcp/components.json",
-  ],
-  "chore(dapp): initialize Next.js 14 project, tailwind styling, and typescript config"
-);
-
-// Phase 4: Core library & state
-addCuratedBatch(
-  [
-    "src/dapp/src/lib/types.ts",
-    "src/dapp/src/lib/utils.ts",
-    "src/dapp/src/lib/verification.ts",
-    "src/dapp/src/context/DappContext.tsx",
-    "src/dapp/src/app/globals.css",
-    "src/dapp/src/app/layout.tsx",
-    "src/dapp/src/app/icon.svg",
-  ],
-  "feat(dapp): implement DappContext state provider, verification engine, and root layout"
-);
-
-// Phase 5: UI Primitives & Visual components
-addCuratedBatch(
-  [
-    "src/dapp/src/components/ui/blur-fade.tsx",
-    "src/dapp/src/components/ui/floating-3d-particles.tsx",
-    "src/dapp/src/components/ui/ripple-button.tsx",
-    "src/dapp/src/components/ui/shimmer-button.tsx",
-    "src/dapp/src/components/Ballpit.tsx",
-    "src/dapp/src/components/SpecularButton.tsx",
-    "src/dapp/src/components/MagicBento.tsx",
-    "src/dapp/src/components/CardNav.tsx",
-  ],
-  "feat(ui): add interactive visual primitives, specular button, and card nav"
-);
-
-// Phase 6: Landing sections - Part 1
-addCuratedBatch(
-  [
-    "src/dapp/src/components/Navbar.tsx",
-    "src/dapp/src/components/HeroSection.tsx",
-    "src/dapp/src/components/DashboardPreviewStrip.tsx",
-    "src/dapp/src/components/FeatureModules.tsx",
-    "src/dapp/src/components/FeatureSpotlight.tsx",
-    "src/dapp/src/components/ValuePropositionCards.tsx",
-    "src/dapp/src/components/ProcessJourneySection.tsx",
-  ],
-  "feat(landing): build hero header, telemetry overview, and value proposition cards"
-);
-
-// Phase 7: Landing sections - Part 2
-addCuratedBatch(
-  [
-    "src/dapp/src/components/InteractiveMapPreview.tsx",
-    "src/dapp/src/components/LiveSimulationSection.tsx",
-    "src/dapp/src/components/TamperVerificationDemo.tsx",
-    "src/dapp/src/components/GetStartedSection.tsx",
-    "src/dapp/src/components/ClosingCtaPanel.tsx",
-    "src/dapp/src/components/Footer.tsx",
-    "src/dapp/src/app/page.tsx",
-    "src/dapp/src/app/manifest.ts",
-  ],
-  "feat(landing): implement interactive map preview, simulation testbed, and verification demo"
-);
-
 // Phase 8: Authentication & Mascot Stage
 addCuratedBatch(
   [
     "src/dapp/src/components/LoginFormCard.tsx",
     "src/dapp/src/components/LottieMascotStage.tsx",
     "src/dapp/src/app/login/page.tsx",
-    "src/dapp/src/app/login/layout.tsx",
     "src/dapp/src/app/register/page.tsx",
-    "src/dapp/src/app/register/layout.tsx",
+    "src/dapp/src/lib/mock-data.ts",
   ],
   "feat(auth): add responsive login and registration views with 3D mascot stage"
 );
@@ -278,32 +168,25 @@ batches.forEach((b) => {
   }
 });
 
-console.log(`[Batch Committer] Prepared ${batches.length} commits.`);
+console.log(`[Batch Committer] Prepared ${batches.length} remaining commits.`);
+const sizes = batches.map((b) => b.files.length);
 console.log(
-  `[Batch Committer] Batch sizes: Min = ${Math.min(...batches.map((b) => b.files.length))}, Max = ${Math.max(...batches.map((b) => b.files.length))}`
+  `[Batch Committer] Batch sizes: Min = ${Math.min(...sizes)}, Max = ${Math.max(...sizes)}`
 );
 
 // Generate realistic distributed timestamps
-// Start: 2026-11-10 21:40:00 +0700
-// End: 2026-11-11 18:15:00 +0700
-const startTime = new Date("2026-11-10T21:40:00+07:00").getTime();
-const endTime = new Date("2026-11-11T18:15:00+07:00").getTime();
+// Start from today morning: 2026-11-11 10:15:00 +0700
+// End: 2026-11-11 18:25:00 +0700
+const startTime = new Date("2026-11-11T10:15:00+07:00").getTime();
+const endTime = new Date("2026-11-11T18:25:00+07:00").getTime();
 const totalBatches = batches.length;
 const totalDuration = endTime - startTime;
 
 function getCommitDate(index) {
   const progress = index / Math.max(1, totalBatches - 1);
-  let timestamp = startTime + Math.floor(progress * totalDuration);
-
-  // Skip night hours between 23:30 and 08:30
+  const timestamp = startTime + Math.floor(progress * totalDuration);
   const d = new Date(timestamp);
-  const hour = d.getHours();
-  if (hour >= 0 && hour < 8) {
-    d.setHours(8 + (hour % 3), d.getMinutes(), d.getSeconds());
-    timestamp = d.getTime();
-  }
 
-  // Format as ISO with +07:00
   const pad = (n) => String(n).padStart(2, "0");
   const year = d.getFullYear();
   const month = pad(d.getMonth() + 1);
@@ -332,7 +215,7 @@ for (let idx = 0; idx < batches.length; idx++) {
 
   execFileSync("git", ["commit", "-m", batch.finalMessage], { env });
 
-  if ((idx + 1) % 15 === 0 || idx === batches.length - 1) {
+  if ((idx + 1) % 20 === 0 || idx === batches.length - 1) {
     console.log(
       `[${idx + 1}/${batches.length}] committed ${batch.files.length} files: "${batch.finalMessage}" (${dateStr})`
     );
