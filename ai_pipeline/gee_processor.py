@@ -31,6 +31,19 @@ def _get_cache_path() -> Path:
     return base / "data" / "gee_cache.json"
 
 
+def generate_copernicus_browser_url(lat: float, lon: float, zoom: int = 13) -> str:
+    """
+    Generates an external Copernicus Browser URL dynamically for coordinates (lat, lon).
+    Preserves exact sign, precision, and parameter names (lat, lng).
+    """
+    return f"https://browser.dataspace.copernicus.eu/?zoom={zoom}&lat={lat:.5f}&lng={lon:.5f}"
+
+
+def generate_google_maps_url(lat: float, lon: float) -> str:
+    """Generates direct Google Maps URL for pinpoint coordinate verification."""
+    return f"https://www.google.com/maps?q={lat:.5f},{lon:.5f}"
+
+
 def load_cached_satellite_data(lat: float, lon: float) -> Dict[str, Any]:
     """
     Retrieves satellite metrics from local JSON cache.
@@ -38,6 +51,7 @@ def load_cached_satellite_data(lat: float, lon: float) -> Dict[str, Any]:
     """
     cache_file = _get_cache_path()
     now_iso = datetime.now(timezone.utc).isoformat()
+    copernicus_link = generate_copernicus_browser_url(lat, lon, zoom=13)
 
     if cache_file.exists():
         try:
@@ -55,7 +69,8 @@ def load_cached_satellite_data(lat: float, lon: float) -> Dict[str, Any]:
                 "sar_cloud_penetrated": parcel.get("sar_cloud_penetrated", True),
                 "cloud_coverage_pct": parcel.get("cloud_coverage_pct", 14.2),
                 "coordinates": {"lat": lat, "lon": lon},
-                "thumbnail_url": f"https://browser.dataspace.copernicus.eu/?zoom=14&lat={lat}&lng={lon}",
+                "thumbnail_url": copernicus_link,
+                "map_url": copernicus_link,
                 "verified_at": now_iso,
                 "note": "Cached fallback data deployed per Blueprint Tangga Cadangan",
             }
@@ -74,7 +89,8 @@ def load_cached_satellite_data(lat: float, lon: float) -> Dict[str, Any]:
         "sar_cloud_penetrated": True,
         "cloud_coverage_pct": 14.2,
         "coordinates": {"lat": lat, "lon": lon},
-        "thumbnail_url": f"https://browser.dataspace.copernicus.eu/?zoom=14&lat={lat}&lng={lon}",
+        "thumbnail_url": copernicus_link,
+        "map_url": copernicus_link,
         "verified_at": now_iso,
     }
 
@@ -224,11 +240,12 @@ def fetch_satellite_data(
             "region": buffer_region
         }
 
+        copernicus_url = generate_copernicus_browser_url(lat, lon, zoom=13)
         # Generate direct visual viewer link, falling back to Copernicus browser
         try:
             thumb_url = image.getThumbURL(vis_params)
         except Exception:
-            thumb_url = f"https://browser.dataspace.copernicus.eu/?zoom=14&lat={lat}&lng={lon}"
+            thumb_url = copernicus_url
 
         raw_time = props.get("system:time_start")
         acq_date = (
@@ -249,6 +266,7 @@ def fetch_satellite_data(
             "sar_cloud_penetrated": True,
             "coordinates": {"lat": lat, "lon": lon},
             "thumbnail_url": thumb_url,
+            "map_url": copernicus_url,
             "verified_at": now_utc.isoformat(),
         }
 

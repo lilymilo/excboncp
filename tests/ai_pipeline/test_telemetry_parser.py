@@ -15,8 +15,10 @@ if str(root_dir) not in sys.path:
 
 import pytest
 
+from ai_pipeline.gee_processor import generate_copernicus_browser_url
 from ai_pipeline.mqtt_subscriber import (
     evaluate_sensor_flag,
+    format_realtime_sync_log,
     format_telemetry_report,
     parse_and_analyze_telemetry,
     validate_telemetry,
@@ -358,4 +360,47 @@ def test_format_telemetry_report_warning_with_satellite():
 
     assert "> Deterministic Rule: Status Lahan -> WARNING (Evaluated by Code)" in report
     assert "> GEE Satellite Sync: [SUCCESS] Verified via COPERNICUS/S2_SR_HARMONIZED" in report
+
+
+# ---------------------------------------------------------------------------
+# Real-time Sensor & GEE Sync formatting tests
+# ---------------------------------------------------------------------------
+
+
+def test_generate_copernicus_browser_url_amsterdam():
+    url = generate_copernicus_browser_url(52.37160, 4.88830, zoom=13)
+    assert url == "https://browser.dataspace.copernicus.eu/?zoom=13&lat=52.37160&lng=4.88830"
+
+
+def test_generate_copernicus_browser_url_negative_coordinates():
+    url = generate_copernicus_browser_url(-6.59710, 106.79940, zoom=13)
+    assert url == "https://browser.dataspace.copernicus.eu/?zoom=13&lat=-6.59710&lng=106.79940"
+
+
+def test_format_realtime_sync_log():
+    log = format_realtime_sync_log(
+        node_id="ESP32-WOKWI-NODE-01",
+        lat=52.37160,
+        lon=4.88830,
+        satellite_link="https://browser.dataspace.copernicus.eu/?zoom=13&lat=52.37160&lng=4.88830",
+    )
+    assert "[EXBONCP PIPELINE ENGINE] — REAL-TIME SENSOR & GEE SYNC" in log
+    assert "> Sensor Source ID  : ESP32-WOKWI-NODE-01" in log
+    assert "> Real-Time Position: Latitude 52.37160, Longitude 4.88830 (WGS84 Verified)" in log
+    assert "> Spatial Query     : GEE Point Geometry Set Successfully" in log
+    assert "> Satellite Link    : https://browser.dataspace.copernicus.eu/?zoom=13&lat=52.37160&lng=4.88830" in log
+    assert "> Status            : [LIVE SYNC] 100% Aligned with Field Sensor Coordinates" in log
+
+
+def test_parse_nested_coordinates():
+    p = {
+        **WOKWI_PAYLOAD,
+        "lat": None,
+        "lon": None,
+        "coordinates": {"lat": 52.37160, "lon": 4.88830},
+    }
+    result = parse_and_analyze_telemetry(p)
+    assert result["lat"] == pytest.approx(52.37160, abs=1e-5)
+    assert result["lon"] == pytest.approx(4.88830, abs=1e-5)
+
 
