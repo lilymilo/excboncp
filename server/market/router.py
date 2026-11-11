@@ -78,6 +78,7 @@ async def create_order(payload: MarketOrderCreate) -> MarketOrderResponse:
 
 
 # Blueprint Model 8 contract path; registered last so it never shadows /orders.
+@router.get("/api/market/{parcel_id}", response_model=ParcelMarketResponse, include_in_schema=False)
 @router.get("/{parcel_id}", response_model=ParcelMarketResponse, include_in_schema=False)
 async def get_parcel_market_alias(
     parcel_id: str, unit_price_idr: int = Query(40_000, ge=0)

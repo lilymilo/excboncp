@@ -1,7 +1,7 @@
 """
 ExcbonCP Central Server — Auth router.
 
-Endpoints for registration, login, logout, profile management,
+Handles registration, login, logout, profile management,
 and owner-only user administration.
 """
 
@@ -26,6 +26,7 @@ from server.auth.models import (
     UserUpdate,
 )
 from server.auth.service import (
+    LoginLockoutError,
     authenticate_user,
     create_access_token,
     create_session,
@@ -41,50 +42,52 @@ from server.database import get_db
 
 logger = logging.getLogger("excboncp.auth.router")
 
-router = APIRouter(prefix="/api/auth", tags=["auth"])
-
-
-# ---------------------------------------------------------------------------
-# Registration
-# ---------------------------------------------------------------------------
+router = APIRouter(tags=["auth"])
 
 
 @router.post(
-    "/register",
+    "/api/auth/register",
     response_model=UserResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Register a new user",
 )
+@router.post(
+    "/auth/register",
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED,
+    include_in_schema=False,
+)
 async def register(body: UserCreate, request: Request) -> UserResponse:
-    """Create a new user account.
-
-    The first registered user automatically becomes the **owner**.
-    Subsequent registrations require the caller to be an owner.
-    """
     db = await get_db()
 
-    # Check whether any users exist yet
     async with db.execute("SELECT COUNT(*) AS cnt FROM users") as cur:
         row = await cur.fetchone()
-        count = row["cnt"] if row else 0  # type: ignore[index]
+        count = row["cnt"] if row else 0
 
+    caller: UserResponse | None = None
     if count > 0:
-        # Require owner auth for subsequent registrations
         try:
             caller = await get_current_user(request)
         except HTTPException:
+            caller = None
+
+    is_public = caller is None or caller.role != "owner"
+
+    if count > 0 and is_public:
+        requested_role = body.role or "community"
+        if requested_role == "auditor":
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Registration is restricted. An owner must register new users.",
+                detail="Auditor accounts are provisioned by the team and cannot be self-registered.",
             )
-        if caller.role != "owner":
+        if requested_role in ("owner", "admin"):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Only the owner can register new users.",
+                detail="Administrative roles cannot be self-registered.",
             )
 
     try:
-        user = await create_user(db, body)
+        user = await create_user(db, body, is_public=is_public)
     except ValueError as exc:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -95,26 +98,35 @@ async def register(body: UserCreate, request: Request) -> UserResponse:
         request,
         user.id,
         "user.register",
-        details=f"username={user.username}",
+        details=f"username={user.username},role={user.role}",
         resource_id=user.id,
     )
     return user
 
 
-# ---------------------------------------------------------------------------
-# Login / Logout
-# ---------------------------------------------------------------------------
-
-
 @router.post(
-    "/login",
+    "/api/auth/login",
     response_model=TokenResponse,
     summary="Authenticate and obtain a JWT",
 )
+@router.post(
+    "/auth/login",
+    response_model=TokenResponse,
+    include_in_schema=False,
+)
 async def login(body: UserLogin, request: Request) -> TokenResponse:
-    """Validate credentials and return a JWT access token."""
     db = await get_db()
-    user = await authenticate_user(db, body.username, body.password)
+    client_ip = request.client.host if request.client else ""
+
+    try:
+        user = await authenticate_user(db, body.username, body.password, client_ip=client_ip)
+    except LoginLockoutError as err:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail=f"Terlalu banyak percobaan gagal. Silakan tunggu {err.remaining_seconds} detik.",
+            headers={"Retry-After": str(err.remaining_seconds)},
+        )
+
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -124,9 +136,7 @@ async def login(body: UserLogin, request: Request) -> TokenResponse:
     token_resp = create_access_token(user.id, user.role)
     token_resp.user = user
 
-    # Persist session
     await create_session(db, user.id, token_resp.access_token, token_resp.expires_at)
-
     await audit_auth_action(
         request,
         user.id,
@@ -137,44 +147,61 @@ async def login(body: UserLogin, request: Request) -> TokenResponse:
 
 
 @router.post(
-    "/logout",
+    "/api/auth/logout",
     status_code=status.HTTP_204_NO_CONTENT,
     summary="Revoke current session",
 )
+@router.post(
+    "/auth/logout",
+    status_code=status.HTTP_204_NO_CONTENT,
+    include_in_schema=False,
+)
 async def logout(request: Request, user: UserResponse = Depends(get_current_user)):
-    """Revoke the JWT session associated with the current token."""
     token: str = request.state.token
     db = await get_db()
     await revoke_session(db, token)
     await audit_auth_action(request, user.id, "user.logout", resource_id=user.id)
 
 
-# ---------------------------------------------------------------------------
-# Profile
-# ---------------------------------------------------------------------------
-
-
 @router.get(
-    "/me",
+    "/api/auth/me",
     response_model=UserResponse,
     summary="Get current user profile",
 )
+@router.get(
+    "/auth/me",
+    response_model=UserResponse,
+    include_in_schema=False,
+)
+@router.get(
+    "/me",
+    response_model=UserResponse,
+    include_in_schema=False,
+)
 async def me(user: UserResponse = Depends(get_current_user)) -> UserResponse:
-    """Return the authenticated user's profile."""
     return user
 
 
 @router.put(
-    "/me",
+    "/api/auth/me",
     response_model=UserResponse,
     summary="Update own profile",
+)
+@router.put(
+    "/auth/me",
+    response_model=UserResponse,
+    include_in_schema=False,
+)
+@router.put(
+    "/me",
+    response_model=UserResponse,
+    include_in_schema=False,
 )
 async def update_me(
     body: UserUpdate,
     request: Request,
     user: UserResponse = Depends(get_current_user),
 ) -> UserResponse:
-    """Update the authenticated user's display name and/or password."""
     db = await get_db()
     try:
         updated = await update_user(db, user.id, body)
@@ -185,27 +212,32 @@ async def update_me(
     return updated
 
 
-# ---------------------------------------------------------------------------
-# Owner-only user management
-# ---------------------------------------------------------------------------
-
-
 @router.get(
-    "/users",
+    "/api/auth/users",
     response_model=list[UserResponse],
     summary="List all users (owner only)",
     dependencies=[Depends(require_owner())],
 )
+@router.get(
+    "/auth/users",
+    response_model=list[UserResponse],
+    include_in_schema=False,
+    dependencies=[Depends(require_owner())],
+)
 async def get_users() -> list[UserResponse]:
-    """Return the full list of registered users."""
     db = await get_db()
     return await list_users(db)
 
 
 @router.put(
-    "/users/{user_id}/role",
+    "/api/auth/users/{user_id}/role",
     response_model=UserResponse,
     summary="Change user role (owner only)",
+)
+@router.put(
+    "/auth/users/{user_id}/role",
+    response_model=UserResponse,
+    include_in_schema=False,
 )
 async def change_role(
     user_id: str,
@@ -213,7 +245,6 @@ async def change_role(
     request: Request,
     caller: UserResponse = Depends(require_owner()),
 ) -> UserResponse:
-    """Change the role of a user.  Only the owner may call this."""
     if user_id == caller.id:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -236,9 +267,14 @@ async def change_role(
 
 
 @router.put(
-    "/users/{user_id}/status",
+    "/api/auth/users/{user_id}/status",
     response_model=UserResponse,
     summary="Activate or deactivate a user (owner only)",
+)
+@router.put(
+    "/auth/users/{user_id}/status",
+    response_model=UserResponse,
+    include_in_schema=False,
 )
 async def change_status(
     user_id: str,
@@ -246,7 +282,6 @@ async def change_status(
     request: Request,
     caller: UserResponse = Depends(require_owner()),
 ) -> UserResponse:
-    """Activate or deactivate a user account.  Owner only."""
     if user_id == caller.id:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

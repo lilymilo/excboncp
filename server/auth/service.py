@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
+import time
 import uuid
 from datetime import UTC, datetime, timedelta
 
@@ -95,75 +96,178 @@ def _hash_token(token: str) -> str:
 # ---------------------------------------------------------------------------
 
 
+# In-memory tracking for 5-attempt / 1-minute lockout (Blueprint Model 8A)
+_failed_login_attempts: dict[str, tuple[int, float]] = {}
+LOCKOUT_THRESHOLD = 5
+LOCKOUT_DURATION_SECONDS = 60.0
+
+
+class LoginLockoutError(Exception):
+    """Raised when an identifier has exceeded allowed failed login attempts."""
+
+    def __init__(self, remaining_seconds: int) -> None:
+        super().__init__(
+            f"Too many failed login attempts. Please wait {remaining_seconds} seconds."
+        )
+        self.remaining_seconds = remaining_seconds
+
+
+def check_lockout(key: str) -> None:
+    now = time.monotonic()
+    count, lockout_expiry = _failed_login_attempts.get(key, (0, 0.0))
+    if count >= LOCKOUT_THRESHOLD and now < lockout_expiry:
+        remaining = max(1, int(lockout_expiry - now) + 1)
+        raise LoginLockoutError(remaining)
+
+
+def _record_failed_attempt(key: str) -> None:
+    now = time.monotonic()
+    count, lockout_expiry = _failed_login_attempts.get(key, (0, 0.0))
+    if count >= LOCKOUT_THRESHOLD and now >= lockout_expiry:
+        count = 0  # previous lockout window has passed
+
+    count += 1
+    new_expiry = (now + LOCKOUT_DURATION_SECONDS) if count >= LOCKOUT_THRESHOLD else 0.0
+    _failed_login_attempts[key] = (count, new_expiry)
+
+
+def _clear_failed_attempts(key: str) -> None:
+    _failed_login_attempts.pop(key, None)
+
+
+def reset_failed_attempts() -> None:
+    """Clear all lockout tracking (primarily for testing)."""
+    _failed_login_attempts.clear()
+
+
 def _row_to_user(row: aiosqlite.Row) -> UserResponse:
-    """Map a database row to a *UserResponse*."""
+    row_keys = set(row.keys()) if hasattr(row, "keys") else set()
     return UserResponse(
         id=row["id"],
         username=row["username"],
         display_name=row["display_name"],
+        email=row["email"] if "email" in row_keys else None,
         role=row["role"],
+        parcel_id=row["parcel_id"] if "parcel_id" in row_keys else None,
+        zone_id=row["zone_id"] if "zone_id" in row_keys else None,
         is_active=bool(row["is_active"]),
         created_at=row["created_at"],
     )
 
 
 async def _user_count(db: aiosqlite.Connection) -> int:
-    """Return the total number of registered users."""
     async with db.execute("SELECT COUNT(*) AS cnt FROM users") as cur:
         row = await cur.fetchone()
         return row["cnt"] if row else 0  # type: ignore[index]
 
 
-async def create_user(db: aiosqlite.Connection, data: UserCreate) -> UserResponse:
+async def create_user(
+    db: aiosqlite.Connection, data: UserCreate, is_public: bool = False
+) -> UserResponse:
     """Register a new user.
 
-    The very first user automatically receives the *owner* role.
-    Raises *ValueError* if the username is already taken.
+    The first user is always owner. For public guests, role defaults to
+    community, and auditor/admin roles are blocked.
     """
-    # Uniqueness check
     async with db.execute("SELECT id FROM users WHERE username = ?", (data.username,)) as cur:
         if await cur.fetchone():
             raise ValueError(f"Username '{data.username}' is already taken.")
+
+    if data.email:
+        async with db.execute("SELECT id FROM users WHERE email = ?", (data.email,)) as cur:
+            if await cur.fetchone():
+                raise ValueError(f"Email '{data.email}' is already registered.")
+
+    if data.parcel_id:
+        async with db.execute("SELECT id FROM parcels WHERE id = ?", (data.parcel_id,)) as cur:
+            if not await cur.fetchone():
+                raise ValueError(f"Parcel '{data.parcel_id}' does not exist.")
+
+    if data.zone_id:
+        async with db.execute("SELECT id FROM zones WHERE id = ?", (data.zone_id,)) as cur:
+            if not await cur.fetchone():
+                raise ValueError(f"Zone '{data.zone_id}' does not exist.")
+
+    count = await _user_count(db)
+    if count == 0:
+        role = "owner"
+    else:
+        if is_public:
+            requested_role = data.role or "community"
+            if requested_role in ("auditor", "owner", "admin"):
+                raise ValueError(
+                    f"Role '{requested_role}' cannot be self-registered publicly. "
+                    "Auditor accounts must be provisioned by the team."
+                )
+            role = requested_role
+        else:
+            role = data.role or "member"
 
     user_id = str(uuid.uuid4())
     now = datetime.now(UTC).isoformat()
     pw_hash = hash_password(data.password)
 
-    # First user becomes owner
-    count = await _user_count(db)
-    role = "owner" if count == 0 else "member"
-
     await db.execute(
         """
-        INSERT INTO users (id, username, password_hash, display_name, role, is_active, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, 1, ?, ?)
+        INSERT INTO users (
+            id, username, password_hash, display_name, email, role,
+            parcel_id, zone_id, is_active, created_at, updated_at
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
         """,
-        (user_id, data.username, pw_hash, data.display_name, role, now, now),
+        (
+            user_id,
+            data.username,
+            pw_hash,
+            data.display_name,
+            data.email,
+            role,
+            data.parcel_id,
+            data.zone_id,
+            now,
+            now,
+        ),
     )
     await db.commit()
-    logger.info("User created: %s (role=%s)", data.username, role)
+    logger.info(
+        "User created: %s (role=%s, parcel=%s, zone=%s)",
+        data.username,
+        role,
+        data.parcel_id,
+        data.zone_id,
+    )
     return UserResponse(
         id=user_id,
         username=data.username,
         display_name=data.display_name,
+        email=data.email,
         role=role,
+        parcel_id=data.parcel_id,
+        zone_id=data.zone_id,
         is_active=True,
         created_at=now,
     )
 
 
 async def authenticate_user(
-    db: aiosqlite.Connection, username: str, password: str
+    db: aiosqlite.Connection, username: str, password: str, client_ip: str = ""
 ) -> UserResponse | None:
-    """Validate credentials.  Returns the user on success, *None* on failure."""
+    """Validate credentials against username or email with rate-limit lockout."""
+    normalized_id = username.strip().lower()
+    lockout_key = f"{client_ip}:{normalized_id}" if client_ip else normalized_id
+    check_lockout(lockout_key)
+
     async with db.execute(
-        "SELECT * FROM users WHERE username = ? AND is_active = 1", (username,)
+        "SELECT * FROM users WHERE (username = ? OR email = ?) AND is_active = 1",
+        (username, username),
     ) as cur:
         row = await cur.fetchone()
-    if row is None:
+
+    if row is None or not verify_password(password, row["password_hash"]):
+        _record_failed_attempt(lockout_key)
         return None
-    if not verify_password(password, row["password_hash"]):
-        return None
+
+    _clear_failed_attempts(lockout_key)
     return _row_to_user(row)
 
 

@@ -20,10 +20,17 @@ class UserCreate(BaseModel):
     username: str = Field(..., min_length=3, max_length=32, pattern=r"^[a-zA-Z0-9_-]+$")
     password: str = Field(..., min_length=8, max_length=128)
     display_name: str = Field(..., min_length=1, max_length=64)
+    email: str | None = Field(None, max_length=128)
+    role: str | None = Field(
+        None,
+        pattern=r"^(community|manager|receiver|auditor|owner|admin|member)$",
+    )
+    parcel_id: str | None = None
+    zone_id: str | None = None
 
 
 class UserLogin(BaseModel):
-    """Payload for user login."""
+    """Payload for user login (accepts username or email)."""
 
     username: str
     password: str
@@ -39,7 +46,10 @@ class UserUpdate(BaseModel):
 class RoleUpdate(BaseModel):
     """Payload for changing a user's role (owner-only)."""
 
-    role: str = Field(..., pattern=r"^(owner|admin|member|auditor)$")
+    role: str = Field(
+        ...,
+        pattern=r"^(community|manager|receiver|auditor|owner|admin|member)$",
+    )
 
 
 class StatusUpdate(BaseModel):
@@ -59,7 +69,10 @@ class UserResponse(BaseModel):
     id: str
     username: str
     display_name: str
+    email: str | None = None
     role: str
+    parcel_id: str | None = None
+    zone_id: str | None = None
     is_active: bool
     created_at: str
 
