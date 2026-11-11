@@ -5,6 +5,8 @@ and triggers GEE satellite verification on anomaly conditions.
 Architecture: 'Kode yang memutuskan, AI yang menjelaskan'.
 """
 
+from __future__ import annotations
+
 import json
 import logging
 import os
@@ -432,8 +434,10 @@ def handle_telemetry_message(
         }
 
 
-def create_mqtt_client(client_id: str = "exboncp-ai-pipeline") -> mqtt.Client:
+def create_mqtt_client(client_id: str = "exboncp-ai-pipeline") -> Any:
     """Creates an MQTT client with version fallback."""
+    if mqtt is None:
+        raise RuntimeError("paho-mqtt is required to create an MQTT client.")
     try:
         from paho.mqtt.enums import CallbackAPIVersion
 
