@@ -368,13 +368,13 @@ def test_format_telemetry_report_warning_with_satellite():
 
 
 def test_generate_copernicus_browser_url_amsterdam():
-    url = generate_copernicus_browser_url(52.37160, 4.88830, zoom=13)
-    assert url == "https://browser.dataspace.copernicus.eu/?zoom=13&lat=52.37160&lng=4.88830"
+    url = generate_copernicus_browser_url(52.37160, 4.88830)
+    assert url == "https://browser.dataspace.copernicus.eu/?zoom=16&lat=52.37160&lng=4.88830&pin=52.37160,4.88830&theme=DEFAULT-THEME"
 
 
 def test_generate_copernicus_browser_url_negative_coordinates():
-    url = generate_copernicus_browser_url(-6.59710, 106.79940, zoom=13)
-    assert url == "https://browser.dataspace.copernicus.eu/?zoom=13&lat=-6.59710&lng=106.79940"
+    url = generate_copernicus_browser_url(-6.59710, 106.79940)
+    assert url == "https://browser.dataspace.copernicus.eu/?zoom=16&lat=-6.59710&lng=106.79940&pin=-6.59710,106.79940&theme=DEFAULT-THEME"
 
 
 def test_format_realtime_sync_log():
@@ -382,13 +382,13 @@ def test_format_realtime_sync_log():
         node_id="ESP32-WOKWI-NODE-01",
         lat=52.37160,
         lon=4.88830,
-        satellite_link="https://browser.dataspace.copernicus.eu/?zoom=13&lat=52.37160&lng=4.88830",
+        satellite_link="https://browser.dataspace.copernicus.eu/?zoom=16&lat=52.37160&lng=4.88830&pin=52.37160,4.88830&theme=DEFAULT-THEME",
     )
     assert "[EXBONCP PIPELINE ENGINE] — REAL-TIME SENSOR & GEE SYNC" in log
     assert "> Sensor Source ID  : ESP32-WOKWI-NODE-01" in log
     assert "> Real-Time Position: Latitude 52.37160, Longitude 4.88830 (WGS84 Verified)" in log
     assert "> Spatial Query     : GEE Point Geometry Set Successfully" in log
-    assert "> Satellite Link    : https://browser.dataspace.copernicus.eu/?zoom=13&lat=52.37160&lng=4.88830" in log
+    assert "> Satellite Link    : https://browser.dataspace.copernicus.eu/?zoom=16&lat=52.37160&lng=4.88830&pin=52.37160,4.88830&theme=DEFAULT-THEME" in log
     assert "> Status            : [LIVE SYNC] 100% Aligned with Field Sensor Coordinates" in log
 
 
@@ -402,5 +402,66 @@ def test_parse_nested_coordinates():
     result = parse_and_analyze_telemetry(p)
     assert result["lat"] == pytest.approx(52.37160, abs=1e-5)
     assert result["lon"] == pytest.approx(4.88830, abs=1e-5)
+
+
+def test_process_telemetry_alias():
+    from ai_pipeline.mqtt_subscriber import process_telemetry
+
+    res = process_telemetry(WOKWI_PAYLOAD)
+    assert res["status"] in ("normal", "anomaly_triggered", "anomaly_gee_error")
+    assert res["parsed"]["lat"] == pytest.approx(52.37160, abs=1e-5)
+
+
+def test_mqtt_callbacks_defined():
+    from unittest.mock import MagicMock
+    from ai_pipeline.mqtt_subscriber import on_connect, on_message, on_disconnect
+
+    client_mock = MagicMock()
+    # Test on_connect doesn't raise
+    on_connect(client_mock, None, None, 0)
+    assert client_mock.subscribe.called
+
+    # Test on_disconnect doesn't raise
+    on_disconnect(client_mock, None, 0)
+
+    # Test on_message with valid payload
+    msg_mock = MagicMock()
+    msg_mock.payload = json.dumps(WOKWI_PAYLOAD).encode("utf-8")
+    on_message(client_mock, None, msg_mock)
+
+
+def test_indonesia_jakarta_telemetry_coordinates():
+    from ai_pipeline.mqtt_subscriber import process_telemetry
+
+    payload = {
+        **WOKWI_PAYLOAD,
+        "lat": -6.2088,
+        "lon": 106.8456,
+    }
+    res = process_telemetry(payload)
+    assert res["parsed"]["lat"] == pytest.approx(-6.2088, abs=1e-4)
+    assert res["parsed"]["lon"] == pytest.approx(106.8456, abs=1e-4)
+    assert "lat=-6.20880" in res["satellite_link"]
+    assert "lng=106.84560" in res["satellite_link"]
+    assert "pin=-6.20880,106.84560" in res["satellite_link"]
+
+
+def test_taman_koin_ipb_dramaga_telemetry_coordinates():
+    from ai_pipeline.mqtt_subscriber import process_telemetry
+
+    payload = {
+        **WOKWI_PAYLOAD,
+        "lat": -6.56020,
+        "lon": 106.72862,
+    }
+    res = process_telemetry(payload)
+    assert res["parsed"]["lat"] == pytest.approx(-6.56020, abs=1e-5)
+    assert res["parsed"]["lon"] == pytest.approx(106.72862, abs=1e-5)
+    assert "lat=-6.56020" in res["satellite_link"]
+    assert "lng=106.72862" in res["satellite_link"]
+    assert "pin=-6.56020,106.72862" in res["satellite_link"]
+
+
+
 
 

@@ -31,12 +31,24 @@ def _get_cache_path() -> Path:
     return base / "data" / "gee_cache.json"
 
 
-def generate_copernicus_browser_url(lat: float, lon: float, zoom: int = 13) -> str:
+def generate_copernicus_browser_url(
+    lat: float,
+    lon: float,
+    zoom: int = 16,
+    theme: str = "DEFAULT-THEME",
+    include_pin: bool = True,
+) -> str:
     """
     Generates an external Copernicus Browser URL dynamically for coordinates (lat, lon).
-    Preserves exact sign, precision, and parameter names (lat, lng).
+    Locks viewport positioning with zoom=16, pin={lat},{lon}, and theme parameter
+    to prevent auto-centering override by Copernicus Browser frontend.
     """
-    return f"https://browser.dataspace.copernicus.eu/?zoom={zoom}&lat={lat:.5f}&lng={lon:.5f}"
+    base_url = f"https://browser.dataspace.copernicus.eu/?zoom={zoom}&lat={lat:.5f}&lng={lon:.5f}"
+    if include_pin:
+        base_url += f"&pin={lat:.5f},{lon:.5f}"
+    if theme:
+        base_url += f"&theme={theme}"
+    return base_url
 
 
 def generate_google_maps_url(lat: float, lon: float) -> str:
@@ -51,7 +63,7 @@ def load_cached_satellite_data(lat: float, lon: float) -> Dict[str, Any]:
     """
     cache_file = _get_cache_path()
     now_iso = datetime.now(timezone.utc).isoformat()
-    copernicus_link = generate_copernicus_browser_url(lat, lon, zoom=13)
+    copernicus_link = generate_copernicus_browser_url(lat, lon)
 
     if cache_file.exists():
         try:
@@ -240,7 +252,7 @@ def fetch_satellite_data(
             "region": buffer_region
         }
 
-        copernicus_url = generate_copernicus_browser_url(lat, lon, zoom=13)
+        copernicus_url = generate_copernicus_browser_url(lat, lon)
         # Generate direct visual viewer link, falling back to Copernicus browser
         try:
             thumb_url = image.getThumbURL(vis_params)
