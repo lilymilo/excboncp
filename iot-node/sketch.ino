@@ -1,0 +1,318 @@
+#include <WiFi.h>
+#include <PubSubClient.h>
+#include <HTTPClient.h>
+#include <DHTesp.h>
+#include <time.h>
+#include <mbedtls/md.h>
+
+#define PIN_DHT    15
+
+// 0: Wokwi cloud simulation, 1: physical ESP32 on Wi-Fi.
+#define USE_PHYSICAL_HARDWARE 0
+
+#if USE_PHYSICAL_HARDWARE
+  const char* WIFI_SSID     = "GANTI_DENGAN_SSID_WIFI_ANDA";
+  const char* WIFI_PASSWORD = "GANTI_DENGAN_PASSWORD_WIFI_ANDA";
+  const char* MQTT_BROKER   = "broker.emqx.io";
+  const char* NODE_ID       = "ESP32-PHYSICAL-NODE-01";
+  #define PIN_SOIL   35
+  #define PIN_FLAME  34
+#else
+  const char* WIFI_SSID     = "Wokwi-GUEST";
+  const char* WIFI_PASSWORD = "";
+  const char* MQTT_BROKER   = "broker.emqx.io";
+  const char* NODE_ID       = "ESP32-WOKWI-NODE-01";
+  #define PIN_SOIL   34
+  #define PIN_FLAME  13
+#endif
+
+const int   MQTT_PORT     = 1883;
+const char* MQTT_TOPIC    = "CbonCP/node-1/telemetry";
+const char* SENSOR_SECRET = "cboncp-shared-device-secret";
+
+const char* NTP_SERVER          = "pool.ntp.org";
+const long  GMT_OFFSET_SEC       = 25200; // UTC+7 (WIB)
+const int   DAYLIGHT_OFFSET_SEC   = 0;
+const char* TIMEZONE_NAME       = "Asia/Jakarta";
+const char* TIMEZONE_ABBR       = "WIB";
+const char* UTC_OFFSET_STR      = "+07:00";
+
+WiFiClient espClient;
+PubSubClient mqttClient(espClient);
+DHTesp dhtSensor;
+
+float lastSoilMoisture = -999.0;
+float lastTemp         = -999.0;
+bool  lastFlame        = false;
+
+const float SOIL_THRESHOLD = 1.0;
+const float TEMP_THRESHOLD = 0.5;
+
+unsigned long lastSampleTime    = 0;
+unsigned long lastHeartbeatTime = 0;
+unsigned long lastMqttRetry     = 0;
+unsigned long lastLocationTry   = 0;
+
+// Location comes from network IP geolocation with initial centroid fallback.
+float nodeLat = -0.12345;
+float nodeLon = 109.12345;
+bool  hasLocation = false;
+
+bool readJsonNumber(const String& json, const char* key, float& out) {
+  int at = json.indexOf(String("\"") + key + "\":");
+  if (at < 0) return false;
+  out = json.substring(at + strlen(key) + 3).toFloat();
+  return true;
+}
+
+void autoDetectLocation() {
+  lastLocationTry = millis();
+  HTTPClient http;
+  http.setTimeout(3000);
+  http.begin("http://ip-api.com/json/?fields=status,lat,lon");
+  if (http.GET() == 200) {
+    String body = http.getString();
+    if (body.indexOf("\"success\"") >= 0 && readJsonNumber(body, "lat", nodeLat) &&
+        readJsonNumber(body, "lon", nodeLon)) {
+      hasLocation = true;
+      Serial.printf("[OK] Lokasi terdeteksi: %.5f, %.5f\n", nodeLat, nodeLon);
+    }
+  }
+  http.end();
+}
+
+void connectWiFi() {
+  Serial.print("Menghubungkan ke Wi-Fi");
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(200);
+    Serial.print(".");
+  }
+
+  Serial.println("\n[OK] Wi-Fi Terhubung!");
+  Serial.print("IP ESP32: ");
+  Serial.println(WiFi.localIP());
+
+  configTime(GMT_OFFSET_SEC, DAYLIGHT_OFFSET_SEC, NTP_SERVER);
+  Serial.println("Menyinkronkan waktu NTP...");
+  struct tm timeinfo;
+  if (getLocalTime(&timeinfo, 5000)) {
+    Serial.println("[OK] Waktu NTP berhasil disinkronkan.");
+  }
+
+  Serial.println("Mendeteksi lokasi jaringan...");
+  autoDetectLocation();
+}
+
+String getDetailedTimestampJSON() {
+  struct tm timeinfo;
+  time_t now;
+  time(&now);
+
+  char datetimeStr[24];
+  char isoStr[32];
+
+  if (getLocalTime(&timeinfo, 100)) {
+    strftime(datetimeStr, sizeof(datetimeStr), "%Y-%m-%d %H:%M:%S", &timeinfo);
+    strftime(isoStr, sizeof(isoStr), "%Y-%m-%dT%H:%M:%S", &timeinfo);
+  } else {
+    // Fallback if NTP sync is still pending.
+    snprintf(datetimeStr, sizeof(datetimeStr), "2026-11-03 19:30:00");
+    snprintf(isoStr, sizeof(isoStr), "2026-11-03T19:30:00");
+  }
+
+  char buffer[220];
+  snprintf(buffer, sizeof(buffer),
+           "{\"datetime\":\"%s\",\"iso8601\":\"%s%s\",\"timezone\":\"%s\",\"timezone_abbr\":\"%s\",\"utc_offset\":\"%s\",\"epoch\":%lu}",
+           datetimeStr, isoStr, UTC_OFFSET_STR, TIMEZONE_NAME, TIMEZONE_ABBR, UTC_OFFSET_STR, (unsigned long)now);
+
+  return String(buffer);
+}
+
+String computeSignature(const char* data, const char* secret) {
+  byte hash[32];
+  mbedtls_md_context_t ctx;
+  mbedtls_md_init(&ctx);
+  mbedtls_md_setup(&ctx, mbedtls_md_info_from_type(MBEDTLS_MD_SHA256), 0);
+  mbedtls_md_starts(&ctx);
+  mbedtls_md_update(&ctx, (const unsigned char*)data, strlen(data));
+  mbedtls_md_update(&ctx, (const unsigned char*)secret, strlen(secret));
+  mbedtls_md_finish(&ctx, hash);
+  mbedtls_md_free(&ctx);
+
+  char hex[67];
+  hex[0] = '0';
+  hex[1] = 'x';
+  for (int i = 0; i < 32; i++) {
+    sprintf(&hex[2 + (i * 2)], "%02x", hash[i]);
+  }
+  hex[66] = '\0';
+  return String(hex);
+}
+
+int computeFireLevel(float temp, bool flame, float soil) {
+  if (flame || temp >= 65.0) return 3; // BAHAYA (Api nyata atau panas ekstrem)
+  if (temp >= 55.0 || (temp >= 48.0 && soil < 20.0)) return 2; // SIAGA
+  if (temp >= 42.0 || (temp >= 35.0 && soil < 50.0)) return 1; // WASPADA (Panas + tanah mengering)
+  return 0; // NORMAL (Suhu sejuk < 35C atau tanah lembap meredam panas)
+}
+
+const char* getFireStatus(int level) {
+  switch (level) {
+    case 3: return "BAHAYA";
+    case 2: return "SIAGA";
+    case 1: return "WASPADA";
+    default: return "NORMAL";
+  }
+}
+
+void publishTelemetry(float soilMoisture, float suhu, float kelembapan, bool currentFlame, const char* eventTag) {
+  time_t epochNow;
+  time(&epochNow);
+  unsigned long ts = (unsigned long)epochNow;
+
+  int fireLevel = computeFireLevel(suhu, currentFlame, soilMoisture);
+  const char* fireStatus = getFireStatus(fireLevel);
+
+  // Jika level mencapai BAHAYA (panas api nyata >= 65C atau sensor optik), flame otomatis aktif.
+  bool isFlameActive = currentFlame || (fireLevel == 3);
+
+  int smoke = isFlameActive ? 500 : 25;
+  int sound = isFlameActive ? 75 : 30;
+
+  struct tm timeinfo;
+  char isoStr[32];
+  if (getLocalTime(&timeinfo, 100)) {
+    strftime(isoStr, sizeof(isoStr), "%Y-%m-%dT%H:%M:%SZ", &timeinfo);
+  } else {
+    snprintf(isoStr, sizeof(isoStr), "2026-11-10T12:00:00Z");
+  }
+
+  char sigData[128];
+  snprintf(sigData, sizeof(sigData), "%s|%s|%d|%.1f", NODE_ID, isoStr, isFlameActive ? 1 : 0, suhu);
+  String signature = computeSignature(sigData, SENSOR_SECRET);
+
+  String timestampJSON = getDetailedTimestampJSON();
+
+  char payload[1024];
+  snprintf(payload, sizeof(payload),
+           "{\"node_id\":\"%s\",\"device_id\":\"%s\",\"ts\":\"%s\",\"timestamp\":%s,"
+           "\"lat\":%.5f,\"lon\":%.5f,"
+           "\"fire_level\":%d,\"fire_status\":\"%s\","
+           "\"soil_moisture\":%.1f,\"soil_pct\":%.1f,\"temperature\":%.1f,\"temp_c\":%.1f,"
+           "\"humidity_pct\":%.1f,\"smoke\":%d,\"sound\":%d,\"flame\":%d,"
+           "\"flame_detected\":%s,\"source\":\"esp\",\"sig\":\"%s\"}",
+           NODE_ID, NODE_ID, isoStr, timestampJSON.c_str(),
+           nodeLat, nodeLon,
+           fireLevel, fireStatus,
+           soilMoisture, soilMoisture, suhu, suhu,
+           kelembapan, smoke, sound, isFlameActive ? 1 : 0,
+           isFlameActive ? "true" : "false", signature.c_str());
+
+  Serial.print("[");
+  Serial.print(eventTag);
+  Serial.print("] ");
+  Serial.println(payload);
+
+  mqttClient.publish(MQTT_TOPIC, payload);
+}
+
+bool tryConnectMQTT() {
+  Serial.print("Mencoba hubungkan MQTT...");
+  mqttClient.setSocketTimeout(5);
+
+  char sessionClientId[40];
+  snprintf(sessionClientId, sizeof(sessionClientId), "%s-%04X", NODE_ID, (uint16_t)random(0xFFFF));
+
+  if (mqttClient.connect(sessionClientId)) {
+    Serial.println(" [OK] TERHUBUNG KE BROKER!");
+    return true;
+  } else {
+    Serial.print(" Gagal, rc = ");
+    Serial.println(mqttClient.state());
+    return false;
+  }
+}
+
+void setup() {
+  Serial.begin(115200);
+  delay(200);
+
+  dhtSensor.setup(PIN_DHT, DHTesp::DHT22);
+  pinMode(PIN_SOIL, INPUT);
+#if USE_PHYSICAL_HARDWARE
+  pinMode(PIN_FLAME, INPUT);
+#else
+  pinMode(PIN_FLAME, INPUT_PULLUP);
+#endif
+
+  connectWiFi();
+  mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
+  mqttClient.setBufferSize(1024); // Accommodates ISO timestamp, SHA-256 signature and location fields.
+}
+
+void loop() {
+  if (WiFi.status() != WL_CONNECTED) {
+    connectWiFi();
+  }
+
+  // Retry until the first successful lookup, then keep the cached fix.
+  if (!hasLocation && millis() - lastLocationTry >= 30000) {
+    autoDetectLocation();
+  }
+
+  if (!mqttClient.connected()) {
+    unsigned long now = millis();
+    if (now - lastMqttRetry >= 4000) {
+      lastMqttRetry = now;
+      tryConnectMQTT();
+    }
+  } else {
+    mqttClient.loop();
+  }
+
+  bool currentFlame = (digitalRead(PIN_FLAME) == LOW);
+
+  if (currentFlame != lastFlame && mqttClient.connected()) {
+    int rawSoil = analogRead(PIN_SOIL);
+    float soilMoisture = (rawSoil / 4095.0) * 100.0;
+
+    TempAndHumidity dhtData = dhtSensor.getTempAndHumidity();
+    float suhu = isnan(dhtData.temperature) ? lastTemp : dhtData.temperature;
+    float hum = isnan(dhtData.humidity) ? 75.0 : dhtData.humidity;
+
+    publishTelemetry(soilMoisture, suhu, hum, currentFlame, "FLAME STATE EVENT");
+
+    lastFlame = currentFlame;
+    lastSoilMoisture = soilMoisture;
+    lastTemp = suhu;
+  }
+
+  unsigned long now = millis();
+  if (now - lastSampleTime >= 1000) {
+    lastSampleTime = now;
+
+    int rawSoil = analogRead(PIN_SOIL);
+    float soilMoisture = (rawSoil / 4095.0) * 100.0;
+
+    TempAndHumidity dhtData = dhtSensor.getTempAndHumidity();
+    float suhu = dhtData.temperature;
+    float hum = isnan(dhtData.humidity) ? 75.0 : dhtData.humidity;
+
+    if (!isnan(suhu)) {
+      bool soilChanged = fabs(soilMoisture - lastSoilMoisture) >= SOIL_THRESHOLD;
+      bool tempChanged = fabs(suhu - lastTemp) >= TEMP_THRESHOLD;
+      bool heartbeat   = (now - lastHeartbeatTime >= 60000);
+
+      if ((soilChanged || tempChanged || heartbeat) && mqttClient.connected()) {
+        publishTelemetry(soilMoisture, suhu, hum, currentFlame, "MQTT PUBLISH");
+
+        lastSoilMoisture = soilMoisture;
+        lastTemp = suhu;
+        lastHeartbeatTime = now;
+      }
+    }
+  }
+}
