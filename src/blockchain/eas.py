@@ -83,7 +83,7 @@ def _compute_schema_id(schema: str) -> str:
 
         return "0x" + keccak(text=schema).hex()
     except ImportError:  # pragma: no cover - only when web3 is not installed
-        return hashlib.sha256(schema.encode()).hexdigest()
+        return "0x" + hashlib.sha256(schema.encode()).hexdigest()
 
 
 SCHEMA_ID = _compute_schema_id(PARCEL_ATTESTATION_SCHEMA)
