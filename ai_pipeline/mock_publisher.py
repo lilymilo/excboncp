@@ -3,13 +3,10 @@ import json
 import logging
 import os
 import time
-from datetime import UTC, datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-try:
-    import paho.mqtt.client as mqtt
-except ImportError:  # pragma: no cover - optional when only payload generation is tested
-    mqtt = None  # type: ignore[assignment]
+import paho.mqtt.client as mqtt
 from dotenv import load_dotenv
 
 env_path = Path(__file__).resolve().parent / ".env"
@@ -21,7 +18,6 @@ else:
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("mock_publisher")
 
-# WIB offset for timestamp generation
 _WIB = timezone(timedelta(hours=7))
 
 
@@ -47,19 +43,19 @@ def generate_payload(
     Generates a telemetry payload matching the Wokwi/physical ESP32 schema.
     Both alias sets are included so either schema parser can read the data.
     """
-    now_utc = datetime.now(UTC)
-    default_lat = lat if lat is not None else float(os.getenv("DEFAULT_MONITOR_LAT", "-6.5971"))
-    default_lon = lon if lon is not None else float(os.getenv("DEFAULT_MONITOR_LON", "106.7994"))
+    now_utc = datetime.now(timezone.utc)
+    default_lat = lat if lat is not None else float(os.getenv("DEFAULT_MONITOR_LAT", "52.37160"))
+    default_lon = lon if lon is not None else float(os.getenv("DEFAULT_MONITOR_LON", "4.88830"))
 
     base = {
         "node_id": node_id,
         "device_id": node_id,
         "ts": now_utc.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "timestamp": _build_timestamp(now_utc),
-        # Wokwi uses lat/lon; legacy used latitude/longitude
         "lat": default_lat,
         "lon": default_lon,
         "source": "esp",
+        "sig": "0x6f720491b408a47f15f065c3cbebe10013f7bb2eea4ecb4054596d46eec1a9d1",
     }
 
     scenarios: dict[str, dict] = {
@@ -97,7 +93,7 @@ def generate_payload(
             "humidity_pct": 35.0,
             "fire_level": 0,
             "fire_status": "WARNING",
-            "smoke": 75,  # above threshold of 50
+            "smoke": 75,
             "sound": 60,
             "flame": 0,
             "flame_detected": False,
@@ -146,17 +142,13 @@ def run_publisher():
         help="Telemetry scenario to simulate",
     )
     parser.add_argument("--stream", action="store_true", help="Publish continuously")
-    parser.add_argument(
-        "--interval", type=float, default=3.0, help="Interval in seconds for stream mode"
-    )
-    parser.add_argument(
-        "--topic", default=os.getenv("MQTT_TELEMETRY_TOPIC", "CbonCP/node-1/telemetry")
-    )
+    parser.add_argument("--interval", type=float, default=3.0, help="Interval in seconds for stream mode")
+    parser.add_argument("--topic", default=os.getenv("MQTT_TELEMETRY_TOPIC", "CbonCP/node-1/telemetry"))
     parser.add_argument("--lat", type=float, default=None, help="Override latitude")
     parser.add_argument("--lon", type=float, default=None, help="Override longitude")
     args = parser.parse_args()
 
-    broker = os.getenv("MQTT_BROKER_HOST", "localhost")
+    broker = os.getenv("MQTT_BROKER_HOST", "broker.emqx.io")
     port = int(os.getenv("MQTT_BROKER_PORT", "1883"))
 
     try:
@@ -179,9 +171,7 @@ def run_publisher():
         while True:
             payload = generate_payload(args.mode, lat=args.lat, lon=args.lon)
             data_str = json.dumps(payload, indent=2)
-            logger.info(
-                "Publishing %s payload to '%s':\n%s", args.mode.upper(), args.topic, data_str
-            )
+            logger.info("Publishing %s payload to '%s':\n%s", args.mode.upper(), args.topic, data_str)
             client.publish(args.topic, json.dumps(payload), qos=0)
 
             if not args.stream:

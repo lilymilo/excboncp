@@ -7,9 +7,9 @@ resilient fallback to local JSON cache per Blueprint Tangga Cadangan.
 import json
 import logging
 import os
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger("gee_processor")
 
@@ -18,37 +18,71 @@ _IS_MOCK_MODE: bool = False
 
 
 def _get_cache_path() -> Path:
-    return Path(__file__).resolve().parent / "data" / "gee_cache.json"
+    base = Path(__file__).resolve().parent
+    candidates = [
+        base / "gee_cache_fallback.json",
+        base / "data" / "gee_cache.json",
+        base / "data" / "gee_cache_fallback.json",
+        base / "gee_cache.json",
+    ]
+    for c in candidates:
+        if c.exists():
+            return c
+    return base / "data" / "gee_cache.json"
 
 
-def load_cached_satellite_data(lat: float, lon: float) -> dict[str, Any]:
+def generate_copernicus_browser_url(
+    lat: float,
+    lon: float,
+    zoom: int = 16,
+    theme: str = "DEFAULT-THEME",
+    include_pin: bool = True,
+) -> str:
+    """
+    Generates an external Copernicus Browser URL dynamically for coordinates (lat, lon).
+    Locks viewport positioning with zoom=16, pin={lat},{lon}, and theme parameter
+    to prevent auto-centering override by Copernicus Browser frontend.
+    """
+    base_url = f"https://browser.dataspace.copernicus.eu/?zoom={zoom}&lat={lat:.5f}&lng={lon:.5f}"
+    if include_pin:
+        base_url += f"&pin={lat:.5f},{lon:.5f}"
+    if theme:
+        base_url += f"&theme={theme}"
+    return base_url
+
+
+def generate_google_maps_url(lat: float, lon: float) -> str:
+    """Generates direct Google Maps URL for pinpoint coordinate verification."""
+    return f"https://www.google.com/maps?q={lat:.5f},{lon:.5f}"
+
+
+def load_cached_satellite_data(lat: float, lon: float) -> Dict[str, Any]:
     """
     Retrieves satellite metrics from local JSON cache.
     Guarantees backend zero-downtime resilience if Earth Engine is unreachable.
     """
     cache_file = _get_cache_path()
-    now_iso = datetime.now(UTC).isoformat()
+    now_iso = datetime.now(timezone.utc).isoformat()
+    copernicus_link = generate_copernicus_browser_url(lat, lon)
 
     if cache_file.exists():
         try:
-            with open(cache_file, encoding="utf-8") as f:
+            with open(cache_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
             parcel = data.get("default_parcel", {})
             return {
                 "status": "cached",
-                "satellite_status_label": "Cache Aktif",
                 "source": parcel.get("source", "ESA Sentinel-1 SAR & Sentinel-2"),
                 "collection": parcel.get("collection", "COPERNICUS/S2_SR_HARMONIZED"),
-                "image_id": parcel.get(
-                    "image_id", "COPERNICUS/S2_SR_HARMONIZED/20261104T025901_20261104T030818_T48MYT"
-                ),
+                "image_id": parcel.get("image_id", "COPERNICUS/S2_SR_HARMONIZED/20261104T025901_20261104T030818_T48MYT"),
                 "acquisition_date": parcel.get("date", "2026-11-04"),
                 "ndvi_mean": parcel.get("ndvi_mean", 0.84),
                 "sar_vv_db": parcel.get("sar_vv_db", -11.2),
                 "sar_cloud_penetrated": parcel.get("sar_cloud_penetrated", True),
                 "cloud_coverage_pct": parcel.get("cloud_coverage_pct", 14.2),
                 "coordinates": {"lat": lat, "lon": lon},
-                "thumbnail_url": f"https://browser.dataspace.copernicus.eu/?zoom=14&lat={lat}&lng={lon}",
+                "thumbnail_url": copernicus_link,
+                "map_url": copernicus_link,
                 "verified_at": now_iso,
                 "note": "Cached fallback data deployed per Blueprint Tangga Cadangan",
             }
@@ -58,7 +92,6 @@ def load_cached_satellite_data(lat: float, lon: float) -> dict[str, Any]:
     # In-memory emergency fallback if file is missing or unreadable
     return {
         "status": "cached_emergency",
-        "satellite_status_label": "Cache Darurat",
         "source": "ESA Sentinel-1 SAR & Sentinel-2",
         "collection": "COPERNICUS/S2_SR_HARMONIZED",
         "image_id": "COPERNICUS/S2_SR_HARMONIZED/20261104T025901_20261104T030818_T48MYT",
@@ -68,14 +101,15 @@ def load_cached_satellite_data(lat: float, lon: float) -> dict[str, Any]:
         "sar_cloud_penetrated": True,
         "cloud_coverage_pct": 14.2,
         "coordinates": {"lat": lat, "lon": lon},
-        "thumbnail_url": f"https://browser.dataspace.copernicus.eu/?zoom=14&lat={lat}&lng={lon}",
+        "thumbnail_url": copernicus_link,
+        "map_url": copernicus_link,
         "verified_at": now_iso,
     }
 
 
 def _is_placeholder_credential(key_path: Path) -> bool:
     try:
-        with open(key_path, encoding="utf-8") as f:
+        with open(key_path, "r", encoding="utf-8") as f:
             data = json.load(f)
             private_key = data.get("private_key", "")
             return "REPLACE_WITH_REAL" in private_key or not private_key
@@ -83,7 +117,10 @@ def _is_placeholder_credential(key_path: Path) -> bool:
         return True
 
 
-def initialize_gee(key_path: str | None = None, project_id: str | None = None) -> bool:
+def initialize_gee(
+    key_path: Optional[str] = None,
+    project_id: Optional[str] = None
+) -> bool:
     """
     Initializes Google Earth Engine with service account credentials.
     Defaults to project ID 'exboncp' or resolves from environment.
@@ -108,7 +145,7 @@ def initialize_gee(key_path: str | None = None, project_id: str | None = None) -
         logger.warning(
             "Service account credential is empty or placeholder at %s. "
             "Running GEE processor in mock simulation mode.",
-            resolved_path,
+            resolved_path
         )
         _GEE_INITIALIZED = True
         _IS_MOCK_MODE = True
@@ -117,15 +154,13 @@ def initialize_gee(key_path: str | None = None, project_id: str | None = None) -
     try:
         import ee
 
-        with open(resolved_path, encoding="utf-8") as f:
+        with open(resolved_path, "r", encoding="utf-8") as f:
             sa_data = json.load(f)
         sa_email = sa_data.get("client_email")
         sa_project = sa_data.get("project_id", resolved_project)
 
         # Fallback to sa project if specified project differs from key
-        target_project = (
-            sa_project if resolved_project in ["exboncp", "cboncp"] else resolved_project
-        )
+        target_project = sa_project if resolved_project in ["exboncp", "cboncp"] else resolved_project
 
         credentials = ee.ServiceAccountCredentials(sa_email, str(resolved_path))
         ee.Initialize(credentials=credentials, project=target_project)
@@ -150,8 +185,8 @@ def fetch_satellite_data(
     lon: float,
     date_range_days: int = 14,
     collection_id: str = "COPERNICUS/S2_SR_HARMONIZED",
-    max_cloud_percent: float = 20.0,
-) -> dict[str, Any]:
+    max_cloud_percent: float = 20.0
+) -> Dict[str, Any]:
     """
     Queries Sentinel-2 optical imagery around the given coordinate.
     If Earth Engine is offline, times out, or fails, gracefully falls back
@@ -165,7 +200,7 @@ def fetch_satellite_data(
             logger.warning("Live GEE initialization failed. Activating local JSON cache.")
             return load_cached_satellite_data(lat, lon)
 
-    now_utc = datetime.now(UTC)
+    now_utc = datetime.now(timezone.utc)
     start_utc = now_utc - timedelta(days=date_range_days)
 
     if _IS_MOCK_MODE:
@@ -191,10 +226,7 @@ def fetch_satellite_data(
 
         image_count = col.size().getInfo()
         if image_count == 0:
-            logger.info(
-                "No cloud-free Sentinel-2 images found within %d days, relaxing cloud filter",
-                date_range_days,
-            )
+            logger.info("No cloud-free Sentinel-2 images found within %d days, relaxing cloud filter", date_range_days)
             col = (
                 ee.ImageCollection(collection_id)
                 .filterBounds(buffer_region)
@@ -217,25 +249,24 @@ def fetch_satellite_data(
             "max": 3000,
             "bands": ["B4", "B3", "B2"],
             "dimensions": 512,
-            "region": buffer_region,
+            "region": buffer_region
         }
 
+        copernicus_url = generate_copernicus_browser_url(lat, lon)
         # Generate direct visual viewer link, falling back to Copernicus browser
         try:
             thumb_url = image.getThumbURL(vis_params)
         except Exception:
-            thumb_url = f"https://browser.dataspace.copernicus.eu/?zoom=14&lat={lat}&lng={lon}"
+            thumb_url = copernicus_url
 
         raw_time = props.get("system:time_start")
         acq_date = (
-            datetime.fromtimestamp(raw_time / 1000.0, tz=UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
-            if raw_time
-            else date_end_str
+            datetime.fromtimestamp(raw_time / 1000.0, tz=timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
+            if raw_time else date_end_str
         )
 
         return {
             "status": "success",
-            "satellite_status_label": "GEE Live",
             "provider": "Google Earth Engine",
             "source": "ESA Sentinel-1 SAR & Sentinel-2",
             "collection": collection_id,
@@ -247,11 +278,10 @@ def fetch_satellite_data(
             "sar_cloud_penetrated": True,
             "coordinates": {"lat": lat, "lon": lon},
             "thumbnail_url": thumb_url,
+            "map_url": copernicus_url,
             "verified_at": now_utc.isoformat(),
         }
 
     except Exception as exc:
-        logger.error(
-            "Live GEE query failed for (%f, %f): %s. Falling back to local cache.", lat, lon, exc
-        )
+        logger.error("Live GEE query failed for (%f, %f): %s. Falling back to local cache.", lat, lon, exc)
         return load_cached_satellite_data(lat, lon)
