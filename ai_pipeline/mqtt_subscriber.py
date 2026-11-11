@@ -5,6 +5,7 @@ and triggers Google Earth Engine satellite verification on anomaly conditions.
 Architecture principle: 'Kode yang memutuskan, AI yang menjelaskan'.
 """
 
+import contextlib
 import json
 import logging
 import os
@@ -15,8 +16,8 @@ import uuid
 from pathlib import Path
 from typing import Any
 
-from dotenv import load_dotenv
 import paho.mqtt.client as mqtt
+from dotenv import load_dotenv
 
 from .gee_processor import (
     fetch_satellite_data,
@@ -32,10 +33,7 @@ if env_path.exists():
 else:
     load_dotenv()
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger("ai_pipeline.mqtt")
 
 
@@ -95,7 +93,11 @@ def validate_telemetry(raw_payload: Any) -> tuple[bool, dict[str, Any] | None, s
     if temp is None or not isinstance(temp, (int, float)):
         return False, None, "Missing or non-numeric temperature field (temp_c or temperature)"
 
-    soil = parsed.get("soil_pct") if parsed.get("soil_pct") is not None else parsed.get("soil_moisture")
+    soil = (
+        parsed.get("soil_pct")
+        if parsed.get("soil_pct") is not None
+        else parsed.get("soil_moisture")
+    )
     if soil is None or not isinstance(soil, (int, float)):
         return False, None, "Missing or non-numeric soil field (soil_pct or soil_moisture)"
 
@@ -168,7 +170,11 @@ def parse_and_analyze_telemetry(payload: dict[str, Any]) -> dict[str, Any]:
         fire_status = str(explicit_status)
     elif flame_detected or temp > cfg["temp_threshold_critical"] or fire_level >= 2:
         fire_status = "CRITICAL"
-    elif temp > cfg["temp_threshold_warning"] or smoke > cfg["smoke_threshold_warning"] or fire_level == 1:
+    elif (
+        temp > cfg["temp_threshold_warning"]
+        or smoke > cfg["smoke_threshold_warning"]
+        or fire_level == 1
+    ):
         fire_status = "WARNING"
     else:
         fire_status = "NORMAL"
@@ -176,7 +182,11 @@ def parse_and_analyze_telemetry(payload: dict[str, Any]) -> dict[str, Any]:
     if explicit_status == "NORMAL":
         if flame_detected or temp > cfg["temp_threshold_critical"] or fire_level >= 2:
             fire_status = "CRITICAL"
-        elif temp > cfg["temp_threshold_warning"] or smoke > cfg["smoke_threshold_warning"] or fire_level == 1:
+        elif (
+            temp > cfg["temp_threshold_warning"]
+            or smoke > cfg["smoke_threshold_warning"]
+            or fire_level == 1
+        ):
             fire_status = "WARNING"
 
     ts_data = payload.get("timestamp")
@@ -228,11 +238,17 @@ def parse_and_analyze_telemetry(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def evaluate_sensor_flag(telemetry: dict[str, Any], temp_threshold: float = 30.0) -> tuple[bool, list[str]]:
+def evaluate_sensor_flag(
+    telemetry: dict[str, Any], temp_threshold: float = 30.0
+) -> tuple[bool, list[str]]:
     """Evaluates whether physical sensors crossed danger thresholds."""
     reasons: list[str] = []
 
-    temp = telemetry.get("temp_c") if telemetry.get("temp_c") is not None else telemetry.get("temperature", 0.0)
+    temp = (
+        telemetry.get("temp_c")
+        if telemetry.get("temp_c") is not None
+        else telemetry.get("temperature", 0.0)
+    )
     temp = float(temp)
 
     flame_detected = telemetry.get("flame_detected")
@@ -288,7 +304,7 @@ def format_coord_sync_log(
     if google_maps_url:
         lines.append(f"> Google Maps       : {google_maps_url}")
     lines += [
-        f"> Map Status        : [SYNCED] 100% Aligned with Wokwi Simulation Coordinates",
+        "> Map Status        : [SYNCED] 100% Aligned with Wokwi Simulation Coordinates",
         border,
     ]
     return "\n".join(lines)
@@ -527,9 +543,7 @@ def on_connect(client: mqtt.Client, userdata: Any, flags: Any, *args: Any) -> No
     cfg = get_config()
     rc = args[0] if args else 0
     if (hasattr(rc, "is_failure") and not rc.is_failure) or rc == 0:
-        logger.info(
-            "Connected to MQTT Broker at %s:%d", cfg["broker_host"], cfg["broker_port"]
-        )
+        logger.info("Connected to MQTT Broker at %s:%d", cfg["broker_host"], cfg["broker_port"])
         topics = [
             (cfg["topic"], 0),
             ("CbonCP/#", 0),
@@ -593,10 +607,8 @@ def start_subscriber() -> None:
 
     def shutdown_signal(signum, frame):
         logger.info("Termination signal received. Shutting down MQTT subscriber...")
-        try:
+        with contextlib.suppress(Exception):
             client.disconnect()
-        except Exception:
-            pass
         sys.exit(0)
 
     signal.signal(signal.SIGINT, shutdown_signal)
@@ -604,7 +616,9 @@ def start_subscriber() -> None:
 
     while True:
         try:
-            logger.info("Starting MQTT loop on %s:%d...", config["broker_host"], config["broker_port"])
+            logger.info(
+                "Starting MQTT loop on %s:%d...", config["broker_host"], config["broker_port"]
+            )
             client.connect(config["broker_host"], config["broker_port"], config["keepalive"])
             client.loop_forever(retry_first_connection=True)
             break

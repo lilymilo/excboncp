@@ -8,11 +8,6 @@ import json
 import sys
 from pathlib import Path
 
-# Ensure root repository is in sys.path
-root_dir = Path(__file__).resolve().parents[2]
-if str(root_dir) not in sys.path:
-    sys.path.insert(0, str(root_dir))
-
 import pytest
 
 from ai_pipeline.gee_processor import generate_copernicus_browser_url
@@ -23,6 +18,11 @@ from ai_pipeline.mqtt_subscriber import (
     parse_and_analyze_telemetry,
     validate_telemetry,
 )
+
+# Ensure root repository is in sys.path
+root_dir = Path(__file__).resolve().parents[2]
+if str(root_dir) not in sys.path:
+    sys.path.insert(0, str(root_dir))
 
 # ---------------------------------------------------------------------------
 # Shared fixtures
@@ -369,12 +369,18 @@ def test_format_telemetry_report_warning_with_satellite():
 
 def test_generate_copernicus_browser_url_amsterdam():
     url = generate_copernicus_browser_url(52.37160, 4.88830)
-    assert url == "https://browser.dataspace.copernicus.eu/?zoom=16&lat=52.37160&lng=4.88830&pin=52.37160,4.88830&theme=DEFAULT-THEME"
+    assert (
+        url
+        == "https://browser.dataspace.copernicus.eu/?zoom=16&lat=52.37160&lng=4.88830&pin=52.37160,4.88830&theme=DEFAULT-THEME"
+    )
 
 
 def test_generate_copernicus_browser_url_negative_coordinates():
     url = generate_copernicus_browser_url(-6.59710, 106.79940)
-    assert url == "https://browser.dataspace.copernicus.eu/?zoom=16&lat=-6.59710&lng=106.79940&pin=-6.59710,106.79940&theme=DEFAULT-THEME"
+    assert (
+        url
+        == "https://browser.dataspace.copernicus.eu/?zoom=16&lat=-6.59710&lng=106.79940&pin=-6.59710,106.79940&theme=DEFAULT-THEME"
+    )
 
 
 def test_format_realtime_sync_log():
@@ -388,7 +394,10 @@ def test_format_realtime_sync_log():
     assert "> Sensor Source ID  : ESP32-WOKWI-NODE-01" in log
     assert "> Real-Time Position: Latitude 52.37160, Longitude 4.88830 (WGS84 Verified)" in log
     assert "> Spatial Query     : GEE Point Geometry Set Successfully" in log
-    assert "> Satellite Link    : https://browser.dataspace.copernicus.eu/?zoom=16&lat=52.37160&lng=4.88830&pin=52.37160,4.88830&theme=DEFAULT-THEME" in log
+    assert (
+        "> Satellite Link    : https://browser.dataspace.copernicus.eu/?zoom=16&lat=52.37160&lng=4.88830&pin=52.37160,4.88830&theme=DEFAULT-THEME"
+        in log
+    )
     assert "> Status            : [LIVE SYNC] 100% Aligned with Field Sensor Coordinates" in log
 
 
@@ -414,7 +423,8 @@ def test_process_telemetry_alias():
 
 def test_mqtt_callbacks_defined():
     from unittest.mock import MagicMock
-    from ai_pipeline.mqtt_subscriber import on_connect, on_message, on_disconnect
+
+    from ai_pipeline.mqtt_subscriber import on_connect, on_disconnect, on_message
 
     client_mock = MagicMock()
     # Test on_connect doesn't raise
@@ -460,8 +470,3 @@ def test_taman_koin_ipb_dramaga_telemetry_coordinates():
     assert "lat=-6.56020" in res["satellite_link"]
     assert "lng=106.72862" in res["satellite_link"]
     assert "pin=-6.56020,106.72862" in res["satellite_link"]
-
-
-
-
-
