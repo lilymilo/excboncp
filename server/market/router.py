@@ -11,10 +11,12 @@ from server.market.models import (
     MarketOrderCreate,
     MarketOrderResponse,
     ParcelMarketResponse,
+    ZoneReportResponse,
 )
 from server.market.service import (
     create_market_order,
     get_parcel_market_summary,
+    get_zone_report,
     list_market_orders,
 )
 
@@ -77,7 +79,28 @@ async def create_order(payload: MarketOrderCreate) -> MarketOrderResponse:
         )
 
 
-# Blueprint Model 8 contract path; registered last so it never shadows /orders.
+@router.get(
+    "/zones/{zone_id}/report",
+    response_model=ZoneReportResponse,
+    summary="Get receiver zone utilization and carbon order allocation report (Blueprint L5 — GET /zones/{id}/report)",
+)
+@router.get(
+    "/api/zones/{zone_id}/report",
+    response_model=ZoneReportResponse,
+    summary="Get receiver zone utilization and carbon order allocation report",
+)
+async def get_zone_utilization_report(zone_id: str) -> ZoneReportResponse:
+    db = await get_db()
+    report = await get_zone_report(db, zone_id)
+    if report is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Zone '{zone_id}' not found.",
+        )
+    return report
+
+
+# Blueprint Model 8 contract path; registered last so it never shadows /orders or /zones.
 @router.get("/api/market/{parcel_id}", response_model=ParcelMarketResponse, include_in_schema=False)
 @router.get("/{parcel_id}", response_model=ParcelMarketResponse, include_in_schema=False)
 async def get_parcel_market_alias(

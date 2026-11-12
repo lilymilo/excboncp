@@ -14,6 +14,7 @@ from server.market.models import (
     MarketOrderResponse,
     ParcelMarketResponse,
     SettlementBreakdown,
+    ZoneReportResponse,
 )
 
 logger = logging.getLogger("excboncp.market.service")
@@ -211,5 +212,69 @@ async def create_market_order(
         order_status=payload.order_status.value,
         created_at=now_utc,
         settlement_breakdown=breakdown,
+        label="Simulasi, testnet",
+    )
+
+
+async def get_zone_report(
+    db: aiosqlite.Connection, zone_id: str
+) -> ZoneReportResponse | None:
+    """Generate receiver zone utilization and carbon order allocation report (Blueprint L5)."""
+    db.row_factory = aiosqlite.Row
+
+    async with db.execute(
+        "SELECT id, name, type, jurisdiction FROM zones WHERE id = ?", (zone_id,)
+    ) as cur:
+        zone_row = await cur.fetchone()
+        if not zone_row:
+            return None
+
+    orders: list[MarketOrderResponse] = []
+    total_units = 0.0
+    total_expenditure = 0
+
+    async with db.execute(
+        "SELECT id, parcel_id, seller_account, buyer_account, credit_amount, "
+        "simulated_price_idr, zone_id, order_status, created_at "
+        "FROM market_orders WHERE zone_id = ? ORDER BY created_at DESC",
+        (zone_id,),
+    ) as cur:
+        rows = await cur.fetchall()
+        for r in rows:
+            amt = float(r["credit_amount"])
+            price = float(r["simulated_price_idr"])
+            total_units += amt
+            total_expenditure += int(amt * price)
+
+            breakdown = calculate_settlement(
+                units=int(amt),
+                price_idr=int(price),
+                status="VERIFIED",
+            )
+            orders.append(
+                MarketOrderResponse(
+                    id=r["id"],
+                    parcel_id=r["parcel_id"],
+                    seller_account=r["seller_account"],
+                    buyer_account=r["buyer_account"],
+                    credit_amount=amt,
+                    simulated_price_idr=price,
+                    zone_id=r["zone_id"],
+                    order_status=r["order_status"],
+                    created_at=r["created_at"],
+                    settlement_breakdown=breakdown,
+                    label="Simulasi, testnet",
+                )
+            )
+
+    return ZoneReportResponse(
+        zone_id=zone_row["id"],
+        zone_name=zone_row["name"],
+        zone_type=zone_row["type"],
+        jurisdiction=zone_row["jurisdiction"],
+        total_allocated_units=round(total_units, 2),
+        total_expenditure_idr=total_expenditure,
+        order_count=len(orders),
+        orders=orders,
         label="Simulasi, testnet",
     )

@@ -18,6 +18,13 @@
       "top": 120,
       "left": 130,
       "attrs": { "color": "red", "label": "Flame Trigger (Active LOW)" }
+    },
+    {
+      "type": "wokwi-buzzer",
+      "id": "bz1",
+      "top": -120,
+      "left": -60,
+      "attrs": { "volume": "0.5" }
     }
   ],
   "connections": [
@@ -30,7 +37,9 @@
     [ "pot_soil:GND", "esp:GND.1", "black", [ "v0" ] ],
     [ "pot_soil:SIG", "esp:34", "blue", [ "v0" ] ],
     [ "btn_flame:1.l", "esp:13", "orange", [ "v0" ] ],
-    [ "btn_flame:2.r", "esp:GND.2", "black", [ "v0" ] ]
+    [ "btn_flame:2.r", "esp:GND.2", "black", [ "v0" ] ],
+    [ "bz1:2", "esp:25", "purple", [ "v0" ] ],
+    [ "bz1:1", "esp:GND.2", "black", [ "v0" ] ]
   ],
   "dependencies": {}
 }

@@ -87,3 +87,18 @@ def test_audit_logs_role_enforcement(test_client: TestClient) -> None:
     assert "logs" in data
     assert "count" in data
     assert data["count"] > 0
+
+
+def test_public_metrics_endpoint(test_client: TestClient) -> None:
+    """Public metrics endpoints /metrics and /api/metrics are accessible without auth."""
+    resp1 = test_client.get("/metrics")
+    assert resp1.status_code == 200
+    data1 = resp1.json()
+    assert "total_verified_co2e_tons" in data1
+    assert "estimated_community_share_idr" in data1
+    assert "data_to_status_latency_seconds" in data1
+    assert data1["label"] == "Simulasi, testnet"
+
+    resp2 = test_client.get("/api/metrics")
+    assert resp2.status_code == 200
+    assert resp2.json()["label"] == "Simulasi, testnet"

@@ -58,3 +58,15 @@ class MarketOrderResponse(BaseModel):
     created_at: str
     settlement_breakdown: SettlementBreakdown | None = None
     label: str = "Simulasi, testnet"
+
+
+class ZoneReportResponse(BaseModel):
+    zone_id: str
+    zone_name: str
+    zone_type: str
+    jurisdiction: str | None = None
+    total_allocated_units: float
+    total_expenditure_idr: int
+    order_count: int
+    orders: list[MarketOrderResponse]
+    label: str = "Simulasi, testnet"

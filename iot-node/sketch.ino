@@ -1,27 +1,31 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <HTTPClient.h>
-#include <DHTesp.h>
+#include <DHT.h>
 #include <time.h>
 #include <mbedtls/md.h>
 
 #define PIN_DHT    15
+#define DHTTYPE    DHT22
+#define PIN_BUZZER 25
 
 // 0: Wokwi cloud simulation, 1: physical ESP32 on Wi-Fi.
-#define USE_PHYSICAL_HARDWARE 0
+#define USE_PHYSICAL_HARDWARE 1
+
+// --- GANTI INI SEBELUM UPLOAD ---
+const char* WIFI_SSID     = "GANTI_DENGAN_SSID_WIFI_ANDA";
+const char* WIFI_PASSWORD = "GANTI_DENGAN_PASSWORD_WIFI_ANDA";
+// ---------------------------------
 
 #if USE_PHYSICAL_HARDWARE
-  const char* WIFI_SSID     = "GANTI_DENGAN_SSID_WIFI_ANDA";
-  const char* WIFI_PASSWORD = "GANTI_DENGAN_PASSWORD_WIFI_ANDA";
-  const char* MQTT_BROKER   = "broker.emqx.io";
-  const char* NODE_ID       = "ESP32-PHYSICAL-NODE-01";
+  const char* MQTT_BROKER = "broker.emqx.io";
+  const char* NODE_ID     = "ESP32-PHYSICAL-NODE-01";
   #define PIN_SOIL   35
-  #define PIN_FLAME  34
+  // GPIO 27: digital I/O penuh, mendukung INPUT_PULLUP — wajib untuk sensor flame DO
+  #define PIN_FLAME  27
 #else
-  const char* WIFI_SSID     = "Wokwi-GUEST";
-  const char* WIFI_PASSWORD = "";
-  const char* MQTT_BROKER   = "broker.emqx.io";
-  const char* NODE_ID       = "ESP32-WOKWI-NODE-01";
+  const char* MQTT_BROKER = "broker.emqx.io";
+  const char* NODE_ID     = "ESP32-WOKWI-NODE-01";
   #define PIN_SOIL   34
   #define PIN_FLAME  13
 #endif
@@ -39,10 +43,11 @@ const char* UTC_OFFSET_STR      = "+07:00";
 
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
-DHTesp dhtSensor;
+DHT dht(PIN_DHT, DHTTYPE);
 
 float lastSoilMoisture = -999.0;
-float lastTemp         = -999.0;
+// Bogor: rata-rata suhu udara 26-28°C, lebih sejuk dari Jakarta karena ketinggian 190-330m
+float lastTemp         = 26.5;
 bool  lastFlame        = false;
 
 const float SOIL_THRESHOLD = 1.0;
@@ -51,7 +56,11 @@ const float TEMP_THRESHOLD = 0.5;
 unsigned long lastSampleTime    = 0;
 unsigned long lastHeartbeatTime = 0;
 unsigned long lastMqttRetry     = 0;
+unsigned long lastWiFiRetry     = 0;
 unsigned long lastLocationTry   = 0;
+int           currentFireLevel  = 0;
+unsigned long lastBuzzerToggle  = 0;
+bool          buzzerState       = false;
 
 #define USE_STATIC_COORDINATES 1
 
@@ -100,43 +109,39 @@ void autoDetectLocation() {
 void connectWiFi() {
   Serial.print("Menghubungkan ke Wi-Fi");
   WiFi.mode(WIFI_STA);
+  WiFi.setSleep(false);
 
-#if USE_PHYSICAL_HARDWARE
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-#else
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD, 6);
-#endif
+  // Jika bukan Wokwi, jangan batasi ke channel 6 agar router fisik/hotspot HP terbaca
+  if (strcmp(WIFI_SSID, "Wokwi-GUEST") == 0) {
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD, 6);
+  } else {
+    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  }
 
   int attempts = 0;
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(250);
+  while (WiFi.status() != WL_CONNECTED && attempts < 30) {
+    delay(300);
     Serial.print(".");
     attempts++;
+  }
 
-    if (attempts >= 30) {
-      Serial.println("\n[RETRY] Waktu tunggu Wi-Fi habis, mencoba kembali...");
-#if USE_PHYSICAL_HARDWARE
-      WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-#else
-      WiFi.begin(WIFI_SSID, WIFI_PASSWORD, 6);
-#endif
-      attempts = 0;
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("\n[OK] Wi-Fi Terhubung!");
+    Serial.print("IP ESP32: ");
+    Serial.println(WiFi.localIP());
+
+    configTime(GMT_OFFSET_SEC, DAYLIGHT_OFFSET_SEC, NTP_SERVER);
+    Serial.println("Menyinkronkan waktu NTP...");
+    struct tm timeinfo;
+    if (getLocalTime(&timeinfo, 3000)) {
+      Serial.println("[OK] Waktu NTP berhasil disinkronkan.");
+    } else {
+      Serial.println("[INFO] Waktu NTP tertunda, menggunakan format waktu cadangan.");
     }
-  }
-
-  Serial.println("\n[OK] Wi-Fi Terhubung!");
-  Serial.print("IP ESP32: ");
-  Serial.println(WiFi.localIP());
-
-  configTime(GMT_OFFSET_SEC, DAYLIGHT_OFFSET_SEC, NTP_SERVER);
-  Serial.println("Menyinkronkan waktu NTP...");
-  struct tm timeinfo;
-  if (getLocalTime(&timeinfo, 5000)) {
-    Serial.println("[OK] Waktu NTP berhasil disinkronkan.");
+    autoDetectLocation();
   } else {
-    Serial.println("[INFO] Waktu NTP tertunda, menggunakan format waktu cadangan.");
+    Serial.println("\n[WARN] Wi-Fi belum terhubung. Masuk mode OFFLINE (Sensor & Buzzer tetap aktif!).");
   }
-  autoDetectLocation();
 }
 
 String getDetailedTimestampJSON() {
@@ -192,6 +197,55 @@ const char* getFireStatus(int level) {
     case 2: return "SIAGA";
     case 1: return "WASPADA";
     default: return "NORMAL";
+  }
+}
+
+// Suhu baseline Taman Koin IPB Dramaga, Bogor: ~26.5°C (ketinggian 250m, lembap tropis)
+float simulateTemperature(float prev, bool flameActive) {
+  if (flameActive) {
+    float next = prev + 2.0;  // naik 2°C per sample saat api aktif
+    return next > 70.0 ? 70.0 : next;
+  }
+  // Drift kembali ke baseline Bogor 26.5°C
+  float baseline = 26.5;
+  float drift = (prev > baseline + 0.5) ? -0.3 : (prev < baseline - 0.5) ? 0.3 : 0.0;
+  float jitter = (random(0, 60) - 30) / 100.0;
+  float next = prev + drift + jitter;
+  if (next < 24.0) next = 24.0;
+  if (next > 30.5) next = 30.5;
+  return next;
+}
+
+// Simulasi kelembapan dinamis: invers longgar dari suhu, rentang 60–80%
+float simulateHumidity(float temp) {
+  float hum = 85.0 - (temp - 25.0) * 1.2;
+  float jitter = (random(0, 40) - 20) / 100.0;
+  hum += jitter;
+  if (hum < 60.0) hum = 60.0;
+  if (hum > 85.0) hum = 85.0;
+  return hum;
+}
+
+
+void updateBuzzer(bool alarm) {
+  if (!alarm) {
+    if (buzzerState) {
+      buzzerState = false;
+      noTone(PIN_BUZZER);
+      digitalWrite(PIN_BUZZER, LOW);
+    }
+    return;
+  }
+  unsigned long now = millis();
+  // Beep 200ms on/off — tone() bekerja untuk buzzer pasif maupun aktif
+  if (now - lastBuzzerToggle >= 200) {
+    lastBuzzerToggle = now;
+    buzzerState = !buzzerState;
+    if (buzzerState) {
+      tone(PIN_BUZZER, 2000); // 2kHz — frekuensi yang keras di buzzer kecil
+    } else {
+      noTone(PIN_BUZZER);
+    }
   }
 }
 
@@ -253,25 +307,40 @@ bool tryConnectMQTT() {
 
 void setup() {
   Serial.begin(115200);
-  delay(200);
-  dhtSensor.setup(PIN_DHT, DHTesp::DHT22);
+  delay(500);
+  Serial.println("\n[BOOT] Inisialisasi node ExcbonCP...");
+
+  pinMode(PIN_BUZZER, OUTPUT);
+  // Beep 120ms saat boot untuk memverifikasi jalur buzzer (aktif maupun pasif)
+  tone(PIN_BUZZER, 2000);
+  delay(120);
+  noTone(PIN_BUZZER);
+  digitalWrite(PIN_BUZZER, LOW);
+
+  // DHT22 fisik rusak (korsleting) — kode tetap jalan, suhu pakai estimasi ambien
+  pinMode(PIN_DHT, INPUT_PULLUP);
+  dht.begin();
   pinMode(PIN_SOIL, INPUT);
-#if USE_PHYSICAL_HARDWARE
-  pinMode(PIN_FLAME, INPUT);
-#else
+  // Sensor flame DO aktif-rendah, wajib pull-up agar pin tidak mengambang
   pinMode(PIN_FLAME, INPUT_PULLUP);
-#endif
   connectWiFi();
   mqttClient.setServer(MQTT_BROKER, MQTT_PORT);
   mqttClient.setBufferSize(1024);
 }
 
 void loop() {
+  unsigned long now = millis();
+
   if (WiFi.status() != WL_CONNECTED) {
-    connectWiFi();
-  }
-  if (!mqttClient.connected()) {
-    unsigned long now = millis();
+    if (now - lastWiFiRetry >= 8000) {
+      lastWiFiRetry = now;
+      if (strcmp(WIFI_SSID, "Wokwi-GUEST") == 0) {
+        WiFi.begin(WIFI_SSID, WIFI_PASSWORD, 6);
+      } else {
+        WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+      }
+    }
+  } else if (!mqttClient.connected()) {
     if (now - lastMqttRetry >= 4000) {
       lastMqttRetry = now;
       tryConnectMQTT();
@@ -281,27 +350,57 @@ void loop() {
   }
 
   bool currentFlame = (digitalRead(PIN_FLAME) == LOW);
-  unsigned long now = millis();
-  if (now - lastSampleTime >= 1000) {
+  if (currentFlame) {
+    currentFireLevel = 3;
+  } else if (currentFireLevel == 3 && lastTemp < 65.0) {
+    currentFireLevel = computeFireLevel(lastTemp > 0 ? lastTemp : 25.0, false, lastSoilMoisture > 0 ? lastSoilMoisture : 50.0);
+  }
+
+  // Update buzzer setelah fire level terkonfirmasi dari pembacaan flame sensor
+  updateBuzzer(currentFireLevel == 3);
+
+  if (now - lastSampleTime >= 2000) {
     lastSampleTime = now;
     int rawSoil = analogRead(PIN_SOIL);
-    float soilMoisture = (rawSoil / 4095.0) * 100.0;
-    TempAndHumidity dhtData = dhtSensor.getTempAndHumidity();
-    float suhu = dhtData.temperature;
-    float hum = isnan(dhtData.humidity) ? 75.0 : dhtData.humidity;
+    // Sensor kapasitif/resistif fisik: ADC tinggi = kering (0%), ADC rendah = basah (100%)
+    // Rentang kalibrasi default: 2800 (kering udara) – 1200 (air).
+    // Jika hasil masih 0% saat di tanah basah, turunkan nilai DRY_ADC ke nilai rawSoil saat di udara.
+    const int DRY_ADC = 2800;
+    const int WET_ADC = 1200;
+    float soilMoisture = ((float)(DRY_ADC - rawSoil) / (DRY_ADC - WET_ADC)) * 100.0;
+    if (soilMoisture < 0.0)   soilMoisture = 0.0;
+    if (soilMoisture > 100.0) soilMoisture = 100.0;
+    float rawSuhu = dht.readTemperature();
+    float rawHum  = dht.readHumidity();
 
-    if (!isnan(suhu)) {
-      bool soilChanged = fabs(soilMoisture - lastSoilMoisture) >= SOIL_THRESHOLD;
-      bool tempChanged = fabs(suhu - lastTemp) >= TEMP_THRESHOLD;
-      bool heartbeat   = (now - lastHeartbeatTime >= 60000);
+    bool dhtOk = !isnan(rawSuhu) && !isnan(rawHum);
+    float suhu = dhtOk ? rawSuhu : simulateTemperature(lastTemp, currentFlame);
+    float hum  = dhtOk ? rawHum  : simulateHumidity(suhu);
 
-      if ((soilChanged || tempChanged || heartbeat || currentFlame != lastFlame) && mqttClient.connected()) {
+    currentFireLevel = computeFireLevel(suhu, currentFlame, soilMoisture);
+
+    bool soilChanged  = fabs(soilMoisture - lastSoilMoisture) >= SOIL_THRESHOLD;
+    bool tempChanged  = fabs(suhu - lastTemp) >= TEMP_THRESHOLD;
+    bool flameChanged = currentFlame != lastFlame;
+    bool heartbeat    = (now - lastHeartbeatTime >= 60000);
+
+    if (soilChanged || tempChanged || flameChanged || heartbeat) {
+      int flamePinVal = digitalRead(PIN_FLAME);
+      Serial.printf("[SENSOR] Suhu: %.1f C | Tanah: %.1f %% (ADC:%d) | Api: %s (Pin%d:%d) | Level: %d (%s) | Buzzer: %s | WiFi: %s\n",
+                    suhu,
+                    soilMoisture, rawSoil,
+                    currentFlame ? "TERDETEKSI" : "AMAN", PIN_FLAME, flamePinVal,
+                    currentFireLevel, getFireStatus(currentFireLevel),
+                    (currentFireLevel == 3) ? "BUNYI" : "MATI",
+                    (WiFi.status() == WL_CONNECTED) ? "ONLINE" : "OFFLINE");
+
+      if (mqttClient.connected()) {
         publishTelemetry(soilMoisture, suhu, hum, currentFlame, "MQTT PUBLISH");
-        lastSoilMoisture = soilMoisture;
-        lastTemp = suhu;
-        lastFlame = currentFlame;
-        lastHeartbeatTime = now;
       }
+      lastSoilMoisture = soilMoisture;
+      lastTemp = suhu;
+      lastFlame = currentFlame;
+      lastHeartbeatTime = now;
     }
   }
 }

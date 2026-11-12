@@ -151,3 +151,52 @@ Creates a timestamped, gzip-compressed snapshot of `./data/excboncp.db` and acti
 | `HTTP 400: User has no active credential for provider` | Member attempted to run an agent requiring Anthropic or OpenAI without configuring their key. | Configure personal API key via `POST /api/credentials`. |
 | `Port 8000 already in use` | Existing server process running in background. | Find and kill occupying process: `lsof -i :8000` followed by `kill -9 <PID>`. |
 | `... cannot be loaded because running scripts is disabled` (Windows) | PowerShell execution policy blocks local `.ps1` files. | Run the wrapper `.\scripts\windows\day1.cmd <action>` or use `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\windows\day1.ps1 <action>`. |
+
+---
+
+## 5. Demonstration Runbook & Fallback Procedures (Hari 4–5, R21)
+
+### 5.1 Five-Minute Live Demonstration Flow
+
+| Time | Action | Key Talking Point | Owner |
+|---|---|---|---|
+| **0:00** | Open Landing Screen (L0) and Map (L1) | "Kami membangun bukti dulu, baru nilai." | Malik |
+| **0:45** | Explain Parcel A (VERIFIED / Green) vs Parcel B (BLOCKED / Red) | "Tanpa persetujuan komunitas, sistem menolak." | Malik, Revand |
+| **1:30** | Open Market Simulation (L4) for Parcel A (600 units, 60% community split) | "Setiap pihak melihat hasilnya tertulis secara transparan." | Malik, Revand |
+| **2:30** | Fire Sensor Trigger (Flame or GPIO 34 to GND) -> Buzzer beeps -> status WARNING / ANOMALY | "Sensor fisik mengubah status dan mengunci pasar langsung." | Bagus, Malik |
+| **3:30** | Auditor Screen (L6) -> Click Approve -> SHA-256 block anchored to Base Sepolia EAS | "Manusia menyetujui, kode memutuskan." | Revand |
+| **4:00** | Public Verification Screen (L7) -> Recompute hash -> Tamper demo (invalid hash) | "Siapa pun bisa memeriksa keaslian segel digital." | Revand, Malik |
+| **4:30** | Conclusion & Roadmap | "Sandbox patuh aturan menuju implementasi nyata." | Malik |
+
+### 5.2 Fallback Ladder (Tangga Cadangan)
+
+| Failure Scenario | Fallback Mechanism | Action Procedure |
+|---|---|---|
+| **ESP32 Hardware Fails / Wi-Fi Blocked** | MQTT Backup Script | Run `python -m ai_pipeline.mock_publisher` |
+| **Google Earth Engine (GEE) Unavailable** | Cached JSON Fallback | Automatic fallback to `ai_pipeline/gee_cache_fallback.json` |
+| **Base Sepolia RPC Timeout / Out of Gas** | Simulation Mode | Set `EVM_SIMULATION_MODE=true` in `.env` |
+| **Total Internet Loss** | Pure Localhost Mode | Run server with local SQLite, mock publisher, and local DApp |
+| **Fire Sensor Not Triggered** | Jumper Pin Simulation | Connect GPIO 34 directly to GND on ESP32 |
+
+### 5.3 Credentialed MQTT Broker in Production (R26)
+
+To launch Mosquitto in hardened production mode (anonymous access disabled):
+```bash
+docker run -d --name mosquitto-prod -p 1883:1883 -p 9001:9001 \
+  -v $(pwd)/mosquitto/config/mosquitto.prod.conf:/mosquitto/config/mosquitto.conf:ro \
+  -v $(pwd)/mosquitto/config/mosquitto.passwd:/mosquitto/config/mosquitto.passwd:ro \
+  eclipse-mosquitto:2
+```
+Client credentials configured in `mosquitto.passwd`:
+- `esp-physical-node` / `cboncp-device-secret-2026`
+- `pipeline-subscriber` / `cboncp-sub-secret-2026`
+
+### 5.4 Pre-Configured Demo Accounts
+
+| Role | Username | Password | Purpose |
+|---|---|---|---|
+| **Auditor** | `auditor_demo` | `DemoPassword123!` | Approving verified parcels on Screen L6 and EAS anchoring |
+| **Komunitas** | `komunitas_a` | `DemoPassword123!` | Managing consent and disputes for Parcel A on Screen L3 |
+| **Pengelola** | `pengelola_a` | `DemoPassword123!` | Monitoring forest status and market listings on Screen L4 |
+| **Penerima** | `penerima_a` | `DemoPassword123!` | Reviewing industrial/KEK zone carbon usage on Screen L5 |
+

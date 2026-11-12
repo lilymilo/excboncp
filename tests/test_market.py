@@ -121,3 +121,35 @@ def test_create_market_order_blocked_parcel_rejected(
     resp = test_client.post("/api/market/orders", json=payload)
     assert resp.status_code == 400
     assert "Hanya lahan berstatus VERIFIED" in resp.json()["detail"]
+
+
+def test_get_zone_report_success(test_client: TestClient, seeded_market: None) -> None:
+    payload = {
+        "parcel_id": "PARCEL-A",
+        "seller_account": "pengelola_a",
+        "buyer_account": "penerima_a",
+        "credit_amount": 250.0,
+        "simulated_price_idr": 40000.0,
+        "zone_id": "ZONE-DEMO-A",
+        "order_status": "COMPLETED",
+    }
+    test_client.post("/api/market/orders", json=payload)
+
+    resp1 = test_client.get("/zones/ZONE-DEMO-A/report")
+    assert resp1.status_code == 200
+    data1 = resp1.json()
+    assert data1["zone_id"] == "ZONE-DEMO-A"
+    assert data1["zone_type"] == "kek"
+    assert data1["total_allocated_units"] >= 250.0
+    assert data1["order_count"] >= 1
+    assert data1["label"] == "Simulasi, testnet"
+
+    resp2 = test_client.get("/api/zones/ZONE-DEMO-A/report")
+    assert resp2.status_code == 200
+    assert resp2.json()["zone_id"] == "ZONE-DEMO-A"
+
+
+def test_get_zone_report_not_found(test_client: TestClient, seeded_market: None) -> None:
+    resp = test_client.get("/zones/NON-EXISTENT-ZONE/report")
+    assert resp.status_code == 404
+    assert "not found" in resp.json()["detail"].lower()
