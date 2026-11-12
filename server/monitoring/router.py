@@ -193,7 +193,9 @@ async def public_metrics() -> dict[str, Any]:
 
     total_parcels = 0
     verified_parcels = 0
-    async with db.execute("SELECT current_status, COUNT(*) FROM parcels GROUP BY current_status") as cur:
+    async with db.execute(
+        "SELECT current_status, COUNT(*) FROM parcels GROUP BY current_status"
+    ) as cur:
         for status_val, count_val in await cur.fetchall():
             total_parcels += count_val
             if status_val == "VERIFIED":

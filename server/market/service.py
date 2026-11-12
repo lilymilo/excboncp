@@ -216,9 +216,7 @@ async def create_market_order(
     )
 
 
-async def get_zone_report(
-    db: aiosqlite.Connection, zone_id: str
-) -> ZoneReportResponse | None:
+async def get_zone_report(db: aiosqlite.Connection, zone_id: str) -> ZoneReportResponse | None:
     """Generate receiver zone utilization and carbon order allocation report (Blueprint L5)."""
     db.row_factory = aiosqlite.Row
 
