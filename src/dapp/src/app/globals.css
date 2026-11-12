@@ -148,6 +148,12 @@ button:active, a.button-touch:active {
   outline: none;
 }
 
+/* The map surface is tabbable; keep a ring for keyboard users. */
+.leaflet-container:focus-visible {
+  outline: 2px solid var(--xb-forest);
+  outline-offset: -2px;
+}
+
 .leaflet-container a {
   color: var(--xb-forest);
 }

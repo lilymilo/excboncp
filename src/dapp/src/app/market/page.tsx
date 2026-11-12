@@ -4,69 +4,50 @@ import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import {
   AlertTriangle,
+  ArrowUpRight,
   CheckCircle2,
-  ChevronRight,
-  Flame,
-  Gauge,
-  Info,
-  Leaf,
   Lock,
   Radio,
-  ShieldCheck,
+  Search,
   TrendingUp,
 } from "lucide-react";
 import { AppShell } from "@/components/dapp/AppShell";
+import { ParcelNdviChart, ParcelSupplyChart } from "@/components/dapp/CarbonCharts";
 import {
+  Button,
   Card,
-  Chip,
   Disclosure,
-  Metric,
+  EmptyState,
   ScrollArea,
-  SectionLabel,
   StatusPill,
-  TestnetBadge,
+  Tabs,
   buttonClass,
   cx,
   formatIdr,
   formatIdrShort,
   formatNumber,
 } from "@/components/dapp/phantom-ui";
+import { useDashboardState } from "@/components/dapp/useDashboardStore";
 import {
   PRICE_PER_TON,
   calculateSettlement,
   normalizeUserRole,
-  useDapp,
   type ConsentRecord,
   type ParcelItem,
   type SensorData,
-  type UserRole,
   type VerificationStatus,
 } from "@/context/DappContext";
 
-const STATUS_LABEL: Record<VerificationStatus, string> = {
-  verified: "Terverifikasi",
-  warning: "Peringatan",
-  pending: "Menunggu",
-  blocked: "Diblokir",
-  dispute: "Sengketa",
-};
-
-const STATUS_DOT: Record<VerificationStatus, string> = {
-  verified: "bg-xb-verified",
-  warning: "bg-xb-warning",
-  pending: "bg-xb-pending",
-  blocked: "bg-xb-blocked",
-  dispute: "bg-xb-dispute",
-};
-
-type RiskFactor = { label: string; weight: number; detail: string };
+type ScreenerFilter = "all" | "eligible" | "held";
+type SortMode = "available" | "ndvi" | "stock";
+type DetailTab = "profile" | "risk";
 
 function buildRisk(
   parcel: ParcelItem,
   sensors: SensorData[],
   consent?: ConsentRecord
-): { score: number; factors: RiskFactor[] } {
-  const factors: RiskFactor[] = [];
+): { score: number; factors: { label: string; weight: number; detail: string }[] } {
+  const factors: { label: string; weight: number; detail: string }[] = [];
   const statusWeight: Record<VerificationStatus, number> = {
     verified: 6,
     pending: 30,
@@ -76,111 +57,103 @@ function buildRisk(
   };
 
   factors.push({
-    label: "Status verifikasi",
+    label: "Status verifikasi MRV",
     weight: statusWeight[parcel.verificationStatus] ?? 30,
-    detail: STATUS_LABEL[parcel.verificationStatus] ?? parcel.verificationStatus,
+    detail: parcel.verificationStatus.toUpperCase(),
   });
 
-  const anomalies = sensors.filter((sensor) => sensor.anomaly).length;
+  const anomalies = sensors.filter((s) => s.anomaly || s.flameDetected).length;
   if (anomalies > 0) {
     factors.push({
-      label: "Anomali sensor",
-      weight: Math.min(20, anomalies * 10),
-      detail: `${anomalies} perangkat di luar ambang`,
+      label: "Anomali sensor IoT",
+      weight: Math.min(24, anomalies * 12),
+      detail: `${anomalies} node di luar ambang`,
     });
-  }
-
-  if (sensors.some((sensor) => sensor.flameDetected)) {
-    factors.push({ label: "Deteksi api", weight: 16, detail: "Flame sensor aktif" });
   }
 
   if (parcel.ndvi !== undefined && parcel.ndvi < 0.7) {
     factors.push({
-      label: "Kerapatan kanopi",
+      label: "Kerapatan kanopi di bawah ambang",
       weight: parcel.ndvi < 0.6 ? 20 : 14,
-      detail: `NDVI ${parcel.ndvi.toFixed(2)}`,
+      detail: `NDVI ${parcel.ndvi.toFixed(2)} (< 0.70)`,
     });
   }
 
   if (consent?.status !== "granted") {
     factors.push({
-      label: "Izin komunitas",
+      label: "Persetujuan komunitas (FPIC)",
       weight: 18,
-      detail: consent ? "Izin dicabut" : "Belum ada izin",
+      detail: consent?.status === "revoked" ? "Izin dicabut" : "Belum tercatat",
     });
   }
 
-  if (!parcel.eligibility) {
-    factors.push({ label: "Kelayakan pasar", weight: 8, detail: "Belum layak jual" });
-  }
-
-  const score = Math.min(100, factors.reduce((sum, factor) => sum + factor.weight, 0));
+  const score = Math.min(100, factors.reduce((sum, f) => sum + f.weight, 0));
   return { score, factors };
 }
 
-function riskTone(score: number) {
-  if (score < 25) return { label: "Rendah", text: "text-xb-verified", bar: "bg-xb-verified" };
-  if (score < 50) return { label: "Sedang", text: "text-xb-tech", bar: "bg-xb-tech" };
-  if (score < 75) return { label: "Tinggi", text: "text-xb-warning", bar: "bg-xb-warning" };
-  return { label: "Kritis", text: "text-xb-blocked", bar: "bg-xb-blocked" };
-}
-
-const ROLE_ACTION: Record<
-  UserRole,
-  { label: string; hint: string; href?: string; tone: "primary" | "secondary" }
-> = {
-  recipient: {
-    label: "Ajukan pembelian",
-    hint: "Permintaan tercatat pada sesi ini. Testnet tidak memproses pembayaran nyata.",
-    tone: "primary",
-  },
-  community: {
-    label: "Cek izin komunitas",
-    hint: "Kredit hanya bisa dijual jika izin warga masih aktif dan tercatat.",
-    href: "/consent",
-    tone: "secondary",
-  },
-  manager: {
-    label: "Buka monitoring",
-    hint: "Porsi 40% operasi baru cair setelah settlement terverifikasi.",
-    href: "/app",
-    tone: "secondary",
-  },
-  auditor: {
-    label: "Tinjau bukti lahan",
-    hint: "Kelayakan pasar mengikuti hasil verifikasi auditor.",
-    href: "/approve",
-    tone: "secondary",
-  },
-  guest: {
-    label: "Masuk akun demo",
-    hint: "Sebagian aksi hanya tersedia untuk peran tertentu.",
-    href: "/login",
-    tone: "secondary",
-  },
-};
-
 export default function MarketPage() {
-  const { user, parcels, sensors, transactions, consentRecords, switchDemoRole } = useDapp();
+  const {
+    user,
+    parcels,
+    sensors,
+    consentRecords,
+    transactions,
+    submitCarbonOrder,
+  } = useDashboardState();
 
   const [selectedId, setSelectedId] = useState<string | null>(parcels[0]?.id ?? null);
+  const [filter, setFilter] = useState<ScreenerFilter>("all");
+  const [sortBy, setSortBy] = useState<SortMode>("available");
+  const [search, setSearch] = useState("");
+  const [detailTab, setDetailTab] = useState<DetailTab>("profile");
   const [volumeInput, setVolumeInput] = useState("10");
-  const [quoted, setQuoted] = useState(false);
+  const [orderFeedback, setOrderFeedback] = useState<{
+    ok: boolean;
+    message: string;
+    txId?: string;
+  } | null>(null);
+
+  const visibleParcels = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const list = parcels.filter((parcel) => {
+      const consent = consentRecords.find((c) => c.parcel_id === parcel.id);
+      const isEligible =
+        parcel.verificationStatus === "verified" &&
+        parcel.eligibility &&
+        consent?.status === "granted" &&
+        parcel.availableUnits > 0;
+
+      if (filter === "eligible" && !isEligible) return false;
+      if (filter === "held" && isEligible) return false;
+      if (!q) return true;
+      return (
+        parcel.id.toLowerCase().includes(q) ||
+        parcel.name.toLowerCase().includes(q) ||
+        parcel.region.toLowerCase().includes(q)
+      );
+    });
+
+    return [...list].sort((a, b) => {
+      if (sortBy === "ndvi") return (b.ndvi ?? 0) - (a.ndvi ?? 0);
+      if (sortBy === "stock") return b.carbonStock - a.carbonStock;
+      return b.availableUnits - a.availableUnits;
+    });
+  }, [consentRecords, filter, parcels, search, sortBy]);
 
   const selected = useMemo(
-    () => parcels.find((parcel) => parcel.id === selectedId) ?? parcels[0],
-    [parcels, selectedId]
+    () =>
+      visibleParcels.find((p) => p.id === selectedId) ??
+      visibleParcels[0] ??
+      parcels[0],
+    [parcels, selectedId, visibleParcels]
   );
 
   const selectedSensors = selected
-    ? sensors.filter((sensor) => sensor.parcel_id === selected.id)
+    ? sensors.filter((s) => s.parcel_id === selected.id)
     : [];
   const selectedConsent = selected
-    ? consentRecords.find((record) => record.parcel_id === selected.id)
+    ? consentRecords.find((c) => c.parcel_id === selected.id)
     : undefined;
-
-  const risk = selected ? buildRisk(selected, selectedSensors, selectedConsent) : null;
-  const tone = risk ? riskTone(risk.score) : null;
 
   const available = selected?.availableUnits ?? 0;
   const eligible =
@@ -190,553 +163,521 @@ export default function MarketPage() {
     selectedConsent?.status === "granted" &&
     available > 0;
 
-  const requestedVolume = Number.parseInt(volumeInput, 10);
-  const volume = Number.isFinite(requestedVolume)
-    ? Math.max(0, Math.min(requestedVolume, available))
+  const rawUnits = Number.parseInt(volumeInput, 10);
+  const clampedUnits = Number.isFinite(rawUnits)
+    ? Math.max(0, Math.min(rawUnits, available))
     : 0;
-  const gross = volume * PRICE_PER_TON;
+
+  const gross = clampedUnits * PRICE_PER_TON;
   const settlement = eligible ? calculateSettlement(gross) : calculateSettlement(0);
+  const risk = selected ? buildRisk(selected, selectedSensors, selectedConsent) : null;
+  const role = normalizeUserRole(user?.role, user?.email);
 
-  const totals = useMemo(() => {
-    const availableUnits = parcels.reduce((sum, parcel) => sum + parcel.availableUnits, 0);
-    const potentialGross = parcels.reduce((sum, parcel) => sum + parcel.settlementEstimateIdr, 0);
-    const potential = calculateSettlement(potentialGross);
-    return { availableUnits, potentialGross, potential };
-  }, [parcels]);
-
-  const role: UserRole = normalizeUserRole(user?.role, user?.email);
-  const roleAction = ROLE_ACTION[role] ?? ROLE_ACTION.guest;
-
-  const selectParcel = (id: string) => {
+  const handleSelectParcel = (id: string) => {
     setSelectedId(id);
-    setQuoted(false);
+    setOrderFeedback(null);
     setVolumeInput("10");
+  };
+
+  const handleOrder = () => {
+    if (!selected) return;
+    const res = submitCarbonOrder(selected.id, clampedUnits);
+    setOrderFeedback({ ok: res.ok, message: res.message, txId: res.tx?.tx_id });
   };
 
   return (
     <AppShell>
-      <div className="space-y-4">
-        <section className="flex flex-wrap items-end justify-between gap-3">
+      <div className="space-y-6">
+        {/* Marketplace Header */}
+        <section className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <SectionLabel>Carbon screener</SectionLabel>
-              <TestnetBadge />
-            </div>
-            <h1 className="mt-1 text-[22px] font-semibold tracking-[-0.02em] text-xb-text sm:text-[25px]">
-              Screener &amp; Risk Terminal
+            <h1 className="text-[26px] font-semibold tracking-[-0.025em] text-[#F4F5F2] sm:text-[30px]">
+              Carbon Market
             </h1>
-            <p className="mt-1 max-w-[62ch] text-[12.5px] leading-relaxed text-xb-mute">
-              Nilai unit kredit karbon per parcel, profil risiko, dan simulasi settlement sebelum
-              transaksi diajukan.
+            <p className="mt-1.5 max-w-[62ch] text-[14px] leading-relaxed text-[#A6ADA7]">
+              Temukan kredit karbon hutan yang lolos verifikasi dMRV dan persetujuan warga, lalu uji
+              simulasi settlement pembagian hasil.
             </p>
           </div>
-          <div className="flex items-center gap-2 rounded-xl border border-xb-line/70 bg-xb-surface px-3.5 py-2.5">
-            <TrendingUp className="h-4 w-4 text-xb-forest" aria-hidden="true" />
+
+          <div className="flex items-center gap-3 rounded-2xl border border-[#252B27] bg-[#151816] px-4 py-3">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#23865A]/20 text-[#72C99A]">
+              <TrendingUp className="h-4 w-4" aria-hidden="true" />
+            </span>
             <div>
-              <SectionLabel>Harga acuan</SectionLabel>
-              <p className="mt-0.5 text-[15px] font-semibold text-xb-text xb-numeric">
+              <p className="text-[11.5px] font-medium text-[#A6ADA7]">Harga acuan simulasi</p>
+              <p className="text-[17px] font-semibold text-[#F4F5F2] xb-numeric">
                 {formatIdr(PRICE_PER_TON)}
-                <span className="ml-1 text-[10.5px] font-medium text-xb-dim">/ tCO₂e</span>
+                <span className="ml-1 text-[12px] font-normal text-[#8B948D]">/ tCO₂e</span>
               </p>
             </div>
           </div>
         </section>
 
-        <section className="grid gap-3 sm:grid-cols-3">
-          <Card className="p-3.5">
-            <Metric
-              label="Unit tersedia"
-              value={formatNumber(totals.availableUnits)}
-              unit="unit"
-              sub={`Dari ${parcels.length} parcel terdaftar`}
-            />
+        {/* Data Visualization Strip (Recharts zero animation) */}
+        <section className="grid gap-4 lg:grid-cols-2">
+          <Card className="p-5">
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <div>
+                <h2 className="text-[14.5px] font-semibold text-[#F4F5F2]">Ketersediaan Unit Karbon</h2>
+                <p className="text-[12px] text-[#A6ADA7]">Perbandingan unit siap jual vs unit dibekukan</p>
+              </div>
+            </div>
+            <ParcelSupplyChart parcels={parcels} />
           </Card>
-          <Card className="p-3.5">
-            <Metric
-              label="Nilai bruto potensial"
-              value={formatIdrShort(totals.potentialGross)}
-              tone="forest"
-              sub="Sebelum biaya sandbox"
-            />
-          </Card>
-          <Card className="p-3.5">
-            <Metric
-              label="Kas komunitas potensial"
-              value={formatIdrShort(totals.potential.community_idr)}
-              tone="tech"
-              sub="60% dari nilai bersih"
-            />
+
+          <Card className="p-5">
+            <div className="mb-3 flex items-center justify-between gap-2">
+              <div>
+                <h2 className="text-[14.5px] font-semibold text-[#F4F5F2]">Kerapatan Kanopi (NDVI)</h2>
+                <p className="text-[12px] text-[#A6ADA7]">Standar minimal kelayakan hutan 0.70</p>
+              </div>
+            </div>
+            <ParcelNdviChart parcels={parcels} />
           </Card>
         </section>
 
-        <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_392px]">
-          <div className="min-w-0 space-y-4">
-            <Card className="overflow-hidden">
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-xb-line/70 px-4 py-3">
-                <div>
-                  <SectionLabel>Daftar parcel</SectionLabel>
-                  <p className="mt-0.5 text-[11.5px] text-xb-dim">
-                    Pilih baris untuk menghitung settlement
-                  </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-2.5 text-[10.5px] text-xb-dim">
-                  {(["verified", "warning", "blocked"] as const).map((status) => (
-                    <span key={status} className="inline-flex items-center gap-1.5">
-                      <span className={cx("h-1.5 w-1.5 rounded-full", STATUS_DOT[status])} />
-                      {STATUS_LABEL[status]}
-                    </span>
-                  ))}
-                </div>
-              </div>
+        {/* Screener Controls */}
+        <Card className="flex flex-wrap items-center justify-between gap-3 p-4">
+          <div className="relative min-w-[220px] flex-1">
+            <Search
+              className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8B948D]"
+              aria-hidden="true"
+            />
+            <input
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Cari parcel atau wilayah (mis. PARCEL-A, Bogor)…"
+              aria-label="Cari aset karbon"
+              className="min-h-[44px] w-full rounded-xl border border-[#39423C] bg-[#090B0A] pl-10 pr-3.5 text-[13px] text-[#F4F5F2] placeholder:text-[#8B948D]"
+            />
+          </div>
 
-              <div className="xb-scroll overflow-x-auto">
-                <table className="w-full min-w-[720px] border-collapse text-left">
-                  <thead>
-                    <tr className="border-b border-xb-line/60 text-[10px] uppercase tracking-[0.12em] text-xb-dim">
-                      <th className="px-4 py-2.5 font-semibold">Parcel</th>
-                      <th className="px-3 py-2.5 font-semibold">Status</th>
-                      <th className="px-3 py-2.5 text-right font-semibold">Unit</th>
-                      <th className="px-3 py-2.5 text-right font-semibold">NDVI</th>
-                      <th className="px-3 py-2.5 text-right font-semibold">Risiko</th>
-                      <th className="px-3 py-2.5 text-right font-semibold">Estimasi bruto</th>
-                      <th className="px-4 py-2.5" />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {parcels.map((parcel) => {
-                      const active = parcel.id === selected?.id;
-                      const parcelSensors = sensors.filter((sensor) => sensor.parcel_id === parcel.id);
-                      const parcelConsent = consentRecords.find(
-                        (record) => record.parcel_id === parcel.id
-                      );
-                      const parcelRisk = buildRisk(parcel, parcelSensors, parcelConsent);
-                      const parcelTone = riskTone(parcelRisk.score);
-                      return (
-                        <tr
-                          key={parcel.id}
-                          onClick={() => selectParcel(parcel.id)}
+          <div className="flex flex-wrap items-center gap-2">
+            {(
+              [
+                { id: "all", label: "Semua" },
+                { id: "eligible", label: "Layak Jual" },
+                { id: "held", label: "Tertahan" },
+              ] as const
+            ).map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                aria-pressed={filter === opt.id}
+                onClick={() => setFilter(opt.id)}
+                className={cx(
+                  "min-h-[44px] rounded-xl border px-3.5 text-[12.5px] font-medium",
+                  filter === opt.id
+                    ? "border-[#AA9AF5]/60 bg-[#AA9AF5]/16 text-[#F4F5F2]"
+                    : "border-[#39423C] bg-[#1D211E] text-[#A6ADA7] hover:text-[#F4F5F2]"
+                )}
+              >
+                {opt.label}
+              </button>
+            ))}
+
+            <select
+              aria-label="Urutkan daftar parcel"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortMode)}
+              className="min-h-[44px] rounded-xl border border-[#39423C] bg-[#1D211E] px-3 text-[12.5px] font-medium text-[#F4F5F2]"
+            >
+              <option value="available">Urutkan: Unit Siap Jual</option>
+              <option value="ndvi">Urutkan: NDVI Tertinggi</option>
+              <option value="stock">Urutkan: Stok Karbon</option>
+            </select>
+          </div>
+        </Card>
+
+        {/* Main Screener + Interactive Order Simulator */}
+        <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_400px]">
+          <div className="min-w-0 space-y-5">
+            <Card className="overflow-hidden">
+              {visibleParcels.length === 0 ? (
+                <EmptyState
+                  title="Tidak ada parcel yang cocok"
+                  body="Ubah kata kunci pencarian atau pilih filter Semua."
+                />
+              ) : (
+                <div className="divide-y divide-[#252B27]">
+                  {visibleParcels.map((parcel) => {
+                    const consent = consentRecords.find((c) => c.parcel_id === parcel.id);
+                    const pEligible =
+                      parcel.verificationStatus === "verified" &&
+                      parcel.eligibility &&
+                      consent?.status === "granted";
+                    const isSelected = selected?.id === parcel.id;
+
+                    return (
+                      <button
+                        key={parcel.id}
+                        type="button"
+                        onClick={() => handleSelectParcel(parcel.id)}
+                        aria-pressed={isSelected}
+                        className={cx(
+                          "flex min-h-[68px] w-full flex-col justify-between gap-3 px-5 py-4 text-left sm:flex-row sm:items-center",
+                          isSelected ? "bg-[#1D211E]" : "bg-[#151816] hover:bg-[#1D211E]"
+                        )}
+                      >
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="text-[15px] font-semibold text-[#F4F5F2]">
+                              {parcel.name}
+                            </span>
+                            <span className="font-mono text-[11.5px] text-[#8B948D]">
+                              {parcel.id}
+                            </span>
+                            <StatusPill status={parcel.verificationStatus} />
+                          </div>
+                          <p className="mt-1 text-[12.5px] text-[#A6ADA7]">
+                            {parcel.region} · {formatNumber(parcel.area)} ha · NDVI{" "}
+                            {parcel.ndvi !== undefined ? parcel.ndvi.toFixed(2) : "N/A"} ·{" "}
+                            {consent?.status === "granted" ? "FPIC Aktif" : "Belum Ada Izin Warga"}
+                          </p>
+                        </div>
+
+                        <div className="shrink-0 text-left sm:text-right">
+                          <p
+                            className={cx(
+                              "text-[15px] font-semibold xb-numeric",
+                              pEligible ? "text-[#72C99A]" : "text-[#ED7770]"
+                            )}
+                          >
+                            {pEligible
+                              ? `${formatNumber(parcel.availableUnits)} tCO₂e`
+                              : `${formatNumber(parcel.frozenUnits)} tCO₂e beku`}
+                          </p>
+                          <p className="mt-0.5 text-[12px] text-[#A6ADA7] xb-numeric">
+                            {pEligible ? formatIdrShort(parcel.settlementEstimateIdr) : "Terkunci"}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </Card>
+
+            {/* Selected Parcel Detail Card */}
+            {selected && (
+              <Card className="overflow-hidden p-5">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#252B27] pb-4">
+                  <div>
+                    <h2 className="text-[16px] font-semibold text-[#F4F5F2]">
+                      Inspeksi Aset · {selected.name}
+                    </h2>
+                    <p className="mt-0.5 text-[12.5px] text-[#A6ADA7]">
+                      {selected.community} · Skor risiko{" "}
+                      <span className="font-semibold text-[#F4F5F2] xb-numeric">
+                        {risk?.score ?? 0}/100
+                      </span>
+                    </p>
+                  </div>
+                  <Tabs
+                    value={detailTab}
+                    onChange={setDetailTab}
+                    label="Detail aset terpilih"
+                    items={[
+                      { id: "profile", label: "Profil & Sensor" },
+                      { id: "risk", label: "Faktor Risiko" },
+                    ]}
+                  />
+                </div>
+
+                {detailTab === "profile" ? (
+                  <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-2.5 text-[13px]">
+                      <div className="flex justify-between border-b border-[#252B27] py-2">
+                        <span className="text-[#A6ADA7]">Stok Biomassa</span>
+                        <span className="font-semibold text-[#F4F5F2] xb-numeric">
+                          {formatNumber(selected.carbonStock)} tCO₂e
+                        </span>
+                      </div>
+                      <div className="flex justify-between border-b border-[#252B27] py-2">
+                        <span className="text-[#A6ADA7]">Persetujuan FPIC</span>
+                        <span
                           className={cx(
-                            "cursor-pointer border-b border-xb-line/40 transition-colors last:border-0",
-                            active ? "bg-xb-forest/[0.07]" : "hover:bg-xb-raised/50"
+                            "font-semibold",
+                            selectedConsent?.status === "granted"
+                              ? "text-[#72C99A]"
+                              : "text-[#ED7770]"
                           )}
                         >
-                          <td className="px-4 py-3">
-                            <p className="text-[12.5px] font-semibold text-xb-text">{parcel.name}</p>
-                            <p className="mt-0.5 flex items-center gap-1.5 text-[10.5px] text-xb-dim">
-                              <Leaf className="h-3 w-3" aria-hidden="true" />
-                              {parcel.id} · {formatNumber(parcel.area)} ha · {parcel.region}
-                            </p>
-                          </td>
-                          <td className="px-3 py-3">
-                            <StatusPill
-                              status={parcel.verificationStatus}
-                              label={STATUS_LABEL[parcel.verificationStatus]}
-                            />
-                          </td>
-                          <td className="px-3 py-3 text-right">
-                            <p className="text-[12.5px] font-medium text-xb-text xb-numeric">
-                              {formatNumber(parcel.availableUnits)}
-                            </p>
-                            {parcel.frozenUnits > 0 && (
-                              <p className="mt-0.5 text-[10px] text-xb-blocked xb-numeric">
-                                {formatNumber(parcel.frozenUnits)} dibekukan
-                              </p>
-                            )}
-                          </td>
-                          <td className="px-3 py-3 text-right">
-                            <span
-                              className={cx(
-                                "text-[12px] font-medium xb-numeric",
-                                parcel.ndvi !== undefined && parcel.ndvi >= 0.7
-                                  ? "text-xb-forest"
-                                  : "text-xb-warning"
-                              )}
-                            >
-                              {parcel.ndvi !== undefined ? parcel.ndvi.toFixed(2) : "—"}
-                            </span>
-                          </td>
-                          <td className="px-3 py-3 text-right">
-                            <span className={cx("text-[12px] font-semibold xb-numeric", parcelTone.text)}>
-                              {parcelRisk.score}
-                            </span>
-                            <span className="ml-1 text-[10px] text-xb-dim">{parcelTone.label}</span>
-                          </td>
-                          <td className="px-3 py-3 text-right">
-                            <span className="text-[12px] text-xb-text xb-numeric">
-                              {parcel.settlementEstimateIdr > 0
-                                ? formatIdrShort(parcel.settlementEstimateIdr)
-                                : "—"}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-right">
-                            <ChevronRight
-                              className={cx(
-                                "inline h-4 w-4",
-                                active ? "text-xb-forest" : "text-xb-dim"
-                              )}
-                              aria-hidden="true"
-                            />
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+                          {selectedConsent?.status === "granted" ? "Aktif" : "Belum Ada / Dicabut"}
+                        </span>
+                      </div>
+                      <div className="flex justify-between py-2">
+                        <span className="text-[#A6ADA7]">Tanda Terima</span>
+                        <span className="font-mono text-[12px] text-[#F4F5F2]">
+                          {selectedConsent?.receipt_id || "Belum ada"}
+                        </span>
+                      </div>
+                    </div>
 
-              <div className="flex items-start gap-2 border-t border-xb-line/60 px-4 py-2.5">
-                <Info className="mt-0.5 h-3 w-3 shrink-0 text-xb-dim" aria-hidden="true" />
-                <p className="text-[10.5px] leading-relaxed text-xb-dim">
-                  Semua baris berasal dari data simulasi. Parcel dengan status selain terverifikasi
-                  tidak dapat ditransaksikan.
-                </p>
-              </div>
-            </Card>
-
-            <Card className="p-4">
-              <div className="flex items-center justify-between gap-2">
-                <SectionLabel>Profil risiko</SectionLabel>
-                <span className={cx("text-[11px] font-semibold", tone?.text)}>{tone?.label}</span>
-              </div>
-
-              <div className="mt-2 flex items-baseline gap-1.5">
-                <span className={cx("text-[26px] font-semibold leading-none xb-numeric", tone?.text)}>
-                  {risk?.score ?? 0}
-                </span>
-                <span className="text-[10.5px] text-xb-dim">/ 100</span>
-                <span className="ml-auto flex items-center gap-1 text-[10.5px] text-xb-dim">
-                  <Radio className="h-3 w-3" aria-hidden="true" />
-                  {selectedSensors.length} sensor
-                </span>
-              </div>
-
-              <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-xb-raised">
-                <div
-                  className={cx("h-full rounded-full transition-all duration-500", tone?.bar)}
-                  style={{ width: `${risk?.score ?? 0}%` }}
-                />
-              </div>
-
-              <ul className="mt-3 space-y-1.5">
-                {risk?.factors.map((factor) => (
-                  <li key={factor.label} className="flex items-center justify-between gap-3">
-                    <span className="flex min-w-0 items-center gap-1.5 text-[11.5px] text-xb-mute">
-                      {factor.weight >= 16 ? (
-                        <AlertTriangle className="h-3 w-3 shrink-0 text-xb-warning" aria-hidden="true" />
+                    <div className="space-y-2">
+                      {selectedSensors.length === 0 ? (
+                        <p className="text-[13px] text-[#A6ADA7]">Tidak ada sensor terhubung.</p>
                       ) : (
-                        <CheckCircle2 className="h-3 w-3 shrink-0 text-xb-verified" aria-hidden="true" />
+                        selectedSensors.map((s) => (
+                          <div
+                            key={s.sensor_id}
+                            className="flex items-center justify-between rounded-xl border border-[#252B27] bg-[#1D211E] px-3.5 py-2.5"
+                          >
+                            <span className="flex items-center gap-2 font-mono text-[12px] text-[#F4F5F2]">
+                              <Radio className="h-3.5 w-3.5 text-[#AA9AF5]" aria-hidden="true" />
+                              {s.sensor_id}
+                            </span>
+                            <span className="text-[12px] text-[#A6ADA7] xb-numeric">
+                              {s.temperature.toFixed(1)}°C · RH {s.humidity}%
+                            </span>
+                          </div>
+                        ))
                       )}
-                      <span className="truncate">{factor.label}</span>
-                      <span className="truncate text-[10.5px] text-xb-dim">· {factor.detail}</span>
-                    </span>
-                    <span className="shrink-0 font-mono text-[10.5px] text-xb-dim">
-                      +{factor.weight}
-                    </span>
-                  </li>
-                ))}
-                {risk?.factors.length === 0 && (
-                  <li className="text-[11.5px] text-xb-mute">Tidak ada faktor risiko terdeteksi.</li>
-                )}
-              </ul>
-
-              <div className="mt-3 grid grid-cols-3 gap-2 border-t border-xb-line/50 pt-2.5 text-[10.5px]">
-                <div>
-                  <p className="text-xb-dim">NDVI</p>
-                  <p className="mt-0.5 font-mono text-xb-text">
-                    {selected?.ndvi !== undefined ? selected.ndvi.toFixed(2) : "—"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xb-dim">SAR</p>
-                  <p className="mt-0.5 font-mono text-xb-text">
-                    {selected?.sar !== undefined ? selected.sar.toFixed(2) : "—"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-xb-dim">Anomali</p>
-                  <p className="mt-0.5 font-mono text-xb-text">
-                    {selectedSensors.filter((sensor) => sensor.anomaly).length}/
-                    {selectedSensors.length}
-                  </p>
-                </div>
-              </div>
-            </Card>
-          </div>
-
-          <div className="min-w-0 space-y-4">
-            <Card className="overflow-hidden">
-              <div className="border-b border-xb-line/70 px-4 py-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <SectionLabel>Settlement simulator</SectionLabel>
-                    <p className="mt-0.5 truncate text-[13px] font-semibold text-xb-text">
-                      {selected?.name ?? "Belum ada parcel"}
-                    </p>
-                  </div>
-                  {selected && (
-                    <StatusPill
-                      status={selected.verificationStatus}
-                      label={STATUS_LABEL[selected.verificationStatus]}
-                    />
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-3 p-4">
-                <div>
-                  <div className="flex items-center justify-between gap-2">
-                    <label
-                      htmlFor="volume"
-                      className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-xb-dim"
-                    >
-                      Volume (tCO₂e)
-                    </label>
-                    <span className="text-[10.5px] text-xb-dim xb-numeric">
-                      maks {formatNumber(available)}
-                    </span>
-                  </div>
-                  <input
-                    id="volume"
-                    type="number"
-                    inputMode="numeric"
-                    min={0}
-                    max={available}
-                    value={volumeInput}
-                    onChange={(event) => {
-                      setVolumeInput(event.target.value);
-                      setQuoted(false);
-                    }}
-                    disabled={available === 0}
-                    className="mt-1.5 h-[42px] w-full rounded-lg border border-xb-line/70 bg-xb-raised/60 px-3 text-[14px] font-medium text-xb-text xb-numeric outline-none transition-colors focus:border-xb-forest/50 focus:ring-2 focus:ring-xb-forest/15 disabled:cursor-not-allowed disabled:text-xb-dim"
-                  />
-                  <div className="mt-2 flex gap-1.5">
-                    {[0.25, 0.5, 1].map((fraction) => {
-                      const value = Math.max(1, Math.floor(available * fraction));
-                      return (
-                        <button
-                          key={fraction}
-                          type="button"
-                          disabled={available === 0}
-                          onClick={() => {
-                            setVolumeInput(String(value));
-                            setQuoted(false);
-                          }}
-                          className="flex-1 rounded-md border border-xb-line/60 py-1.5 text-[11px] font-medium text-xb-mute transition-colors hover:border-xb-forest/35 hover:text-xb-text disabled:opacity-40"
-                        >
-                          {fraction === 1 ? "Semua" : `${fraction * 100}%`}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="rounded-lg border border-xb-line/60 bg-xb-raised/30 p-3">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <SectionLabel>Nilai bruto</SectionLabel>
-                    <span className="text-[10px] text-xb-dim xb-numeric">
-                      {formatNumber(volume)} × {formatIdr(PRICE_PER_TON)}
-                    </span>
-                  </div>
-                  <p className="mt-1.5 text-[20px] font-semibold leading-none text-xb-text xb-numeric">
-                    {formatIdr(settlement.gross_idr)}
-                  </p>
-
-                  <div className="mt-3 space-y-1.5 border-t border-xb-line/50 pt-2.5">
-                    <Line
-                      label="Biaya sandbox 2%"
-                      value={`−${formatIdr(settlement.sandbox_fee_idr)}`}
-                      tone="text-xb-warning"
-                    />
-                    <Line label="Nilai bersih" value={formatIdr(settlement.net_idr)} />
-                    <Line
-                      label="Kas komunitas 60%"
-                      value={formatIdr(settlement.community_idr)}
-                      tone="text-xb-verified"
-                      strong
-                    />
-                    <Line
-                      label="Operasi pengelola 40%"
-                      value={formatIdr(settlement.operations_idr)}
-                      tone="text-xb-tech"
-                      strong
-                    />
-                  </div>
-                </div>
-
-                {selected && !eligible && (
-                  <div className="flex items-start gap-2 rounded-lg border border-xb-warning/30 bg-xb-warning/[0.07] p-2.5">
-                    <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-xb-warning" aria-hidden="true" />
-                    <p className="text-[11px] leading-relaxed text-xb-warning">
-                      {available === 0
-                        ? "Tidak ada unit tersedia. Seluruh unit pada parcel ini dibekukan."
-                        : "Parcel belum memenuhi syarat transaksi: status verifikasi, kelayakan pasar, dan izin komunitas harus aktif."}
-                    </p>
-                  </div>
-                )}
-
-                {roleAction.href ? (
-                  <div className="space-y-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        switchDemoRole("recipient");
-                        if (eligible && volume > 0) setQuoted(true);
-                      }}
-                      className={buttonClass("primary", "w-full")}
-                    >
-                      Uji Pembelian sebagai PT. GreenCorp
-                    </button>
-                    <Link href={roleAction.href} className={buttonClass(roleAction.tone, "w-full")}>
-                      {roleAction.label}
-                    </Link>
+                    </div>
                   </div>
                 ) : (
-                  <button
-                    type="button"
-                    disabled={!eligible || volume === 0}
-                    onClick={() => setQuoted(true)}
-                    className={buttonClass("primary", "w-full")}
-                  >
-                    {roleAction.label}
-                  </button>
+                  <ul className="mt-4 divide-y divide-[#252B27]">
+                    {risk?.factors.map((factor) => (
+                      <li key={factor.label} className="flex items-center justify-between gap-3 py-2.5">
+                        <div>
+                          <p className="text-[13px] font-medium text-[#F4F5F2]">{factor.label}</p>
+                          <p className="text-[12px] text-[#A6ADA7]">{factor.detail}</p>
+                        </div>
+                        <span className="font-mono text-[12px] font-semibold text-[#F2B84B]">
+                          +{factor.weight}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 )}
-                <p className="text-[10.5px] leading-relaxed text-xb-dim">{roleAction.hint}</p>
+              </Card>
+            )}
+          </div>
 
-                {quoted && eligible && (
-                  <div className="rounded-lg border border-xb-forest/30 bg-xb-forest/[0.07] p-3">
-                    <p className="flex items-center gap-1.5 text-[11.5px] font-semibold text-xb-forest">
-                      <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
-                      Permintaan simulasi tercatat
-                    </p>
-                    <p className="mt-1 text-[11px] leading-relaxed text-xb-mute">
-                      {formatNumber(volume)} tCO₂e dari {selected?.id} dengan nilai bruto{" "}
-                      {formatIdr(settlement.gross_idr)}. Tidak ada pembayaran, transfer unit, atau
-                      pencatatan on-chain pada sesi testnet ini.
+          {/* Right Order & Settlement Calculator Card */}
+          <Card className="flex flex-col justify-between p-6 xl:sticky xl:top-24">
+            <div className="space-y-5">
+              <div className="flex items-start justify-between gap-2 border-b border-[#252B27] pb-4">
+                <div>
+                  <p className="text-[12px] font-medium text-[#A6ADA7]">Simulasi Order Karbon</p>
+                  <h2 className="mt-1 text-[18px] font-semibold text-[#F4F5F2]">
+                    {selected?.name ?? "Pilih Parcel"}
+                  </h2>
+                </div>
+                {selected && <StatusPill status={selected.verificationStatus} />}
+              </div>
+
+              {!eligible ? (
+                <div className="flex items-start gap-3 rounded-xl border border-[#ED7770]/40 bg-[#ED7770]/12 p-4">
+                  <Lock className="mt-0.5 h-4 w-4 shrink-0 text-[#ED7770]" aria-hidden="true" />
+                  <div className="text-[13px] leading-relaxed text-[#F4F5F2]">
+                    <p className="font-semibold text-[#ED7770]">Pembelian Diblokir Sistem</p>
+                    <p className="mt-1 text-[#A6ADA7]">
+                      Hanya lahan berstatus TERVERIFIKASI dengan izin komunitas aktif yang boleh
+                      ditransaksikan di Carbon Market.
                     </p>
                   </div>
+                </div>
+              ) : (
+                <>
+                  <div>
+                    <div className="flex items-center justify-between text-[12.5px]">
+                      <label htmlFor="order-units" className="font-medium text-[#A6ADA7]">
+                        Jumlah Unit (tCO₂e)
+                      </label>
+                      <span className="text-[#72C99A] xb-numeric">
+                        Tersedia: {formatNumber(available)} ton
+                      </span>
+                    </div>
+                    <input
+                      id="order-units"
+                      type="number"
+                      min={1}
+                      max={available}
+                      value={volumeInput}
+                      onChange={(e) => {
+                        setVolumeInput(e.target.value);
+                        setOrderFeedback(null);
+                      }}
+                      className="mt-2 min-h-[48px] w-full rounded-xl border border-[#39423C] bg-[#090B0A] px-4 text-[18px] font-semibold text-[#F4F5F2] xb-numeric"
+                    />
+                    <div className="mt-2 grid grid-cols-4 gap-2">
+                      {[5, 10, 25, available].map((preset, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => {
+                            setVolumeInput(String(Math.min(preset, available)));
+                            setOrderFeedback(null);
+                          }}
+                          className="min-h-[40px] rounded-xl border border-[#39423C] bg-[#1D211E] text-[12px] font-semibold text-[#A6ADA7] hover:bg-[#242925] hover:text-[#F4F5F2]"
+                        >
+                          {idx === 3 ? "Max" : preset}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Settlement Breakdown (2% / 60% / 40%) */}
+                  <div className="space-y-2.5 rounded-xl border border-[#252B27] bg-[#1D211E] p-4 text-[13px]">
+                    <div className="flex justify-between">
+                      <span className="text-[#A6ADA7]">Total Bruto</span>
+                      <span className="font-semibold text-[#F4F5F2] xb-numeric">
+                        {formatIdr(settlement.gross_idr)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-[#A6ADA7]">Biaya Sandbox MRV (2%)</span>
+                      <span className="text-[#F2B84B] xb-numeric">-{formatIdr(settlement.sandbox_fee_idr)}</span>
+                    </div>
+                    <div className="border-t border-[#252B27] pt-2.5">
+                      {/* Visual allocation bar — 60% community / 40% ops */}
+                      <div className="mb-2.5 flex h-1.5 w-full overflow-hidden rounded-full">
+                        <div className="h-full w-[60%] bg-[#72C99A]" />
+                        <div className="h-full w-[40%] bg-[#AA9AF5]" />
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-[#A6ADA7]">Kas Komunitas (60%)</span>
+                        <span className="font-semibold text-[#72C99A] xb-numeric">
+                          {formatIdr(settlement.community_idr)}
+                        </span>
+                      </div>
+                      <div className="mt-1.5 flex justify-between">
+                        <span className="text-[#A6ADA7]">Operasi Pengelola (40%)</span>
+                        <span className="font-semibold text-[#AA9AF5] xb-numeric">
+                          {formatIdr(settlement.operations_idr)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {orderFeedback && (
+                <div
+                  className={cx(
+                    "flex items-start gap-2.5 rounded-xl border p-3.5 text-[12.5px]",
+                    orderFeedback.ok
+                      ? "border-[#72C99A]/40 bg-[#23865A]/18 text-[#72C99A]"
+                      : "border-[#ED7770]/45 bg-[#ED7770]/12 text-[#ED7770]"
+                  )}
+                >
+                  {orderFeedback.ok ? (
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                  ) : (
+                    <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                  )}
+                  <div>
+                    <p className="font-medium text-[#F4F5F2]">{orderFeedback.message}</p>
+                    {orderFeedback.txId && (
+                      <p className="mt-1 font-mono text-[11.5px] text-[#72C99A]">
+                        ID: {orderFeedback.txId}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-2.5 pt-1">
+                <Button
+                  variant="lavender"
+                  disabled={!eligible || clampedUnits <= 0}
+                  onClick={handleOrder}
+                  className="h-12 w-full rounded-full text-[14px]"
+                >
+                  Ajukan Order Simulasi ({clampedUnits} tCO₂e)
+                </Button>
+
+                {orderFeedback?.ok ? (
+                  <Link
+                    href="/portfolio"
+                    className={buttonClass("secondary", "h-11 w-full rounded-full text-[13px]")}
+                  >
+                    Lihat di Portfolio
+                    <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                ) : (
+                  <p className="text-center text-[12px] text-[#8B948D]">
+                    Berperan aktif sebagai <span className="text-[#F4F5F2]">{role}</span> · Mode
+                    testnet tanpa dana nyata
+                  </p>
                 )}
               </div>
-            </Card>
+            </div>
+          </Card>
+        </section>
+
+        {/* Settlement History */}
+        <Card className="overflow-hidden">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#252B27] px-5 py-4">
+            <div>
+              <h2 className="text-[16px] font-semibold text-[#F4F5F2]">Riwayat Settlement Simulasi</h2>
+              <p className="mt-0.5 text-[12.5px] text-[#A6ADA7]">
+                {transactions.length} order tercatat (fee 2% · komunitas 60% · operasi 40%)
+              </p>
+            </div>
+            <Link
+              href="/activity"
+              className="inline-flex min-h-[44px] items-center gap-1 text-[13px] font-semibold text-[#AA9AF5] hover:underline"
+            >
+              Timeline Lengkap
+              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
           </div>
-        </section>
 
-        <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_392px]">
-          <Card className="min-w-0 overflow-hidden">
-            <div className="border-b border-xb-line/70 px-4 py-3">
-              <SectionLabel>Riwayat transaksi</SectionLabel>
-              <p className="mt-0.5 text-[11.5px] text-xb-dim">
-                {transactions.length} transaksi tercatat pada ledger simulasi
-              </p>
-            </div>
-
-            {transactions.length === 0 ? (
-              <p className="px-4 py-8 text-center text-[12px] text-xb-mute">
-                Belum ada transaksi. Selesaikan verifikasi lahan untuk membuka pasar.
-              </p>
-            ) : (
-              <div className="xb-scroll overflow-x-auto">
-                <table className="w-full min-w-[640px] border-collapse text-left">
-                  <thead>
-                    <tr className="border-b border-xb-line/60 text-[10px] uppercase tracking-[0.12em] text-xb-dim">
-                      <th className="px-4 py-2.5 font-semibold">Tx</th>
-                      <th className="px-3 py-2.5 font-semibold">Parcel</th>
-                      <th className="px-3 py-2.5 text-right font-semibold">Volume</th>
-                      <th className="px-3 py-2.5 text-right font-semibold">Bruto</th>
-                      <th className="px-3 py-2.5 text-right font-semibold">Fee 2%</th>
-                      <th className="px-3 py-2.5 text-right font-semibold">Komunitas 60%</th>
-                      <th className="px-4 py-2.5 text-right font-semibold">Operasi 40%</th>
+          {transactions.length === 0 ? (
+            <EmptyState
+              title="Belum ada transaksi simulasi"
+              body="Ajukan order simulasi pada parcel terverifikasi untuk melihat pembagian hasil."
+            />
+          ) : (
+            <ScrollArea orientation="horizontal">
+              <table className="w-full min-w-[680px] border-collapse text-left">
+                <thead>
+                  <tr className="border-b border-[#252B27] text-[12px] font-medium text-[#8B948D]">
+                    <th className="px-5 py-3">ID Order</th>
+                    <th className="px-3 py-3">Parcel</th>
+                    <th className="px-3 py-3 text-right">Volume</th>
+                    <th className="px-3 py-3 text-right">Bruto</th>
+                    <th className="px-3 py-3 text-right">Fee 2%</th>
+                    <th className="px-3 py-3 text-right">Komunitas 60%</th>
+                    <th className="px-5 py-3 text-right">Operasi 40%</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {transactions.map((tx) => (
+                    <tr key={tx.tx_id} className="border-b border-[#252B27] last:border-0 hover:bg-[#1D211E]">
+                      <td className="px-5 py-3.5 font-mono text-[12.5px] text-[#F4F5F2]">{tx.tx_id}</td>
+                      <td className="px-3 py-3.5 font-mono text-[12.5px] text-[#A6ADA7]">
+                        {tx.parcel_id}
+                      </td>
+                      <td className="px-3 py-3.5 text-right text-[13px] text-[#F4F5F2] xb-numeric">
+                        {formatNumber(tx.volume_tco2e)} tCO₂e
+                      </td>
+                      <td className="px-3 py-3.5 text-right text-[13px] text-[#F4F5F2] xb-numeric">
+                        {formatIdrShort(tx.gross_amount_idr)}
+                      </td>
+                      <td className="px-3 py-3.5 text-right text-[13px] text-[#F2B84B] xb-numeric">
+                        {formatIdrShort(tx.mrv_allocation_idr)}
+                      </td>
+                      <td className="px-3 py-3.5 text-right text-[13px] font-semibold text-[#72C99A] xb-numeric">
+                        {formatIdrShort(tx.community_allocation_idr)}
+                      </td>
+                      <td className="px-5 py-3.5 text-right text-[13px] font-semibold text-[#AA9AF5] xb-numeric">
+                        {formatIdrShort(tx.manager_allocation_idr)}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {transactions.map((tx) => (
-                      <tr key={tx.tx_id} className="border-b border-xb-line/40 last:border-0">
-                        <td className="px-4 py-3">
-                          <p className="font-mono text-[11.5px] text-xb-text">{tx.tx_id}</p>
-                          <p className="mt-0.5 text-[10px] text-xb-dim">
-                            {new Date(tx.timestamp).toLocaleDateString("id-ID", {
-                              day: "2-digit",
-                              month: "short",
-                              year: "numeric",
-                            })}
-                          </p>
-                        </td>
-                        <td className="px-3 py-3 text-[11.5px] text-xb-mute">{tx.parcel_id}</td>
-                        <td className="px-3 py-3 text-right text-[11.5px] text-xb-text xb-numeric">
-                          {formatNumber(tx.volume_tco2e)}
-                        </td>
-                        <td className="px-3 py-3 text-right text-[11.5px] text-xb-text xb-numeric">
-                          {formatIdrShort(tx.gross_amount_idr)}
-                        </td>
-                        <td className="px-3 py-3 text-right text-[11.5px] text-xb-warning xb-numeric">
-                          {formatIdrShort(tx.mrv_allocation_idr)}
-                        </td>
-                        <td className="px-3 py-3 text-right text-[11.5px] text-xb-verified xb-numeric">
-                          {formatIdrShort(tx.community_allocation_idr)}
-                        </td>
-                        <td className="px-4 py-3 text-right text-[11.5px] text-xb-tech xb-numeric">
-                          {formatIdrShort(tx.manager_allocation_idr)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </Card>
+                  ))}
+                </tbody>
+              </table>
+            </ScrollArea>
+          )}
+        </Card>
 
-          <Card className="p-4">
-            <SectionLabel>Formula settlement</SectionLabel>
-            <div className="mt-2.5 space-y-2 text-[11.5px] leading-relaxed text-xb-mute">
-              <p className="flex items-start gap-2">
-                <Gauge className="mt-0.5 h-3.5 w-3.5 shrink-0 text-xb-tech" aria-hidden="true" />
-                Bruto = volume × harga acuan per tCO₂e.
-              </p>
-              <p className="flex items-start gap-2">
-                <Flame className="mt-0.5 h-3.5 w-3.5 shrink-0 text-xb-warning" aria-hidden="true" />
-                Biaya sandbox 2% dipotong untuk biaya layanan MRV.
-              </p>
-              <p className="flex items-start gap-2">
-                <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-xb-verified" aria-hidden="true" />
-                Nilai bersih dibagi 60% kas komunitas dan 40% operasi pengelola.
-              </p>
-            </div>
-            <div className="mt-3 space-y-1.5 rounded-lg border border-xb-line/60 bg-xb-raised/30 p-3 font-mono text-[10.5px] text-xb-dim">
-              <p>fee = gross × 0.02</p>
-              <p>net = gross − fee</p>
-              <p>community = net × 0.60</p>
-              <p>operations = net × 0.40</p>
-            </div>
-            <Disclosure className="mt-3" />
-          </Card>
-        </section>
+        <Disclosure />
       </div>
     </AppShell>
-  );
-}
-
-function Line({
-  label,
-  value,
-  tone,
-  strong,
-}: {
-  label: string;
-  value: string;
-  tone?: string;
-  strong?: boolean;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-3 text-[11.5px]">
-      <span className="text-xb-mute">{label}</span>
-      <span
-        className={cx(
-          "font-mono xb-numeric",
-          tone ?? "text-xb-text",
-          strong && "font-semibold"
-        )}
-      >
-        {value}
-      </span>
-    </div>
   );
 }

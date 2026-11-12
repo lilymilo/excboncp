@@ -1,0 +1,173 @@
+/* Scoped design tokens & strict static interaction rules for EXBON CP authenticated dashboard.
+   Isolated under .xb-dashboard so the public landing page (/), /login, and /register stay 100% untouched. */
+
+.xb-dashboard {
+  --xb-bg: #090b0a;
+  --xb-surface: #151816;
+  --xb-elevated: #1d211e;
+  --xb-hover: #242925;
+  --xb-line: #252b27;
+  --xb-control-line: #39423c;
+  --xb-text: #f4f5f2;
+  --xb-mute: #a6ada7;
+  --xb-dim: #8b948d;
+  --xb-green: #72c99a;
+  --xb-forest: #23865a;
+  --xb-lavender: #aa9af5;
+  --xb-warning: #f2b84b;
+  --xb-error: #ed7770;
+  color: var(--xb-text);
+  background-color: var(--xb-bg);
+}
+
+/* Absolute Zero-Animation Rule inside authenticated dashboard & its portaled Radix overlays */
+.xb-dashboard,
+.xb-dashboard *,
+.xb-dashboard *::before,
+.xb-dashboard *::after {
+  transition: none !important;
+  animation: none !important;
+  scroll-behavior: auto !important;
+}
+
+.xb-dashboard .xb-numeric {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.xb-dashboard .xb-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--xb-control-line) transparent;
+}
+
+.xb-dashboard button,
+.xb-dashboard [role="button"],
+.xb-dashboard [role="tab"],
+.xb-dashboard [role="menuitem"],
+.xb-dashboard [role="menuitemradio"],
+.xb-dashboard a {
+  cursor: pointer;
+}
+
+.xb-dashboard button:disabled,
+.xb-dashboard [aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+.xb-dashboard :focus-visible {
+  outline: 2px solid var(--xb-lavender);
+  outline-offset: 2px;
+}
+
+/* Override static helper color tokens inside dashboard scope for WCAG AA contrast & palette sync */
+.xb-dashboard .bg-xb-bg {
+  background-color: var(--xb-bg);
+}
+
+.xb-dashboard .bg-xb-surface {
+  background-color: var(--xb-surface);
+}
+
+.xb-dashboard .bg-xb-raised {
+  background-color: var(--xb-elevated);
+}
+
+.xb-dashboard .border-xb-line {
+  border-color: var(--xb-line);
+}
+
+.xb-dashboard .text-xb-text {
+  color: var(--xb-text);
+}
+
+.xb-dashboard .text-xb-mute {
+  color: var(--xb-mute);
+}
+
+.xb-dashboard .text-xb-dim {
+  color: var(--xb-dim);
+}
+
+.xb-dashboard .text-xb-forest,
+.xb-dashboard .text-xb-verified {
+  color: var(--xb-green);
+}
+
+.xb-dashboard .text-xb-tech {
+  color: var(--xb-lavender);
+}
+
+.xb-dashboard .text-xb-warning {
+  color: var(--xb-warning);
+}
+
+.xb-dashboard .text-xb-blocked {
+  color: var(--xb-error);
+}
+
+/* Leaflet map overrides inside dashboard scope */
+.xb-dashboard .leaflet-container {
+  background: #0d100e;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  outline: none;
+}
+
+/* Map surface is tabbable, so it needs its own ring — the rule above kills the global one. */
+.xb-dashboard .leaflet-container:focus-visible {
+  outline: 2px solid var(--xb-green);
+  outline-offset: -2px;
+}
+
+.xb-dashboard .leaflet-fade-anim .leaflet-tile,
+.xb-dashboard .leaflet-zoom-anim .leaflet-zoom-animated {
+  transition: none !important;
+}
+
+.xb-dashboard .leaflet-control-zoom {
+  border: 1px solid var(--xb-control-line) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5) !important;
+}
+
+.xb-dashboard .leaflet-control-zoom a {
+  background: #151816 !important;
+  color: var(--xb-text) !important;
+  border-bottom-color: var(--xb-line) !important;
+  width: 44px !important;
+  height: 44px !important;
+  line-height: 44px !important;
+  font-size: 16px !important;
+}
+
+.xb-dashboard .leaflet-control-zoom a:hover {
+  background: var(--xb-elevated) !important;
+  color: var(--xb-green) !important;
+}
+
+.xb-dashboard .leaflet-control-attribution {
+  background: rgba(9, 11, 10, 0.9) !important;
+  color: var(--xb-dim) !important;
+  font-size: 10px !important;
+  padding: 2px 8px !important;
+  border-top-left-radius: 8px;
+}
+
+.xb-dashboard .leaflet-control-attribution a {
+  color: var(--xb-mute) !important;
+}
+
+.xb-parcel-tooltip {
+  background: #151816 !important;
+  color: #f4f5f2 !important;
+  border: 1px solid #39423c !important;
+  border-radius: 10px !important;
+  padding: 6px 10px !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6) !important;
+}
+
+.xb-parcel-tooltip::before {
+  border-top-color: #39423c !important;
+}

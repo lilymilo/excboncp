@@ -2,68 +2,61 @@ import React from "react";
 
 type SvgProps = { className?: string };
 
-function Sparkle({ x, y, s = 1, fill = "#FFFFFF" }: { x: number; y: number; s?: number; fill?: string }) {
+/** Static Botanical x Phantom emblem rendered inside authenticated wallet cards. */
+export function BotanicalSpiritMark({ className = "" }: SvgProps) {
   return (
-    <path
-      transform={`translate(${x} ${y}) scale(${s})`}
-      d="M0 -6 C0.6 -2 2 -0.6 6 0 C2 0.6 0.6 2 0 6 C-0.6 2 -2 0.6 -6 0 C-2 -0.6 -0.6 -2 0 -6Z"
-      fill={fill}
-    />
-  );
-}
-
-/** Maskot utama: biji hutan yang sedang tidur, dipakai di kartu sambutan. */
-export function ForestSpirit({ className = "" }: SvgProps) {
-  return (
-    <svg viewBox="0 0 160 120" fill="none" className={className} aria-hidden="true">
-      <ellipse cx="80" cy="92" rx="34" ry="5" fill="#141414" />
-      <path d="M50 40 H110 C110 64 97 82 80 82 C63 82 50 64 50 40Z" fill="#FFFFFF" />
-      <ellipse cx="80" cy="40" rx="30" ry="7" fill="#F1EEFF" />
-      <path d="M80 34 C80 25 87 20 95 20 C95 28 89 34 80 34Z" fill="#AB9FF2" />
-      <path d="M66 55 Q71 61 76 55" stroke="#1C1C1C" strokeWidth="2.4" strokeLinecap="round" />
-      <path d="M84 55 Q89 61 94 55" stroke="#1C1C1C" strokeWidth="2.4" strokeLinecap="round" />
-      <g transform="translate(30 72) rotate(-24)">
-        <rect width="50" height="21" rx="10.5" fill="#FFFFFF" />
-        <text x="25" y="14.5" textAnchor="middle" fontSize="11.5" fontWeight="700" fill="#1C1C1C">
-          halo!
-        </text>
-        <rect x="-5" y="6" width="9" height="9" rx="2" transform="rotate(45 -0.5 10.5)" fill="#AB9FF2" />
-      </g>
-      <Sparkle x={116} y={52} s={1.1} />
-      <Sparkle x={42} y={44} s={0.8} />
-      <Sparkle x={122} y={78} s={0.6} fill="#9B9B9B" />
+    <svg viewBox="0 0 72 72" fill="none" className={className} aria-hidden="true">
+      <rect x="10" y="10" width="52" height="52" rx="18" fill="#1D211E" stroke="#39423C" strokeWidth="1.75" />
+      <path
+        d="M36 20C26.5 24 23 33 26.5 43.5C32.5 43.5 39 40 43.5 33.5C46 29.5 45 23 36 20Z"
+        fill="#23865A"
+        fillOpacity="0.28"
+        stroke="#72C99A"
+        strokeWidth="2.2"
+        strokeLinejoin="round"
+      />
+      <path d="M27 47.5C31.5 42 36.5 36.5 43 29" stroke="#72C99A" strokeWidth="2" strokeLinecap="round" />
+      <path d="M52 19L53.5 22.5L57 24L53.5 25.5L52 29L50.5 25.5L47 24L50.5 22.5L52 19Z" fill="#AA9AF5" />
     </svg>
   );
 }
 
-/** Ikon kosong untuk daftar order: dua koin dengan tanda tambah. */
+/** Kept for symbol compatibility across existing dashboard imports. */
+export function ForestSpirit({ className = "" }: SvgProps) {
+  return <BotanicalSpiritMark className={className} />;
+}
+
+/** Phantom-style empty token/credit state icon in lavender on obsidian surfaces. */
 export function CoinsPlusIcon({ className = "" }: SvgProps) {
   return (
     <svg viewBox="0 0 64 64" fill="none" className={className} aria-hidden="true">
-      <circle cx="24" cy="24" r="14" stroke="#AB9FF2" strokeWidth="4" />
-      <circle cx="39" cy="39" r="14" fill="#000" stroke="#AB9FF2" strokeWidth="4" />
-      <path d="M39 33 V45 M33 39 H45" stroke="#AB9FF2" strokeWidth="4" strokeLinecap="round" />
+      <circle cx="25" cy="25" r="13" stroke="#AA9AF5" strokeWidth="3.2" strokeOpacity="0.82" />
+      <circle cx="38" cy="38" r="13.5" fill="#151816" stroke="#AA9AF5" strokeWidth="3.2" />
+      <path d="M38 32.5V43.5M32.5 38H43.5" stroke="#AA9AF5" strokeWidth="3" strokeLinecap="round" />
     </svg>
   );
 }
 
-/** Ilustrasi kosong untuk segel EAS: daun, bingkai foto, dan segitiga. */
+/** Empty attestation/collectibles mark inspired by the Phantom collectibles empty view. */
+export function CollectiblesEmptyIcon({ className = "" }: SvgProps) {
+  return (
+    <svg viewBox="0 0 88 72" fill="none" className={className} aria-hidden="true">
+      <rect x="18" y="22" width="26" height="32" rx="6" transform="rotate(-10 18 22)" fill="#1D211E" stroke="#AA9AF5" strokeWidth="2.5" />
+      <rect x="23" y="28" width="16" height="14" rx="2.5" transform="rotate(-10 23 28)" fill="#AA9AF5" fillOpacity="0.28" />
+      <path d="M50 18L52 12L57 14L55 24C55 26 53 27 51 26C49 25 49 22 50 18Z" fill="#72C99A" />
+      <path d="M54 31L68 38L55 47L54 31Z" fill="#ED7770" />
+    </svg>
+  );
+}
+
+/** Clean attestation certificate graphic for verification and audit empty states. */
 export function SealsIllustration({ className = "" }: SvgProps) {
   return (
-    <svg viewBox="0 0 120 96" fill="none" className={className} aria-hidden="true">
-      <path
-        d="M52 18 C52 8 64 4 76 6 C76 18 66 24 52 18Z"
-        fill="#FFFDD8"
-      />
-      <path d="M52 18 L46 34" stroke="#FFFDD8" strokeWidth="4" strokeLinecap="round" />
-      <g transform="rotate(-12 38 62)">
-        <rect x="16" y="40" width="44" height="44" rx="5" fill="#AB9FF2" />
-        <rect x="23" y="47" width="30" height="26" rx="2" fill="#1C1C1C" />
-      </g>
-      <path d="M84 46 L98 70 H70Z" fill="#FF7243" stroke="#FF7243" strokeWidth="4" strokeLinejoin="round" />
-      <Sparkle x={26} y={22} s={0.8} fill="#4A4A4A" />
-      <Sparkle x={100} y={30} s={0.7} fill="#4A4A4A" />
+    <svg viewBox="0 0 112 84" fill="none" className={className} aria-hidden="true">
+      <rect x="16" y="14" width="52" height="56" rx="10" fill="#1D211E" stroke="#39423C" strokeWidth="2" />
+      <path d="M27 29H57M27 39H51M27 49H44" stroke="#8B948D" strokeWidth="2.4" strokeLinecap="round" />
+      <circle cx="74" cy="48" r="18" fill="#151816" stroke="#72C99A" strokeWidth="2.4" />
+      <path d="M67 48L72 53L82 42" stroke="#72C99A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
-

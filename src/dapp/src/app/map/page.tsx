@@ -2,20 +2,28 @@
 
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Layers, MapPin, Radio, Satellite, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, Radio, Satellite, ShieldCheck, TrendingUp } from "lucide-react";
 import { AppShell } from "@/components/dapp/AppShell";
 import { CarbonMap } from "@/components/dapp/CarbonMap";
+import { ParcelNdviChart } from "@/components/dapp/CarbonCharts";
 import { ParcelPanel } from "@/components/dapp/ParcelPanel";
 import {
   Card,
-  SectionLabel,
+  Disclosure,
   StatusPill,
-  TestnetBadge,
-  buttonClass,
   cx,
   formatNumber,
 } from "@/components/dapp/phantom-ui";
-import { useDapp, type VerificationStatus } from "@/context/DappContext";
+import { useDashboardState } from "@/components/dapp/useDashboardStore";
+import type { VerificationStatus } from "@/context/DappContext";
+
+const STATUS_DOT: Record<VerificationStatus, string> = {
+  verified: "bg-[#72C99A]",
+  warning: "bg-[#F2B84B]",
+  pending: "bg-[#AA9AF5]",
+  blocked: "bg-[#ED7770]",
+  dispute: "bg-[#F2B84B]",
+};
 
 const STATUS_LABEL: Record<VerificationStatus, string> = {
   verified: "Terverifikasi",
@@ -25,16 +33,8 @@ const STATUS_LABEL: Record<VerificationStatus, string> = {
   dispute: "Sengketa",
 };
 
-const STATUS_DOT: Record<VerificationStatus, string> = {
-  verified: "bg-xb-verified",
-  warning: "bg-xb-warning",
-  pending: "bg-xb-pending",
-  blocked: "bg-xb-blocked",
-  dispute: "bg-xb-dispute",
-};
-
 export default function ParcelMapPage() {
-  const { parcels, sensors, aiAssessments, consentRecords, verificationRecords } = useDapp();
+  const { parcels, sensors, aiAssessments, consentRecords, verificationRecords } = useDashboardState();
   const [selectedId, setSelectedId] = useState<string | null>(parcels[0]?.id ?? null);
 
   const selected = useMemo(
@@ -56,61 +56,54 @@ export default function ParcelMapPage() {
     : undefined;
 
   const stats = useMemo(() => {
-    const anomalies = sensors.filter((sensor) => sensor.anomaly).length;
-    const flames = sensors.filter((sensor) => sensor.flameDetected).length;
+    const anomalies = sensors.filter((sensor) => sensor.anomaly || sensor.flameDetected).length;
     const area = parcels.reduce((sum, parcel) => sum + parcel.area, 0);
-    return { anomalies, flames, area };
+    return { anomalies, area };
   }, [parcels, sensors]);
 
   return (
     <AppShell>
-      <div className="space-y-4">
-        <section className="flex flex-wrap items-end justify-between gap-3">
+      <div className="space-y-6">
+        <section className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
-              <SectionLabel>Peta lahan</SectionLabel>
-              <TestnetBadge />
-            </div>
-            <h1 className="mt-1 text-[22px] font-semibold tracking-[-0.02em] text-xb-text sm:text-[25px]">
-              Batas parcel &amp; sensor lapangan
+            <h1 className="text-[26px] font-semibold tracking-[-0.025em] text-[#F4F5F2] sm:text-[30px]">
+              Forest Intelligence
             </h1>
-            <p className="mt-1 max-w-[62ch] text-[12.5px] leading-relaxed text-xb-mute">
-              {formatNumber(stats.area)} hektare terpantau di Bogor, Jawa Barat. Pilih polygon untuk
-              membuka inspektur parcel di samping.
+            <p className="mt-1.5 max-w-[64ch] text-[14px] leading-relaxed text-[#A6ADA7]">
+              {formatNumber(stats.area)} hektare terpantau di Bogor, Jawa Barat. Pilih batas poligon
+              GeoJSON atau node sensor untuk memeriksa kelayakan unit ke pasar karbon.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-lg border border-xb-line/70 bg-xb-surface px-3 py-2 text-[11.5px] text-xb-mute">
-              <Radio className="h-3.5 w-3.5 text-xb-tech" aria-hidden="true" />
-              {formatNumber(sensors.length)} sensor
+          <div className="flex flex-wrap items-center gap-2.5">
+            <span className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-[#252B27] bg-[#151816] px-3.5 text-[12.5px] text-[#A6ADA7]">
+              <Radio className="h-4 w-4 text-[#AA9AF5]" aria-hidden="true" />
+              {formatNumber(sensors.length)} sensor IoT
               {stats.anomalies > 0 && (
-                <span className="ml-1 font-semibold text-xb-warning">
-                  · {stats.anomalies} anomali
-                </span>
+                <span className="font-semibold text-[#F2B84B]">· {stats.anomalies} anomali</span>
               )}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-lg border border-xb-line/70 bg-xb-surface px-3 py-2 text-[11.5px] text-xb-mute">
-              <Satellite className="h-3.5 w-3.5 text-xb-forest" aria-hidden="true" />
-              {formatNumber(parcels.length)} polygon
+            <span className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-[#252B27] bg-[#151816] px-3.5 text-[12.5px] text-[#A6ADA7]">
+              <Satellite className="h-4 w-4 text-[#72C99A]" aria-hidden="true" />
+              {formatNumber(parcels.length)} poligon aktif
             </span>
           </div>
         </section>
 
-        <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_392px]">
-          <div className="min-w-0 space-y-3">
+        <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_410px]">
+          <div className="min-w-0 space-y-5">
             <Card className="overflow-hidden">
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-xb-line/70 px-4 py-3">
-                <div>
-                  <SectionLabel>Kanopi &amp; status</SectionLabel>
-                  <p className="mt-0.5 text-[11.5px] text-xb-dim">
-                    Basemap Esri Dark Gray · GeoJSON lokal
-                  </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-2.5 text-[10.5px] text-xb-dim">
-                  {(["verified", "warning", "pending", "blocked", "dispute"] as const).map((status) => (
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#252B27] px-5 py-3.5">
+                <p className="text-[13.5px] font-semibold text-[#F4F5F2]">
+                  Peta Poligon GeoJSON &amp; Telemetry
+                </p>
+                <div className="flex flex-wrap items-center gap-3.5 text-[12px] text-[#A6ADA7]">
+                  {(["verified", "warning", "pending", "blocked"] as const).map((status) => (
                     <span key={status} className="inline-flex items-center gap-1.5">
-                      <span className={cx("h-1.5 w-1.5 rounded-full", STATUS_DOT[status])} />
+                      <span
+                        className={cx("h-2 w-2 rounded-full", STATUS_DOT[status])}
+                        aria-hidden="true"
+                      />
                       {STATUS_LABEL[status]}
                     </span>
                   ))}
@@ -122,101 +115,55 @@ export default function ParcelMapPage() {
                 sensors={sensors}
                 selectedId={selected?.id ?? null}
                 onSelect={setSelectedId}
-                className="h-[420px] w-full sm:h-[520px] xl:h-[640px]"
+                className="h-[420px] w-full sm:h-[520px] xl:h-[560px]"
               />
 
-              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-xb-line/70 px-4 py-2.5">
-                <p className="flex items-center gap-1.5 text-[11px] text-xb-dim">
-                  <Layers className="h-3 w-3" aria-hidden="true" />
-                  Klik polygon atau titik sensor untuk inspeksi
-                </p>
-                <Link
-                  href="/market"
-                  className="inline-flex items-center gap-1 text-[11.5px] font-medium text-xb-forest hover:underline"
-                >
-                  Buka screener pasar
-                  <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
-                </Link>
-              </div>
-            </Card>
-
-            <Card className="overflow-hidden">
-              <div className="border-b border-xb-line/70 px-4 py-2.5">
-                <SectionLabel>Daftar parcel</SectionLabel>
-              </div>
-              <ul className="divide-y divide-xb-line/50">
+              <div className="grid grid-cols-1 gap-2.5 border-t border-[#252B27] p-3.5 sm:grid-cols-2">
                 {parcels.map((parcel) => {
                   const active = parcel.id === selected?.id;
-                  const parcelSensors = sensors.filter((sensor) => sensor.parcel_id === parcel.id);
-                  const anomalies = parcelSensors.filter((sensor) => sensor.anomaly).length;
                   return (
-                    <li key={parcel.id}>
-                      <button
-                        type="button"
-                        onClick={() => setSelectedId(parcel.id)}
-                        aria-pressed={active}
-                        className={cx(
-                          "flex w-full items-center gap-3 px-4 py-3 text-left transition-colors",
-                          active ? "bg-xb-forest/[0.07]" : "hover:bg-xb-raised/50"
-                        )}
-                      >
-                        <span
-                          className={cx(
-                            "h-2 w-2 shrink-0 rounded-full",
-                            STATUS_DOT[parcel.verificationStatus]
-                          )}
-                          aria-hidden="true"
-                        />
-                        <span className="min-w-0 flex-1">
-                          <span className="block truncate text-[12.5px] font-semibold text-xb-text">
-                            {parcel.name}
-                          </span>
-                          <span className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10.5px] text-xb-dim">
-                            <span className="inline-flex items-center gap-1">
-                              <MapPin className="h-3 w-3" aria-hidden="true" />
-                              {parcel.id}
-                            </span>
-                            <span>{formatNumber(parcel.area)} ha</span>
-                            <span className="inline-flex items-center gap-1">
-                              <Radio className="h-3 w-3" aria-hidden="true" />
-                              {parcelSensors.length} sensor
-                            </span>
-                            {anomalies > 0 && (
-                              <span className="font-semibold text-xb-warning">
-                                {anomalies} anomali
-                              </span>
-                            )}
-                          </span>
+                    <button
+                      key={parcel.id}
+                      type="button"
+                      onClick={() => setSelectedId(parcel.id)}
+                      aria-pressed={active}
+                      className={cx(
+                        "min-h-[44px] rounded-xl border px-4 py-3 text-left",
+                        active
+                          ? "border-[#AA9AF5]/60 bg-[#AA9AF5]/14"
+                          : "border-[#252B27] bg-[#1D211E] hover:border-[#39423C]"
+                      )}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-mono text-[12px] font-semibold text-[#F4F5F2]">
+                          {parcel.id}
                         </span>
-                        <span className="shrink-0 text-right">
-                          <StatusPill
-                            status={parcel.verificationStatus}
-                            label={STATUS_LABEL[parcel.verificationStatus]}
-                          />
-                          <span className="mt-1 block text-[10.5px] text-xb-dim xb-numeric">
-                            {formatNumber(parcel.availableUnits)} unit
-                          </span>
-                        </span>
-                      </button>
-                    </li>
+                        <StatusPill status={parcel.verificationStatus} />
+                      </div>
+                      <p className="mt-1 truncate text-[13.5px] font-medium text-[#F4F5F2]">
+                        {parcel.name}
+                      </p>
+                      <p className="mt-1 text-[12px] text-[#A6ADA7] xb-numeric">
+                        {formatNumber(parcel.area)} ha · {formatNumber(parcel.availableUnits)} unit siap
+                        jual
+                      </p>
+                    </button>
                   );
                 })}
-              </ul>
+              </div>
             </Card>
 
-            <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-xb-line/60 bg-xb-surface px-4 py-3">
-              <p className="flex items-center gap-2 text-[11.5px] text-xb-dim">
-                <ShieldCheck className="h-3.5 w-3.5 text-xb-forest" aria-hidden="true" />
-                Geometri parcel dan telemetri adalah data simulasi testnet.
-              </p>
-              <Link
-                href="/consent"
-                className={buttonClass("secondary", "min-h-[36px] px-3 text-[12px]")}
-              >
-                Persetujuan warga
-                <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
-              </Link>
-            </div>
+            <Card className="p-5">
+              <div className="mb-3">
+                <h2 className="text-[15px] font-semibold text-[#F4F5F2]">
+                  Perbandingan Kanopi Satelit (NDVI)
+                </h2>
+                <p className="text-[12.5px] text-[#A6ADA7]">
+                  Lahan di bawah ambang 0.70 memerlukan verifikasi ulang sebelum masuk pasar karbon.
+                </p>
+              </div>
+              <ParcelNdviChart parcels={parcels} />
+            </Card>
           </div>
 
           {selected ? (
@@ -226,14 +173,31 @@ export default function ParcelMapPage() {
               assessment={selectedAssessment}
               verification={selectedVerification}
               consent={selectedConsent}
-              className="xl:sticky xl:top-[76px] xl:h-[720px]"
+              className="xl:sticky xl:top-24 xl:max-h-[calc(100vh-120px)]"
             />
           ) : (
-            <Card className="p-6 text-center text-[12.5px] text-xb-mute">
-              Belum ada parcel untuk ditampilkan.
+            <Card className="p-6 text-center text-[13px] text-[#A6ADA7]">
+              Pilih poligon di peta untuk membuka detail inspeksi.
             </Card>
           )}
         </section>
+
+        <section className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#252B27] bg-[#151816] px-5 py-3.5">
+          <p className="flex items-center gap-2 text-[12.5px] text-[#A6ADA7]">
+            <ShieldCheck className="h-4 w-4 shrink-0 text-[#72C99A]" aria-hidden="true" />
+            Data spasial terintegrasi langsung dengan kelayakan perdagangan di Carbon Market.
+          </p>
+          <Link
+            href="/market"
+            className="inline-flex min-h-[44px] items-center gap-1.5 rounded-xl px-2 text-[13px] font-semibold text-[#AA9AF5] hover:underline"
+          >
+            <TrendingUp className="h-4 w-4 shrink-0" aria-hidden="true" />
+            Buka Carbon Market
+            <ArrowUpRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+          </Link>
+        </section>
+
+        <Disclosure />
       </div>
     </AppShell>
   );
