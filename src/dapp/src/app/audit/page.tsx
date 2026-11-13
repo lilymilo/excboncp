@@ -1,7 +1,10 @@
-"use client";
-
-import { AuditorExplorerView } from "@/components/dapp/AuditorExplorerView";
+import React, { Suspense } from "react";
+import { TinjauView } from "@/components/pages/TinjauView";
 
 export default function AuditPage() {
-  return <AuditorExplorerView defaultTab="auditor" />;
+  return (
+    <Suspense fallback={null}>
+      <TinjauView />
+    </Suspense>
+  );
 }

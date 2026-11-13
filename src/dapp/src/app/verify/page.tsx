@@ -1,7 +1,10 @@
-"use client";
-
-import { AuditorExplorerView } from "@/components/dapp/AuditorExplorerView";
+import React, { Suspense } from "react";
+import { VerifikasiView } from "@/components/pages/VerifikasiView";
 
 export default function VerifyPage() {
-  return <AuditorExplorerView defaultTab="explorer" />;
+  return (
+    <Suspense fallback={null}>
+      <VerifikasiView />
+    </Suspense>
+  );
 }
