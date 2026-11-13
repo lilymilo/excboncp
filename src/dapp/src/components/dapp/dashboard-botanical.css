@@ -1,0 +1,188 @@
+@import "../../styles/tokens.css";
+
+/* Component utilities scoped under .xb-botanical */
+.xb-botanical {
+  background: linear-gradient(160deg, var(--canvas) 0%, var(--canvas-mid) 48%, var(--canvas-tint) 100%);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x: clip;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+.xb-botanical ::selection {
+  background-color: var(--selection-bg);
+  color: var(--ink);
+}
+
+.xb-botanical .xb-display {
+  font-family: var(--font-display);
+}
+
+.xb-botanical .xb-mono {
+  font-family: var(--font-code);
+}
+
+.xb-botanical .xb-numeric {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+
+.xb-botanical .xb-card {
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .xb-botanical .xb-card-interactive:hover {
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-hover);
+  }
+}
+
+.xb-botanical .xb-surface-tile {
+  background-color: var(--surface-soft);
+  border: 1px solid var(--line-subtle);
+  border-radius: 16px;
+}
+
+/* Financial chart container & custom tooltip styling */
+.xb-botanical .xb-financial-chart {
+  position: relative;
+  width: 100%;
+}
+
+.xb-botanical .xb-chart-tooltip {
+  background: var(--surface-elevated);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-tooltip);
+  padding: 10px 14px;
+  min-width: 180px;
+}
+
+.xb-botanical .xb-highlight-gradient {
+  background: linear-gradient(135deg, var(--forest-800) 0%, var(--forest-700) 100%);
+  color: var(--surface);
+  border-color: var(--forest-800);
+}
+
+.xb-botanical button,
+.xb-botanical a {
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease,
+    transform 120ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.xb-botanical button:active:not(:disabled),
+.xb-botanical a:active {
+  transform: scale(0.985);
+}
+
+.xb-botanical button:disabled {
+  cursor: not-allowed;
+}
+
+.xb-botanical :focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@keyframes xb-row-highlight {
+  0% {
+    background-color: var(--status-verified-bg);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.xb-botanical .xb-tx-flash {
+  animation: xb-row-highlight 1.2s ease-out 1;
+}
+
+@keyframes xb-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+.xb-botanical .xb-skeleton {
+  background-color: var(--skeleton-bg);
+  border-radius: 10px;
+  animation: xb-skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.xb-botanical .leaflet-container {
+  font-family: var(--font-ui);
+  background-color: var(--canvas-tint);
+}
+
+.xb-botanical .leaflet-control-attribution {
+  font-size: 12px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.92);
+  padding: 2px 8px;
+  border-top-left-radius: 8px;
+}
+
+.xb-botanical .leaflet-control-attribution a {
+  color: var(--forest-800);
+  text-decoration: underline;
+}
+
+.xb-botanical .leaflet-bar {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.xb-botanical .leaflet-bar a {
+  color: var(--ink);
+  background-color: var(--surface);
+  border-bottom-color: var(--line);
+  min-width: 36px;
+  min-height: 36px;
+  line-height: 36px;
+}
+
+.xb-botanical .leaflet-bar a:hover {
+  background-color: var(--surface-soft);
+  color: var(--forest-800);
+}
+
+.xb-botanical-tooltip {
+  background-color: var(--surface) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--shadow-tooltip) !important;
+  padding: 8px 12px !important;
+  font-size: 13.5px !important;
+  line-height: 1.4 !important;
+}
+
+.xb-botanical-tooltip::before {
+  border-top-color: var(--surface) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xb-botanical *,
+  .xb-botanical *::before,
+  .xb-botanical *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}

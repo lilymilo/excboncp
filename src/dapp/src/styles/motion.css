@@ -1,0 +1,295 @@
+/* Shared motion system. CSS-first: transform/opacity only, one source of timing.
+   Every primitive in components/motion builds on these tokens — pages must not
+   declare their own durations or easings. */
+
+:root {
+  --motion-press: 90ms;
+  --motion-micro: 140ms;
+  --motion-standard: 240ms;
+  --motion-panel: 320ms;
+  --motion-chart: 600ms;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  --press-scale: 0.975;
+}
+
+/* ---------- Pressable ---------- */
+.xbm-pressable {
+  position: relative;
+  transition: transform var(--motion-press) var(--ease-out),
+    background-color var(--motion-micro) var(--ease-out),
+    border-color var(--motion-micro) var(--ease-out),
+    box-shadow var(--motion-micro) var(--ease-out),
+    color var(--motion-micro) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.xbm-pressable:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: scale(var(--press-scale));
+}
+
+.xbm-pressable:focus-visible {
+  outline: 2px solid var(--focus, #1f5a94);
+  outline-offset: 2px;
+}
+
+/* ---------- Reveal ---------- */
+.xbm-reveal {
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  transition: opacity var(--motion-standard) var(--ease-out),
+    transform var(--motion-standard) var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.xbm-reveal[data-visible="true"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+.xbm-reveal[data-axis="x"] {
+  transform: translate3d(-12px, 0, 0);
+}
+
+.xbm-reveal[data-axis="x"][data-visible="true"] {
+  transform: translate3d(0, 0, 0);
+}
+
+.xbm-reveal[data-axis="none"] {
+  transform: none;
+}
+
+/* ---------- Segmented ---------- */
+.xbm-segmented {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--surface-soft, #f5f9f3);
+  border: 1px solid var(--line, #d8e5d4);
+}
+
+.xbm-segmented-thumb {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  border-radius: 999px;
+  background: var(--surface, #fff);
+  box-shadow: 0 1px 3px rgba(20, 38, 26, 0.1);
+  transition: transform var(--motion-standard) var(--ease-spring),
+    width var(--motion-standard) var(--ease-out);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.xbm-segmented-item {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-muted, #4a5e4f);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--motion-micro) var(--ease-out),
+    transform var(--motion-press) var(--ease-out);
+}
+
+.xbm-segmented-item[aria-selected="true"] {
+  color: var(--forest-800, #1f4d2e);
+}
+
+.xbm-segmented-item:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.xbm-segmented-item:focus-visible {
+  outline: 2px solid var(--focus, #1f5a94);
+  outline-offset: 1px;
+}
+
+/* ---------- PulseDot ---------- */
+@keyframes xbm-pulse {
+  0% { transform: scale(0.85); opacity: 0.55; }
+  70% { transform: scale(1.9); opacity: 0; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+.xbm-pulse-dot {
+  position: relative;
+  display: inline-flex;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: currentColor;
+  flex: none;
+}
+
+.xbm-pulse-dot[data-pulsing="true"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  border: 2px solid currentColor;
+  animation: xbm-pulse 2.2s var(--ease-out) infinite;
+}
+
+/* ---------- Shake ---------- */
+@keyframes xbm-shake {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  20% { transform: translate3d(-4px, 0, 0); }
+  40% { transform: translate3d(4px, 0, 0); }
+  60% { transform: translate3d(-3px, 0, 0); }
+  80% { transform: translate3d(3px, 0, 0); }
+}
+
+.xbm-shake {
+  animation: xbm-shake var(--motion-standard) var(--ease-in-out);
+}
+
+.xbm-shake[data-shake-trigger] {
+  animation: none;
+}
+
+/* ---------- Sheet ---------- */
+@keyframes xbm-scrim-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes xbm-sheet-in {
+  from { opacity: 0; transform: translate3d(0, 16px, 0) scale(0.99); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes xbm-sheet-in-right {
+  from { opacity: 0.4; transform: translate3d(100%, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+.xbm-sheet-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: var(--overlay-scrim, rgba(20, 38, 26, 0.4));
+  backdrop-filter: blur(2px);
+  animation: xbm-scrim-in var(--motion-standard) var(--ease-out);
+}
+
+.xbm-sheet-content {
+  position: fixed;
+  z-index: 61;
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #d8e5d4);
+  box-shadow: 0 24px 64px -24px rgba(20, 38, 26, 0.35);
+  animation: xbm-sheet-in var(--motion-panel) var(--ease-out);
+}
+
+.xbm-sheet-content[data-side="center"] {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(92vw, 32rem);
+  border-radius: 20px;
+  padding: 24px;
+}
+
+.xbm-sheet-content[data-side="right"] {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(92vw, 26rem);
+  border-radius: 20px 0 0 20px;
+  animation: xbm-sheet-in-right var(--motion-panel) var(--ease-out);
+  overflow-y: auto;
+}
+
+.xbm-sheet-content[data-side="bottom"] {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 20px 20px 0 0;
+  padding: 12px 20px 24px;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+
+.xbm-sheet-handle {
+  width: 40px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--line-strong, #c2d4bc);
+  margin: 4px auto 12px;
+}
+
+/* ---------- RouteTransition ---------- */
+@keyframes xbm-route-in {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+.xbm-route {
+  animation: xbm-route-in var(--motion-standard) var(--ease-out);
+}
+
+/* ---------- LiveNumber ---------- */
+.xbm-livenumber {
+  font-variant-numeric: tabular-nums;
+  transition: color var(--motion-micro) var(--ease-out);
+}
+
+.xbm-livenumber[data-direction="up"] {
+  color: var(--status-verified-ink, #17692f);
+}
+
+.xbm-livenumber[data-direction="down"] {
+  color: var(--status-dispute-ink, #9a4400);
+}
+
+/* ---------- Chart draw ---------- */
+@keyframes xbm-chart-draw {
+  from { stroke-dashoffset: var(--draw-length, 1200); }
+  to { stroke-dashoffset: 0; }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .xbm-reveal,
+  .xbm-reveal[data-axis] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .xbm-pressable,
+  .xbm-pressable:active,
+  .xbm-segmented-item,
+  .xbm-segmented-thumb,
+  .xbm-livenumber {
+    transition: none;
+    transform: none;
+  }
+
+  .xbm-pulse-dot[data-pulsing="true"]::after,
+  .xbm-shake,
+  .xbm-route,
+  .xbm-sheet-scrim,
+  .xbm-sheet-content {
+    animation: none;
+  }
+}

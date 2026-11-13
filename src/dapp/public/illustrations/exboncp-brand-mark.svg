@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Organic layered forest tree emblem matching EXBON CP Botanical Identity -->
+  <path d="M32 6L21 20H27L16 33H24L13 46H29V56H35V46H51L40 33H48L37 20H43L32 6Z" fill="#1F4D2E"/>
+  <path d="M32 10L24 20H30L20 32H28L19 43H32V10Z" fill="#2E6B3F"/>
+  <path d="M32 56C43 56 50 51 52 44" stroke="#8FCB97" stroke-width="3" stroke-linecap="round"/>
+  <path d="M12 44C14 51 21 56 32 56" stroke="#8FCB97" stroke-width="3" stroke-linecap="round"/>
+</svg>
+

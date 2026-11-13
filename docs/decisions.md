@@ -20,6 +20,7 @@
 | **ADR-010** | Canonical JSON and Server-Side Ledger Verification | Accepted | 2026-11-09 | Revand |
 | **ADR-011** | EAS Attestation Anchoring for Ledger Integrity (Day 3) | Accepted + bug fixes | 2026-11-09 | Revand |
 | **ADR-012** | Human-in-the-Loop Auditor Approval (`POST /approve`) and Live Base Sepolia Anchoring (Day 4) | Accepted | 2026-11-10 | Revand |
+| **ADR-013** | Soft Botanical Visual System Scoped to Dashboard (L16) | Accepted | 2026-11-12 | Frontend Visual System |
 
 ---
 
@@ -295,3 +296,9 @@ Base Sepolia (Chain ID `84532`).
 - **Positive:** Complete end-to-end Diagram 8C compliance with graceful offline/RPC fallback.
 - **Positive:** Real, publicly verifiable Base Sepolia Schema UID and Attestation UID on BaseScan and EAS Scan.
 - **Positive:** Full compatibility across `ai_pipeline`, `api/economy`, `server/market`, and `server/ledger`.
+
+---
+
+## ADR-013: Soft Botanical Visual System Scoped to Dashboard (L16)
+
+- **12 Nov 2026 | Frontend Visual System:** Implemented the Soft Botanical Intelligence Dashboard (`#EEF5EC` pale mint canvas, `#FFFFFF` rounded cards, `--forest-800`->`--forest-700` highlight gradient, `--seal-600` cryptographic seals, self-hosted Fontsource `Sora`, `Geist Sans`, and `Geist Mono`, plus local orangutan mascot & forest canopy illustrations) scoped strictly under `.xb-botanical` on `/app` (`L16`), matching `docs/referensi-dashboard-exboncp.png` while preserving `/`, `/login`, `/register`, and existing DApp routes.

@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "antislop": "github:miqdadbadjuber/anti-slop"
+  }
+}

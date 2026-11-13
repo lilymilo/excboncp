@@ -1,0 +1,75 @@
+/* Soft Botanical design tokens scoped to .xb-botanical.
+   Preserves landing (/), /login, /register, and non-DApp routes untouched. */
+.xb-botanical {
+  color-scheme: light;
+
+  /* Background & surfaces */
+  --canvas: #eef5ec;
+  --canvas-mid: #f3f8f1;
+  --canvas-tint: #e3efe1;
+  --surface: #ffffff;
+  --surface-soft: #f5f9f3;
+  --surface-muted: #f5f9f3;
+  --surface-raised: #ffffff;
+  --surface-elevated: #ffffff;
+
+  /* Borders & dividers */
+  --line: #d8e5d4;
+  --line-strong: #c2d4bc;
+  --line-subtle: #e6efe3;
+
+  /* Typography & ink */
+  --ink: #14261a;
+  --ink-muted: #4a5e4f;
+  --ink-dim: #728477;
+
+  /* Primary botanical & cryptographic seal accents */
+  --leaf-300: #8fcb97;
+  --leaf-100: #e2f2e5;
+  --forest-700: #2e6b3f;
+  --forest-800: #1f4d2e;
+  --forest-900: #143520;
+  --seal-600: #1f5a94;
+  --seal-700: #174673;
+  --seal-100: #e3eef9;
+  --seal-200: #d1e3f6;
+  --seal-line: #bdd6ee;
+  --focus: #1f5a94;
+
+  /* Semantic state pairs (>= 4.5:1 contrast) */
+  --status-verified-ink: #17692f;
+  --status-verified-bg: #e2f3e6;
+  --status-verified-line: #a5d3ae;
+  --status-warning-ink: #7a5600;
+  --status-warning-bg: #fff0c7;
+  --status-warning-line: #ebd18a;
+  --status-dispute-ink: #9a4400;
+  --status-dispute-bg: #ffe5d0;
+  --status-dispute-line: #efc199;
+  --status-blocked-ink: #b3261e;
+  --status-blocked-bg: #fde3e1;
+  --status-blocked-line: #f0b4ae;
+
+  /* Market & telemetry chart tokens */
+  --chart-line: #245e35;
+  --chart-line-active: #1f4d2e;
+  --chart-area-top: rgba(46, 107, 63, 0.22);
+  --chart-area-mid: rgba(143, 203, 151, 0.06);
+  --chart-area-bottom: rgba(143, 203, 151, 0);
+  --chart-grid: #e4efe1;
+
+  /* Elevation & interaction helpers */
+  --shadow-card: 0 2px 12px rgba(20, 38, 26, 0.04);
+  --shadow-hover: 0 8px 24px rgba(31, 77, 46, 0.07);
+  --shadow-tooltip: 0 10px 28px rgba(20, 38, 26, 0.1);
+  --selection-bg: #cde8d2;
+  --skeleton-bg: #e3ede0;
+  --overlay-scrim: rgba(20, 38, 26, 0.4);
+
+  /* Typography families */
+  --font-display: "Sora", "Geist Sans", system-ui, sans-serif;
+  --font-ui: "Geist Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-code: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+
