@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { normalizeUserRole, type UserRole } from "@/context/DappContext";
 import { useDashboardState } from "./useDashboardStore";
+import { BotanicalAppShell } from "./BotanicalAppShell";
 import "./dashboard.css";
 import {
   AccountDropdown,
@@ -98,6 +99,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { user, logout, switchDemoRole, overrides, resetSimulation } = useDashboardState();
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  if (pathname === "/app") {
+    return <BotanicalAppShell>{children}</BotanicalAppShell>;
+  }
 
   const normalizedRole = normalizeUserRole(user?.role, user?.email);
   const roleLabel = ROLE_LABEL[normalizedRole] ?? "Tamu";
