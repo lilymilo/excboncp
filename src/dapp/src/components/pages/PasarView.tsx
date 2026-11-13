@@ -28,9 +28,10 @@ import {
   calculateSettlement,
   normalizeUserRole,
 } from "@/context/DappContext";
-import { toCanonicalStatus } from "@/lib/dashboard-helpers";
+import { toCanonicalStatus, formatWibTime } from "@/lib/dashboard-helpers";
 import { buildScreenerData, getApiBaseUrl, safeJsonFetch } from "@/lib/exbon-api";
 import { formatIdr, formatNumber } from "@/components/dapp/phantom-ui";
+import { LiveNumber } from "@/components/motion";
 
 const PARCEL_TREND_LABELS = ["H-6", "H-5", "H-4", "H-3", "H-2", "Kemarin", "Hari ini"];
 
@@ -378,45 +379,45 @@ export function PasarView({ initialParcelId }: { initialParcelId?: string }) {
                           </div>
                         </div>
 
-                        <div className="divide-y divide-[var(--line)] rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] px-4 text-[15.5px]">
-                          <div className="flex items-center justify-between py-3">
+                        <div className="divide-y divide-[var(--line)] rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] px-4 text-[15px]">
+                          <div className="flex items-center justify-between py-2.5">
                             <span className="text-[var(--ink-muted)]">Harga referensi simulasi per unit</span>
                             <span className="xb-numeric font-semibold text-[var(--ink)]">
                               {formatIdr(PRICE_PER_TON)}
                             </span>
                           </div>
-                          <div className="flex items-center justify-between py-3">
+                          <div className="flex items-center justify-between py-2.5">
                             <span className="text-[var(--ink-muted)]">Nilai kotor ({effectiveUnits} unit)</span>
                             <span className="xb-numeric font-bold text-[var(--ink)]">
-                              {formatIdr(displaySplit.gross)}
+                              <LiveNumber value={displaySplit.gross} format={formatIdr} />
                             </span>
                           </div>
-                          <div className="flex items-center justify-between py-3">
+                          <div className="flex items-center justify-between py-2.5">
                             <span className="text-[var(--ink-muted)]">Biaya operasional sandbox (2%)</span>
                             <span className="xb-numeric font-semibold text-[var(--seal-600)]">
-                              - {formatIdr(displaySplit.fee)}
+                              - <LiveNumber value={displaySplit.fee} format={formatIdr} />
                             </span>
                           </div>
-                          <div className="flex items-center justify-between py-3">
+                          <div className="flex items-center justify-between py-2.5">
                             <span className="font-semibold text-[var(--ink)]">Hasil bersih terbagi</span>
                             <span className="xb-numeric font-bold text-[var(--ink)]">
-                              {formatIdr(displaySplit.net)}
+                              <LiveNumber value={displaySplit.net} format={formatIdr} />
                             </span>
                           </div>
-                          <div className="flex items-center justify-between py-3">
+                          <div className="flex items-center justify-between py-2.5">
                             <span className="font-semibold text-[var(--status-verified-ink)]">
                               Alokasi Komunitas (60%)
                             </span>
                             <span className="xb-numeric font-bold text-[var(--status-verified-ink)]">
-                              {formatIdr(displaySplit.community)}
+                              <LiveNumber value={displaySplit.community} format={formatIdr} />
                             </span>
                           </div>
-                          <div className="flex items-center justify-between py-3">
+                          <div className="flex items-center justify-between py-2.5">
                             <span className="font-semibold text-[var(--forest-800)]">
                               Alokasi Pengelola (40%)
                             </span>
                             <span className="xb-numeric font-bold text-[var(--forest-800)]">
-                              {formatIdr(displaySplit.manager)}
+                              <LiveNumber value={displaySplit.manager} format={formatIdr} />
                             </span>
                           </div>
                         </div>
@@ -484,8 +485,17 @@ export function PasarView({ initialParcelId }: { initialParcelId?: string }) {
                         Kondisi sensor aktif ({parcelSensors[0]?.sensor_id ?? "S-001"}):
                       </p>
                       <p className="xb-numeric mt-0.5 text-[var(--ink-muted)]">
-                        Suhu {parcelSensors[0]?.temperature ?? 27.4} °C · Kelembapan tanah{" "}
-                        {parcelSensors[0]?.soil_moisture ?? 58}%
+                        Suhu{" "}
+                        <LiveNumber
+                          value={parcelSensors[0]?.temperature ?? 27.4}
+                          format={(v) => v.toFixed(1)}
+                        />{" "}
+                        °C · Kelembapan tanah{" "}
+                        <LiveNumber
+                          value={parcelSensors[0]?.soil_moisture ?? 58}
+                          format={(v) => String(Math.round(v))}
+                        />
+                        %
                       </p>
                     </div>
 
@@ -505,7 +515,7 @@ export function PasarView({ initialParcelId }: { initialParcelId?: string }) {
                           <button
                             type="button"
                             onClick={triggerFireScenario}
-                            className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-[var(--status-dispute-ink)] px-4 text-[14.5px] font-semibold text-white hover:opacity-90"
+                            className="inline-flex min-h-[42px] items-center gap-2 rounded-full bg-[var(--status-dispute-ink)] px-4 text-[14px] font-semibold text-white hover:opacity-90"
                           >
                             <Flame className="h-4 w-4" aria-hidden="true" />
                             <span>Putar skenario api</span>
@@ -513,7 +523,7 @@ export function PasarView({ initialParcelId }: { initialParcelId?: string }) {
                           <button
                             type="button"
                             onClick={resetParcelScenario}
-                            className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 text-[14.5px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-soft)]"
+                            className="inline-flex min-h-[42px] items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 text-[14px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-soft)]"
                           >
                             <RotateCcw className="h-4 w-4 text-[var(--forest-700)]" aria-hidden="true" />
                             <span>Pulihkan normal</span>
@@ -524,6 +534,38 @@ export function PasarView({ initialParcelId }: { initialParcelId?: string }) {
                           Uji skenario sensor hanya aktif untuk peran Pengelola Hutan atau Auditor.
                         </p>
                       )}
+                    </div>
+
+                    <div className="mt-4 border-t border-[var(--line-subtle)] pt-3.5">
+                      <div className="flex items-center justify-between text-[13px] font-semibold text-[var(--ink)]">
+                        <span>Riwayat Alokasi Terbaru ({selected.id})</span>
+                        <Link href="/langsung" className="text-[var(--forest-700)] hover:underline">
+                          Umpan langsung
+                        </Link>
+                      </div>
+                      <div className="mt-2 space-y-1.5">
+                        {transactions
+                          .filter((t) => t.parcel_id === selected.id)
+                          .slice(0, 2)
+                          .map((t) => (
+                            <div
+                              key={t.tx_id}
+                              className="flex items-center justify-between rounded-xl border border-[var(--line-subtle)] bg-[var(--surface)] px-3 py-2 text-[13px]"
+                            >
+                              <span className="xb-mono font-medium text-[var(--ink-muted)]">
+                                {t.tx_id} · {formatWibTime(t.timestamp)}
+                              </span>
+                              <span className="xb-numeric font-bold text-[var(--status-verified-ink)]">
+                                +{t.volume_tco2e} tCO2e ({formatIdr(t.gross_amount_idr)})
+                              </span>
+                            </div>
+                          ))}
+                        {transactions.filter((t) => t.parcel_id === selected.id).length === 0 && (
+                          <p className="rounded-xl border border-[var(--line-subtle)] bg-[var(--surface)] px-3 py-2 text-[12.5px] text-[var(--ink-muted)]">
+                            Belum ada transaksi tercatat karena unit lahan sedang ditahan.
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </BotanicalCard>
                 </div>

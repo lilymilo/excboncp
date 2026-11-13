@@ -66,10 +66,23 @@
   --skeleton-bg: #e3ede0;
   --overlay-scrim: rgba(20, 38, 26, 0.4);
 
+  /* Sunken wells (inputs, tab tracks) and the one deep panel allowed per screen */
+  --surface-sunken: #e7f0e4;
+  --surface-deep: #1f4d2e;
+  --on-deep: #eaf4ea;
+  --on-deep-muted: #b6cfba;
+  --deep-line: rgba(255, 255, 255, 0.14);
+
+  /* Series colours stay separable without relying on hue alone */
+  --chart-1: #1f4d2e;
+  --chart-2: #1f5a94;
+  --chart-3: #8fcb97;
+  --chart-4: #b98a2a;
+
   /* Typography families */
-  --font-display: "Sora", "Geist Sans", system-ui, sans-serif;
-  --font-ui: "Geist Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-code: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Source Serif 4 Variable", Georgia, serif;
+  --font-ui: "Atkinson Hyperlegible Next Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-code: "Atkinson Hyperlegible Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
 

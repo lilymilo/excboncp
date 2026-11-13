@@ -18,6 +18,7 @@ import { ZONES_CATALOG } from "@/lib/copy";
 import { mapParcelZoneId } from "@/lib/exbon-api";
 import { formatWibDateTime, toCanonicalStatus } from "@/lib/dashboard-helpers";
 import { formatIdr, formatNumber } from "@/components/dapp/phantom-ui";
+import { LiveNumber } from "@/components/motion";
 
 export function ZonaView({ initialZoneId }: { initialZoneId?: string }) {
   const router = useRouter();
@@ -124,38 +125,42 @@ export function ZonaView({ initialZoneId }: { initialZoneId?: string }) {
 
         <PageStatePanel state={pageState} emptyTitle="Belum ada catatan untuk zona ini">
           <div className="grid gap-4 sm:grid-cols-3">
-            <BotanicalCard className="flex flex-col justify-between p-5">
-              <p className="text-[14px] font-medium text-[var(--ink-muted)]">Unit terpakai zona</p>
-              <p className="xb-display xb-numeric mt-2 text-[28px] font-bold text-[var(--status-verified-ink)]">
-                {formatNumber(stats.usedUnits)}{" "}
-                <span className="text-[15px] font-medium text-[var(--ink-muted)]">tCO2e</span>
+            <BotanicalCard interactive className="flex flex-col justify-between p-4 sm:p-5">
+              <p className="text-[13.5px] font-medium text-[var(--ink-muted)]">Unit terpakai zona</p>
+              <p className="xb-display xb-numeric mt-1.5 text-[26px] font-bold text-[var(--status-verified-ink)]">
+                <LiveNumber
+                  value={stats.usedUnits}
+                  format={(v) => formatNumber(Math.round(v))}
+                />{" "}
+                <span className="text-[14px] font-medium text-[var(--ink-muted)]">tCO2e</span>
               </p>
-              <p className="mt-1.5 text-[13.5px] text-[var(--ink-muted)]">
+              <p className="mt-1 text-[13px] text-[var(--ink-muted)]">
                 Berasal dari lahan terverifikasi
               </p>
             </BotanicalCard>
 
-            <BotanicalCard className="flex flex-col justify-between p-5">
-              <p className="text-[14px] font-medium text-[var(--ink-muted)]">
+            <BotanicalCard interactive className="flex flex-col justify-between p-4 sm:p-5">
+              <p className="text-[13.5px] font-medium text-[var(--ink-muted)]">
                 Nilai simulasi terserap
               </p>
-              <p className="xb-display xb-numeric mt-2 text-[26px] font-bold text-[var(--ink)]">
-                {formatIdr(stats.grossIdr)}
+              <p className="xb-display xb-numeric mt-1.5 text-[24px] font-bold text-[var(--ink)]">
+                <LiveNumber value={stats.grossIdr} format={formatIdr} />
               </p>
-              <p className="mt-1.5 text-[13.5px] text-[var(--ink-muted)]">
-                Bagian komunitas {formatIdr(stats.communityIdr)}
+              <p className="mt-1 text-[13px] text-[var(--ink-muted)]">
+                Bagian komunitas{" "}
+                <LiveNumber value={stats.communityIdr} format={formatIdr} />
               </p>
             </BotanicalCard>
 
-            <BotanicalCard className="flex flex-col justify-between p-5">
-              <p className="text-[14px] font-medium text-[var(--ink-muted)]">
+            <BotanicalCard interactive className="flex flex-col justify-between p-4 sm:p-5">
+              <p className="text-[13.5px] font-medium text-[var(--ink-muted)]">
                 Status penyaluran zona
               </p>
-              <p className="xb-display mt-2 flex items-center gap-2 text-[22px] font-bold text-[var(--status-verified-ink)]">
+              <p className="xb-display mt-1.5 flex items-center gap-2 text-[20px] font-bold text-[var(--status-verified-ink)]">
                 <CheckCircle2 className="h-5 w-5 shrink-0" aria-hidden="true" />
                 <span>{zone.kind}</span>
               </p>
-              <p className="mt-1.5 text-[13.5px] text-[var(--ink-muted)]">
+              <p className="mt-1 text-[13px] text-[var(--ink-muted)]">
                 {zoneParcels.length} lahan penyuplai terhubung · {zone.jurisdiction}
               </p>
             </BotanicalCard>

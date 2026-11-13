@@ -37,8 +37,9 @@ mosquitto/log/
 *.db
 *.sqlite
 *.sqlite3
-data/
-!data/.gitkeep
+/data/
+!/data/.gitkeep
+!src/dapp/public/data/**
 ai_pipeline/data/*.jsonl
 ai_pipeline/data/*.html
 !ai_pipeline/data/gee_cache.json

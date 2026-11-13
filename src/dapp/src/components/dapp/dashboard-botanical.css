@@ -37,17 +37,246 @@
   transition: border-color 160ms ease, box-shadow 160ms ease;
 }
 
+/* ── Beranda: hero, KPI tiles, and the single deep panel ───────── */
+
+.xb-botanical .xb-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.xb-botanical .xb-hero-media {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: right center;
+  opacity: 0.55;
+  -webkit-mask-image: linear-gradient(to right, transparent 32%, #000 82%);
+  mask-image: linear-gradient(to right, transparent 32%, #000 82%);
+}
+
+.xb-botanical .xb-eyebrow {
+  font-family: var(--font-code);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.xb-botanical .xb-hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.15rem + 2.1vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.xb-botanical .xb-hero-sub {
+  margin-top: 0.45rem;
+  max-width: 46ch;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-muted);
+}
+
+.xb-botanical .xb-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1.1rem;
+  border-radius: 12px;
+  background: var(--forest-800);
+  color: #fff;
+  font-size: 14.5px;
+  font-weight: 600;
+}
+
+.xb-botanical .xb-hero-cta:hover {
+  background: var(--forest-900);
+}
+
+.xb-botanical .xb-hero-cta:active {
+  transform: scale(0.985);
+}
+
+.xb-botanical .xb-kpi {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 148px;
+  padding: 0.95rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .xb-botanical a:hover > .xb-kpi-body .xb-kpi-value {
+    color: var(--forest-700);
+  }
+}
+
+.xb-botanical .xb-kpi-label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.xb-botanical .xb-kpi-value {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-size: clamp(1.3rem, 1.1rem + 0.4vw, 1.55rem);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--ink);
+  transition: color 140ms ease;
+}
+
+.xb-botanical .xb-kpi-unit {
+  margin-left: 0.25rem;
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.xb-botanical .xb-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: var(--surface-sunken);
+  font-family: var(--font-code);
+  font-size: 11px;
+  letter-spacing: 0.01em;
+  color: var(--ink-muted);
+}
+
+.xb-botanical .xb-deep {
+  border: 1px solid var(--surface-deep);
+  border-radius: 16px;
+  background: var(--surface-deep);
+  color: var(--on-deep);
+}
+
+.xb-botanical .xb-deep .xb-deep-label {
+  color: var(--on-deep-muted);
+}
+
+.xb-botanical .xb-deep .xb-deep-line {
+  border-color: var(--deep-line);
+}
+
+/* Section heading rhythm shared by every Beranda panel */
+.xb-botanical .xb-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.xb-botanical .xb-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 16.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.xb-botanical .xb-link-quiet {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.xb-botanical .xb-link-quiet:hover {
+  color: var(--forest-700);
+}
+
+/* Ledger + trade rows keep a hairline rail instead of a boxed table */
+.xb-botanical .xb-rail {
+  position: relative;
+}
+
+.xb-botanical .xb-rail::before {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 1px;
+  background: var(--line);
+}
+
+.xb-botanical .xb-row {
+  border-radius: 12px;
+  transition: background-color 140ms ease;
+}
+
+.xb-botanical .xb-row:hover {
+  background-color: var(--surface-soft);
+}
+
 @media (hover: hover) and (pointer: fine) {
   .xb-botanical .xb-card-interactive:hover {
     border-color: var(--line-strong);
     box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
   }
+
+  .xb-botanical .xb-kpi:hover {
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+  }
+
+  .xb-botanical .xb-surface-tile:hover {
+    border-color: var(--line);
+  }
+}
+
+.xb-botanical .xb-card-interactive,
+.xb-botanical .xb-kpi,
+.xb-botanical .xb-surface-tile {
+  transition:
+    border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 160ms ease;
 }
 
 .xb-botanical .xb-surface-tile {
   background-color: var(--surface-soft);
   border: 1px solid var(--line-subtle);
   border-radius: 16px;
+}
+
+.xb-botanical table tbody tr {
+  transition: background-color 140ms ease;
 }
 
 /* Financial chart container & custom tooltip styling */

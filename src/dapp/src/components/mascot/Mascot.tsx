@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import type { LottieHandle } from "lottie-react";
+import orangutanMascotData from "../../../public/animations/orangutan-mascot.json";
 
 const Lottie = dynamic(() => import("lottie-react").then((m) => m.Lottie), {
   ssr: false,
@@ -45,27 +46,18 @@ function BotanicalPosePlaceholder({
       role={decorative ? undefined : "img"}
       aria-hidden={decorative ? true : undefined}
       aria-label={decorative ? undefined : alt}
-      className={`grid shrink-0 place-items-center rounded-full border border-[#D8E5D4] bg-[#8FCB97]/45 select-none ${className}`}
+      className={`relative shrink-0 overflow-hidden rounded-2xl border border-[#D8E5D4] bg-[#EEF5EC] p-1 select-none ${className}`}
     >
-      <svg
-        viewBox="0 0 64 64"
-        width={Math.round(size * 0.56)}
-        height={Math.round(size * 0.56)}
-        aria-hidden="true"
-      >
-        <path
-          d="M49 15C33 15 20 26 17 44c14-3 28-14 32-29Z"
-          fill="#2E6B3F"
-          fillOpacity="0.88"
-        />
-        <path
-          d="M16 48c7-9 17-18 28-26"
-          fill="none"
-          stroke="#14261A"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        />
-      </svg>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/illustrations/orangutan-mascot.svg"
+        alt={alt}
+        width={size}
+        height={size}
+        loading="eager"
+        decoding="async"
+        className="h-full w-full object-contain"
+      />
     </div>
   );
 }
@@ -85,6 +77,7 @@ export function Mascot({
   const decorative = alt.trim().length === 0;
   const lottieRef = useRef<LottieHandle>(null);
   const [mounted, setMounted] = useState(false);
+  const [lottieReady, setLottieReady] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [activeSegment, setActiveSegment] = useState<readonly [number, number]>([0, 120]);
   const [isLooping, setIsLooping] = useState(true);
@@ -212,16 +205,7 @@ export function Mascot({
       title="Klik untuk menyapa maskot"
       className={`group relative mx-auto shrink-0 cursor-pointer overflow-hidden select-none transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] ${className}`}
     >
-      {mounted && !prefersReducedMotion ? (
-        <Lottie
-          src="/animations/orangutan-mascot.json"
-          lottieRef={lottieRef}
-          loop={isLooping}
-          autoplay={true}
-          segment={activeSegment}
-          className="h-full w-full"
-        />
-      ) : (
+      {!lottieReady && (
         /* eslint-disable-next-line @next/next/no-img-element */
         <img
           src="/illustrations/orangutan-mascot.svg"
@@ -230,7 +214,22 @@ export function Mascot({
           height={Math.round(size * 0.94)}
           loading="eager"
           decoding="async"
-          className="h-full w-full object-contain"
+          className="pointer-events-none absolute inset-0 h-full w-full object-contain"
+        />
+      )}
+      {mounted && !prefersReducedMotion && (
+        <Lottie
+          src={orangutanMascotData}
+          lottieRef={lottieRef}
+          loop={isLooping}
+          autoplay={true}
+          segment={activeSegment}
+          subscriptions={{
+            ready: () => setLottieReady(true),
+          }}
+          className={`h-full w-full transition-opacity duration-200 ${
+            lottieReady ? "opacity-100" : "opacity-0"
+          }`}
         />
       )}
     </div>

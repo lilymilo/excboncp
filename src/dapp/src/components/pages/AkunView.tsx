@@ -21,8 +21,10 @@ import {
 import {
   BotanicalCard,
   BotanicalPageHeader,
+  LiveTelemetryPill,
   SimulasiBadge,
 } from "@/components/dapp/BotanicalPrimitives";
+import { LiveNumber, PulseDot } from "@/components/motion";
 import { useDashboardState } from "@/components/dapp/useDashboardStore";
 import { normalizeUserRole, type UserRole } from "@/context/DappContext";
 import { ROLE_TITLES, ZONES_CATALOG } from "@/lib/copy";
@@ -38,7 +40,7 @@ const DEMO_ROLES: { role: UserRole; hint: string }[] = [
 
 export function AkunView() {
   const router = useRouter();
-  const { user, parcels, switchDemoRole, logout, resetSimulation, overrides } =
+  const { user, parcels, sensors, switchDemoRole, logout, resetSimulation, overrides } =
     useDashboardState();
 
   const role = normalizeUserRole(user?.role, user?.email);
@@ -49,15 +51,17 @@ export function AkunView() {
 
   const linkedParcels =
     role === "community"
-      ? parcels.filter((p) => p.id === "PARCEL-A")
+      ? parcels.filter((p) => p.id === "PARCEL-A" || p.id === "PARCEL-C")
       : role === "recipient"
       ? parcels.filter((p) => mapParcelZoneId(p.id) === "ZONE-DEMO-A")
       : parcels;
 
-  const hasChanges =
-    overrides.orders.length > 0 ||
-    Object.keys(overrides.consentOverrides).length > 0 ||
-    Object.keys(overrides.verificationReviewOverrides).length > 0;
+  const changeCount =
+    overrides.orders.length +
+    Object.keys(overrides.consentOverrides).length +
+    Object.keys(overrides.verificationReviewOverrides).length;
+
+  const hasChanges = changeCount > 0;
 
   const handleConfirmLogout = async () => {
     setBusyLogout(true);
@@ -70,38 +74,95 @@ export function AkunView() {
 
   return (
     <BotanicalAppShell>
-      <div className="space-y-6">
+      <div className="space-y-4">
         <BotanicalPageHeader
           title="Akun & Peran Sesi"
           description="Ringkasan identitas aktif, cakupan lahan yang terhubung, pergantian peran uji coba, serta pengaturan keluar sesi."
-          actions={<SimulasiBadge />}
+          actions={
+            <div className="flex flex-wrap items-center gap-2">
+              <LiveTelemetryPill label="Sesi Aktif" />
+              <SimulasiBadge />
+            </div>
+          }
         />
 
         {notice && (
           <div
             role="status"
-            className="rounded-2xl border border-[var(--status-verified-line)] bg-[var(--status-verified-bg)] p-4 text-[15px] font-medium text-[var(--status-verified-ink)]"
+            className="rounded-2xl border border-[var(--status-verified-line)] bg-[var(--status-verified-bg)] p-3.5 text-[14.5px] font-medium text-[var(--status-verified-ink)]"
           >
             {notice}
           </div>
         )}
 
-        <div className="grid gap-5 lg:grid-cols-12">
-          <BotanicalCard className="flex h-full flex-col justify-between p-6 lg:col-span-7">
+        <div className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-4">
+          <BotanicalCard interactive className="p-4">
+            <p className="text-[12.5px] font-semibold text-[var(--ink-muted)]">Peran Aktif</p>
+            <p className="xb-display mt-1 text-[19px] font-bold text-[var(--ink)]">
+              {ROLE_TITLES[role].label}
+            </p>
+            <p className="mt-0.5 text-[12.5px] text-[var(--ink-muted)]">
+              {user?.name ?? "Tamu Publik"}
+            </p>
+          </BotanicalCard>
+
+          <BotanicalCard interactive className="p-4">
+            <p className="text-[12.5px] font-semibold text-[var(--ink-muted)]">Lahan Terhubung</p>
+            <p className="xb-numeric mt-1 text-[22px] font-bold text-[var(--forest-700)]">
+              <LiveNumber
+                value={linkedParcels.length}
+                format={(val: number) => `${Math.round(val)} lahan`}
+              />
+            </p>
+            <p className="mt-0.5 text-[12.5px] text-[var(--ink-muted)]">
+              Total luas{" "}
+              <LiveNumber
+                value={linkedParcels.reduce((acc, p) => acc + p.area, 0)}
+                format={(val: number) => `${Math.round(val)} ha`}
+              />
+            </p>
+          </BotanicalCard>
+
+          <BotanicalCard interactive className="p-4">
+            <p className="text-[12.5px] font-semibold text-[var(--ink-muted)]">Perubahan Sesi</p>
+            <p className="xb-numeric mt-1 text-[22px] font-bold text-[var(--ink)]">
+              <LiveNumber value={changeCount} format={(val: number) => `${Math.round(val)} aksi`} />
+            </p>
+            <p className="mt-0.5 text-[12.5px] text-[var(--ink-muted)]">
+              {hasChanges ? "Tersimpan di peramban" : "Kondisi awal sandbox"}
+            </p>
+          </BotanicalCard>
+
+          <BotanicalCard interactive className="p-4">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[12.5px] font-semibold text-[var(--ink-muted)]">Node Lapangan Aktif</p>
+              <PulseDot className="text-[var(--forest-700)]" pulsing label="Jaringan sensor aktif" />
+            </div>
+            <p className="xb-numeric mt-1 text-[22px] font-bold text-[var(--seal-700)]">
+              <LiveNumber value={sensors.length} format={(val: number) => `${Math.round(val)} sensor`} />
+            </p>
+            <p className="mt-0.5 text-[12.5px] text-[var(--ink-muted)]">
+              Sinkronisasi telemetri otomatis
+            </p>
+          </BotanicalCard>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-12">
+          <BotanicalCard className="flex h-full flex-col justify-between p-5 lg:col-span-7">
             <div>
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="flex items-start gap-3.5">
-                  <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[var(--leaf-100)] text-[var(--forest-700)]">
-                    <UserCheck className="h-7 w-7" aria-hidden="true" />
+                  <div className="grid h-13 w-13 shrink-0 place-items-center rounded-2xl bg-[var(--leaf-100)] text-[var(--forest-700)]">
+                    <UserCheck className="h-6 w-6" aria-hidden="true" />
                   </div>
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="xb-display text-[21px] font-bold text-[var(--ink)]">
+                      <h2 className="xb-display text-[20px] font-bold text-[var(--ink)]">
                         {user?.name ?? "Tamu Publik"}
                       </h2>
                       <BotanicalRoleBadge role={role} />
                     </div>
-                    <p className="xb-mono mt-1 text-[13.5px] text-[var(--ink-muted)]">
+                    <p className="xb-mono mt-0.5 text-[13px] text-[var(--ink-muted)]">
                       {user?.email ?? "Belum masuk dengan akun demonstrasi"}
                     </p>
                   </div>
@@ -110,7 +171,7 @@ export function AkunView() {
                 {isGuest ? (
                   <Link
                     href="/login"
-                    className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-[var(--forest-700)] px-5 text-[14.5px] font-semibold text-white transition hover:bg-[var(--forest-800)]"
+                    className="xbm-pressable inline-flex min-h-[40px] items-center gap-2 rounded-full bg-[var(--forest-700)] px-4 text-[13.5px] font-semibold text-white transition hover:bg-[var(--forest-800)]"
                   >
                     <LogIn className="h-4 w-4" aria-hidden="true" />
                     <span>Masuk akun</span>
@@ -119,7 +180,7 @@ export function AkunView() {
                   <button
                     type="button"
                     onClick={() => setConfirmLogoutOpen(true)}
-                    className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-[var(--status-blocked-line)] bg-[var(--status-blocked-bg)] px-5 text-[14.5px] font-semibold text-[var(--status-blocked-ink)] transition hover:brightness-95"
+                    className="xbm-pressable inline-flex min-h-[40px] items-center gap-2 rounded-full border border-[var(--status-blocked-line)] bg-[var(--status-blocked-bg)] px-4 text-[13.5px] font-semibold text-[var(--status-blocked-ink)] transition hover:brightness-95"
                   >
                     <LogOut className="h-4 w-4" aria-hidden="true" />
                     <span>Keluar dari akun</span>
@@ -127,20 +188,16 @@ export function AkunView() {
                 )}
               </div>
 
-              <div className="mt-5 rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-4">
-                <p className="text-[13.5px] font-semibold text-[var(--ink-muted)]">Wewenang peran saat ini</p>
-                <p className="mt-1 text-[15px] leading-relaxed text-[var(--ink)]">{ROLE_TITLES[role].scopeSummary}</p>
+              <div className="mt-4 rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-3.5">
+                <p className="text-[12.5px] font-semibold text-[var(--ink-muted)]">Wewenang peran saat ini</p>
+                <p className="mt-0.5 text-[14px] leading-relaxed text-[var(--ink)]">{ROLE_TITLES[role].scopeSummary}</p>
               </div>
 
-              <div className="mt-5">
-                <h3 className="xb-display text-[17px] font-bold text-[var(--ink)]">
+              <div className="mt-4">
+                <h3 className="xb-display text-[16.5px] font-bold text-[var(--ink)]">
                   Lahan & Zona Terkait
                 </h3>
-                <div
-                  className={`mt-3 grid gap-3 ${
-                    linkedParcels.length === 1 ? "grid-cols-1" : "sm:grid-cols-2"
-                  }`}
-                >
+                <div className="mt-2.5 grid gap-2.5 sm:grid-cols-2">
                   {linkedParcels.map((parcel, idx) => {
                     const zoneId = mapParcelZoneId(parcel.id);
                     const isOddTail =
@@ -151,20 +208,20 @@ export function AkunView() {
                       <Link
                         key={parcel.id}
                         href={`/peta/${parcel.id}`}
-                        className={`rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4 transition hover:bg-[var(--surface-soft)] ${
+                        className={`xbm-pressable rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 transition hover:border-[var(--forest-600)] hover:bg-[var(--surface-soft)] ${
                           isOddTail ? "sm:col-span-2" : ""
                         }`}
                       >
                         <div className="flex items-center justify-between gap-2">
-                          <span className="xb-mono text-[13.5px] font-bold text-[var(--ink)]">
+                          <span className="xb-mono text-[13px] font-bold text-[var(--ink)]">
                             {parcel.id}
                           </span>
                           <MapPin className="h-4 w-4 text-[var(--forest-700)]" aria-hidden="true" />
                         </div>
-                        <p className="mt-1 text-[15.5px] font-semibold text-[var(--ink)]">
+                        <p className="mt-1 text-[14.5px] font-semibold text-[var(--ink)]">
                           {parcel.name}
                         </p>
-                        <p className="mt-0.5 text-[13.5px] text-[var(--ink-muted)]">
+                        <p className="mt-0.5 text-[12.5px] text-[var(--ink-muted)]">
                           {ZONES_CATALOG[zoneId].name} · {parcel.area} ha
                         </p>
                       </Link>
@@ -175,8 +232,8 @@ export function AkunView() {
             </div>
 
             {hasChanges ? (
-              <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-4">
-                <p className="text-[14.5px] text-[var(--ink)]">
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-3.5">
+                <p className="text-[13.5px] text-[var(--ink)]">
                   Terdapat perubahan simulasi pada sesi peramban ini (order pasar, persetujuan,
                   atau audit).
                 </p>
@@ -186,32 +243,32 @@ export function AkunView() {
                     resetSimulation();
                     setNotice("Data simulasi sesi berhasil dikembalikan ke kondisi awal.");
                   }}
-                  className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 text-[14px] font-semibold text-[var(--ink)] transition hover:bg-[var(--leaf-100)]"
+                  className="xbm-pressable inline-flex min-h-[38px] items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)] px-3.5 text-[13.5px] font-semibold text-[var(--ink)] transition hover:bg-[var(--leaf-100)]"
                 >
                   <RotateCcw className="h-4 w-4 text-[var(--forest-700)]" aria-hidden="true" />
                   <span>Reset simulasi sesi</span>
                 </button>
               </div>
             ) : (
-              <div className="mt-5 border-t border-[var(--line-subtle)] pt-3 text-[13.5px] text-[var(--ink-muted)]">
+              <div className="mt-4 border-t border-[var(--line-subtle)] pt-3 text-[12.5px] text-[var(--ink-muted)]">
                 Sesi berada dalam kondisi awal simulasi sandbox. Perubahan persetujuan, audit, atau transaksi akan tersimpan sementara di peramban.
               </div>
             )}
           </BotanicalCard>
 
-          <BotanicalCard className="flex h-full flex-col justify-between p-6 lg:col-span-5">
+          <BotanicalCard className="flex h-full flex-col justify-between p-5 lg:col-span-5">
             <div>
               <div className="flex items-center gap-2">
                 <ShieldCheck className="h-5 w-5 text-[var(--forest-700)]" aria-hidden="true" />
-                <h2 className="xb-display text-[19px] font-bold text-[var(--ink)]">
+                <h2 className="xb-display text-[18px] font-bold text-[var(--ink)]">
                   Ganti Peran Demo Cepat
                 </h2>
               </div>
-              <p className="mt-1.5 text-[14.5px] text-[var(--ink-muted)]">
+              <p className="mt-1 text-[13.5px] text-[var(--ink-muted)]">
                 Uji alur aplikasi sebagai pihak berbeda tanpa perlu mengetik ulang kata sandi.
               </p>
 
-              <div className="mt-4 space-y-2.5">
+              <div className="mt-3 space-y-2">
                 {DEMO_ROLES.map((item) => {
                   const active = role === item.role;
                   return (
@@ -222,21 +279,21 @@ export function AkunView() {
                         switchDemoRole(item.role);
                         setNotice(`Sesi aktif beralih ke peran ${ROLE_TITLES[item.role].label}.`);
                       }}
-                      className={`flex min-h-[60px] w-full items-start justify-between gap-3 rounded-2xl border p-4 text-left transition ${
+                      className={`xbm-pressable flex min-h-[52px] w-full items-start justify-between gap-3 rounded-2xl border p-3 text-left transition ${
                         active
                           ? "border-[var(--forest-700)] bg-[var(--leaf-100)]/70"
                           : "border-[var(--line)] bg-[var(--surface)] hover:bg-[var(--surface-soft)]"
                       }`}
                     >
                       <div className="min-w-0">
-                        <p className="text-[15.5px] font-bold text-[var(--ink)]">
+                        <p className="text-[14.5px] font-bold text-[var(--ink)]">
                           {ROLE_TITLES[item.role].label}
                         </p>
-                        <p className="mt-0.5 text-[13.5px] text-[var(--ink-muted)]">{item.hint}</p>
+                        <p className="mt-0.5 text-[12.5px] text-[var(--ink-muted)]">{item.hint}</p>
                       </div>
                       {active && (
                         <CheckCircle2
-                          className="mt-1 h-5 w-5 shrink-0 text-[var(--forest-700)]"
+                          className="mt-0.5 h-4 w-4 shrink-0 text-[var(--forest-700)]"
                           aria-hidden="true"
                         />
                       )}
@@ -245,7 +302,7 @@ export function AkunView() {
                 })}
               </div>
             </div>
-            <p className="mt-4 border-t border-[var(--line-subtle)] pt-3 text-[13px] text-[var(--ink-muted)]">
+            <p className="mt-3 border-t border-[var(--line-subtle)] pt-2.5 text-[12.5px] text-[var(--ink-muted)]">
               Hak akses menu samping dan tombol aksi langsung menyesuaikan peran yang sedang dipilih.
             </p>
           </BotanicalCard>

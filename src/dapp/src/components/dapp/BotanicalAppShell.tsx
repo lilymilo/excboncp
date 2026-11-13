@@ -33,6 +33,7 @@ import { normalizeUserRole, type UserRole } from "@/context/DappContext";
 import { useDashboardState } from "./useDashboardStore";
 import { useDashboardData } from "@/lib/dashboard-api";
 import { Mascot } from "@/components/mascot/Mascot";
+import { LiveClock } from "@/components/motion";
 import "@/styles/fonts";
 import "./dashboard-botanical.css";
 
@@ -392,7 +393,7 @@ export function BotanicalAppShell({ children }: { children: React.ReactNode }) {
                         href={item.href}
                         onClick={() => setNavDrawerOpen(false)}
                         aria-current={active ? "page" : undefined}
-                        className={`flex min-h-[44px] items-center gap-3 rounded-xl px-3.5 py-2 text-[15.5px] font-medium ${
+                        className={`flex min-h-[44px] items-center gap-3 rounded-xl px-3.5 py-2 text-[15.5px] font-medium transition-all duration-150 hover:translate-x-0.5 ${
                           active
                             ? "border-l-[3px] border-[#2E6B3F] bg-[#E2F2E5] font-semibold text-[#1F4D2E]"
                             : "text-[#4A5E4F] hover:bg-[#F5F9F3] hover:text-[#14261A]"
@@ -607,7 +608,7 @@ export function BotanicalAppShell({ children }: { children: React.ReactNode }) {
                         key={item.id}
                         href={item.href}
                         aria-current={active ? "page" : undefined}
-                        className={`flex min-h-[42px] items-center gap-3 rounded-xl px-3 py-2 text-[15.5px] font-medium ${
+                        className={`flex min-h-[42px] items-center gap-3 rounded-xl px-3 py-2 text-[15.5px] font-medium transition-all duration-150 hover:translate-x-0.5 ${
                           active
                             ? "border-l-[3px] border-[#2E6B3F] bg-[#E2F2E5] font-semibold text-[#1F4D2E]"
                             : "text-[#4A5E4F] hover:bg-[#F5F9F3] hover:text-[#14261A]"
@@ -704,11 +705,24 @@ export function BotanicalAppShell({ children }: { children: React.ReactNode }) {
             </div>
 
             <div className="flex items-center gap-2">
+              <span
+                className="xbm-clock hidden items-center gap-1.5 rounded-full border border-[#D8E5D4] bg-white px-3.5 py-2 text-[13.5px] font-semibold text-[#14261A] shadow-xs lg:inline-flex"
+                aria-label="Jam WIB"
+              >
+                <span
+                  aria-hidden="true"
+                  className="relative flex h-2 w-2"
+                >
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#2E6B3F] opacity-55" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-[#2E6B3F]" />
+                </span>
+                <LiveClock className="xb-numeric text-[13.5px]" />
+              </span>
               <button
                 type="button"
                 aria-label="Buka panduan Bantuan"
                 onClick={() => setHelpOpen(true)}
-                className="grid h-11 w-11 place-items-center rounded-full border border-[#D8E5D4] bg-white text-[#14261A] shadow-xs hover:bg-[#F5F9F3]"
+                className="grid h-11 w-11 place-items-center rounded-full border border-[#D8E5D4] bg-white text-[#14261A] shadow-xs hover:bg-[#F5F9F3] active:scale-95"
               >
                 <HelpCircle className="h-5 w-5 text-[#2E6B3F]" aria-hidden="true" />
               </button>
@@ -717,13 +731,14 @@ export function BotanicalAppShell({ children }: { children: React.ReactNode }) {
                 type="button"
                 aria-label="Kabar kejadian terbaru"
                 onClick={() => setKabarOpen(true)}
-                className="relative grid h-11 w-11 place-items-center rounded-full border border-[#D8E5D4] bg-white text-[#14261A] shadow-xs hover:bg-[#F5F9F3]"
+                className="relative grid h-11 w-11 place-items-center rounded-full border border-[#D8E5D4] bg-white text-[#14261A] shadow-xs hover:bg-[#F5F9F3] active:scale-95"
               >
                 <Bell className="h-5 w-5 text-[#14261A]" aria-hidden="true" />
                 {kabarEvents.length > 0 && (
                   <span
                     aria-hidden="true"
-                    className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-[#B3261E]"
+                    className="absolute right-2.5 top-2.5 h-2 w-2 animate-ping rounded-full bg-[#B3261E]"
+                    style={{ animationDuration: "1.6s" }}
                   />
                 )}
               </button>
@@ -809,7 +824,12 @@ export function BotanicalAppShell({ children }: { children: React.ReactNode }) {
             </div>
           </header>
 
-          <main id="main-konten" tabIndex={-1} className="min-w-0 flex-1 focus:outline-none">
+          <main
+            id="main-konten"
+            tabIndex={-1}
+            key={pathname}
+            className="xbm-route min-w-0 flex-1 focus:outline-none"
+          >
             {children}
           </main>
         </div>
@@ -832,8 +852,8 @@ export function BotanicalAppShell({ children }: { children: React.ReactNode }) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex min-h-[56px] flex-col items-center justify-center gap-0.5 text-[12px] font-medium ${
-                active ? "font-semibold text-[#1F4D2E]" : "text-[#4A5E4F]"
+              className={`flex min-h-[56px] flex-col items-center justify-center gap-0.5 text-[12px] font-medium transition-all duration-150 active:scale-95 ${
+                active ? "font-semibold text-[#1F4D2E]" : "text-[#4A5E4F] hover:text-[#14261A]"
               }`}
             >
               <Icon className="h-5 w-5" aria-hidden="true" />

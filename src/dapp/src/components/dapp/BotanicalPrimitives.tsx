@@ -19,10 +19,12 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import type { CanonicalStatus } from "@/lib/dashboard-helpers";
-import type { ConsentStatus } from "@/context/DappContext";
+import { normalizeUserRole, type ConsentStatus, type UserRole } from "@/context/DappContext";
 import { APP_SIMULATION_PILL, CONSENT_DISPLAY, STATUS_DISPLAY } from "@/lib/copy";
 import { HashSeal } from "@/components/dapp/HashSeal";
 import { Mascot } from "@/components/mascot/Mascot";
+import { LiveClock, PulseDot } from "@/components/motion";
+import { useDashboardState } from "@/components/dapp/useDashboardStore";
 
 export function BotanicalCard({
   children,
@@ -83,10 +85,44 @@ const CONSENT_STATUS_STYLES: Record<
 export function SimulasiBadge({ className = "" }: { className?: string }) {
   return (
     <span
-      className={`inline-flex min-h-[34px] items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] px-3.5 py-1 text-[14px] font-semibold text-[var(--forest-800)] ${className}`}
+      className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] px-3.5 py-1 text-[13.5px] font-semibold text-[var(--forest-800)] shadow-xs ${className}`}
     >
       <FlaskConical className="h-4 w-4 text-[var(--forest-700)]" aria-hidden="true" />
       <span>{APP_SIMULATION_PILL}</span>
+    </span>
+  );
+}
+
+const TELEMETRY_TONE_CLASS: Record<"verified" | "warning" | "blocked" | "seal", string> = {
+  verified: "text-[var(--forest-700)]",
+  warning: "text-[var(--status-warning-ink)]",
+  blocked: "text-[var(--status-blocked-ink)]",
+  seal: "text-[var(--seal-600)]",
+};
+
+export function LiveTelemetryPill({
+  label = "Sinkron",
+  tone = "verified",
+  showClock = true,
+  className = "",
+}: {
+  label?: string;
+  tone?: "verified" | "warning" | "blocked" | "seal";
+  showClock?: boolean;
+  className?: string;
+}) {
+  return (
+    <span
+      className={`xb-numeric inline-flex min-h-[36px] items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)] px-3.5 py-1 text-[13px] font-semibold text-[var(--ink)] shadow-xs ${className}`}
+    >
+      <PulseDot className={TELEMETRY_TONE_CLASS[tone]} pulsing label={label} />
+      <span className="text-[var(--forest-800)]">{label}</span>
+      {showClock && (
+        <>
+          <span className="text-[var(--line-strong)]" aria-hidden="true">·</span>
+          <LiveClock className="text-[var(--ink-muted)]" />
+        </>
+      )}
     </span>
   );
 }
@@ -102,7 +138,7 @@ export function CanonicalStatusBadge({
   const { cls, Icon } = CANONICAL_STATUS_STYLES[status];
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[14px] font-semibold ${cls}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[13.5px] font-semibold transition-transform duration-150 ${cls}`}
     >
       <Icon className="h-4 w-4 shrink-0" aria-hidden={true} />
       <span>{compact ? meta.shortLabel : meta.label}</span>
@@ -121,8 +157,8 @@ export function ConsentStatusBadge({
   const { cls, Icon } = CONSENT_STATUS_STYLES[status] ?? CONSENT_STATUS_STYLES.none;
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full font-semibold ${
-        compact ? "px-2.5 py-0.5 text-[13px]" : "px-3 py-1 text-[14px]"
+      className={`inline-flex items-center gap-1.5 rounded-full font-semibold transition-transform duration-150 ${
+        compact ? "px-2.5 py-0.5 text-[12.5px]" : "px-3 py-1 text-[13.5px]"
       } ${cls}`}
     >
       <Icon className="h-4 w-4 shrink-0" aria-hidden={true} />
@@ -143,68 +179,199 @@ export function BotanicalPageHeader({
   actions?: React.ReactNode;
 }) {
   return (
-    <header className="flex flex-wrap items-start justify-between gap-4">
-      <div className="min-w-0 max-w-[66ch]">
-        <h1 className="xb-display text-[26px] font-bold leading-tight tracking-[-0.025em] text-[var(--ink)] sm:text-[30px]">
+    <header className="flex flex-wrap items-start justify-between gap-3 border-b border-[var(--line-subtle)] pb-3.5">
+      <div className="min-w-0 max-w-[68ch]">
+        <h1 className="xb-display text-[24px] font-bold leading-tight tracking-[-0.025em] text-[var(--ink)] sm:text-[28px]">
           {title}
         </h1>
-        <p className="mt-1.5 text-[16px] leading-relaxed text-[var(--ink-muted)]">{description}</p>
+        <p className="mt-1 text-[15px] leading-relaxed text-[var(--ink-muted)]">{description}</p>
       </div>
-      {(showSimulation || actions) && (
-        <div className="flex flex-wrap items-center gap-2.5">
-          {showSimulation && <SimulasiBadge />}
-          {actions}
-        </div>
-      )}
+      <div className="flex flex-wrap items-center gap-2">
+        {showSimulation && <SimulasiBadge />}
+        {actions ?? <LiveTelemetryPill label="Live MRV" />}
+      </div>
     </header>
   );
 }
 
+const DEMO_ROLE_SWITCH_OPTIONS: {
+  role: UserRole;
+  label: string;
+  actor: string;
+  scope: string;
+}[] = [
+  {
+    role: "community",
+    label: "Komunitas Adat",
+    actor: "Sari Dewi",
+    scope: "Kelola izin warga (FPIC), resi persetujuan, & hak hasil 60%",
+  },
+  {
+    role: "auditor",
+    label: "Auditor MRV",
+    actor: "Dr. Hendra",
+    scope: "Tinjau bukti sensor, putuskan status, & kunci segel SHA-256",
+  },
+  {
+    role: "manager",
+    label: "Pengelola Hutan",
+    actor: "Ahmad Fauzi",
+    scope: "Pantau operasional lahan, pasar simulasi, & alokasi 40%",
+  },
+  {
+    role: "recipient",
+    label: "Penerima Zona",
+    actor: "PT. GreenCorp",
+    scope: "Simulasi pembelian unit tCO2e & laporan pemakaian zona",
+  },
+];
+
 export function RoleRestrictedNotice({
-  title = "Belum bisa dibuka",
+  title = "Belum bisa dibuka pada peran aktif saat ini",
   reason,
 }: {
   title?: string;
   reason: string;
 }) {
+  const { user, switchDemoRole, parcels, verificationRecords } = useDashboardState();
+  const activeRole = normalizeUserRole(user?.role, user?.email);
+
   return (
-    <BotanicalCard className="mx-auto max-w-2xl p-6 sm:p-8">
-      <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
-        <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[var(--seal-100)] text-[var(--seal-600)]">
-          <Lock className="h-7 w-7" aria-hidden="true" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <h2 className="xb-display text-[22px] font-bold text-[var(--ink)]">{title}</h2>
-          <p className="mt-2 text-[16px] leading-relaxed text-[var(--ink-muted)]">{reason}</p>
-          <p className="mt-2 text-[15px] text-[var(--ink-muted)]">
-            Gunakan menu peran demo pada avatar kanan atas jika Anda sedang menguji alur peran tertentu,
-            atau kembali ke halaman yang tersedia.
-          </p>
-          <div className="mt-5 flex flex-wrap gap-3">
-            <Link
-              href="/app"
-              className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-[var(--forest-700)] px-5 text-[15px] font-semibold text-white hover:bg-[var(--forest-800)]"
-            >
-              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-              <span>Kembali ke Dasbor</span>
-            </Link>
-            <Link
-              href="/bantuan"
-              className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)] px-5 text-[15px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-soft)]"
-            >
-              <HelpCircle className="h-4 w-4 text-[var(--forest-700)]" aria-hidden="true" />
-              <span>Bantuan</span>
-            </Link>
-            <Link
-              href="/akun"
-              className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface-soft)] px-5 text-[15px] font-semibold text-[var(--ink)] hover:bg-[var(--leaf-100)]"
-            >
-              <span>Keluar / Ganti Akun</span>
-            </Link>
+    <div className="grid gap-4 lg:grid-cols-12">
+      <BotanicalCard className="p-6 lg:col-span-7">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+          <div className="grid h-13 w-13 shrink-0 place-items-center rounded-2xl bg-[var(--seal-100)] text-[var(--seal-600)]">
+            <Lock className="h-6 w-6" aria-hidden="true" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--seal-100)] px-3 py-0.5 text-[12.5px] font-semibold text-[var(--seal-600)]">
+              Pembatasan Hak Akses Peran Demo
+            </span>
+            <h2 className="xb-display mt-2 text-[21px] font-bold text-[var(--ink)]">{title}</h2>
+            <p className="mt-1.5 text-[15px] leading-relaxed text-[var(--ink-muted)]">{reason}</p>
+
+            <div className="mt-4 rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-4">
+              <p className="text-[13.5px] font-bold text-[var(--ink)]">
+                Beralih Peran Instan (1-Klik Tanpa Pindah Halaman)
+              </p>
+              <p className="mt-0.5 text-[13px] text-[var(--ink-muted)]">
+                Pilih peran di bawah untuk langsung membuka dan menguji halaman ini:
+              </p>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                {DEMO_ROLE_SWITCH_OPTIONS.map((item) => {
+                  const isCurrent = activeRole === item.role;
+                  return (
+                    <button
+                      key={item.role}
+                      type="button"
+                      onClick={() => switchDemoRole(item.role)}
+                      className={`xbm-pressable flex flex-col items-start rounded-xl border p-3 text-left transition-all ${
+                        isCurrent
+                          ? "border-[var(--forest-700)] bg-[var(--leaf-100)]/70"
+                          : "border-[var(--line)] bg-[var(--surface)] hover:border-[var(--forest-700)] hover:bg-[var(--surface-soft)]"
+                      }`}
+                    >
+                      <div className="flex w-full items-center justify-between gap-2">
+                        <span className="text-[14px] font-bold text-[var(--ink)]">
+                          {item.label}
+                        </span>
+                        <span className="xb-mono rounded-full bg-[var(--surface-soft)] px-2 py-0.5 text-[11.5px] font-semibold text-[var(--forest-700)]">
+                          {isCurrent ? "Aktif" : "Pilih ->"}
+                        </span>
+                      </div>
+                      <span className="mt-0.5 text-[12.5px] font-medium text-[var(--forest-800)]">
+                        {item.actor}
+                      </span>
+                      <span className="mt-1 text-[12px] leading-snug text-[var(--ink-muted)]">
+                        {item.scope}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-2.5">
+              <Link
+                href="/app"
+                className="inline-flex min-h-[42px] items-center gap-2 rounded-full bg-[var(--forest-700)] px-4 text-[14.5px] font-semibold text-white hover:bg-[var(--forest-800)]"
+              >
+                <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                <span>Kembali ke Dasbor</span>
+              </Link>
+              <Link
+                href="/bantuan"
+                className="inline-flex min-h-[42px] items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 text-[14.5px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-soft)]"
+              >
+                <HelpCircle className="h-4 w-4 text-[var(--forest-700)]" aria-hidden="true" />
+                <span>Panduan Peran</span>
+              </Link>
+              <Link
+                href="/akun"
+                className="inline-flex min-h-[42px] items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface-soft)] px-4 text-[14.5px] font-semibold text-[var(--ink)] hover:bg-[var(--leaf-100)]"
+              >
+                <span>Halaman Akun</span>
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
-    </BotanicalCard>
+      </BotanicalCard>
+
+      <BotanicalCard className="flex flex-col justify-between p-6 lg:col-span-5">
+        <div>
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="xb-display text-[17px] font-bold text-[var(--ink)]">
+              Ringkasan Publik Sistem MRV
+            </h3>
+            <LiveTelemetryPill label="Rantai Aktif" showClock={false} />
+          </div>
+          <p className="mt-1 text-[13.5px] text-[var(--ink-muted)]">
+            Data publik tetap dapat diakses oleh semua pengunjung sementara tindakan sensitif
+            dipisahkan berdasarkan tanggung jawab peran.
+          </p>
+
+          <div className="mt-4 grid grid-cols-2 gap-2.5">
+            <div className="xb-surface-tile p-3.5">
+              <p className="text-[12.5px] font-medium text-[var(--ink-muted)]">Lahan Terdaftar</p>
+              <p className="xb-display xb-numeric mt-1 text-[22px] font-bold text-[var(--ink)]">
+                {parcels.length} blok
+              </p>
+            </div>
+            <div className="xb-surface-tile p-3.5">
+              <p className="text-[12.5px] font-medium text-[var(--ink-muted)]">Segel SHA-256</p>
+              <p className="xb-display xb-numeric mt-1 text-[22px] font-bold text-[var(--seal-600)]">
+                #{verificationRecords[0]?.block_index ?? 1247}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4 space-y-2">
+            {parcels.slice(0, 3).map((parcel) => (
+              <Link
+                key={parcel.id}
+                href={`/peta/${encodeURIComponent(parcel.id)}`}
+                className="flex items-center justify-between gap-2 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3.5 py-2.5 text-[13.5px] hover:border-[var(--forest-700)] hover:bg-[var(--surface-soft)]"
+              >
+                <div>
+                  <span className="xb-mono font-semibold text-[var(--forest-700)]">
+                    {parcel.id}
+                  </span>{" "}
+                  <span className="font-medium text-[var(--ink)]">· {parcel.name}</span>
+                </div>
+                <span className="xb-numeric text-[12.5px] text-[var(--ink-muted)]">
+                  {parcel.area} ha
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        <p className="mt-4 border-t border-[var(--line-subtle)] pt-3 text-[12.5px] text-[var(--ink-muted)]">
+          Pemisahan hak akses mencegah satu pihak mengubah izin warga sekaligus menyetujui audit
+          segelnya sendiri.
+        </p>
+      </BotanicalCard>
+    </div>
   );
 }
 

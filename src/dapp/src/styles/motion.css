@@ -261,6 +261,28 @@
   color: var(--status-dispute-ink, #9a4400);
 }
 
+/* ---------- LiveClock ---------- */
+.xbm-clock {
+  display: inline-flex;
+  align-items: center;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  transition: color var(--motion-micro) var(--ease-out);
+}
+
+/* ---------- KPI hover lift ---------- */
+.xbm-lift {
+  transition: transform var(--motion-micro) var(--ease-out),
+    box-shadow var(--motion-micro) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .xbm-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover, 0 8px 24px rgba(31, 77, 46, 0.07));
+  }
+}
+
 /* ---------- Chart draw ---------- */
 @keyframes xbm-chart-draw {
   from { stroke-dashoffset: var(--draw-length, 1200); }
@@ -280,7 +302,8 @@
   .xbm-pressable:active,
   .xbm-segmented-item,
   .xbm-segmented-thumb,
-  .xbm-livenumber {
+  .xbm-livenumber,
+  .xbm-lift {
     transition: none;
     transform: none;
   }

@@ -33,6 +33,7 @@ import { buildScreenerData, type ScreenerRow } from "@/lib/exbon-api";
 import { ZONES_CATALOG } from "@/lib/copy";
 import { formatWibTime } from "@/lib/dashboard-helpers";
 import { formatIdr, formatNumber } from "@/components/dapp/phantom-ui";
+import { LiveClock, LiveNumber } from "@/components/motion";
 
 type PresetKey = "semua" | "siap" | "perhatian" | "menunggu";
 type SortKey = "available_desc" | "value_desc" | "sold_desc" | "name_asc";
@@ -177,89 +178,107 @@ export function ScreenerView() {
           description="Pantau ketersediaan unit serapan karbon per lahan, unit yang ditahan sistem, status izin warga, dan segel keaslian dalam satu tampilan ringkas."
           showSimulation
           actions={
-            <button
-              type="button"
-              onClick={() => setSecondsAgo(0)}
-              className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 text-[14px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-soft)]"
-            >
-              <RefreshCw className="h-4 w-4 text-[var(--forest-700)]" aria-hidden="true" />
-              <span className="xb-numeric">Diperbarui {secondsAgo} dtk lalu</span>
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="xb-numeric hidden items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] px-3.5 py-1.5 text-[13px] font-semibold text-[var(--ink-muted)] sm:inline-flex">
+                <span aria-hidden="true" className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--forest-700)] opacity-55" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--forest-700)]" />
+                </span>
+                <LiveClock />
+              </span>
+              <button
+                type="button"
+                onClick={() => setSecondsAgo(0)}
+                className="inline-flex min-h-[38px] items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)] px-3.5 text-[13.5px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-soft)]"
+              >
+                <RefreshCw className="h-3.5 w-3.5 text-[var(--forest-700)]" aria-hidden="true" />
+                <span className="xb-numeric">Diperbarui {secondsAgo} dtk lalu</span>
+              </button>
+            </div>
           }
         />
 
         {/* Balanced Market Pulse + 7-Day Trend Bento */}
-        <div className="grid gap-5 xl:grid-cols-12">
+        <div className="grid gap-4 xl:grid-cols-12">
           <div
-            className={`grid gap-4 xl:col-span-5 ${
+            className={`grid gap-3.5 xl:col-span-5 ${
               isGuest ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1 sm:grid-cols-2"
             }`}
           >
-            <BotanicalCard className="flex flex-col justify-between p-5">
-              <p className="text-[14px] font-medium text-[var(--ink-muted)]">Harga referensi</p>
-              <p className="xb-display xb-numeric mt-2 text-[24px] font-bold text-[var(--ink)]">
-                {formatIdr(screener.reference_price_idr)}
+            <BotanicalCard interactive className="flex flex-col justify-between p-4">
+              <p className="text-[13.5px] font-medium text-[var(--ink-muted)]">Harga referensi</p>
+              <p className="xb-display xb-numeric mt-1.5 text-[23px] font-bold text-[var(--ink)]">
+                <LiveNumber value={screener.reference_price_idr} format={formatIdr} />
               </p>
-              <p className="mt-1.5 text-[13px] text-[var(--ink-muted)]">
+              <p className="mt-1 text-[12.5px] text-[var(--ink-muted)]">
                 Parameter simulasi per tCO2e
               </p>
             </BotanicalCard>
 
-            <BotanicalCard className="flex flex-col justify-between p-5">
-              <p className="text-[14px] font-medium text-[var(--ink-muted)]">Unit tersedia</p>
-              <p className="xb-display xb-numeric mt-2 text-[24px] font-bold text-[var(--status-verified-ink)]">
-                {formatNumber(screener.totals.units_available)}{" "}
-                <span className="text-[14px] font-medium text-[var(--ink-muted)]">tCO2e</span>
+            <BotanicalCard interactive className="flex flex-col justify-between p-4">
+              <p className="text-[13.5px] font-medium text-[var(--ink-muted)]">Unit tersedia</p>
+              <p className="xb-display xb-numeric mt-1.5 text-[23px] font-bold text-[var(--status-verified-ink)]">
+                <LiveNumber
+                  value={screener.totals.units_available}
+                  format={(v) => formatNumber(Math.round(v))}
+                />{" "}
+                <span className="text-[13.5px] font-medium text-[var(--ink-muted)]">tCO2e</span>
               </p>
-              <p className="mt-1.5 text-[13px] text-[var(--ink-muted)]">Siap dialokasikan</p>
+              <p className="mt-1 text-[12.5px] text-[var(--ink-muted)]">Siap dialokasikan</p>
             </BotanicalCard>
 
             {isGuest ? (
-              <BotanicalCard className="flex flex-col justify-between p-5 sm:col-span-2">
+              <BotanicalCard interactive className="flex flex-col justify-between p-4 sm:col-span-2">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <p className="text-[14px] font-medium text-[var(--ink-muted)]">
+                    <p className="text-[13.5px] font-medium text-[var(--ink-muted)]">
                       Status akses & kondisi pasar
                     </p>
-                    <p className="mt-1 text-[16px] font-semibold text-[var(--ink)]">
+                    <p className="mt-1 text-[15.5px] font-semibold text-[var(--ink)]">
                       {screener.market_state} · Mode pembaca publik
                     </p>
                   </div>
                   <Link
                     href="/login"
-                    className="inline-flex min-h-[44px] items-center rounded-full bg-[var(--forest-700)] px-5 text-[14.5px] font-semibold text-white hover:bg-[var(--forest-800)]"
+                    className="inline-flex min-h-[40px] items-center rounded-full bg-[var(--forest-700)] px-4 text-[14px] font-semibold text-white hover:bg-[var(--forest-800)]"
                   >
                     Masuk akun
                   </Link>
                 </div>
-                <p className="mt-2 text-[13.5px] text-[var(--ink-muted)]">
+                <p className="mt-1.5 text-[13px] text-[var(--ink-muted)]">
                   Masuk akun demo untuk membuka simulasi pembagian nilai dan riwayat transaksi 24 jam.
                 </p>
               </BotanicalCard>
             ) : (
               <>
-                <BotanicalCard className="flex flex-col justify-between p-5">
-                  <p className="text-[14px] font-medium text-[var(--ink-muted)]">Unit dibekukan</p>
-                  <p className="xb-display xb-numeric mt-2 text-[24px] font-bold text-[var(--status-blocked-ink)]">
-                    {formatNumber(screener.totals.units_frozen)}{" "}
-                    <span className="text-[14px] font-medium text-[var(--ink-muted)]">tCO2e</span>
+                <BotanicalCard interactive className="flex flex-col justify-between p-4">
+                  <p className="text-[13.5px] font-medium text-[var(--ink-muted)]">Unit dibekukan</p>
+                  <p className="xb-display xb-numeric mt-1.5 text-[23px] font-bold text-[var(--status-blocked-ink)]">
+                    <LiveNumber
+                      value={screener.totals.units_frozen}
+                      format={(v) => formatNumber(Math.round(v))}
+                    />{" "}
+                    <span className="text-[13.5px] font-medium text-[var(--ink-muted)]">tCO2e</span>
                   </p>
-                  <p className="mt-1.5 text-[13px] text-[var(--ink-muted)]">Menunggu pemulihan</p>
+                  <p className="mt-1 text-[12.5px] text-[var(--ink-muted)]">Menunggu pemulihan</p>
                 </BotanicalCard>
 
-                <BotanicalCard className="flex flex-col justify-between p-5">
-                  <p className="text-[14px] font-medium text-[var(--ink-muted)]">Terjual 24 jam</p>
-                  <p className="xb-display xb-numeric mt-2 text-[24px] font-bold text-[var(--ink)]">
-                    {formatNumber(screener.totals.sold_today_units)}{" "}
-                    <span className="text-[14px] font-medium text-[var(--ink-muted)]">tCO2e</span>
+                <BotanicalCard interactive className="flex flex-col justify-between p-4">
+                  <p className="text-[13.5px] font-medium text-[var(--ink-muted)]">Terjual 24 jam</p>
+                  <p className="xb-display xb-numeric mt-1.5 text-[23px] font-bold text-[var(--ink)]">
+                    <LiveNumber
+                      value={screener.totals.sold_today_units}
+                      format={(v) => formatNumber(Math.round(v))}
+                    />{" "}
+                    <span className="text-[13.5px] font-medium text-[var(--ink-muted)]">tCO2e</span>
                   </p>
-                  <p className="mt-1.5 text-[13px] text-[var(--ink-muted)]">Catatan simulasi harian</p>
+                  <p className="mt-1 text-[12.5px] text-[var(--ink-muted)]">Catatan simulasi harian</p>
                 </BotanicalCard>
               </>
             )}
           </div>
 
-          <BotanicalCard className="flex flex-col justify-between p-5 xl:col-span-7">
+          <BotanicalCard className="flex flex-col justify-between p-4 sm:p-5 xl:col-span-7">
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div>
                 <h2 className="xb-display text-[17px] font-bold text-[var(--ink)]">
@@ -269,16 +288,16 @@ export function ScreenerView() {
                   Akumulasi nilai simulasi harian seluruh lahan terpantau.
                 </p>
               </div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--seal-100)] px-3 py-1 text-[13.5px] font-semibold text-[var(--seal-600)]">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--seal-100)] px-3 py-1 text-[13px] font-semibold text-[var(--seal-600)]">
                 <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
                 <span>Pasar: {screener.market_state}</span>
               </span>
             </div>
 
-            <div className="mt-3">
+            <div className="mt-2.5">
               <MarketTrendAreaChart
                 data={aggregateTrendSeries}
-                heightClassName="h-[180px]"
+                heightClassName="h-[168px]"
                 contextTag="Agregat Screener"
               />
             </div>
@@ -380,20 +399,20 @@ export function ScreenerView() {
             <div className="overflow-x-auto">
               <table className="w-full border-collapse text-left">
                 <thead>
-                  <tr className="border-b border-[var(--line)] bg-[var(--surface-soft)] text-[13.5px] font-semibold text-[var(--ink-muted)]">
-                    <th scope="col" className="px-4 py-3.5">Lahan</th>
-                    <th scope="col" className="px-4 py-3.5">Status</th>
-                    <th scope="col" className="px-4 py-3.5 text-right">Unit tersedia</th>
-                    <th scope="col" className="px-4 py-3.5 text-right">Unit beku</th>
-                    <th scope="col" className="px-4 py-3.5 text-right">Nilai tersedia</th>
-                    <th scope="col" className="px-4 py-3.5 text-right">Terjual 24j</th>
-                    <th scope="col" className="px-4 py-3.5">Izin warga</th>
-                    <th scope="col" className="px-4 py-3.5">Sensor terakhir</th>
-                    <th scope="col" className="px-4 py-3.5">Segel</th>
-                    <th scope="col" className="px-4 py-3.5 text-right">Tren 7h</th>
+                  <tr className="border-b border-[var(--line)] bg-[var(--surface-soft)] text-[13px] font-semibold text-[var(--ink-muted)]">
+                    <th scope="col" className="min-w-[205px] px-3.5 py-3">Lahan</th>
+                    <th scope="col" className="whitespace-nowrap px-3 py-3">Status</th>
+                    <th scope="col" className="whitespace-nowrap px-3 py-3 text-right">Tersedia</th>
+                    <th scope="col" className="whitespace-nowrap px-3 py-3 text-right">Beku</th>
+                    <th scope="col" className="whitespace-nowrap px-3 py-3 text-right">Nilai tersedia</th>
+                    <th scope="col" className="whitespace-nowrap px-3 py-3 text-right">24 jam</th>
+                    <th scope="col" className="whitespace-nowrap px-3 py-3">Izin warga</th>
+                    <th scope="col" className="whitespace-nowrap px-3 py-3">Sensor</th>
+                    <th scope="col" className="whitespace-nowrap px-3 py-3">Segel</th>
+                    <th scope="col" className="whitespace-nowrap px-3.5 py-3 text-right">Tren 7h</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[var(--line)] text-[15px]">
+                <tbody className="divide-y divide-[var(--line)] text-[14.5px]">
                   {filteredRows.map((row) => (
                     <tr
                       key={row.parcel_id}
@@ -407,29 +426,29 @@ export function ScreenerView() {
                       }}
                       className="cursor-pointer transition-colors hover:bg-[var(--surface-soft)] focus-visible:bg-[var(--leaf-100)]/60 focus-visible:outline-none"
                     >
-                      <td className="px-4 py-3.5">
+                      <td className="min-w-[205px] px-3.5 py-3">
                         <p className="xb-display font-bold text-[var(--ink)]">{row.name}</p>
-                        <p className="xb-mono text-[13px] text-[var(--ink-muted)]">
+                        <p className="xb-mono text-[12.5px] text-[var(--ink-muted)]">
                           {row.parcel_id} · {row.zone_name}
                         </p>
                       </td>
-                      <td className="px-4 py-3.5">
+                      <td className="whitespace-nowrap px-3 py-3">
                         <CanonicalStatusBadge status={row.status} compact />
                       </td>
-                      <td className="xb-numeric px-4 py-3.5 text-right font-bold text-[var(--status-verified-ink)]">
+                      <td className="xb-numeric whitespace-nowrap px-3 py-3 text-right font-bold text-[var(--status-verified-ink)]">
                         {formatNumber(row.units_available)} t
                       </td>
-                      <td className="xb-numeric px-4 py-3.5 text-right font-semibold text-[var(--status-blocked-ink)]">
+                      <td className="xb-numeric whitespace-nowrap px-3 py-3 text-right font-semibold text-[var(--status-blocked-ink)]">
                         {formatNumber(row.units_frozen)} t
                       </td>
-                      <td className="xb-numeric px-4 py-3.5 text-right font-semibold text-[var(--ink)]">
+                      <td className="xb-numeric whitespace-nowrap px-3 py-3 text-right font-semibold text-[var(--ink)]">
                         {isGuest ? (
                           <Link
                             href="/login"
                             onClick={(e) => e.stopPropagation()}
-                            className="text-[14px] font-semibold text-[var(--seal-600)] underline"
+                            className="text-[13.5px] font-semibold text-[var(--seal-600)] underline"
                           >
-                            Masuk untuk melihat
+                            Masuk
                           </Link>
                         ) : (
                           <Link
@@ -442,21 +461,21 @@ export function ScreenerView() {
                           </Link>
                         )}
                       </td>
-                      <td className="xb-numeric px-4 py-3.5 text-right font-semibold text-[var(--ink)]">
+                      <td className="xb-numeric whitespace-nowrap px-3 py-3 text-right font-semibold text-[var(--ink)]">
                         {isGuest ? (
-                          <span className="text-[13.5px] text-[var(--ink-muted)]">Perlu masuk</span>
+                          <span className="text-[13px] text-[var(--ink-muted)]">Tamu</span>
                         ) : (
                           `${formatNumber(row.sold_24h_units)} t`
                         )}
                       </td>
-                      <td className="px-4 py-3.5">
-                        <ConsentStatusBadge status={row.consent} />
+                      <td className="whitespace-nowrap px-3 py-3">
+                        <ConsentStatusBadge status={row.consent} compact />
                       </td>
-                      <td className="px-4 py-3.5">
-                        <p className="xb-numeric text-[14px] font-semibold text-[var(--ink)]">
+                      <td className="whitespace-nowrap px-3 py-3">
+                        <p className="xb-numeric text-[13.5px] font-semibold text-[var(--ink)]">
                           {formatWibTime(row.last_sensor_at)}
                         </p>
-                        <p className="mt-0.5 inline-flex items-center gap-1 text-[12.5px] font-medium text-[var(--ink-muted)]">
+                        <p className="mt-0.5 inline-flex items-center gap-1 text-[12px] font-medium text-[var(--ink-muted)]">
                           {row.sensor_source === "ESP32" ? (
                             <Radio className="h-3 w-3 text-[var(--forest-700)]" aria-hidden="true" />
                           ) : (
@@ -465,8 +484,8 @@ export function ScreenerView() {
                           <span>{row.sensor_source}</span>
                         </p>
                       </td>
-                      <td className="px-4 py-3.5">{renderSealCell(row)}</td>
-                      <td className="px-4 py-3.5 text-right">
+                      <td className="whitespace-nowrap px-3 py-3">{renderSealCell(row)}</td>
+                      <td className="whitespace-nowrap px-3.5 py-3 text-right">
                         <MarketSparkline
                           points={row.trend_7d}
                           label={`Tren 7 hari ${row.name}`}

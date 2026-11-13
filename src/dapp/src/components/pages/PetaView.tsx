@@ -22,9 +22,10 @@ import {
   PageStatePanel,
 } from "@/components/dapp/BotanicalPrimitives";
 import { useDashboardState } from "@/components/dapp/useDashboardStore";
-import { normalizeUserRole } from "@/context/DappContext";
+import { normalizeUserRole, type SensorData } from "@/context/DappContext";
 import { toCanonicalStatus, type CanonicalStatus } from "@/lib/dashboard-helpers";
 import { formatNumber } from "@/components/dapp/phantom-ui";
+import { LiveClock } from "@/components/motion";
 
 type StatusFilter = "ALL" | CanonicalStatus;
 
@@ -53,6 +54,28 @@ export function PetaView({ initialParcelId }: { initialParcelId?: string }) {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
   const [forceMapDataError, setForceMapDataError] = useState(stateParam === "gagal");
   const [lastRefreshedAt, setLastRefreshedAt] = useState<string>("Baru saja");
+  const [driftSensors, setDriftSensors] = useState<SensorData[]>(sensors);
+
+  // Telemetri simulasi: nilai sensor menggeser halus tiap 4 detik supaya
+  // peta dan panel inspeksi terasa hidup tanpa menyentuh source context.
+  useEffect(() => {
+    setDriftSensors(sensors);
+  }, [sensors]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setDriftSensors((prev) =>
+        prev.map((s) => ({
+          ...s,
+          temperature: Math.round(Math.max(16, Math.min(34, s.temperature + (Math.random() - 0.5) * 0.8)) * 10) / 10,
+          humidity: Math.round(Math.max(52, Math.min(98, s.humidity + (Math.random() - 0.5) * 2.4)) * 10) / 10,
+          soil_moisture: Math.round(Math.max(30, Math.min(88, s.soil_moisture + (Math.random() - 0.5) * 1.8)) * 10) / 10,
+          co2e_tonPerDay: Math.max(0, Math.round((s.co2e_tonPerDay + (Math.random() - 0.5) * 0.02) * 1000) / 1000),
+        }))
+      );
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const requested = initialParcelId || queryParcel;
@@ -125,14 +148,23 @@ export function PetaView({ initialParcelId }: { initialParcelId?: string }) {
           title="Peta & Kondisi Lahan"
           description={`Memantau ${formatNumber(totalArea)} hektare hutan binaan di Bogor melalui peta dasar OpenStreetMap, batas poligon GeoJSON, dan ${sensors.length} sensor lapangan.`}
           actions={
-            <button
-              type="button"
-              onClick={handleRefresh}
-              className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 text-[14.5px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-soft)]"
-            >
-              <RefreshCw className="h-4 w-4 text-[var(--forest-700)]" aria-hidden="true" />
-              <span className="xb-numeric">Segarkan data ({lastRefreshedAt})</span>
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="xb-numeric hidden items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] px-3.5 py-2 text-[13px] font-semibold text-[var(--ink-muted)] sm:inline-flex">
+                <span aria-hidden="true" className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--forest-700)] opacity-55" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--forest-700)]" />
+                </span>
+                <LiveClock />
+              </span>
+              <button
+                type="button"
+                onClick={handleRefresh}
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 text-[14.5px] font-semibold text-[var(--ink)] transition-transform duration-150 hover:scale-[1.01] active:scale-95 hover:bg-[var(--surface-soft)]"
+              >
+                <RefreshCw className="h-4 w-4 text-[var(--forest-700)]" aria-hidden="true" />
+                <span className="xb-numeric">Segarkan ({lastRefreshedAt})</span>
+              </button>
+            </div>
           }
         />
 
@@ -233,7 +265,7 @@ export function PetaView({ initialParcelId }: { initialParcelId?: string }) {
                 <CarbonMap
                   parcels={filteredParcels}
                   allParcels={parcels}
-                  sensors={sensors}
+                  sensors={driftSensors}
                   selectedId={selected?.id ?? null}
                   onSelect={handleSelectParcel}
                   forceError={forceMapDataError}
@@ -255,7 +287,7 @@ export function PetaView({ initialParcelId }: { initialParcelId?: string }) {
                         setSearchText("");
                         setStatusFilter("ALL");
                       }}
-                      className="mt-3 inline-flex min-h-[42px] items-center rounded-full bg-[var(--forest-700)] px-4 text-[14px] font-semibold text-white hover:bg-[var(--forest-800)]"
+                      className="mt-3 inline-flex min-h-[42px] items-center rounded-full bg-[var(--forest-700)] px-4 text-[14px] font-semibold text-white transition-transform duration-150 hover:scale-[1.02] active:scale-95 hover:bg-[var(--forest-800)]"
                     >
                       Tampilkan semua lahan
                     </button>
@@ -271,12 +303,12 @@ export function PetaView({ initialParcelId }: { initialParcelId?: string }) {
                         key={parcel.id}
                         type="button"
                         onClick={() => handleSelectParcel(parcel.id)}
-                        className={`flex min-h-[44px] flex-col items-start justify-between gap-2 rounded-2xl border p-4 text-left transition ${
+                        className={`flex min-h-[44px] flex-col items-start justify-between gap-2 rounded-2xl border p-4 text-left transition-all duration-200 active:scale-[0.98] ${
                           isOddTail ? "sm:col-span-2" : ""
                         } ${
                           active
                             ? "border-[var(--forest-700)] bg-[var(--leaf-100)]/70 shadow-sm"
-                            : "border-[var(--line)] bg-[var(--surface)] hover:bg-[var(--surface-soft)]"
+                            : "border-[var(--line)] bg-[var(--surface)] hover:-translate-y-0.5 hover:bg-[var(--surface-soft)]"
                         }`}
                       >
                         <div className="flex w-full items-center justify-between gap-2">
@@ -303,7 +335,7 @@ export function PetaView({ initialParcelId }: { initialParcelId?: string }) {
               {selected && (
                 <ParcelInspectionPanel
                   parcel={selected}
-                  sensors={sensors}
+                  sensors={driftSensors}
                   assessment={aiAssessments.find((a) => a.parcel_id === selected.id)}
                   verification={verificationRecords.find((v) => v.parcel_id === selected.id)}
                   consent={consentRecords.find((c) => c.parcel_id === selected.id)}

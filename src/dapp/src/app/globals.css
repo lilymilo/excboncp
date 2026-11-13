@@ -270,3 +270,30 @@ button:active, a.button-touch:active {
 ::-webkit-scrollbar-thumb:hover {
   background: #64753E;
 }
+
+/* ── App surface: light Forest Paper. Landing keeps the dark terminal palette. ── */
+html:has(.xb-botanical) {
+  background: #eef5ec;
+  color-scheme: light;
+}
+
+body:has(.xb-botanical) {
+  background: #eef5ec;
+  color: #14261a;
+}
+
+body:has(.xb-botanical) ::-webkit-scrollbar-track {
+  background: #eef5ec;
+}
+
+body:has(.xb-botanical) ::-webkit-scrollbar-thumb {
+  background: #c2d4bc;
+}
+
+body:has(.xb-botanical) ::-webkit-scrollbar-thumb:hover {
+  background: #a9c0a4;
+}
+
+body:has(.xb-botanical) :focus-visible {
+  outline-color: #1f5a94;
+}

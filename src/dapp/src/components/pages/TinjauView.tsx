@@ -25,6 +25,7 @@ import {
   PageStatePanel,
   RoleRestrictedNotice,
 } from "@/components/dapp/BotanicalPrimitives";
+import { LiveNumber, PulseDot } from "@/components/motion";
 import {
   useDashboardState,
   type ExtendedVerificationRecord,
@@ -134,7 +135,7 @@ export function TinjauView() {
   if (role !== "auditor") {
     return (
       <BotanicalAppShell>
-        <div className="space-y-6">
+        <div className="space-y-4">
           <BotanicalPageHeader
             title="Tinjau & Sahkan Bukti (Auditor)"
             description="Pemeriksaan bukti lapangan dan penguncian blok oleh Auditor MRV sebelum unit terbuka penuh."
@@ -148,9 +149,12 @@ export function TinjauView() {
     );
   }
 
+  const verifiedCount = verificationRecords.filter((r) => getRecordReviewStatus(r) === "verified").length;
+  const flaggedOrPendingCount = verificationRecords.length - verifiedCount;
+
   return (
     <BotanicalAppShell>
-      <div key={retryKey} className="space-y-6">
+      <div key={retryKey} className="space-y-4">
         <BotanicalPageHeader
           title="Tinjau & Sahkan Bukti (Auditor)"
           description="Bandingkan telemetri sensor, indeks satelit NDVI, status izin warga, dan kecocokan rantai hash. Penilaian AI hanya bersifat informasi pembantu."
@@ -158,7 +162,7 @@ export function TinjauView() {
             activeRecord && (
               <Link
                 href={`/verifikasi/${activeRecord.block_index}`}
-                className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-[var(--seal-line)] bg-[var(--seal-100)] px-4 text-[14px] font-semibold text-[var(--seal-700)] transition hover:bg-[var(--surface-soft)]"
+                className="inline-flex min-h-[40px] items-center gap-2 rounded-full border border-[var(--seal-line)] bg-[var(--seal-100)] px-4 text-[13.5px] font-semibold text-[var(--seal-700)] transition hover:bg-[var(--surface-soft)]"
               >
                 <span>Buka pemeriksa hash</span>
                 <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
@@ -166,6 +170,43 @@ export function TinjauView() {
             )
           }
         />
+
+        <div className="grid gap-3.5 sm:grid-cols-2 xl:grid-cols-4">
+          <BotanicalCard interactive className="p-4">
+            <p className="text-[12.5px] font-semibold text-[var(--ink-muted)]">Total Blok Antrean</p>
+            <p className="xb-numeric mt-1 text-[23px] font-bold text-[var(--ink)]">
+              <LiveNumber value={verificationRecords.length} format={(val: number) => `${Math.round(val)} blok`} />
+            </p>
+            <p className="mt-0.5 text-[12.5px] text-[var(--ink-muted)]">Terhubung ke rantai SHA-256</p>
+          </BotanicalCard>
+
+          <BotanicalCard interactive className="p-4">
+            <p className="text-[12.5px] font-semibold text-[var(--ink-muted)]">Disahkan Auditor</p>
+            <p className="xb-numeric mt-1 text-[23px] font-bold text-[var(--status-verified-ink)]">
+              <LiveNumber value={verifiedCount} format={(val: number) => `${Math.round(val)} blok`} />
+            </p>
+            <p className="mt-0.5 text-[12.5px] text-[var(--ink-muted)]">EAS Base Sepolia terkunci</p>
+          </BotanicalCard>
+
+          <BotanicalCard interactive className="p-4">
+            <p className="text-[12.5px] font-semibold text-[var(--ink-muted)]">Perlu Pemeriksaan</p>
+            <p className="xb-numeric mt-1 text-[23px] font-bold text-[var(--status-warning-ink)]">
+              <LiveNumber value={flaggedOrPendingCount} format={(val: number) => `${Math.round(val)} blok`} />
+            </p>
+            <p className="mt-0.5 text-[12.5px] text-[var(--ink-muted)]">Menunggu audit / ditahan</p>
+          </BotanicalCard>
+
+          <BotanicalCard interactive className="p-4">
+            <div className="flex items-center justify-between gap-2">
+              <p className="text-[12.5px] font-semibold text-[var(--ink-muted)]">Node Sensor Aktif</p>
+              <PulseDot className="text-[var(--forest-700)]" pulsing label="Telemetri aktif" />
+            </div>
+            <p className="xb-numeric mt-1 text-[23px] font-bold text-[var(--forest-700)]">
+              <LiveNumber value={sensors.length} format={(val: number) => `${Math.round(val)} sensor`} />
+            </p>
+            <p className="mt-0.5 text-[12.5px] text-[var(--ink-muted)]">Pembaruan telemetri tiap 4 detik</p>
+          </BotanicalCard>
+        </div>
 
         <div className="flex flex-wrap gap-2">
           {(
@@ -180,7 +221,7 @@ export function TinjauView() {
               key={tab.id}
               type="button"
               onClick={() => setFilter(tab.id)}
-              className={`inline-flex min-h-[44px] items-center rounded-full border px-4 text-[14.5px] font-semibold transition ${
+              className={`xbm-pressable inline-flex min-h-[38px] items-center rounded-full border px-4 text-[13.5px] font-semibold transition ${
                 filter === tab.id
                   ? "border-[var(--forest-700)] bg-[var(--forest-700)] text-white"
                   : "border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] hover:bg-[var(--surface-soft)]"
@@ -200,7 +241,7 @@ export function TinjauView() {
           {feedback && (
             <div
               role="status"
-              className={`rounded-2xl border p-4 text-[15px] font-medium ${
+              className={`rounded-2xl border p-3.5 text-[14.5px] font-medium ${
                 feedback.ok
                   ? "border-[var(--status-verified-line)] bg-[var(--status-verified-bg)] text-[var(--status-verified-ink)]"
                   : "border-[var(--status-blocked-line)] bg-[var(--status-blocked-bg)] text-[var(--status-blocked-ink)]"
@@ -211,13 +252,13 @@ export function TinjauView() {
           )}
 
           {activeRecord && (
-            <div className="grid gap-5 lg:grid-cols-12">
-              <BotanicalCard className="flex flex-col justify-between p-5 lg:col-span-4 lg:sticky lg:top-20 lg:self-start">
+            <div className="grid gap-4 lg:grid-cols-12">
+              <BotanicalCard className="flex flex-col justify-between p-4 lg:col-span-4 lg:sticky lg:top-20 lg:self-start">
                 <div>
-                  <h2 className="xb-display text-[18px] font-bold text-[var(--ink)]">
+                  <h2 className="xb-display text-[17.5px] font-bold text-[var(--ink)]">
                     Daftar Catatan ({filteredRecords.length})
                   </h2>
-                  <div className="mt-3 space-y-2.5">
+                  <div className="mt-2.5 space-y-2">
                     {filteredRecords.map((rec) => {
                       const parcel = parcels.find((p) => p.id === rec.parcel_id);
                       const selected = rec.record_id === activeRecord.record_id;
@@ -242,24 +283,24 @@ export function TinjauView() {
                           key={rec.record_id}
                           type="button"
                           onClick={() => setSelectedRecordId(rec.record_id)}
-                          className={`w-full rounded-2xl border p-4 text-left transition ${
+                          className={`xbm-pressable w-full rounded-2xl border p-3.5 text-left transition ${
                             selected
                               ? "border-[var(--forest-700)] bg-[var(--leaf-100)]/65"
                               : "border-[var(--line)] bg-[var(--surface)] hover:bg-[var(--surface-soft)]"
                           }`}
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <span className="xb-mono text-[13.5px] font-bold text-[var(--ink)]">
+                            <span className="xb-mono text-[13px] font-bold text-[var(--ink)]">
                               Blok #{rec.block_index}
                             </span>
-                            <span className={`rounded-full px-2.5 py-0.5 text-[12.5px] font-semibold ${badgeStyle.cls}`}>
+                            <span className={`rounded-full px-2.5 py-0.5 text-[12px] font-semibold ${badgeStyle.cls}`}>
                               {badgeStyle.label}
                             </span>
                           </div>
-                          <p className="mt-1 text-[15.5px] font-semibold text-[var(--ink)]">
+                          <p className="mt-0.5 text-[14.5px] font-semibold text-[var(--ink)]">
                             {parcel?.name ?? rec.parcel_id}
                           </p>
-                          <p className="xb-mono mt-1 text-[13px] text-[var(--ink-muted)]">
+                          <p className="xb-mono mt-0.5 text-[12.5px] text-[var(--ink-muted)]">
                             {shortHash(rec.hash)} · {formatWibDateTime(rec.timestamp)} WIB
                           </p>
                         </button>
@@ -267,17 +308,17 @@ export function TinjauView() {
                     })}
                   </div>
                 </div>
-                <p className="mt-4 border-t border-[var(--line-subtle)] pt-3 text-[13px] text-[var(--ink-muted)]">
+                <p className="mt-3 border-t border-[var(--line-subtle)] pt-2.5 text-[12.5px] text-[var(--ink-muted)]">
                   Pilih blok pada antrean untuk meninjau bukti sensor, NDVI, dan rantai segel sebelum keputusan.
                 </p>
               </BotanicalCard>
 
-              <div className="space-y-5 lg:col-span-8">
-                <BotanicalCard className="p-6">
+              <div className="space-y-4 lg:col-span-8">
+                <BotanicalCard className="p-5">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <div className="flex flex-wrap items-center gap-2.5">
-                        <span className="xb-mono text-[13.5px] font-semibold text-[var(--seal-700)]">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="xb-mono text-[13px] font-semibold text-[var(--seal-700)]">
                           Blok #{activeRecord.block_index} · {activeRecord.record_id}
                         </span>
                         {activeParcel && (
@@ -287,20 +328,20 @@ export function TinjauView() {
                           />
                         )}
                       </div>
-                      <h2 className="xb-display mt-1.5 text-[21px] font-bold text-[var(--ink)]">
+                      <h2 className="xb-display mt-1 text-[20px] font-bold text-[var(--ink)]">
                         {activeParcel?.name ?? activeRecord.parcel_id}
                       </h2>
                     </div>
                     {activeConsent && <ConsentStatusBadge status={activeConsent.status} compact />}
                   </div>
 
-                  <div className="mt-5 grid gap-4 md:grid-cols-2">
-                    <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-4">
-                      <div className="flex items-center gap-2 text-[14.5px] font-bold text-[var(--ink)]">
+                  <div className="mt-4 grid gap-3.5 md:grid-cols-2">
+                    <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-3.5">
+                      <div className="flex items-center gap-2 text-[14px] font-bold text-[var(--ink)]">
                         <Radio className="h-4 w-4 text-[var(--forest-700)]" aria-hidden="true" />
                         <span>Bukti Telemetri Sensor ({activeSensors.length} node)</span>
                       </div>
-                      <div className="mt-3 space-y-2 text-[14.5px]">
+                      <div className="mt-2.5 space-y-2 text-[13.5px]">
                         {activeSensors.length > 0 ? (
                           activeSensors.map((s) => (
                             <div
@@ -311,7 +352,20 @@ export function TinjauView() {
                                 {s.sensor_id}
                               </span>
                               <span className="xb-numeric text-[var(--ink-muted)]">
-                                {s.temperature}°C · RH {s.humidity}% · Tanah {s.soil_moisture}%
+                                <LiveNumber
+                                  value={s.temperature}
+                                  format={(val: number) => `${val.toFixed(1)}°C`}
+                                />{" "}
+                                · RH{" "}
+                                <LiveNumber
+                                  value={s.humidity}
+                                  format={(val: number) => `${Math.round(val)}%`}
+                                />{" "}
+                                · Tanah{" "}
+                                <LiveNumber
+                                  value={s.soil_moisture}
+                                  format={(val: number) => `${Math.round(val)}%`}
+                                />
                               </span>
                             </div>
                           ))
@@ -321,38 +375,43 @@ export function TinjauView() {
                       </div>
                     </div>
 
-                    <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-4">
-                      <div className="flex items-center gap-2 text-[14.5px] font-bold text-[var(--ink)]">
+                    <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-3.5">
+                      <div className="flex items-center gap-2 text-[14px] font-bold text-[var(--ink)]">
                         <Satellite className="h-4 w-4 text-[var(--forest-700)]" aria-hidden="true" />
                         <span>Satelit NDVI & Catatan AI</span>
                       </div>
-                      <p className="mt-2 text-[15px] text-[var(--ink)]">
+                      <p className="mt-2 text-[14px] text-[var(--ink)]">
                         NDVI terkini:{" "}
                         <span className="xb-numeric font-bold">
-                          {typeof activeParcel?.ndvi === "number"
-                            ? activeParcel.ndvi.toFixed(2)
-                            : "-"}
+                          {typeof activeParcel?.ndvi === "number" ? (
+                            <LiveNumber
+                              value={activeParcel.ndvi}
+                              format={(val: number) => val.toFixed(2)}
+                            />
+                          ) : (
+                            "-"
+                          )}
                         </span>{" "}
                         <span className="text-[var(--ink-muted)]">(ambang sehat ≥ 0,70)</span>
                       </p>
                       {activeAi && (
-                        <div className="mt-2.5 rounded-xl border border-[var(--seal-line)] bg-[var(--seal-100)]/60 p-3 text-[14px] leading-relaxed text-[var(--ink)]">
+                        <div className="mt-2 rounded-xl border border-[var(--seal-line)] bg-[var(--seal-100)]/60 p-2.5 text-[13px] leading-relaxed text-[var(--ink)]">
                           <p className="flex items-center gap-1.5 font-semibold text-[var(--seal-700)]">
-                            <Cpu className="h-4 w-4" aria-hidden="true" />
+                            <Cpu className="h-3.5 w-3.5" aria-hidden="true" />
                             <span>Catatan AI (hanya pembantu, keputusan milik Auditor):</span>
                           </p>
-                          <p className="mt-1 text-[var(--ink-muted)]">{activeAi.ai1_summary}</p>
+                          <p className="mt-0.5 text-[var(--ink-muted)]">{activeAi.ai1_summary}</p>
                         </div>
                       )}
                     </div>
                   </div>
 
-                  <div className="mt-5 rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4">
-                    <div className="flex items-center gap-2 text-[14.5px] font-bold text-[var(--ink)]">
+                  <div className="mt-4 rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5">
+                    <div className="flex items-center gap-2 text-[14px] font-bold text-[var(--ink)]">
                       <ShieldCheck className="h-4 w-4 text-[var(--seal-600)]" aria-hidden="true" />
                       <span>Hasil Pemeriksaan Rantai Segel</span>
                     </div>
-                    <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
+                    <div className="mt-2.5 grid gap-2 sm:grid-cols-2">
                       {integrityChecks.map((check) => {
                         const checkBadge =
                           check.state === "ok"
@@ -372,16 +431,16 @@ export function TinjauView() {
                         return (
                           <div
                             key={check.id}
-                            className="flex items-start justify-between gap-2 rounded-xl border border-[var(--line)] bg-[var(--surface-soft)] p-3"
+                            className="flex items-start justify-between gap-2 rounded-xl border border-[var(--line)] bg-[var(--surface-soft)] p-2.5"
                           >
                             <div className="min-w-0">
-                              <p className="text-[14.5px] font-semibold text-[var(--ink)]">
+                              <p className="text-[13.5px] font-semibold text-[var(--ink)]">
                                 {check.label}
                               </p>
-                              <p className="text-[13.5px] text-[var(--ink-muted)]">{check.detail}</p>
+                              <p className="text-[12.5px] text-[var(--ink-muted)]">{check.detail}</p>
                             </div>
                             <span
-                              className={`shrink-0 rounded-full px-2.5 py-0.5 text-[12.5px] font-bold ${checkBadge.cls}`}
+                              className={`shrink-0 rounded-full px-2.5 py-0.5 text-[12px] font-bold ${checkBadge.cls}`}
                             >
                               {checkBadge.label}
                             </span>
@@ -391,10 +450,10 @@ export function TinjauView() {
                     </div>
                   </div>
 
-                  <div className="mt-5 border-t border-[var(--line)] pt-5">
+                  <div className="mt-4 border-t border-[var(--line)] pt-4">
                     <label
                       htmlFor="auditor-decision-note"
-                      className="block text-[14.5px] font-semibold text-[var(--ink)]"
+                      className="block text-[13.5px] font-semibold text-[var(--ink)]"
                     >
                       Catatan pemeriksaan Auditor MRV
                     </label>
@@ -404,24 +463,24 @@ export function TinjauView() {
                       value={auditNote}
                       onChange={(e) => setAuditNote(e.target.value)}
                       placeholder="Tuliskan hasil pemeriksaan sensor, foto lapangan, atau alasan keputusan..."
-                      className="mt-2 w-full rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-3 text-[15px] text-[var(--ink)] focus:border-[var(--forest-700)] focus:bg-[var(--surface)] focus:outline-none"
+                      className="mt-1.5 w-full rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-2.5 text-[14px] text-[var(--ink)] focus:border-[var(--forest-700)] focus:bg-[var(--surface)] focus:outline-none"
                     />
 
-                    <div className="mt-4 flex flex-wrap items-center gap-3">
+                    <div className="mt-3 flex flex-wrap items-center gap-3">
                       <button
                         type="button"
                         onClick={() => setConfirmDecision("verified")}
-                        className="inline-flex min-h-[48px] items-center gap-2 rounded-full bg-[var(--forest-700)] px-6 text-[15px] font-semibold text-white transition hover:bg-[var(--forest-800)]"
+                        className="xbm-pressable inline-flex min-h-[42px] items-center gap-2 rounded-full bg-[var(--forest-700)] px-5 text-[14px] font-semibold text-white transition hover:bg-[var(--forest-800)]"
                       >
-                        <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
+                        <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
                         <span>Sahkan & segel blok</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => setConfirmDecision("flagged")}
-                        className="inline-flex min-h-[48px] items-center gap-2 rounded-full border border-[var(--status-blocked-line)] bg-[var(--status-blocked-bg)] px-6 text-[15px] font-semibold text-[var(--status-blocked-ink)] transition hover:brightness-95"
+                        className="xbm-pressable inline-flex min-h-[42px] items-center gap-2 rounded-full border border-[var(--status-blocked-line)] bg-[var(--status-blocked-bg)] px-5 text-[14px] font-semibold text-[var(--status-blocked-ink)] transition hover:brightness-95"
                       >
-                        <Lock className="h-5 w-5" aria-hidden="true" />
+                        <Lock className="h-4 w-4" aria-hidden="true" />
                         <span>Tahan & tandai catatan</span>
                       </button>
                     </div>

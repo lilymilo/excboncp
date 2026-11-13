@@ -24,6 +24,7 @@ import {
   PageStatePanel,
   RoleRestrictedNotice,
 } from "@/components/dapp/BotanicalPrimitives";
+import { LiveNumber, PulseDot } from "@/components/motion";
 import { Mascot } from "@/components/mascot/Mascot";
 import { useDashboardState } from "@/components/dapp/useDashboardStore";
 import { normalizeUserRole, type ConsentStatus } from "@/context/DappContext";
@@ -31,7 +32,7 @@ import { formatWibDateTime, toCanonicalStatus } from "@/lib/dashboard-helpers";
 import { sha256HexBrowser } from "@/lib/exbon-api";
 import { CONSENT_DISPLAY } from "@/lib/copy";
 
-const OWN_COMMUNITY_PARCEL_ID = "PARCEL-A";
+const OWN_COMMUNITY_PARCEL_IDS = ["PARCEL-A", "PARCEL-C"];
 
 const FPIC_POINTS = [
   {
@@ -61,7 +62,9 @@ export function IzinView({ initialParcelId }: { initialParcelId?: string }) {
   } = useDashboardState();
 
   const role = normalizeUserRole(user?.role, user?.email);
-  const requestedParcelId = initialParcelId?.trim().toUpperCase() || OWN_COMMUNITY_PARCEL_ID;
+  const [selectedParcelId, setSelectedParcelId] = useState(
+    initialParcelId?.trim().toUpperCase() || OWN_COMMUNITY_PARCEL_IDS[0]
+  );
 
   const [confirmTarget, setConfirmTarget] = useState<ConsentStatus | null>(null);
   const [reasonNote, setReasonNote] = useState("");
@@ -70,8 +73,8 @@ export function IzinView({ initialParcelId }: { initialParcelId?: string }) {
   const [retryKey, setRetryKey] = useState(0);
 
   const parcel = useMemo(
-    () => parcels.find((item) => item.id.toUpperCase() === requestedParcelId) ?? parcels[0],
-    [parcels, requestedParcelId]
+    () => parcels.find((item) => item.id.toUpperCase() === selectedParcelId) ?? parcels[0],
+    [parcels, selectedParcelId]
   );
 
   const consentRecord = useMemo(
@@ -84,7 +87,7 @@ export function IzinView({ initialParcelId }: { initialParcelId?: string }) {
     [verificationRecords, parcel]
   );
 
-  const isOwnParcel = parcel ? parcel.id.toUpperCase() === OWN_COMMUNITY_PARCEL_ID : false;
+  const isOwnParcel = parcel ? OWN_COMMUNITY_PARCEL_IDS.includes(parcel.id.toUpperCase()) : false;
   const pageState: "loading" | "empty" | "error" | "ready" =
     stateParam === "loading" || isLoading
       ? "loading"
@@ -118,7 +121,7 @@ export function IzinView({ initialParcelId }: { initialParcelId?: string }) {
   if (role !== "community") {
     return (
       <BotanicalAppShell>
-        <div className="space-y-6">
+        <div className="space-y-4">
           <BotanicalPageHeader
             title="Izin Warga (FPIC)"
             description="Pengesahan persetujuan awal tanpa paksaan dan hak menghentikan penjualan unit oleh perwakilan komunitas."
@@ -135,14 +138,14 @@ export function IzinView({ initialParcelId }: { initialParcelId?: string }) {
   if (!isOwnParcel) {
     return (
       <BotanicalAppShell>
-        <div className="space-y-6">
+        <div className="space-y-4">
           <BotanicalPageHeader
             title="Izin Warga (FPIC)"
             description="Pengelolaan persetujuan komunitas pada lahan yang terhubung dengan akun Anda."
           />
           <RoleRestrictedNotice
             title="Lahan di luar kelolaan akun ini"
-            reason={`Akun ${user?.name ?? "Komunitas"} hanya berwenang mengelola Lahan A Bogor (${OWN_COMMUNITY_PARCEL_ID}). Lahan ${requestedParcelId} dikelola oleh komunitas wilayah lain.`}
+            reason={`Akun ${user?.name ?? "Komunitas"} hanya berwenang mengelola Lahan A & Lahan C (${OWN_COMMUNITY_PARCEL_IDS.join(", ")}). Lahan ${selectedParcelId} dikelola oleh komunitas wilayah lain.`}
           />
         </div>
       </BotanicalAppShell>
@@ -151,18 +154,39 @@ export function IzinView({ initialParcelId }: { initialParcelId?: string }) {
 
   return (
     <BotanicalAppShell>
-      <div key={retryKey} className="space-y-6">
+      <div key={retryKey} className="space-y-4">
         <BotanicalPageHeader
           title="Izin Warga (FPIC)"
-          description="Persetujuan atas dasar informasi awal tanpa paksaan untuk Lahan A Bogor. Perubahan Anda langsung menentukan terbuka atau bekunya unit di pasar simulasi."
+          description="Persetujuan atas dasar informasi awal tanpa paksaan untuk lahan kelolaan komunitas. Perubahan Anda langsung menentukan terbuka atau bekunya unit di pasar simulasi."
           actions={
-            <Link
-              href={`/peta/${parcel.id}`}
-              className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 text-[14px] font-semibold text-[var(--ink)] transition hover:bg-[var(--surface-soft)]"
-            >
-              <span>Lihat di peta</span>
-              <ArrowUpRight className="h-4 w-4 text-[var(--forest-700)]" aria-hidden="true" />
-            </Link>
+            <div className="flex flex-wrap items-center gap-2">
+              {OWN_COMMUNITY_PARCEL_IDS.map((pid) => (
+                <button
+                  key={pid}
+                  type="button"
+                  onClick={() => setSelectedParcelId(pid)}
+                  className={`xbm-pressable inline-flex min-h-[38px] items-center gap-1.5 rounded-full border px-3.5 text-[13px] font-semibold transition ${
+                    selectedParcelId === pid
+                      ? "border-[var(--forest-700)] bg-[var(--forest-700)] text-white"
+                      : "border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] hover:bg-[var(--surface-soft)]"
+                  }`}
+                >
+                  <PulseDot
+                    className={selectedParcelId === pid ? "text-white" : "text-[var(--forest-700)]"}
+                    pulsing={selectedParcelId === pid}
+                    label={`Pilih ${pid}`}
+                  />
+                  <span>{pid}</span>
+                </button>
+              ))}
+              <Link
+                href={`/peta/${parcel.id}`}
+                className="inline-flex min-h-[38px] items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] px-3.5 text-[13px] font-semibold text-[var(--ink)] transition hover:bg-[var(--surface-soft)]"
+              >
+                <span>Lihat di peta</span>
+                <ArrowUpRight className="h-4 w-4 text-[var(--forest-700)]" aria-hidden="true" />
+              </Link>
+            </div>
           }
         />
 
@@ -179,7 +203,7 @@ export function IzinView({ initialParcelId }: { initialParcelId?: string }) {
               {feedback && (
                 <div
                   role="status"
-                  className={`rounded-2xl border p-4 text-[15px] font-medium ${
+                  className={`rounded-2xl border p-3.5 text-[14.5px] font-medium ${
                     feedback.ok
                       ? "border-[var(--status-verified-line)] bg-[var(--status-verified-bg)] text-[var(--status-verified-ink)]"
                       : "border-[var(--status-blocked-line)] bg-[var(--status-blocked-bg)] text-[var(--status-blocked-ink)]"
@@ -189,13 +213,13 @@ export function IzinView({ initialParcelId }: { initialParcelId?: string }) {
                 </div>
               )}
 
-              <BotanicalCard className="p-6">
-                <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+              <BotanicalCard className="p-5">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                     {activeConsent === "granted" ? (
                       <Mascot
                         pose="mengangguk"
-                        size={80}
+                        size={72}
                         alt="Izin warga aktif"
                         className="shrink-0"
                       />
@@ -206,19 +230,19 @@ export function IzinView({ initialParcelId }: { initialParcelId?: string }) {
                     )}
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="xb-mono text-[13.5px] font-semibold text-[var(--ink-muted)]">
+                        <span className="xb-mono text-[13px] font-semibold text-[var(--ink-muted)]">
                           {parcel.id}
                         </span>
                         <ConsentStatusBadge status={activeConsent} compact />
                         <CanonicalStatusBadge status={canonicalStatus} compact />
                       </div>
-                      <h2 className="xb-display mt-1.5 text-[21px] font-bold text-[var(--ink)]">
+                      <h2 className="xb-display mt-1 text-[20px] font-bold text-[var(--ink)]">
                         {parcel.name}
                       </h2>
-                      <p className="mt-1 text-[15px] leading-relaxed text-[var(--ink-muted)]">
+                      <p className="mt-0.5 text-[14px] leading-relaxed text-[var(--ink-muted)]">
                         {CONSENT_DISPLAY[activeConsent].detail}
                       </p>
-                      <p className="mt-1 text-[13.5px] text-[var(--ink-muted)]">
+                      <p className="mt-1 text-[13px] text-[var(--ink-muted)]">
                         Pengampu tercatat:{" "}
                         <span className="font-semibold text-[var(--ink)]">
                           {consentRecord?.community ?? parcel.community}
@@ -234,18 +258,18 @@ export function IzinView({ initialParcelId }: { initialParcelId?: string }) {
                       <button
                         type="button"
                         onClick={() => setConfirmTarget("granted")}
-                        className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full bg-[var(--forest-700)] px-6 text-[15px] font-semibold text-white transition hover:bg-[var(--forest-800)]"
+                        className="xbm-pressable inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-[var(--forest-700)] px-5 text-[14.5px] font-semibold text-white transition hover:bg-[var(--forest-800)]"
                       >
-                        <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
+                        <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
                         <span>Berikan izin pemantauan</span>
                       </button>
                     ) : (
                       <button
                         type="button"
                         onClick={() => setConfirmTarget("revoked")}
-                        className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full border border-[var(--status-blocked-line)] bg-[var(--status-blocked-bg)] px-6 text-[15px] font-semibold text-[var(--status-blocked-ink)] transition hover:brightness-95"
+                        className="xbm-pressable inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full border border-[var(--status-blocked-line)] bg-[var(--status-blocked-bg)] px-5 text-[14.5px] font-semibold text-[var(--status-blocked-ink)] transition hover:brightness-95"
                       >
-                        <Lock className="h-5 w-5" aria-hidden="true" />
+                        <Lock className="h-4 w-4" aria-hidden="true" />
                         <span>Gunakan hak henti (Cabut izin)</span>
                       </button>
                     )}
@@ -253,74 +277,82 @@ export function IzinView({ initialParcelId }: { initialParcelId?: string }) {
                 </div>
               </BotanicalCard>
 
-              <div className="grid gap-5 lg:grid-cols-12">
-                <BotanicalCard className="flex h-full flex-col justify-between p-6 lg:col-span-7">
+              <div className="grid gap-4 lg:grid-cols-12">
+                <BotanicalCard className="flex h-full flex-col justify-between p-5 lg:col-span-7">
                   <div>
                     <div className="flex items-center gap-2.5">
                       <Users className="h-5 w-5 text-[var(--forest-700)]" aria-hidden="true" />
-                      <h2 className="xb-display text-[19px] font-bold text-[var(--ink)]">
+                      <h2 className="xb-display text-[18px] font-bold text-[var(--ink)]">
                         Ringkasan Hak dan Aturan FPIC
                       </h2>
                     </div>
-                    <p className="mt-1.5 text-[14.5px] text-[var(--ink-muted)]">
+                    <p className="mt-1 text-[14px] text-[var(--ink-muted)]">
                       Tiga prinsip utama yang menjaga suara warga sebelum hasil lahan dapat disimulasikan.
                     </p>
-                    <div className="mt-4 space-y-3">
+                    <div className="mt-3 space-y-2.5">
                       {FPIC_POINTS.map((item, idx) => (
                         <div
                           key={item.title}
-                          className="rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-4"
+                          className="rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-3.5"
                         >
-                          <p className="text-[15.5px] font-bold text-[var(--ink)]">
+                          <p className="text-[14.5px] font-bold text-[var(--ink)]">
                             {idx + 1}. {item.title}
                           </p>
-                          <p className="mt-1 text-[14.5px] leading-relaxed text-[var(--ink-muted)]">
+                          <p className="mt-0.5 text-[13.5px] leading-relaxed text-[var(--ink-muted)]">
                             {item.body}
                           </p>
                         </div>
                       ))}
                     </div>
                   </div>
-                  <p className="mt-4 border-t border-[var(--line-subtle)] pt-3 text-[13px] text-[var(--ink-muted)]">
+                  <p className="mt-3 border-t border-[var(--line-subtle)] pt-2.5 text-[12.5px] text-[var(--ink-muted)]">
                     Catatan persetujuan maupun pencabutan tersimpan bersama jejak hash waktu WIB untuk keperluan audit bersama.
                   </p>
                 </BotanicalCard>
 
-                <BotanicalCard className="flex h-full flex-col justify-between p-6 lg:col-span-5">
+                <BotanicalCard className="flex h-full flex-col justify-between p-5 lg:col-span-5">
                   <div>
                     <div className="flex items-center gap-2.5">
                       <FileCheck2 className="h-5 w-5 text-[var(--seal-600)]" aria-hidden="true" />
-                      <h2 className="xb-display text-[19px] font-bold text-[var(--ink)]">
+                      <h2 className="xb-display text-[18px] font-bold text-[var(--ink)]">
                         Dampak Keputusan Saat Ini
                       </h2>
                     </div>
-                    <div className="mt-4 space-y-3 text-[15px]">
-                      <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4">
-                        <p className="text-[13.5px] font-medium text-[var(--ink-muted)]">Status pasar simulasi</p>
-                        <p className="mt-1 font-bold text-[var(--ink)]">
+                    <div className="mt-3 space-y-2.5 text-[14.5px]">
+                      <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5">
+                        <p className="text-[13px] font-medium text-[var(--ink-muted)]">Status pasar simulasi</p>
+                        <p className="mt-0.5 font-bold text-[var(--ink)]">
                           {activeConsent === "granted"
                             ? "Terbuka untuk alokasi unit terverifikasi"
                             : "Dibekukan otomatis oleh sistem (0 unit tersedia)"}
                         </p>
                       </div>
-                      <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4">
-                        <p className="text-[13.5px] font-medium text-[var(--ink-muted)]">Luas area & cadangan</p>
-                        <p className="xb-numeric mt-1 font-bold text-[var(--ink)]">
-                          {parcel.area} ha · {parcel.availableUnits.toLocaleString("id-ID")} tCO2e
+                      <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5">
+                        <p className="text-[13px] font-medium text-[var(--ink-muted)]">Luas area & cadangan</p>
+                        <p className="xb-numeric mt-0.5 font-bold text-[var(--ink)]">
+                          <LiveNumber
+                            value={parcel.area}
+                            format={(val: number) => `${Math.round(val)} ha`}
+                          />{" "}
+                          ·{" "}
+                          <LiveNumber
+                            value={parcel.availableUnits}
+                            format={(val: number) => `${Math.round(val).toLocaleString("id-ID")} tCO2e`}
+                          />
                         </p>
                       </div>
-                      <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4">
-                        <p className="text-[13.5px] font-medium text-[var(--ink-muted)]">Tautan pemeriksaan</p>
-                        <div className="mt-2.5 flex flex-wrap gap-2">
+                      <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5">
+                        <p className="text-[13px] font-medium text-[var(--ink-muted)]">Tautan pemeriksaan</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
                           <Link
                             href={`/pasar/${parcel.id}`}
-                            className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface-soft)] px-4 text-[14px] font-semibold text-[var(--ink)] transition hover:bg-[var(--leaf-100)]"
+                            className="inline-flex min-h-[38px] items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface-soft)] px-3.5 text-[13.5px] font-semibold text-[var(--ink)] transition hover:bg-[var(--leaf-100)]"
                           >
                             <span>Cek status di Pasar</span>
                           </Link>
                           <Link
                             href="/screener"
-                            className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface-soft)] px-4 text-[14px] font-semibold text-[var(--ink)] transition hover:bg-[var(--leaf-100)]"
+                            className="inline-flex min-h-[38px] items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface-soft)] px-3.5 text-[13.5px] font-semibold text-[var(--ink)] transition hover:bg-[var(--leaf-100)]"
                           >
                             <span>Lihat di Screener</span>
                           </Link>
@@ -328,7 +360,7 @@ export function IzinView({ initialParcelId }: { initialParcelId?: string }) {
                       </div>
                     </div>
                   </div>
-                  <p className="mt-4 border-t border-[var(--line-subtle)] pt-3 text-[13px] text-[var(--ink-muted)]">
+                  <p className="mt-3 border-t border-[var(--line-subtle)] pt-2.5 text-[12.5px] text-[var(--ink-muted)]">
                     Hak suara warga bersifat mengikat dan selalu mengalahkan izin simulasi komersial.
                   </p>
                 </BotanicalCard>

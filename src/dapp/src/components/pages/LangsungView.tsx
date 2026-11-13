@@ -32,6 +32,7 @@ import {
 import { ZONES_CATALOG } from "@/lib/copy";
 import { formatWibTime } from "@/lib/dashboard-helpers";
 import { formatIdr, formatNumber } from "@/components/dapp/phantom-ui";
+import { LiveNumber, LiveClock } from "@/components/motion";
 
 type StreamStatus = "live" | "reconnecting" | "polling";
 
@@ -128,7 +129,7 @@ export function LangsungView() {
     }
 
     // Mock stream / fallback polling cadence
-    const intervalMs = streamStatus === "polling" ? 10_000 : 6_000;
+    const intervalMs = streamStatus === "polling" ? 10_000 : 4_500;
     const timer = setInterval(() => {
       if (streamStatus === "reconnecting") return;
       const targetParcel =
@@ -203,11 +204,15 @@ export function LangsungView() {
     const available = parcels.reduce((sum, p) => sum + p.availableUnits, 0);
     const frozen = parcels.reduce((sum, p) => sum + p.frozenUnits, 0);
     const todayGross = feedRows.reduce((sum, r) => sum + r.total_idr, 0);
+    const todayUnits = feedRows.reduce((sum, r) => sum + r.units, 0);
+    const todayCommunity = feedRows.reduce((sum, r) => sum + r.community_idr, 0);
     return {
       available,
       frozen,
       totalPool: Math.max(available + frozen, 1),
       todayGross,
+      todayUnits,
+      todayCommunity,
     };
   }, [parcels, feedRows]);
 
@@ -292,15 +297,24 @@ export function LangsungView() {
           description="Pantau aliran alokasi unit simulasi, perubahan status sensor lapangan, dan akumulasi pendapatan simulasi secara waktu nyata."
           showSimulation
           actions={
-            <button
-              type="button"
-              onClick={() =>
-                setStreamStatus((prev) => (prev === "live" ? "polling" : "live"))
-              }
-              className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 text-[14px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-soft)]"
-            >
-              <span>{streamStatus === "live" ? "Uji mode polling" : "Aktifkan stream"}</span>
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() =>
+                  setStreamStatus((prev) => (prev === "live" ? "polling" : "live"))
+                }
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 text-[14px] font-semibold text-[var(--ink)] transition-transform duration-150 hover:scale-[1.01] active:scale-95 hover:bg-[var(--surface-soft)]"
+              >
+                <span>{streamStatus === "live" ? "Uji mode polling" : "Aktifkan stream"}</span>
+              </button>
+              <span className="xb-numeric hidden items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] px-3.5 py-2 text-[13px] font-semibold text-[var(--ink-muted)] md:inline-flex">
+                <span aria-hidden="true" className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--forest-700)] opacity-55" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--forest-700)]" />
+                </span>
+                <LiveClock />
+              </span>
+            </div>
           }
         />
 
@@ -313,7 +327,55 @@ export function LangsungView() {
             role === "manager" ? "Putar skenario di halaman Pasar" : undefined
           }
         >
-          <div className="grid gap-5 xl:grid-cols-12">
+          {/* Live Stream Telemetry Strip */}
+          <div className="grid grid-cols-2 gap-3.5 lg:grid-cols-4">
+            <BotanicalCard interactive className="p-4">
+              <p className="text-[13px] font-medium text-[var(--ink-muted)]">Transaksi sesi aktif</p>
+              <p className="xb-display xb-numeric mt-1 text-[23px] font-bold text-[var(--ink)]">
+                <LiveNumber value={feedRows.length} format={(v) => String(Math.round(v))} />{" "}
+                <span className="text-[13.5px] font-medium text-[var(--ink-muted)]">catatan</span>
+              </p>
+              <p className="mt-1 text-[12px] text-[var(--status-verified-ink)]">
+                Stream {streamStatus === "live" ? "aktif (tiap 4,5 dtk)" : "mode polling"}
+              </p>
+            </BotanicalCard>
+
+            <BotanicalCard interactive className="p-4">
+              <p className="text-[13px] font-medium text-[var(--ink-muted)]">Volume mengalir hari ini</p>
+              <p className="xb-display xb-numeric mt-1 text-[23px] font-bold text-[var(--status-verified-ink)]">
+                <LiveNumber
+                  value={totalsSummary.todayUnits}
+                  format={(v) => formatNumber(Math.round(v))}
+                />{" "}
+                <span className="text-[13.5px] font-medium text-[var(--ink-muted)]">tCO2e</span>
+              </p>
+              <p className="mt-1 text-[12px] text-[var(--ink-muted)]">
+                Dari {parcels.filter((p) => p.verificationStatus === "verified").length} lahan terverifikasi
+              </p>
+            </BotanicalCard>
+
+            <BotanicalCard interactive className="p-4">
+              <p className="text-[13px] font-medium text-[var(--ink-muted)]">Hak komunitas (60%)</p>
+              <p className="xb-display xb-numeric mt-1 text-[23px] font-bold text-[var(--ink)]">
+                <LiveNumber value={totalsSummary.todayCommunity} format={formatIdr} />
+              </p>
+              <p className="mt-1 text-[12px] text-[var(--ink-muted)]">
+                Setelah biaya sandbox 2%
+              </p>
+            </BotanicalCard>
+
+            <BotanicalCard interactive className="p-4">
+              <p className="text-[13px] font-medium text-[var(--ink-muted)]">Detak sensor lapangan</p>
+              <p className="xb-display xb-numeric mt-1 text-[23px] font-bold text-[var(--seal-600)]">
+                <LiveNumber value={lastSensorSec} format={(v) => `${Math.round(v)} dtk`} />
+              </p>
+              <p className="mt-1 text-[12px] text-[var(--ink-muted)]">
+                {sensors.length} titik telemetri Bogor
+              </p>
+            </BotanicalCard>
+          </div>
+
+          <div className="grid gap-4 xl:grid-cols-12">
             {/* Left 2/3 Column: Live Feed */}
             <BotanicalCard className="flex h-full flex-col justify-between overflow-hidden xl:col-span-8">
               <div>
@@ -323,9 +385,16 @@ export function LangsungView() {
                       Umpan Transaksi Simulasi
                     </h2>
                     <span
-                      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[13.5px] font-semibold ${statusMeta.cls}`}
+                      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[13.5px] font-semibold transition-transform duration-150 hover:scale-[1.02] ${statusMeta.cls}`}
                     >
-                      <statusMeta.Icon className="h-3.5 w-3.5" aria-hidden="true" />
+                      <span aria-hidden="true" className="relative flex h-1.5 w-1.5">
+                        <span
+                          className={`absolute inline-flex h-full w-full rounded-full opacity-55 ${
+                            streamStatus === "live" ? "animate-ping bg-[var(--forest-700)]" : ""
+                          }`}
+                        />
+                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-current" />
+                      </span>
                       <span>{statusMeta.label}</span>
                     </span>
                   </div>
@@ -478,13 +547,18 @@ export function LangsungView() {
                     </span>
                   </div>
 
-                  <div className="mt-4 rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-4">
+                  <div className="mt-4 rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-4 transition-transform duration-200 hover:-translate-y-0.5">
                     <p className="text-[13.5px] font-medium text-[var(--ink-muted)]">
                       Pendapatan hari ini
                     </p>
-                    <p className="xb-display xb-numeric mt-1 text-[26px] font-bold text-[var(--ink)]">
-                      {formatIdr(totalsSummary.todayGross)}
-                    </p>
+                    <div className="mt-1">
+                      <LiveNumber
+                        value={totalsSummary.todayGross}
+                        format={formatIdr}
+                        className="xb-display xb-numeric text-[26px] font-bold text-[var(--ink)]"
+                        durationMs={700}
+                      />
+                    </div>
                   </div>
 
                   <div className="mt-4 space-y-2">
@@ -546,27 +620,32 @@ export function LangsungView() {
                 </div>
 
                 <p className="xb-numeric mt-4 flex items-center gap-1.5 border-t border-[var(--line-subtle)] pt-3 text-[13.5px] text-[var(--ink-muted)]">
-                  <Radio className="h-4 w-4 text-[var(--forest-700)]" aria-hidden="true" />
-                  <span>Sensor terakhir diterima {lastSensorSec} detik lalu</span>
+                  <span aria-hidden="true" className="relative flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--forest-700)] opacity-55" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--forest-700)]" />
+                  </span>
+                  <span>
+                    Sensor terakhir diterima {lastSensorSec} detik lalu
+                  </span>
                 </p>
               </BotanicalCard>
             </div>
           </div>
 
           {/* Bottom Full-Width Cumulative Revenue Chart */}
-          <BotanicalCard className="p-6">
+          <BotanicalCard className="p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <h2 className="xb-display text-[18px] font-bold text-[var(--ink)]">
+                <h2 className="xb-display text-[17px] font-bold text-[var(--ink)]">
                   Pendapatan Kumulatif Hari Ini per Jam
                 </h2>
-                <p className="text-[14.5px] text-[var(--ink-muted)]">
+                <p className="text-[13.5px] text-[var(--ink-muted)]">
                   Akumulasi nilai transaksi simulasi yang tercatat pada sesi berjalan
                 </p>
               </div>
               <Link
                 href="/rekap/harian"
-                className="inline-flex min-h-[40px] items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface-soft)] px-4 text-[14px] font-semibold text-[var(--ink)] hover:bg-[var(--leaf-100)]"
+                className="inline-flex min-h-[38px] items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface-soft)] px-4 text-[13.5px] font-semibold text-[var(--ink)] hover:bg-[var(--leaf-100)]"
               >
                 <span>Buka Rekap Harian</span>
                 <ArrowUpRight className="h-4 w-4 text-[var(--forest-700)]" aria-hidden="true" />
@@ -574,12 +653,12 @@ export function LangsungView() {
             </div>
 
             <div
-              className="mt-4"
+              className="mt-3"
               aria-label={`Grafik pendapatan kumulatif hari ini total ${formatIdr(totalsSummary.todayGross)}`}
             >
               <MarketTrendAreaChart
                 data={cumulativeSeries}
-                heightClassName="h-[235px]"
+                heightClassName="h-[190px]"
                 contextTag="Kumulatif Sesi"
               />
             </div>

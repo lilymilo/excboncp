@@ -199,6 +199,7 @@ export function MarketTrendAreaChart({
             <Area
               type="monotone"
               dataKey="grossIdr"
+              isAnimationActive={false}
               stroke={BOTANICAL_CHART_COLORS.line}
               strokeWidth={2.5}
               fillOpacity={1}

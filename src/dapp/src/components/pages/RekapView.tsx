@@ -51,24 +51,25 @@ import {
 import { buildReportSummary } from "@/lib/exbon-api";
 import { formatWibTime } from "@/lib/dashboard-helpers";
 import { formatIdr, formatNumber } from "@/components/dapp/phantom-ui";
+import { LiveNumber } from "@/components/motion";
 
 function DeltaIndicator({ current, prev }: { current: number; prev: number | null }) {
   if (prev === null || prev === 0) {
-    return <p className="mt-1 text-[13px] text-[var(--ink-muted)]">tidak ada pembanding</p>;
+    return <p className="mt-1 text-[12px] text-[var(--ink-muted)]">tetap</p>;
   }
   const pct = Math.round(((current - prev) / prev) * 100);
   const sign = pct > 0 ? "+" : "";
   const isUp = pct >= 0;
   return (
     <p
-      className={`xb-numeric mt-1 flex items-center gap-1 text-[13.5px] font-semibold ${
+      className={`xb-numeric mt-1 flex items-center gap-1 text-[12px] font-semibold ${
         isUp ? "text-[var(--status-verified-ink)]" : "text-[var(--status-dispute-ink)]"
       }`}
     >
-      <TrendingUp className="h-3.5 w-3.5" aria-hidden="true" />
+      <TrendingUp className="h-3 w-3 shrink-0" aria-hidden="true" />
       <span>
         {sign}
-        {pct}% dibanding periode sebelumnya
+        {pct}% vs lalu
       </span>
     </p>
   );
@@ -244,12 +245,15 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
           emptyActionHref={`/rekap/${periodKey}?tanggal=${encodeURIComponent(todayWib)}`}
           emptyActionLabel={`Buka ${currentPeriodButtonLabel.toLowerCase()}`}
         >
-          {/* 6 Summary KPIs */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <BotanicalCard className="p-5">
-              <p className="text-[14px] font-medium text-[var(--ink-muted)]">Jumlah transaksi</p>
-              <p className="xb-display xb-numeric mt-1 text-[28px] font-bold text-[var(--ink)]">
-                {formatNumber(report.totals.trades)}
+          {/* 6 Summary KPIs in a compact 6-column strip */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
+            <BotanicalCard interactive className="p-3.5">
+              <p className="truncate text-[12.5px] font-medium text-[var(--ink-muted)]">Transaksi</p>
+              <p className="xb-display xb-numeric mt-1 text-[21px] font-bold text-[var(--ink)]">
+                <LiveNumber
+                  value={report.totals.trades}
+                  format={(v) => formatNumber(Math.round(v))}
+                />
               </p>
               <DeltaIndicator
                 current={report.totals.trades}
@@ -257,11 +261,14 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
               />
             </BotanicalCard>
 
-            <BotanicalCard className="p-5">
-              <p className="text-[14px] font-medium text-[var(--ink-muted)]">Unit terjual</p>
-              <p className="xb-display xb-numeric mt-1 text-[28px] font-bold text-[var(--status-verified-ink)]">
-                {formatNumber(report.totals.units_sold)}{" "}
-                <span className="text-[15px] font-semibold text-[var(--ink-muted)]">tCO2e</span>
+            <BotanicalCard interactive className="p-3.5">
+              <p className="truncate text-[12.5px] font-medium text-[var(--ink-muted)]">Unit terjual</p>
+              <p className="xb-display xb-numeric mt-1 text-[21px] font-bold text-[var(--status-verified-ink)]">
+                <LiveNumber
+                  value={report.totals.units_sold}
+                  format={(v) => formatNumber(Math.round(v))}
+                />{" "}
+                <span className="text-[12.5px] font-semibold text-[var(--ink-muted)]">t</span>
               </p>
               <DeltaIndicator
                 current={report.totals.units_sold}
@@ -269,10 +276,10 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
               />
             </BotanicalCard>
 
-            <BotanicalCard className="p-5">
-              <p className="text-[14px] font-medium text-[var(--ink-muted)]">Pendapatan simulasi</p>
-              <p className="xb-display xb-numeric mt-1 text-[26px] font-bold text-[var(--ink)]">
-                {formatIdr(report.totals.gross)}
+            <BotanicalCard interactive className="p-3.5">
+              <p className="truncate text-[12.5px] font-medium text-[var(--ink-muted)]">Pendapatan</p>
+              <p className="xb-display xb-numeric mt-1 truncate text-[19px] font-bold text-[var(--ink)]">
+                <LiveNumber value={report.totals.gross} format={formatIdr} />
               </p>
               <DeltaIndicator
                 current={report.totals.gross}
@@ -280,12 +287,12 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
               />
             </BotanicalCard>
 
-            <BotanicalCard className="p-5">
-              <p className="text-[14px] font-medium text-[var(--ink-muted)]">
-                Bagian komunitas (60% bersih)
+            <BotanicalCard interactive className="p-3.5">
+              <p className="truncate text-[12.5px] font-medium text-[var(--ink-muted)]">
+                Komunitas (60%)
               </p>
-              <p className="xb-display xb-numeric mt-1 text-[26px] font-bold text-[var(--status-verified-ink)]">
-                {formatIdr(report.totals.community)}
+              <p className="xb-display xb-numeric mt-1 truncate text-[19px] font-bold text-[var(--status-verified-ink)]">
+                <LiveNumber value={report.totals.community} format={formatIdr} />
               </p>
               <DeltaIndicator
                 current={report.totals.community}
@@ -293,12 +300,12 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
               />
             </BotanicalCard>
 
-            <BotanicalCard className="p-5">
-              <p className="text-[14px] font-medium text-[var(--ink-muted)]">
-                Bagian pengelola (40% bersih)
+            <BotanicalCard interactive className="p-3.5">
+              <p className="truncate text-[12.5px] font-medium text-[var(--ink-muted)]">
+                Pengelola (40%)
               </p>
-              <p className="xb-display xb-numeric mt-1 text-[26px] font-bold text-[var(--forest-800)]">
-                {formatIdr(report.totals.manager)}
+              <p className="xb-display xb-numeric mt-1 truncate text-[19px] font-bold text-[var(--forest-800)]">
+                <LiveNumber value={report.totals.manager} format={formatIdr} />
               </p>
               <DeltaIndicator
                 current={report.totals.manager}
@@ -306,11 +313,14 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
               />
             </BotanicalCard>
 
-            <BotanicalCard className="p-5">
-              <p className="text-[14px] font-medium text-[var(--ink-muted)]">Unit dibekukan</p>
-              <p className="xb-display xb-numeric mt-1 text-[28px] font-bold text-[var(--status-blocked-ink)]">
-                {formatNumber(report.totals.units_frozen)}{" "}
-                <span className="text-[15px] font-semibold text-[var(--ink-muted)]">tCO2e</span>
+            <BotanicalCard interactive className="p-3.5">
+              <p className="truncate text-[12.5px] font-medium text-[var(--ink-muted)]">Unit beku</p>
+              <p className="xb-display xb-numeric mt-1 text-[21px] font-bold text-[var(--status-blocked-ink)]">
+                <LiveNumber
+                  value={report.totals.units_frozen}
+                  format={(v) => formatNumber(Math.round(v))}
+                />{" "}
+                <span className="text-[12.5px] font-semibold text-[var(--ink-muted)]">t</span>
               </p>
               <DeltaIndicator
                 current={report.totals.units_frozen}
@@ -320,12 +330,12 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
           </div>
 
           {/* Revenue Bar Chart + Key Events */}
-          <div className="grid gap-5 xl:grid-cols-12">
-            <BotanicalCard className="flex h-full flex-col justify-between p-6 xl:col-span-7">
+          <div className="grid gap-4 xl:grid-cols-12">
+            <BotanicalCard className="flex h-full flex-col justify-between p-5 xl:col-span-7">
               <div>
-                <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                   <div>
-                    <h2 className="xb-display text-[18px] font-bold text-[var(--ink)]">
+                    <h2 className="xb-display text-[17.5px] font-bold text-[var(--ink)]">
                       Grafik Pendapatan per{" "}
                       {periodKey === "harian"
                         ? "Jam"
@@ -333,13 +343,13 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                         ? "Bulan"
                         : "Hari"}
                     </h2>
-                    <p className="text-[14.5px] text-[var(--ink-muted)]">
+                    <p className="text-[13.5px] text-[var(--ink-muted)]">
                       Nilai rupiah simulasi beserta jumlah unit per titik observasi.
                     </p>
                   </div>
                 </div>
                 <div
-                  className="xb-financial-chart h-[250px] w-full"
+                  className="xb-financial-chart h-[215px] w-full"
                   aria-label={`Grafik batang pendapatan simulasi periode ${PERIOD_LABELS[periodKey]} total ${formatIdr(report.totals.gross)}`}
                 >
                   <ResponsiveContainer width="100%" height="100%">
@@ -389,22 +399,22 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
               <ChartBenchmarkBar stats={bucketStats} />
             </BotanicalCard>
 
-            <BotanicalCard className="flex h-full flex-col justify-between p-6 xl:col-span-5">
+            <BotanicalCard className="flex h-full flex-col justify-between p-5 xl:col-span-5">
               <div>
-                <h2 className="xb-display text-[18px] font-bold text-[var(--ink)]">
+                <h2 className="xb-display text-[17.5px] font-bold text-[var(--ink)]">
                   Kejadian Penting
                 </h2>
-                <p className="mt-0.5 text-[14.5px] text-[var(--ink-muted)]">
+                <p className="mt-0.5 text-[13.5px] text-[var(--ink-muted)]">
                   Pembaruan status, sensor, izin warga, dan segel pada periode ini.
                 </p>
-                <ul className="mt-4 space-y-2.5">
-                  {report.events.map((ev) => (
+                <ul className="mt-3 space-y-2">
+                  {report.events.slice(0, 4).map((ev) => (
                     <li key={ev.id}>
                       <Link
                         href={ev.href}
-                        className="flex min-h-[44px] items-start justify-between gap-2.5 rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-3.5 hover:bg-[var(--leaf-100)]"
+                        className="flex min-h-[42px] items-start justify-between gap-2.5 rounded-xl border border-[var(--line)] bg-[var(--surface-soft)] px-3 py-2.5 hover:bg-[var(--leaf-100)]"
                       >
-                        <div className="flex items-start gap-2.5">
+                        <div className="flex items-start gap-2">
                           {ev.type === "seal" ? (
                             <ShieldCheck
                               className="mt-0.5 h-4 w-4 shrink-0 text-[var(--seal-600)]"
@@ -422,10 +432,10 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                             />
                           )}
                           <div>
-                            <p className="xb-numeric text-[13px] font-semibold text-[var(--ink-muted)]">
+                            <p className="xb-numeric text-[12px] font-semibold text-[var(--ink-muted)]">
                               {formatWibTime(ev.ts)} · {ev.parcel_id}
                             </p>
-                            <p className="text-[14.5px] font-medium text-[var(--ink)]">{ev.text}</p>
+                            <p className="line-clamp-1 text-[13.5px] font-medium text-[var(--ink)]">{ev.text}</p>
                           </div>
                         </div>
                         <ArrowUpRight
@@ -437,8 +447,8 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                   ))}
                 </ul>
               </div>
-              <div className="mt-4 border-t border-[var(--line-subtle)] pt-3 text-[13px] text-[var(--ink-muted)]">
-                Menampilkan {report.events.length} catatan kejadian periode terpilih.
+              <div className="mt-3 border-t border-[var(--line-subtle)] pt-2.5 text-[12.5px] text-[var(--ink-muted)]">
+                Menampilkan {Math.min(4, report.events.length)} dari {report.events.length} catatan kejadian.
               </div>
             </BotanicalCard>
           </div>

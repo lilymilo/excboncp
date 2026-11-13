@@ -172,7 +172,8 @@ export async function fetchBogorGeoJson(): Promise<GeoJsonFeatureCollection | nu
 }
 
 export function mapParcelZoneId(parcelId: string): "ZONE-DEMO-A" | "ZONE-DEMO-B" {
-  return parcelId.toUpperCase().includes("B") ? "ZONE-DEMO-B" : "ZONE-DEMO-A";
+  const upper = parcelId.toUpperCase();
+  return upper.includes("B") || upper.includes("D") ? "ZONE-DEMO-B" : "ZONE-DEMO-A";
 }
 
 export function buildScreenerData(params: {
@@ -197,7 +198,7 @@ export function buildScreenerData(params: {
   const { role, parcels, sensors, consentRecords, verificationRecords, transactions } = params;
 
   const scopedParcels =
-    role === "community" ? parcels.filter((p) => p.id === "PARCEL-A") : parcels;
+    role === "community" ? parcels.filter((p) => p.id === "PARCEL-A" || p.id === "PARCEL-C") : parcels;
 
   const rows: ScreenerRow[] = scopedParcels.map((parcel, idx) => {
     const status = toCanonicalStatus(parcel.verificationStatus);
@@ -230,6 +231,10 @@ export function buildScreenerData(params: {
       trend_7d:
         idx === 0
           ? [180, 195, 210, 218, 224, 230, Math.max(parcel.availableUnits, 10)]
+          : idx === 2
+          ? [142, 155, 164, 172, 181, 190, Math.max(parcel.availableUnits, 10)]
+          : idx === 3
+          ? [74, 70, 65, 58, 44, 28, 0]
           : [95, 92, 88, 70, 50, 20, 0],
     };
   });
@@ -413,8 +418,10 @@ export function buildReportSummary(params: {
   ];
 
   const byParcelMap = new Map<string, { parcel_id: string; name: string; units: number; gross: number; community: number }>();
+  const parcelAUnits = Math.round(baseUnits * 0.56);
+  const parcelCUnits = Math.max(0, baseUnits - parcelAUnits);
   parcels.forEach((p) => {
-    const units = p.id === "PARCEL-A" ? baseUnits : 0;
+    const units = p.id === "PARCEL-A" ? parcelAUnits : p.id === "PARCEL-C" ? parcelCUnits : 0;
     const pGross = units * PRICE_PER_TON;
     const pSettle = calculateSettlement(pGross);
     byParcelMap.set(p.id, {
@@ -426,8 +433,10 @@ export function buildReportSummary(params: {
     });
   });
 
+  const zoneAUnits = Math.round(baseUnits * 0.78);
+  const zoneBUnits = Math.max(0, baseUnits - zoneAUnits);
   const by_zone = Object.values(ZONES_CATALOG).map((zone) => {
-    const units = zone.id === "ZONE-DEMO-A" ? baseUnits : 0;
+    const units = zone.id === "ZONE-DEMO-A" ? zoneAUnits : zoneBUnits;
     const zGross = units * PRICE_PER_TON;
     const zSettle = calculateSettlement(zGross);
     return {

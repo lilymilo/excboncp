@@ -1,0 +1,98 @@
+{
+  "type": "FeatureCollection",
+  "name": "Bogor Forest Parcels EXBON CP",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "PARCEL-A",
+        "name": "Hutan Bogor Blok A",
+        "community": "Komunitas Adat Bogor",
+        "region": "Bogor, Jawa Barat",
+        "area_ha": 150
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.784, -6.594],
+            [106.796, -6.591],
+            [106.801, -6.598],
+            [106.797, -6.605],
+            [106.786, -6.603],
+            [106.784, -6.594]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "PARCEL-B",
+        "name": "Hutan Bogor Blok B",
+        "community": "Yayasan Hutan Lestari",
+        "region": "Bogor, Jawa Barat",
+        "area_ha": 220
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.802, -6.592],
+            [106.816, -6.589],
+            [106.821, -6.599],
+            [106.814, -6.608],
+            [106.803, -6.604],
+            [106.802, -6.592]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "PARCEL-C",
+        "name": "Hutan Lindung Sentul Blok C",
+        "community": "KTH Rimba Sentul",
+        "region": "Sentul, Bogor",
+        "area_ha": 145
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.788, -6.606],
+            [106.801, -6.606],
+            [106.804, -6.615],
+            [106.793, -6.618],
+            [106.785, -6.613],
+            [106.788, -6.606]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "PARCEL-D",
+        "name": "Koridor Halimun Blok D",
+        "community": "Masyarakat Adat Ciptagelar",
+        "region": "Cijeruk, Bogor",
+        "area_ha": 110
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [106.805, -6.606],
+            [106.818, -6.609],
+            [106.819, -6.617],
+            [106.808, -6.619],
+            [106.804, -6.614],
+            [106.805, -6.606]
+          ]
+        ]
+      }
+    }
+  ]
+}

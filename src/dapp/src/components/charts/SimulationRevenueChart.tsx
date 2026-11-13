@@ -98,8 +98,8 @@ export function SimulationRevenueChart({
         </div>
       </div>
 
-      <div className="mt-4">
-        <MarketTrendAreaChart data={chartPoints} heightClassName="h-[245px]" />
+      <div className="mt-3">
+        <MarketTrendAreaChart data={chartPoints} heightClassName="h-[215px]" />
       </div>
     </div>
   );
