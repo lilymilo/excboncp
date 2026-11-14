@@ -38,7 +38,9 @@ export function EarthGlobe() {
         >
           <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 border border-white/15 backdrop-blur-md text-[0.72rem] font-medium text-white/80 shadow-lg whitespace-nowrap">
             <svg
-              className="w-3.5 h-3.5 text-[#AEDA2D] opacity-80"
+              width={14}
+              height={14}
+              className="w-3.5 h-3.5 text-[#AEDA2D] opacity-80 shrink-0"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
