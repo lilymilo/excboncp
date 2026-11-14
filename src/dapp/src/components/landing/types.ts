@@ -1,3 +1,5 @@
+import { HotspotItem } from "./StoryHotspots";
+
 export interface StoryTelemetry {
   label: string;
   value: string;
@@ -13,6 +15,7 @@ export interface StoryChapter {
   narrative: string;
   image: string;
   cameraInfo: string;
+  hotspots?: HotspotItem[];
   telemetry?: StoryTelemetry[];
   cta?: {
     primaryText: string;
