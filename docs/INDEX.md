@@ -30,19 +30,22 @@
 | [models/DEPLOYMENT_DIAGRAM.md](models/DEPLOYMENT_DIAGRAM.md) | Infrastructure deployment topology |
 | [models/DAPP_FLOWCHART.md](models/DAPP_FLOWCHART.md) | DApp user interaction flowcharts |
 
-## Technical Reference
+## Technical Reference & Guides
 
 | Document | Description |
 |----------|-------------|
 | [api-reference.md](api-reference.md) | REST API endpoint reference with request/response schemas |
 | [database-schema.md](database-schema.md) | SQLite database schema — tables, columns, constraints, indexes |
 | [contract.md](contract.md) | Model 3 data contracts, Model 6 persistence contract, and EAS attestation documentation (Day 3) |
+| [guides/eas-attestation.md](guides/eas-attestation.md) | Panduan teknis atestasi blockchain Base Sepolia EAS |
+| [guides/windows-setup.md](guides/windows-setup.md) | Panduan instalasi dan eksekusi skrip helper PowerShell Windows |
 | [toolchain.md](toolchain.md) | Development toolchain versions and configuration |
 
 ## Project Management
 
 | Document | Description |
 |----------|-------------|
+| [day-breakdown.md](day-breakdown.md) | Timeline harian dan pembagian peran anggota tim |
 | [requirements-traceability.md](requirements-traceability.md) | R1–R29 traceability matrix — requirements to code to tests |
 | [project-status.md](project-status.md) | Current status dashboard with phase targets |
 | [team-ownership.md](team-ownership.md) | Team member responsibility matrix |
