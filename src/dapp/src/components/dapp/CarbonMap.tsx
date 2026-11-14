@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import type { GeoJsonObject } from "geojson";
 import type * as LeafletNS from "leaflet";
 import { AlertTriangle, Layers, Maximize2, Radio, RefreshCw } from "lucide-react";
 import type { ParcelItem, SensorData } from "@/context/DappContext";
@@ -47,6 +48,12 @@ interface CarbonMapProps {
   forceError?: boolean;
   onRefreshExternal?: () => void;
   className?: string;
+  boundary?: GeoJsonFeatureCollection | null;
+  boundaryLabel?: string;
+  showParcels?: boolean;
+  picking?: boolean;
+  onMapClick?: (point: { lat: number; lng: number }) => void;
+  mapAriaLabel?: string;
 }
 
 export function CarbonMap({
@@ -58,11 +65,18 @@ export function CarbonMap({
   forceError = false,
   onRefreshExternal,
   className,
+  boundary = null,
+  boundaryLabel = "Wilayah uji",
+  showParcels = true,
+  picking = false,
+  onMapClick,
+  mapAriaLabel = "Peta interaktif batas lahan dan titik sensor",
 }: CarbonMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<LeafletNS.Map | null>(null);
   const baseLayerRef = useRef<LeafletNS.TileLayer | null>(null);
   const geoRef = useRef<LeafletNS.GeoJSON | null>(null);
+  const boundaryRef = useRef<LeafletNS.GeoJSON | null>(null);
   const featureBoundsRef = useRef<Record<string, LeafletNS.LatLngBounds>>({});
   const centersRef = useRef<Record<string, [number, number]>>({});
   const sensorLayerRef = useRef<LeafletNS.LayerGroup | null>(null);
@@ -72,11 +86,17 @@ export function CarbonMap({
   const allParcelsRef = useRef<ParcelItem[]>(allParcels ?? parcels);
   const selectedRef = useRef<string | null>(selectedId);
   const selectRef = useRef(onSelect);
+  const mapClickRef = useRef(onMapClick);
+  const showParcelsRef = useRef(showParcels);
+  const boundaryActiveRef = useRef(Boolean(boundary));
 
   visibleIdsRef.current = new Set(parcels.map((p) => p.id));
   allParcelsRef.current = allParcels ?? parcels;
   selectedRef.current = selectedId;
   selectRef.current = onSelect;
+  mapClickRef.current = onMapClick;
+  showParcelsRef.current = showParcels;
+  boundaryActiveRef.current = Boolean(boundary);
 
   const [status, setStatus] = useState<"loading" | "ready">("loading");
   const [dataLoadError, setDataLoadError] = useState(false);
@@ -112,17 +132,47 @@ export function CarbonMap({
     };
   }, []);
 
+  const getVisibleBounds = useCallback(() => {
+    const L = leafletRef.current;
+    if (!L) return null;
+    const bounds = L.latLngBounds([]);
+    visibleIdsRef.current.forEach((id) => {
+      const parcelBounds = featureBoundsRef.current[id];
+      if (parcelBounds) bounds.extend(parcelBounds);
+    });
+    return bounds.isValid() ? bounds : null;
+  }, []);
+
   const handleFitAll = useCallback(() => {
     const map = mapRef.current;
-    const layer = geoRef.current;
-    if (!map || !layer) return;
-    const bounds = layer.getBounds();
-    if (bounds.isValid()) {
-      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15, animate: false });
-    } else {
-      map.setView([-6.5995, 106.7985], 13, { animate: false });
+    if (!map) return;
+
+    const boundaryLayer = boundaryRef.current;
+    if (boundaryLayer) {
+      const boundaryBounds = boundaryLayer.getBounds();
+      if (boundaryBounds.isValid()) {
+        map.fitBounds(boundaryBounds, { padding: [48, 48], maxZoom: 14, animate: false });
+        return;
+      }
     }
-  }, []);
+
+    const visibleBounds = getVisibleBounds();
+    if (visibleBounds) {
+      map.fitBounds(visibleBounds, { padding: [40, 40], maxZoom: 15, animate: false });
+      return;
+    }
+
+    const layer = geoRef.current;
+    if (layer) {
+      const bounds = layer.getBounds();
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14, animate: false });
+        return;
+      }
+    }
+
+    map.setView([-6.5995, 106.7985], 13, { animate: false });
+  }, [getVisibleBounds]);
 
   useEffect(() => {
     let cancelled = false;
@@ -153,6 +203,10 @@ export function CarbonMap({
       mapRef.current = map;
       L.control.zoom({ position: "bottomright" }).addTo(map);
       sensorLayerRef.current = L.layerGroup().addTo(map);
+
+      map.on("click", (event) => {
+        mapClickRef.current?.({ lat: event.latlng.lat, lng: event.latlng.lng });
+      });
 
       const geojson = forceError
         ? null
@@ -210,11 +264,17 @@ export function CarbonMap({
       const selectedBounds = selectedRef.current
         ? featureBoundsRef.current[selectedRef.current]
         : null;
+      const visibleBounds = getVisibleBounds();
       const fullBounds = layer.getBounds();
-      if (selectedBounds && selectedBounds.isValid()) {
-        map.fitBounds(selectedBounds, { padding: [52, 52], maxZoom: 14, animate: false });
-      } else if (fullBounds.isValid()) {
-        map.fitBounds(fullBounds, { padding: [40, 40], maxZoom: 14, animate: false });
+
+      if (!boundaryActiveRef.current && showParcelsRef.current) {
+        if (selectedBounds && selectedBounds.isValid()) {
+          map.fitBounds(selectedBounds, { padding: [52, 52], maxZoom: 14, animate: false });
+        } else if (visibleBounds) {
+          map.fitBounds(visibleBounds, { padding: [40, 40], maxZoom: 14, animate: false });
+        } else if (fullBounds.isValid()) {
+          map.fitBounds(fullBounds, { padding: [40, 40], maxZoom: 14, animate: false });
+        }
       }
 
       setStatus("ready");
@@ -236,11 +296,75 @@ export function CarbonMap({
       mapRef.current = null;
       baseLayerRef.current = null;
       geoRef.current = null;
+      boundaryRef.current = null;
       sensorLayerRef.current = null;
       featureBoundsRef.current = {};
       centersRef.current = {};
     };
-  }, [reloadNonce, forceError, styleFor]);
+  }, [reloadNonce, forceError, styleFor, getVisibleBounds]);
+
+  useEffect(() => {
+    const L = leafletRef.current;
+    const map = mapRef.current;
+    if (!L || !map || status !== "ready") return;
+
+    if (boundaryRef.current) {
+      map.removeLayer(boundaryRef.current);
+      boundaryRef.current = null;
+    }
+
+    if (!boundary) {
+      if (showParcels) {
+        const visibleBounds = getVisibleBounds();
+        if (visibleBounds) {
+          map.fitBounds(visibleBounds, { padding: [40, 40], maxZoom: 15, animate: false });
+        }
+      }
+      return;
+    }
+
+    const layer = L.geoJSON(boundary as unknown as GeoJsonObject, {
+      style: () => ({
+        color: "#5B4B8A",
+        weight: 2.5,
+        opacity: 0.95,
+        fillColor: "#B9A7E8",
+        fillOpacity: 0.1,
+        dashArray: "8 5",
+      }),
+      onEachFeature: (_feature, pathLayer) => {
+        pathLayer.bindTooltip(boundaryLabel, {
+          className: "xb-botanical-tooltip",
+          direction: "top",
+          sticky: true,
+        });
+      },
+    }).addTo(map);
+
+    boundaryRef.current = layer;
+    const bounds = layer.getBounds();
+    if (bounds.isValid()) {
+      map.fitBounds(bounds, { padding: [48, 48], maxZoom: 14, animate: false });
+    }
+  }, [boundary, boundaryLabel, status, showParcels, parcels, getVisibleBounds]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    const layer = geoRef.current;
+    if (!map || !layer || status !== "ready") return;
+
+    if (showParcels) {
+      if (!map.hasLayer(layer)) layer.addTo(map);
+    } else if (map.hasLayer(layer)) {
+      map.removeLayer(layer);
+    }
+  }, [showParcels, status]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    map.getContainer().style.cursor = picking ? "crosshair" : "";
+  }, [picking, status]);
 
   useEffect(() => {
     const L = leafletRef.current;
@@ -284,6 +408,8 @@ export function CarbonMap({
     if (!L || !group || status !== "ready") return;
 
     group.clearLayers();
+    if (!showParcels) return;
+
     const perParcel: Record<string, number> = {};
 
     sensors.forEach((sensor) => {
@@ -337,7 +463,7 @@ export function CarbonMap({
       marker.on("click", () => selectRef.current?.(sensor.parcel_id));
       marker.addTo(group);
     });
-  }, [sensors, parcels, status]);
+  }, [sensors, parcels, status, showParcels]);
 
   const selected = (allParcels ?? parcels).find((item) => item.id === selectedId);
   const selectedStatus = selected ? toCanonicalStatus(selected.verificationStatus) : null;
@@ -348,7 +474,7 @@ export function CarbonMap({
         <div
           ref={containerRef}
           className="absolute inset-0 z-0"
-          aria-label="Peta batas lahan kehutanan Bogor berbasis OpenStreetMap"
+          aria-label={mapAriaLabel}
         />
 
         {status === "loading" && (
@@ -356,6 +482,12 @@ export function CarbonMap({
             <span className="text-[15px] font-medium text-[#14261A]">
               Memuat peta dasar dan batas lahan...
             </span>
+          </div>
+        )}
+
+        {picking && (
+          <div className="pointer-events-none absolute left-1/2 top-16 z-20 w-[min(92%,340px)] -translate-x-1/2 rounded-2xl border border-[#5B4B8A]/30 bg-white/95 px-4 py-2.5 text-center text-[13.5px] font-semibold text-[#4A3B73] shadow-md">
+            Klik peta untuk menentukan pusat wilayah uji
           </div>
         )}
 
@@ -406,7 +538,7 @@ export function CarbonMap({
           <button
             type="button"
             onClick={handleFitAll}
-            title="Sesuaikan tampilan ke semua poligon lahan"
+            title={boundary ? "Sesuaikan tampilan ke wilayah uji" : "Sesuaikan tampilan ke semua poligon lahan"}
             className="inline-flex min-h-[38px] items-center gap-1.5 rounded-xl border border-[#D8E5D4] bg-[#F5F9F3] px-3 text-[13.5px] font-semibold text-[#14261A] hover:bg-[#E2F2E5]"
           >
             <Maximize2 className="h-3.5 w-3.5 text-[#2E6B3F]" aria-hidden="true" />
@@ -414,10 +546,10 @@ export function CarbonMap({
           </button>
         </div>
 
-        <div className="pointer-events-none absolute right-3 top-3 z-10 hidden items-center gap-2 rounded-2xl border border-[#D8E5D4] bg-white/95 px-3.5 py-2 shadow-sm sm:flex">
-          <Radio className="h-4 w-4 text-[#1F5A94]" aria-hidden="true" />
-          <span className="xb-numeric text-[13.5px] font-semibold text-[#14261A]">
-            {sensors.length} titik sensor
+        <div className="pointer-events-none absolute right-3 top-3 z-10 hidden max-w-[min(48%,320px)] items-center gap-2 rounded-2xl border border-[#D8E5D4] bg-white/95 px-3.5 py-2 shadow-sm sm:flex">
+          <Radio className="h-4 w-4 shrink-0 text-[#1F5A94]" aria-hidden="true" />
+          <span className="xb-numeric truncate text-[13.5px] font-semibold text-[#14261A]">
+            {boundary ? boundaryLabel : `${sensors.length} titik sensor`}
           </span>
         </div>
 
@@ -427,7 +559,7 @@ export function CarbonMap({
           </div>
         )}
 
-        {selected && !dataLoadError && selectedStatus && (
+        {showParcels && selected && !dataLoadError && selectedStatus && (
           <div className="pointer-events-none absolute bottom-7 left-3 z-10 max-w-[260px] rounded-2xl border border-[#D8E5D4] bg-white/95 px-3.5 py-2.5 shadow-sm">
             <p className="xb-mono text-[12px] font-semibold text-[#1F4D2E]">
               {selected.id} · {STATUS_STYLE[selectedStatus].label}

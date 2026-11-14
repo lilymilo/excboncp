@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
@@ -33,8 +33,10 @@ import {
 import { normalizeUserRole } from "@/context/DappContext";
 import { formatWibDateTime, toCanonicalStatus } from "@/lib/dashboard-helpers";
 import { runIntegrityChecks } from "@/lib/verification";
+import { Pagination } from "@/components/ui/Pagination";
 
 type AuditFilter = "all" | "pending" | "verified" | "flagged";
+const REVIEW_PAGE_SIZE = 5;
 
 function shortHash(value?: string | null): string {
   if (!value) return "-";
@@ -66,6 +68,7 @@ export function TinjauView() {
   const [confirmDecision, setConfirmDecision] = useState<"verified" | "flagged" | null>(null);
   const [feedback, setFeedback] = useState<{ ok: boolean; message: string } | null>(null);
   const [retryKey, setRetryKey] = useState(0);
+  const [recordPage, setRecordPage] = useState(1);
 
   const getRecordReviewStatus = (rec: ExtendedVerificationRecord): "verified" | "flagged" | "pending" => {
     const manual = overrides.verificationReviewOverrides[rec.record_id];
@@ -81,6 +84,17 @@ export function TinjauView() {
       return getRecordReviewStatus(rec) === filter;
     });
   }, [verificationRecords, overrides.verificationReviewOverrides, filter]);
+  const totalRecordPages = Math.max(1, Math.ceil(filteredRecords.length / REVIEW_PAGE_SIZE));
+  const safeRecordPage = Math.min(recordPage, totalRecordPages);
+  const visibleRecords = filteredRecords.slice((safeRecordPage - 1) * REVIEW_PAGE_SIZE, safeRecordPage * REVIEW_PAGE_SIZE);
+  const selectRecord = (recordId: string) => {
+    setSelectedRecordId(recordId);
+    const index = filteredRecords.findIndex((record) => record.record_id === recordId);
+    if (index >= 0) setRecordPage(Math.floor(index / REVIEW_PAGE_SIZE) + 1);
+  };
+  useEffect(() => {
+    if (recordPage > totalRecordPages) setRecordPage(totalRecordPages);
+  }, [recordPage, totalRecordPages]);
 
   const activeRecord = useMemo(
     () =>
@@ -220,7 +234,7 @@ export function TinjauView() {
             <button
               key={tab.id}
               type="button"
-              onClick={() => setFilter(tab.id)}
+              onClick={() => { setFilter(tab.id); setRecordPage(1); }}
               className={`xbm-pressable inline-flex min-h-[38px] items-center rounded-full border px-4 text-[13.5px] font-semibold transition ${
                 filter === tab.id
                   ? "border-[var(--forest-700)] bg-[var(--forest-700)] text-white"
@@ -259,7 +273,7 @@ export function TinjauView() {
                     Daftar Catatan ({filteredRecords.length})
                   </h2>
                   <div className="mt-2.5 space-y-2">
-                    {filteredRecords.map((rec) => {
+                    {visibleRecords.map((rec) => {
                       const parcel = parcels.find((p) => p.id === rec.parcel_id);
                       const selected = rec.record_id === activeRecord.record_id;
                       const recStatus = getRecordReviewStatus(rec);
@@ -282,7 +296,7 @@ export function TinjauView() {
                         <button
                           key={rec.record_id}
                           type="button"
-                          onClick={() => setSelectedRecordId(rec.record_id)}
+                          onClick={() => selectRecord(rec.record_id)}
                           className={`xbm-pressable w-full rounded-2xl border p-3.5 text-left transition ${
                             selected
                               ? "border-[var(--forest-700)] bg-[var(--leaf-100)]/65"
@@ -301,12 +315,20 @@ export function TinjauView() {
                             {parcel?.name ?? rec.parcel_id}
                           </p>
                           <p className="xb-mono mt-0.5 text-[12.5px] text-[var(--ink-muted)]">
-                            {shortHash(rec.hash)} · {formatWibDateTime(rec.timestamp)} WIB
+                            {shortHash(rec.hash)} · {formatWibDateTime(rec.timestamp)}
                           </p>
                         </button>
                       );
                     })}
                   </div>
+                  <Pagination
+                    page={safeRecordPage}
+                    pageSize={REVIEW_PAGE_SIZE}
+                    totalItems={filteredRecords.length}
+                    onPageChange={setRecordPage}
+                    label="Halaman antrean audit"
+                    className="mt-3"
+                  />
                 </div>
                 <p className="mt-3 border-t border-[var(--line-subtle)] pt-2.5 text-[12.5px] text-[var(--ink-muted)]">
                   Pilih blok pada antrean untuk meninjau bukti sensor, NDVI, dan rantai segel sebelum keputusan.
@@ -491,7 +513,7 @@ export function TinjauView() {
                   title={`Segel Blok #${activeRecord.block_index}`}
                   receiptId={activeRecord.record_id}
                   hash={activeRecord.hash}
-                  timestampWib={`${formatWibDateTime(activeRecord.timestamp)} WIB`}
+                  timestampWib={formatWibDateTime(activeRecord.timestamp)}
                   details={`Status saat ini: ${
                     getRecordReviewStatus(activeRecord) === "verified"
                       ? "Disahkan oleh Auditor"

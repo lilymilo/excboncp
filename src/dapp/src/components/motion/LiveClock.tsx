@@ -23,15 +23,16 @@ export function LiveClock({
   intervalMs = 1000,
   label,
 }: LiveClockProps) {
-  const [stamp, setStamp] = useState(() =>
-    withDate ? formatWibDateTime(new Date().toISOString()) : formatWibTimeNow()
-  );
+  // Render placeholder sampai mount supaya jam server dan klien tidak bentrok saat hidrasi.
+  const [stamp, setStamp] = useState<string>("--:--:-- WIB");
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
+    const tick = () => {
       const iso = new Date().toISOString();
       setStamp(withDate ? formatWibDateTime(iso) : formatWibTimeNow());
-    }, intervalMs);
+    };
+    tick();
+    const timer = window.setInterval(tick, intervalMs);
     return () => window.clearInterval(timer);
   }, [withDate, intervalMs]);
 

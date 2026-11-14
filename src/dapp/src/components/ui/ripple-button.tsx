@@ -13,6 +13,7 @@ interface RippleButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   rippleColor?: string;
   duration?: string;
+  loading?: boolean;
 }
 
 type RippleItem = {
@@ -56,7 +57,7 @@ function ButtonRipple({
         left: `${ripple.x}px`,
         backgroundColor: rippleColor,
         transform: "scale(0)",
-        animation: `magicui-ripple ${duration} cubic-bezier(0.22, 1, 0.36, 1) forwards`,
+        animation: `magicui-ripple ${duration} var(--ease-out) forwards`,
       }}
     />
   );
@@ -70,8 +71,10 @@ export const RippleButton = React.forwardRef<
     {
       className,
       children,
-      rippleColor = "#ffffff",
-      duration = "650ms",
+      rippleColor = "rgba(174, 218, 45, 0.35)",
+      duration = "420ms",
+      loading = false,
+      disabled,
       onClick,
       ...props
     },
@@ -105,8 +108,11 @@ export const RippleButton = React.forwardRef<
 
     return (
       <button
+        data-loading={loading ? "true" : undefined}
+        aria-busy={loading || undefined}
+        disabled={disabled || loading}
         className={cn(
-          "relative flex cursor-pointer items-center justify-center overflow-hidden text-center transition-all duration-200 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60",
+          "xbm-button relative inline-flex min-h-[44px] cursor-pointer items-center justify-center overflow-hidden text-center disabled:cursor-not-allowed disabled:opacity-60",
           className
         )}
         onClick={handleClick}
@@ -118,7 +124,7 @@ export const RippleButton = React.forwardRef<
             __html: `@keyframes magicui-ripple { to { transform: scale(2.4); opacity: 0; } }`,
           }}
         />
-        <span className="relative z-10 flex items-center justify-center gap-2.5 w-full">
+        <span className="relative z-10 flex items-center justify-center gap-2 w-full">
           {children}
         </span>
         <span className="pointer-events-none absolute inset-0">
@@ -138,4 +144,3 @@ export const RippleButton = React.forwardRef<
 );
 
 RippleButton.displayName = "RippleButton";
-

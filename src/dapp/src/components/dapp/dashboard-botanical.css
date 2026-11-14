@@ -1,4 +1,5 @@
 @import "../../styles/tokens.css";
+@import "../../styles/motion.css";
 
 /* Component utilities scoped under .xb-botanical */
 .xb-botanical {
@@ -32,9 +33,13 @@
 .xb-botanical .xb-card {
   background-color: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 20px;
+  border-radius: var(--radius-card);
   box-shadow: var(--shadow-card);
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    background-color var(--dur-base) var(--ease-out);
 }
 
 /* ── Beranda: hero, KPI tiles, and the single deep panel ───────── */
@@ -43,7 +48,7 @@
   position: relative;
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 24px;
+  border-radius: var(--radius-2xl);
   background: var(--surface);
   box-shadow: var(--shadow-card);
 }
@@ -54,10 +59,10 @@
   height: 100%;
   width: 100%;
   object-fit: cover;
-  object-position: right center;
-  opacity: 0.55;
-  -webkit-mask-image: linear-gradient(to right, transparent 32%, #000 82%);
-  mask-image: linear-gradient(to right, transparent 32%, #000 82%);
+  object-position: right bottom;
+  opacity: 0.7;
+  -webkit-mask-image: linear-gradient(to right, transparent 38%, #000 78%);
+  mask-image: linear-gradient(to right, transparent 38%, #000 78%);
 }
 
 .xb-botanical .xb-eyebrow {
@@ -91,22 +96,43 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
   min-height: 44px;
   padding: 0 1.1rem;
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   background: var(--forest-800);
   color: #fff;
   font-size: 14.5px;
   font-weight: 600;
+  box-shadow: var(--shadow-button-rest);
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    background-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
 }
 
 .xb-botanical .xb-hero-cta:hover {
   background: var(--forest-900);
+  box-shadow: var(--shadow-button-hover);
+  transform: translate3d(0, -2px, 0);
 }
 
 .xb-botanical .xb-hero-cta:active {
-  transform: scale(0.985);
+  transform: scale(var(--press-scale));
+}
+
+.xb-botanical .xb-sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+.xb-botanical .xb-sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.xb-botanical .xb-sidebar-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--line-strong);
+  border-radius: var(--radius-pill);
 }
 
 .xb-botanical .xb-kpi {
@@ -114,12 +140,22 @@
   flex-direction: column;
   justify-content: space-between;
   min-height: 148px;
-  padding: 0.95rem 1rem;
+  padding: var(--space-5);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   background: var(--surface);
   box-shadow: var(--shadow-card);
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  transition:
+    border-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+
+@media (max-width: 639px) {
+  .xb-botanical .xb-kpi {
+    min-height: 128px;
+    padding: var(--space-4);
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -146,7 +182,7 @@
   font-weight: 600;
   line-height: 1;
   color: var(--ink);
-  transition: color 140ms ease;
+  transition: color var(--dur-fast) var(--ease-out);
 }
 
 .xb-botanical .xb-kpi-unit {
@@ -162,7 +198,7 @@
   align-items: center;
   gap: 0.375rem;
   padding: 0.2rem 0.55rem;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--surface-sunken);
   font-family: var(--font-code);
   font-size: 11px;
@@ -172,7 +208,7 @@
 
 .xb-botanical .xb-deep {
   border: 1px solid var(--surface-deep);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   background: var(--surface-deep);
   color: var(--on-deep);
 }
@@ -190,13 +226,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: var(--space-3);
 }
 
 .xb-botanical .xb-panel-title {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
   font-family: var(--font-display);
   font-size: 16.5px;
   font-weight: 600;
@@ -207,7 +243,7 @@
 .xb-botanical .xb-link-quiet {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: var(--space-1);
   font-size: 12.5px;
   font-weight: 600;
   color: var(--ink-muted);
@@ -233,8 +269,8 @@
 }
 
 .xb-botanical .xb-row {
-  border-radius: 12px;
-  transition: background-color 140ms ease;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--dur-fast) var(--ease-out);
 }
 
 .xb-botanical .xb-row:hover {
@@ -245,13 +281,13 @@
   .xb-botanical .xb-card-interactive:hover {
     border-color: var(--line-strong);
     box-shadow: var(--shadow-hover);
-    transform: translateY(-2px);
+    transform: translate3d(0, -3px, 0);
   }
 
   .xb-botanical .xb-kpi:hover {
     border-color: var(--line-strong);
     box-shadow: var(--shadow-hover);
-    transform: translateY(-2px);
+    transform: translate3d(0, -2px, 0);
   }
 
   .xb-botanical .xb-surface-tile:hover {
@@ -263,20 +299,20 @@
 .xb-botanical .xb-kpi,
 .xb-botanical .xb-surface-tile {
   transition:
-    border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 160ms ease;
+    border-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
 }
 
 .xb-botanical .xb-surface-tile {
   background-color: var(--surface-soft);
   border: 1px solid var(--line-subtle);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
 }
 
 .xb-botanical table tbody tr {
-  transition: background-color 140ms ease;
+  transition: background-color var(--dur-fast) var(--ease-out);
 }
 
 /* Financial chart container & custom tooltip styling */
@@ -288,7 +324,7 @@
 .xb-botanical .xb-chart-tooltip {
   background: var(--surface-elevated);
   border: 1px solid var(--line);
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-tooltip);
   padding: 10px 14px;
   min-width: 180px;
@@ -304,13 +340,17 @@
 .xb-botanical a {
   cursor: pointer;
   touch-action: manipulation;
-  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease,
-    transform 120ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    transform var(--dur-fast) var(--ease-spring);
 }
 
 .xb-botanical button:active:not(:disabled),
 .xb-botanical a:active {
-  transform: scale(0.985);
+  transform: scale(var(--press-scale));
 }
 
 .xb-botanical button:disabled {
@@ -332,23 +372,7 @@
 }
 
 .xb-botanical .xb-tx-flash {
-  animation: xb-row-highlight 1.2s ease-out 1;
-}
-
-@keyframes xb-skeleton-pulse {
-  0%,
-  100% {
-    opacity: 0.55;
-  }
-  50% {
-    opacity: 0.95;
-  }
-}
-
-.xb-botanical .xb-skeleton {
-  background-color: var(--skeleton-bg);
-  border-radius: 10px;
-  animation: xb-skeleton-pulse 1.5s ease-in-out infinite;
+  animation: xb-row-highlight var(--dur-slow) var(--ease-out) 1;
 }
 
 .xb-botanical .leaflet-container {
@@ -361,7 +385,7 @@
   color: var(--ink);
   background: rgba(255, 255, 255, 0.92);
   padding: 2px 8px;
-  border-top-left-radius: 8px;
+  border-top-left-radius: var(--radius-xs);
 }
 
 .xb-botanical .leaflet-control-attribution a {
@@ -371,7 +395,7 @@
 
 .xb-botanical .leaflet-bar {
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   box-shadow: var(--shadow-card);
 }
@@ -394,7 +418,7 @@
   background-color: var(--surface) !important;
   color: var(--ink) !important;
   border: 1px solid var(--line) !important;
-  border-radius: 12px !important;
+  border-radius: var(--radius-sm) !important;
   box-shadow: var(--shadow-tooltip) !important;
   padding: 8px 12px !important;
   font-size: 13.5px !important;

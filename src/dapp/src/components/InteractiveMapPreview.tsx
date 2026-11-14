@@ -1,184 +1,228 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Activity, ArrowRight, Check, FileText, Lock, MapPin } from "lucide-react";
 import { MOCK_PARCELS } from "@/lib/mock-data";
-import { Check, Lock, MapPin, FileText, Activity } from "lucide-react";
+import { BotanicalCard } from "@/components/dapp/BotanicalPrimitives";
+import { LiveNumber, PulseDot, Reveal, Segmented, type SegmentedOption } from "@/components/motion";
+
+const PARCEL_OPTIONS: ReadonlyArray<SegmentedOption<string>> = MOCK_PARCELS.map((p) => ({
+  value: p.id,
+  label: p.name,
+}));
 
 export function InteractiveMapPreview() {
-  const [selectedParcelId, setSelectedParcelId] = useState<string>("lahan-a");
+  const [selectedParcelId, setSelectedParcelId] = useState<string>(MOCK_PARCELS[0].id);
+  const [switching, setSwitching] = useState(false);
+
   const parcel = MOCK_PARCELS.find((p) => p.id === selectedParcelId) || MOCK_PARCELS[0];
   const isVerified = parcel.status === "VERIFIED";
 
+  useEffect(() => {
+    setSwitching(true);
+    const t = window.setTimeout(() => setSwitching(false), 140);
+    return () => window.clearTimeout(t);
+  }, [selectedParcelId]);
+
   return (
-    <section id="peta" className="py-20 sm:py-28 border-t border-[#1B211A]">
+    <section id="peta" className="section-spacing border-t border-[var(--color-border-subtle)]">
       <div className="page-shell">
-        {/* Section Header */}
-        <div className="max-w-2xl mb-10 sm:mb-14">
-          <span className="text-[0.75rem] font-semibold text-[#AEDA2D] uppercase tracking-wider block mb-2">
-            Sistem Geospasial Terintegrasi
-          </span>
-          <h2 className="text-[clamp(2.1rem,3.5vw,3.2rem)] font-normal text-[#F0F2EC] leading-[1.18] tracking-tight">
-            Lihat petak hutan dan{" "}
-            <span className="text-[#AEDA2D]">status izinnya</span>.
-          </h2>
-          <p className="mt-4 text-[0.95rem] text-[#A8AFA2] leading-relaxed">
-            Status petak ditentukan langsung oleh aturan sistem tanpa campur tangan manual.
-            Petak dengan izin sah akan terverifikasi, sedangkan petak tanpa izin warga otomatis terkunci.
-          </p>
-        </div>
+        {/* Consistent Section Header: Eyebrow + Title + 1-sentence description */}
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <Reveal className="max-w-2xl">
+            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)] block mb-2.5">
+              Sistem Geospasial Terintegrasi
+            </span>
+            <h2 className="text-[clamp(1.95rem,3.4vw,3.1rem)] font-normal leading-[1.15] tracking-tight text-[var(--color-text-primary)]">
+              Periksa petak hutan dan{" "}
+              <span className="text-[var(--color-accent)]">status izinnya</span> secara langsung.
+            </h2>
+            <p className="mt-3.5 text-[0.95rem] leading-relaxed text-[var(--color-text-secondary)]">
+              Petak dengan izin warga sah otomatis terverifikasi, sedangkan petak tanpa persetujuan
+              masyarakat adat seketika ditahan dari pasar.
+            </p>
+          </Reveal>
 
-        {/* Parcel Selector Buttons (Dark Lime Pills) */}
-        <div className="flex flex-wrap gap-2.5 mb-8">
-          {MOCK_PARCELS.map((p) => {
-            const isSelected = p.id === selectedParcelId;
-            const pVerified = p.status === "VERIFIED";
-
-            return (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => setSelectedParcelId(p.id)}
-                className={`button-touch px-5 py-2.5 rounded-pill text-[0.8rem] sm:text-[0.85rem] font-medium flex items-center gap-2.5 border transition-all ${
-                  isSelected
-                    ? "bg-[#AEDA2D] text-[#11160B] border-[#AEDA2D] shadow-[0_0_20px_rgba(174,218,45,0.25)]"
-                    : "bg-[#101610] text-[#A8AFA2] border-[#252D22] hover:text-[#F0F2EC] hover:bg-[#1D231B]"
-                }`}
-              >
-                <span
-                  className={`w-2 h-2 rounded-full ${
-                    pVerified
-                      ? isSelected
-                        ? "bg-[#11160B]"
-                        : "bg-[#AEDA2D] shadow-[0_0_8px_rgba(174,218,45,0.7)]"
-                      : "bg-[#D84C4C] shadow-[0_0_8px_rgba(216,76,76,0.7)]"
-                  }`}
-                />
-                <span>{p.name}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Interactive Inspection Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-          {/* Simulated Map Radar Canvas (7 Cols) */}
-          <div className="lg:col-span-7 aspect-[4/3] rounded-card bg-[#101610] border border-[#252D22] p-6 flex flex-col justify-between relative overflow-hidden shadow-panel">
-            {/* Ambient Backlight inside Canvas */}
-            <div
-              className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full blur-[100px] pointer-events-none transition-all duration-700 ${
-                isVerified ? "bg-[#AEDA2D]/10" : "bg-[#D84C4C]/10"
-              }`}
+          <Reveal delay={80}>
+            <Segmented
+              ariaLabel="Pilih petak hutan contoh"
+              options={PARCEL_OPTIONS}
+              value={selectedParcelId}
+              onChange={setSelectedParcelId}
+              tone="accent"
             />
+          </Reveal>
+        </div>
 
-            {/* Radar Coordinates Header */}
-            <div className="relative z-10 flex items-center justify-between text-xs text-[#747D70] font-mono">
-              <span className="flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-[#AEDA2D]" />
-                {parcel.location}
-              </span>
-              <span className="px-3 py-1 rounded-full bg-[#171C16] border border-[#252D22] text-[#F0F2EC] text-[11px]">
-                {parcel.areaHa} Hektar
-              </span>
-            </div>
-
-            {/* Central Polygon Geometric Display */}
-            <div className="relative z-10 flex flex-col items-center justify-center my-auto">
+        <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-12 items-stretch">
+          {/* Simulated Map Radar Canvas (7 Cols) */}
+          <Reveal delay={60} className="lg:col-span-7 flex">
+            <BotanicalCard className="relative flex min-h-[340px] w-full flex-col justify-between overflow-hidden p-6 sm:p-8">
               <div
-                className={`w-40 h-40 sm:w-48 sm:h-48 rounded-panel border flex flex-col items-center justify-center text-center p-5 transition-all duration-500 backdrop-blur-sm ${
-                  isVerified
-                    ? "border-[#AEDA2D]/40 bg-[#171C16]/90 shadow-[0_0_40px_rgba(174,218,45,0.15)] text-[#AEDA2D]"
-                    : "border-[#D84C4C]/40 bg-[#171C16]/90 shadow-[0_0_40px_rgba(216,76,76,0.15)] text-[#D84C4C]"
+                aria-hidden="true"
+                className={`pointer-events-none absolute top-1/2 left-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full blur-[90px] ${
+                  isVerified ? "bg-[var(--color-accent)]/12" : "bg-[var(--xb-blocked)]/12"
                 }`}
-              >
-                {isVerified ? (
-                  <Check className="w-10 h-10 text-[#AEDA2D] mb-2" />
-                ) : (
-                  <Lock className="w-10 h-10 text-[#D84C4C] mb-2" />
-                )}
-                <span className="text-[#F0F2EC] text-sm font-medium tracking-tight">{parcel.statusLabel}</span>
-                <span className="text-[#747D70] text-xs mt-1">
-                  {isVerified ? "Izin Adat Lengkap" : "Tanpa Izin Warga"}
+              />
+
+              {/* Radar Header */}
+              <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 font-mono text-xs text-[var(--color-text-secondary)]">
+                <span className="inline-flex items-center gap-1.5">
+                  <MapPin className="h-3.5 w-3.5 text-[var(--color-accent)]" aria-hidden="true" />
+                  <span>{parcel.location}</span>
+                </span>
+                <span className="rounded-[var(--radius-pill)] border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-3 py-1 text-[var(--color-text-primary)]">
+                  <LiveNumber value={parcel.areaHa} countUpOnView={false} /> Hektar
                 </span>
               </div>
-            </div>
 
-            {/* Bottom Status Bar inside Canvas */}
-            <div className="relative z-10 flex items-center justify-between text-xs text-[#747D70] font-mono border-t border-[#1B211A] pt-3">
-              <span className="flex items-center gap-1.5">
-                <Activity className="w-3.5 h-3.5 text-[#AEDA2D]" />
-                NDVI Radar: {parcel.satellite.ndviMean}
-              </span>
-              <span>Sensor Suhu: {parcel.telemetry.tempC}&deg;C</span>
-            </div>
-          </div>
+              {/* Central Polygon Status Node */}
+              <div className="relative z-10 my-6 flex flex-col items-center justify-center">
+                {switching ? (
+                  <div className="xb-skeleton h-44 w-44 rounded-[var(--radius-xl)]" aria-hidden="true" />
+                ) : (
+                  <div
+                    key={parcel.id}
+                    className={`xbm-content-ready flex h-44 w-44 sm:h-48 sm:w-48 flex-col items-center justify-center rounded-[var(--radius-xl)] border p-5 text-center backdrop-blur-sm ${
+                      isVerified
+                        ? "border-[var(--color-accent-line)] bg-[var(--color-surface-raised)]/90 shadow-[var(--shadow-glow-accent)] text-[var(--color-accent)]"
+                        : "border-[var(--status-blocked-line)] bg-[var(--color-surface-raised)]/90 shadow-[var(--shadow-glow-danger)] text-[var(--status-blocked-ink)]"
+                    }`}
+                  >
+                    {isVerified ? (
+                      <Check className="mb-2 h-9 w-9 text-[var(--color-accent)]" aria-hidden="true" />
+                    ) : (
+                      <Lock className="mb-2 h-9 w-9 text-[var(--status-blocked-ink)]" aria-hidden="true" />
+                    )}
+                    <span
+                      key={parcel.status}
+                      className="xbm-status-badge mt-1 px-2.5 py-0.5 text-xs font-semibold text-[var(--color-text-primary)]"
+                    >
+                      <PulseDot pulsing={isVerified} />
+                      <span>{parcel.statusLabel}</span>
+                    </span>
+                    <span className="mt-1.5 text-xs text-[var(--color-text-secondary)]">
+                      {isVerified ? "Izin Adat Lengkap" : "Menunggu Izin Warga"}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Radar Footer */}
+              <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 border-t border-[var(--color-border-subtle)] pt-3.5 font-mono text-xs text-[var(--color-text-secondary)]">
+                <span className="inline-flex items-center gap-1.5">
+                  <Activity className="h-3.5 w-3.5 text-[var(--color-accent)]" aria-hidden="true" />
+                  <span>
+                    NDVI Radar:{" "}
+                    <LiveNumber
+                      value={parcel.satellite.ndviMean}
+                      format={(n) => n.toFixed(2)}
+                      countUpOnView={false}
+                    />
+                  </span>
+                </span>
+                <span>
+                  Suhu Kanopi:{" "}
+                  <LiveNumber
+                    value={parcel.telemetry.tempC}
+                    format={(n) => n.toFixed(1)}
+                    countUpOnView={false}
+                  />
+                  &deg;C
+                </span>
+              </div>
+            </BotanicalCard>
+          </Reveal>
 
           {/* Telemetry Inspection Card (5 Cols) */}
-          <div className="lg:col-span-5 rounded-card bg-[#101610] border border-[#252D22] p-6 sm:p-7 shadow-panel flex flex-col justify-between gap-6">
-            <div>
-              <span className="text-[0.75rem] font-semibold text-[#AEDA2D] uppercase tracking-wider block">
-                Data Telemetri Fisik
-              </span>
-              <h3 className="text-[1.25rem] font-medium text-[#F0F2EC] mt-1.5 tracking-tight">
-                {parcel.name}
-              </h3>
-              <p className="text-xs text-[#747D70] mt-0.5">{parcel.location}</p>
-            </div>
+          <Reveal delay={120} className="lg:col-span-5 flex">
+            <BotanicalCard className="flex w-full flex-col justify-between gap-5 p-6 sm:p-8">
+              <div>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)]">
+                    Inspeksi Bukti Petak
+                  </span>
+                  <span
+                    key={parcel.status}
+                    className={`xbm-status-badge border px-3 py-1 text-xs font-semibold ${
+                      isVerified
+                        ? "border-[var(--status-verified-line)] bg-[var(--status-verified-bg)] text-[var(--status-verified-ink)]"
+                        : "border-[var(--status-blocked-line)] bg-[var(--status-blocked-bg)] text-[var(--status-blocked-ink)]"
+                    }`}
+                  >
+                    <PulseDot pulsing={isVerified} />
+                    <span>{parcel.statusLabel}</span>
+                  </span>
+                </div>
+                <h3 className="mt-2.5 text-xl font-medium tracking-tight text-[var(--color-text-primary)]">
+                  {parcel.name}
+                </h3>
+                <p className="mt-0.5 text-xs text-[var(--color-text-muted)]">{parcel.location}</p>
+              </div>
 
-            {/* Status Box */}
-            <div
-              className={`p-4 rounded-panel border flex items-center gap-3.5 ${
-                isVerified
-                  ? "bg-[#171C16] border-[#AEDA2D]/30 text-[#A8AFA2]"
-                  : "bg-[#171C16] border-[#D84C4C]/30 text-[#A8AFA2]"
-              }`}
-            >
-              {isVerified ? (
-                <Check className="w-5 h-5 text-[#AEDA2D] flex-shrink-0" />
+              {switching ? (
+                <div className="space-y-3" aria-busy="true">
+                  <div className="xb-skeleton h-10 w-full" />
+                  <div className="xb-skeleton h-10 w-full" />
+                  <div className="xb-skeleton h-10 w-full" />
+                </div>
               ) : (
-                <Lock className="w-5 h-5 text-[#D84C4C] flex-shrink-0" />
+                <div key={parcel.id} className="xbm-content-ready divide-y divide-[var(--color-border-subtle)] text-xs sm:text-sm">
+                  <div className="flex items-center justify-between py-2.5">
+                    <span className="text-[var(--color-text-secondary)]">Persetujuan Komunitas</span>
+                    <span className="font-medium text-[var(--color-text-primary)]">
+                      {parcel.consent === "granted"
+                        ? `Sah (${parcel.consentBy ?? "Lembaga Adat"})`
+                        : "Belum Diberikan"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between py-2.5">
+                    <span className="text-[var(--color-text-secondary)]">Sensor Api &amp; Tanah</span>
+                    <span className="xb-numeric font-medium text-[var(--color-text-primary)]">
+                      {parcel.telemetry.flame === 0 ? "Aman" : "Peringatan"} &bull;{" "}
+                      <LiveNumber value={parcel.telemetry.soilPct} countUpOnView={false} />% Lembap
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between py-2.5">
+                    <span className="text-[var(--color-text-secondary)]">Unit Siap Alokasi</span>
+                    <span className="xb-numeric font-mono font-semibold text-[var(--color-accent)]">
+                      <LiveNumber
+                        value={isVerified ? parcel.carbonUnits : 0}
+                        countUpOnView={false}
+                      />{" "}
+                      tCO2e
+                    </span>
+                  </div>
+                </div>
               )}
-              <div className="text-xs leading-relaxed">
-                <span className="font-semibold block text-[#F0F2EC]">{parcel.statusLabel}</span>
-                {isVerified
-                  ? "Izin warga tercatat sah. Unit karbon berhak masuk simulasi pasar."
-                  : "Belum ada izin warga adat. Sistem otomatis menolak penguncian unit."}
-              </div>
-            </div>
 
-            {/* Clean Telemetry Key-Value Pairs */}
-            <div className="text-xs space-y-3 divide-y divide-[#1B211A]">
-              <div className="flex justify-between pt-2">
-                <span className="text-[#747D70]">Persetujuan Komunitas</span>
-                <span className="font-medium text-[#F0F2EC]">
-                  {parcel.consent === "granted" ? "Diberikan (Lembaga Adat)" : "Belum Ada"}
-                </span>
-              </div>
-              <div className="flex justify-between pt-3">
-                <span className="text-[#747D70]">Sensor Api Lapangan</span>
-                <span className="font-medium text-[#F0F2EC]">
-                  {parcel.telemetry.flame === 0 ? "Aman (0 Titik Api)" : "Peringatan Api"}
-                </span>
-              </div>
-              <div className="flex justify-between pt-3">
-                <span className="text-[#747D70]">Kelembapan Tanah</span>
-                <span className="font-medium text-[#F0F2EC]">{parcel.telemetry.soilPct}% (Normal)</span>
-              </div>
-              <div className="flex justify-between pt-3">
-                <span className="text-[#747D70]">Unit Karbon Siap Terbit</span>
-                <span className="font-mono font-medium text-[#AEDA2D]">
-                  {isVerified ? `${parcel.carbonUnits} Unit` : "0 Unit (Tertahan)"}
-                </span>
-              </div>
-            </div>
+              <div className="space-y-3 pt-1">
+                <div className="flex items-center justify-between rounded-[var(--radius-panel)] border border-[var(--color-border)] bg-[var(--color-surface-raised)] p-3 font-mono text-[11px] text-[var(--color-text-secondary)]">
+                  <span className="truncate pr-2">
+                    SHA-256: {parcel.digitalSeal.hash.slice(0, 24)}...
+                  </span>
+                  <FileText className="h-3.5 w-3.5 shrink-0 text-[var(--color-accent)]" aria-hidden="true" />
+                </div>
 
-            {/* Cryptographic Seal Snippet */}
-            <div className="pt-2">
-              <div className="p-3.5 rounded-panel bg-[#171C16] border border-[#252D22] font-mono text-[11px] text-[#747D70] flex items-center justify-between">
-                <span className="truncate pr-2">Segel: {parcel.digitalSeal.hash.substring(0, 22)}...</span>
-                <FileText className="w-3.5 h-3.5 text-[#AEDA2D] flex-shrink-0" />
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <Link
+                    href="/peta"
+                    className="xbm-link-inline font-semibold text-[var(--color-accent)]"
+                  >
+                    <span>Buka Peta Interaktif Penuh</span>
+                    <ArrowRight className="xbm-card-icon h-3.5 w-3.5" aria-hidden="true" />
+                  </Link>
+                  <Link
+                    href="/screener"
+                    className="xbm-link-inline text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+                  >
+                    <span>Screener 3 Ekosistem</span>
+                  </Link>
+                </div>
               </div>
-            </div>
-          </div>
+            </BotanicalCard>
+          </Reveal>
         </div>
       </div>
     </section>

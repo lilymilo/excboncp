@@ -23,13 +23,31 @@ import {
   LiveTelemetryPill,
   PageStatePanel,
 } from "@/components/dapp/BotanicalPrimitives";
+import { Pagination } from "@/components/ui/Pagination";
 import { useDashboardState } from "@/components/dapp/useDashboardStore";
-import { formatWibDateTime, toCanonicalStatus } from "@/lib/dashboard-helpers";
+import { formatWibDateTime, formatWibTime, toCanonicalStatus } from "@/lib/dashboard-helpers";
 import {
   fetchMonitoringMetrics,
   type MonitoringMetricsData,
 } from "@/lib/exbon-api";
 import { LiveNumber } from "@/components/motion";
+
+interface LiveSensorReading {
+  id: string;
+  parcel_id: string;
+  device_id: string;
+  ts: string;
+  temp_c: number;
+  humidity_pct: number;
+  soil_pct: number;
+  flame: number;
+  fire_status: string;
+  sensor_flag: boolean;
+  source: string;
+}
+
+const SENSOR_PAGE_SIZE = 6;
+const SATELLITE_PAGE_SIZE = 4;
 
 export function IndikatorView() {
   const searchParams = useSearchParams();
@@ -38,6 +56,32 @@ export function IndikatorView() {
 
   const [metrics, setMetrics] = useState<MonitoringMetricsData | null>(null);
   const [retryKey, setRetryKey] = useState(0);
+  const [liveReading, setLiveReading] = useState<LiveSensorReading | null>(null);
+  const [sensorPage, setSensorPage] = useState(1);
+  const [satellitePage, setSatellitePage] = useState(1);
+
+  useEffect(() => {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL?.trim().replace(/\/+$/, "");
+    if (!apiBase) return;
+    let active = true;
+    const load = async () => {
+      try {
+        const res = await fetch(`${apiBase}/api/sensor/readings?limit=20`, { cache: "no-store" });
+        if (!res.ok) return;
+        const rows = (await res.json()) as LiveSensorReading[];
+        const latestReading = rows.find((row) => row.source === "esp" || row.source === "simulator");
+        if (active && latestReading) setLiveReading(latestReading);
+      } catch {
+        // Server lapangan opsional; kartu simulasi tetap tampil saat API mati.
+      }
+    };
+    load();
+    const timer = window.setInterval(load, 10000);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -63,6 +107,18 @@ export function IndikatorView() {
       : "ready";
 
   const normalCount = sensors.filter((s) => !s.anomaly && !s.flameDetected).length;
+  const totalSensorPages = Math.max(1, Math.ceil(sensors.length / SENSOR_PAGE_SIZE));
+  const safeSensorPage = Math.min(sensorPage, totalSensorPages);
+  const visibleSensors = sensors.slice(
+    (safeSensorPage - 1) * SENSOR_PAGE_SIZE,
+    safeSensorPage * SENSOR_PAGE_SIZE
+  );
+  const totalSatellitePages = Math.max(1, Math.ceil(parcels.length / SATELLITE_PAGE_SIZE));
+  const safeSatellitePage = Math.min(satellitePage, totalSatellitePages);
+  const visibleParcels = parcels.slice(
+    (safeSatellitePage - 1) * SATELLITE_PAGE_SIZE,
+    safeSatellitePage * SATELLITE_PAGE_SIZE
+  );
 
   return (
     <BotanicalAppShell>
@@ -90,7 +146,7 @@ export function IndikatorView() {
           emptyTitle="Belum ada indikator telemetri"
           emptyDescription="Data perangkat sensor belum terbaca untuk sesi saat ini."
         >
-          <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3.5 lg:grid-cols-4">
             <BotanicalCard interactive className="p-4">
               <div className="flex items-center justify-between text-[var(--ink-muted)]">
                 <span className="text-[13.5px] font-semibold">Kecepatan Data ke Status</span>
@@ -144,7 +200,7 @@ export function IndikatorView() {
                 <span className="text-[13.5px] font-semibold">Ambang Kanopi Sehat</span>
                 <Leaf className="h-4 w-4 text-[var(--forest-700)]" aria-hidden="true" />
               </div>
-              <p className="xb-numeric xb-display mt-1.5 text-[25px] font-bold text-[var(--ink)]">
+              <p className="xb-numeric xb-display mt-1.5 whitespace-nowrap text-[22px] font-bold text-[var(--ink)] sm:text-[25px]">
                 NDVI ≥ 0,70
               </p>
               <p className="mt-1 text-[12.5px] text-[var(--ink-muted)]">
@@ -162,15 +218,45 @@ export function IndikatorView() {
                       Status Perangkat Sensor Lapangan
                     </h2>
                     <p className="mt-0.5 text-[13.5px] text-[var(--ink-muted)]">
-                      Node ESP32 DHT22 & kelembapan tanah · pembaruan otomatis tiap 4 detik.
+                      DHT22 dan kelembapan tanah dari ESP32 atau simulator · pembaruan otomatis.
                     </p>
                   </div>
                 </div>
 
+                {liveReading && (
+                  <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-xl border border-[var(--seal-line)] bg-[var(--seal-100)]/60 px-3.5 py-2.5">
+                    <span className="inline-flex items-center gap-1.5 text-[12.5px] font-bold text-[var(--seal-700)]">
+                      <Radio className="h-3.5 w-3.5" aria-hidden="true" />
+                      {liveReading.source === "esp" ? "Telemetri ESP32" : "Telemetri simulator"}
+                    </span>
+                    <span className="text-[11.5px] font-medium text-[var(--ink-muted)]">
+                      {formatWibTime(liveReading.ts)}
+                    </span>
+                    <span className="xb-mono text-[12px] font-semibold text-[var(--ink)]">
+                      {liveReading.device_id}
+                    </span>
+                    <span className="text-[12.5px] text-[var(--ink-muted)]">
+                      Suhu <strong className="text-[var(--ink)]">{liveReading.temp_c.toFixed(1)}°C</strong>
+                      {" · "}Udara <strong className="text-[var(--ink)]">{liveReading.humidity_pct.toFixed(0)}%</strong>
+                      {" · "}Tanah <strong className="text-[var(--ink)]">{liveReading.soil_pct.toFixed(0)}%</strong>
+                    </span>
+                    <span
+                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11.5px] font-semibold ${
+                        liveReading.fire_status === "NORMAL"
+                          ? "bg-[var(--status-verified-bg)] text-[var(--status-verified-ink)]"
+                          : "bg-[var(--status-warning-bg)] text-[var(--status-warning-ink)]"
+                      }`}
+                    >
+                      {liveReading.fire_status}
+                    </span>
+                  </div>
+                )}
+
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {sensors.map((sensor, idx) => {
+                  {visibleSensors.map((sensor, idx) => {
                     const parcel = parcels.find((p) => p.id === sensor.parcel_id);
-                    const isOddLast = sensors.length % 2 === 1 && idx === sensors.length - 1;
+                    const isOddLast =
+                      visibleSensors.length % 2 === 1 && idx === visibleSensors.length - 1;
                     const statusBadge = sensor.flameDetected
                       ? {
                           label: "Peringatan api",
@@ -262,6 +348,15 @@ export function IndikatorView() {
                     );
                   })}
                 </div>
+
+                <Pagination
+                  page={safeSensorPage}
+                  pageSize={SENSOR_PAGE_SIZE}
+                  totalItems={sensors.length}
+                  onPageChange={setSensorPage}
+                  label="Navigasi perangkat sensor"
+                  className="mt-3"
+                />
               </div>
             </BotanicalCard>
 
@@ -281,7 +376,7 @@ export function IndikatorView() {
                 </div>
 
                 <div className="mt-3.5 space-y-2.5">
-                  {parcels.map((parcel) => {
+                  {visibleParcels.map((parcel) => {
                     const assessment = aiAssessments.find((a) => a.parcel_id === parcel.id);
                     const ndviVal = parcel.ndvi ?? 0;
                     const healthy = ndviVal >= 0.7;
@@ -339,6 +434,15 @@ export function IndikatorView() {
                     );
                   })}
                 </div>
+
+                <Pagination
+                  page={safeSatellitePage}
+                  pageSize={SATELLITE_PAGE_SIZE}
+                  totalItems={parcels.length}
+                  onPageChange={setSatellitePage}
+                  label="Navigasi catatan satelit"
+                  className="mt-3"
+                />
               </div>
               <p className="mt-3 border-t border-[var(--line-subtle)] pt-2.5 text-[12px] text-[var(--ink-muted)]">
                 Keputusan akhir status lahan tetap memerlukan pengesahan Auditor MRV dan izin warga.

@@ -279,9 +279,11 @@ void publishTelemetry(float soilMoisture, float suhu, float kelembapan, bool cur
   int sound = isFlameActive ? 75 : 30;
 
   struct tm timeinfo;
+  struct tm utcInfo;
   char isoStr[32];
-  if (getLocalTime(&timeinfo, 100)) {
-    strftime(isoStr, sizeof(isoStr), "%Y-%m-%dT%H:%M:%SZ", &timeinfo);
+  // Kontrak wire memakai UTC; getLocalTime() mengembalikan jam WIB.
+  if (getLocalTime(&timeinfo, 100) && gmtime_r(&epochNow, &utcInfo)) {
+    strftime(isoStr, sizeof(isoStr), "%Y-%m-%dT%H:%M:%SZ", &utcInfo);
   } else {
     snprintf(isoStr, sizeof(isoStr), "2026-11-10T12:00:00Z");
   }

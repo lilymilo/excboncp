@@ -24,7 +24,6 @@ import {
   Search,
   ShieldCheck,
   Sprout,
-  Store,
   UserCircle2,
   Users,
   X,
@@ -47,6 +46,7 @@ interface NavEntry {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   roles?: UserRole[];
+  openInNewTab?: boolean;
 }
 
 const AUTH_ROLES: UserRole[] = ["community", "manager", "recipient", "auditor"];
@@ -75,9 +75,10 @@ const NAV_ENTRIES: NavEntry[] = [
     id: "screener",
     group: "Pantau",
     href: "/screener",
-    matchPrefixes: ["/screener", "/market"],
-    label: "Screener",
+    matchPrefixes: ["/screener", "/market", "/pasar"],
+    label: "Pasar",
     icon: BarChart3,
+    openInNewTab: true,
   },
   {
     id: "langsung",
@@ -86,15 +87,6 @@ const NAV_ENTRIES: NavEntry[] = [
     matchPrefixes: ["/langsung", "/activity"],
     label: "Langsung",
     icon: Radio,
-    roles: AUTH_ROLES,
-  },
-  {
-    id: "pasar",
-    group: "Laporan",
-    href: "/pasar/PARCEL-A",
-    matchPrefixes: ["/pasar"],
-    label: "Pasar",
-    icon: Store,
     roles: AUTH_ROLES,
   },
   {
@@ -237,6 +229,14 @@ export function BotanicalAppShell({ children }: { children: React.ReactNode }) {
   const [kabarOpen, setKabarOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const role = normalizeUserRole(user?.role, user?.email);
   const isGuest = !user || role === "guest";
@@ -551,53 +551,54 @@ export function BotanicalAppShell({ children }: { children: React.ReactNode }) {
         {/* LEFT PERSISTENT SIDEBAR (>=1280px) */}
         <aside
           aria-label="Navigasi dan maskot EXBON CP"
-          className="hidden xl:flex xl:w-[236px] xl:shrink-0 xl:flex-col xl:justify-between xl:rounded-[24px] xl:border xl:border-[#D8E5D4] xl:bg-white xl:p-4 xl:shadow-[0_4px_20px_rgba(20,38,26,0.04)]"
+          className="hidden xl:sticky xl:top-5 xl:flex xl:h-[calc(100dvh-2.5rem)] xl:w-[236px] xl:shrink-0 xl:flex-col xl:justify-between xl:overflow-hidden xl:rounded-[24px] xl:border xl:border-[#D8E5D4] xl:bg-white xl:p-3.5 xl:shadow-[0_4px_20px_rgba(20,38,26,0.04)]"
         >
-          <div>
+          <div className="flex min-h-0 flex-1 flex-col">
             {/* 1. Brand Mark & Forest Intelligence Descriptor */}
-            <Link href="/app" className="flex items-center gap-2.5 rounded-xl px-1 py-1">
+            <Link href="/app" className="flex shrink-0 items-center gap-2 rounded-xl px-1 py-0.5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/illustrations/exboncp-brand-mark.svg"
                 alt=""
-                width={38}
-                height={38}
-                className="h-9 w-9 shrink-0"
+                width={34}
+                height={34}
+                className="h-8 w-8 shrink-0"
               />
               <div>
-                <span className="xb-display block text-[17px] font-bold leading-tight tracking-[-0.02em] text-[#14261A]">
+                <span className="xb-display block text-[16px] font-bold leading-tight tracking-[-0.02em] text-[#14261A]">
                   EXBON CP
                 </span>
-                <span className="block text-[13px] font-medium text-[#4A5E4F]">
+                <span className="block text-[12px] font-medium text-[#4A5E4F]">
                   Forest Intelligence
                 </span>
               </div>
             </Link>
 
-            {/* 2. Prominent Orangutan Mascot Illustration + Greeting + Informational Role */}
-            <div className="mt-3 text-center">
+            {/* 2. Compact Orangutan Mascot Illustration + Single-Line Greeting & Role */}
+            <div className="mt-2 shrink-0 text-center">
               <Mascot
                 variant="sidebar"
-                size={184}
+                size={112}
                 alt="Maskot Orangutan penjaga hutan EXBON CP"
               />
-              <p className="xb-display mt-2 text-[18px] font-bold leading-snug tracking-[-0.02em] text-[#14261A]">
-                Selamat datang,
-                <br />
-                {firstName}!
-              </p>
-              <div className="mt-2.5 flex justify-center">
+              <div className="mt-1.5 flex items-center justify-center gap-1.5 px-1">
+                <span className="xb-display truncate text-[14.5px] font-bold tracking-[-0.02em] text-[#14261A]">
+                  {firstName}
+                </span>
                 <BotanicalRoleBadge role={role} />
               </div>
             </div>
 
-            <div className="my-4 border-t border-[#D8E5D4]" />
+            <div className="my-2 shrink-0 border-t border-[#D8E5D4]" />
 
             {/* 3. Role-Filtered Grouped Navigation Links */}
-            <nav aria-label="Menu samping" className="space-y-3">
+            <nav
+              aria-label="Menu samping"
+              className="xb-sidebar-scroll min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-0.5"
+            >
               {groupedNav.map((group) => (
                 <div key={group.groupName} className="space-y-0.5">
-                  <p className="px-3 pt-1 text-[13px] font-semibold text-[#4A5E4F]">
+                  <p className="px-2.5 pt-0.5 text-[11.5px] font-semibold uppercase tracking-[0.04em] text-[#4A5E4F]">
                     {group.groupName}
                   </p>
                   {group.items.map((item) => {
@@ -608,14 +609,16 @@ export function BotanicalAppShell({ children }: { children: React.ReactNode }) {
                         key={item.id}
                         href={item.href}
                         aria-current={active ? "page" : undefined}
-                        className={`flex min-h-[42px] items-center gap-3 rounded-xl px-3 py-2 text-[15.5px] font-medium transition-all duration-150 hover:translate-x-0.5 ${
+                        target={item.openInNewTab ? "_blank" : undefined}
+                        rel={item.openInNewTab ? "noopener noreferrer" : undefined}
+                        className={`flex min-h-[32px] items-center gap-2.5 rounded-xl px-2.5 py-1 text-[14px] font-medium transition-all duration-150 hover:translate-x-0.5 ${
                           active
                             ? "border-l-[3px] border-[#2E6B3F] bg-[#E2F2E5] font-semibold text-[#1F4D2E]"
                             : "text-[#4A5E4F] hover:bg-[#F5F9F3] hover:text-[#14261A]"
                         }`}
                       >
                         <Icon
-                          className={`h-[18px] w-[18px] shrink-0 ${
+                          className={`h-4 w-4 shrink-0 ${
                             active ? "text-[#1F4D2E]" : "text-[#4A5E4F]"
                           }`}
                           aria-hidden="true"
@@ -629,31 +632,38 @@ export function BotanicalAppShell({ children }: { children: React.ReactNode }) {
             </nav>
           </div>
 
-          {/* 4. Bottom Botanical Support Panel */}
-          <div className="relative mt-5 overflow-hidden rounded-2xl border border-[#D8E5D4] bg-[#EEF5EC] p-4">
+          {/* 4. Bottom Botanical Support Panel (Locked at base) */}
+          <div className="relative mt-2 shrink-0 overflow-hidden rounded-2xl border border-[#D8E5D4] bg-[#EEF5EC] p-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/illustrations/botanical-support.svg"
               alt=""
-              className="pointer-events-none absolute -bottom-1 -right-1 h-20 w-24 select-none object-contain"
+              className="pointer-events-none absolute -bottom-1 -right-1 h-16 w-20 select-none object-contain"
               aria-hidden="true"
             />
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-[#2E6B3F] text-white">
-              <Sprout className="h-4 w-4" aria-hidden="true" />
-            </span>
-            <p className="xb-display relative mt-2.5 text-[15px] font-bold text-[#14261A]">
-              Jaga Hutan Kita
-            </p>
-            <p className="relative mt-0.5 text-[14px] leading-snug text-[#4A5E4F]">
-              Bersama untuk bumi yang lebih hijau.
-            </p>
+            <div className="relative flex items-center gap-2.5">
+              <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-[#2E6B3F] text-white">
+                <Sprout className="h-3.5 w-3.5" aria-hidden="true" />
+              </span>
+              <div className="min-w-0">
+                <p className="xb-display text-[13.5px] font-bold leading-tight text-[#14261A]">
+                  Jaga Hutan Kita
+                </p>
+                <p className="truncate text-[12px] text-[#4A5E4F]">
+                  Bersama untuk bumi hijau.
+                </p>
+              </div>
+            </div>
           </div>
         </aside>
 
         {/* CENTER & RIGHT CONTENT WORKSPACE */}
         <div className="flex min-w-0 flex-1 flex-col gap-4">
           {/* Single Topbar Row: Pill Search + Help + Notification + Orangutan Avatar Menu */}
-          <header className="flex flex-wrap items-center justify-between gap-3">
+          <header
+            data-scrolled={scrolled ? "true" : "false"}
+            className="xbm-topbar-sticky flex flex-wrap items-center justify-between gap-3 px-2 py-1.5"
+          >
             <div className="flex min-w-0 flex-1 items-center gap-2.5">
               <button
                 type="button"
@@ -843,7 +853,7 @@ export function BotanicalAppShell({ children }: { children: React.ReactNode }) {
         {[
           { href: isGuest ? "/indikator" : "/app", label: isGuest ? "Indikator" : "Dasbor", icon: isGuest ? Gauge : LayoutDashboard, prefixes: isGuest ? ["/indikator"] : ["/app"] },
           { href: "/peta", label: "Peta", icon: MapIcon, prefixes: ["/peta", "/map"] },
-          { href: "/screener", label: "Screener", icon: BarChart3, prefixes: ["/screener", "/market"] },
+          { href: "/screener", label: "Pasar", icon: BarChart3, prefixes: ["/screener", "/market", "/pasar"] },
           { href: "/verifikasi/1", label: "Segel", icon: FileCheck2, prefixes: ["/verifikasi", "/verify"] },
         ].map((item) => {
           const Icon = item.icon;

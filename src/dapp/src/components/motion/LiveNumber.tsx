@@ -10,6 +10,8 @@ export interface LiveNumberProps {
   className?: string;
   /** Show a colour cue when the value moves up or down. */
   signal?: boolean;
+  /** Count up from 0 when first entering the viewport. */
+  countUpOnView?: boolean;
 }
 
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
@@ -19,27 +21,66 @@ function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-/** Interpolates between numeric values instead of snapping. Static under reduced motion. */
+/**
+ * Interpolates numeric values and counts up on first viewport entry.
+ * Static under prefers-reduced-motion; capped at 420ms (--dur-slow) by default.
+ */
 export function LiveNumber({
   value,
-  format = (n) => n.toLocaleString("id-ID"),
-  durationMs = 600,
+  format = (n) => Math.round(n).toLocaleString("id-ID"),
+  durationMs = 420,
   className,
   signal = true,
+  countUpOnView = true,
 }: LiveNumberProps) {
+  const spanRef = React.useRef<HTMLSpanElement>(null);
+  const [inView, setInView] = React.useState(!countUpOnView);
   const [display, setDisplay] = React.useState(value);
   const [direction, setDirection] = React.useState<"up" | "down" | "flat">("flat");
-  const fromRef = React.useRef(value);
+  const fromRef = React.useRef(countUpOnView ? 0 : value);
+  const hasCountedInRef = React.useRef(!countUpOnView);
   const frameRef = React.useRef<number>();
 
   React.useEffect(() => {
-    const from = fromRef.current;
-    if (from === value) return;
+    if (!countUpOnView) return;
+    const node = spanRef.current;
+    if (!node || typeof IntersectionObserver === "undefined") {
+      setInView(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [countUpOnView]);
 
-    if (prefersReducedMotion() || durationMs <= 0) {
+  React.useEffect(() => {
+    if (!inView) return;
+
+    const isFirstView = !hasCountedInRef.current;
+    const from = isFirstView ? 0 : fromRef.current;
+    hasCountedInRef.current = true;
+
+    if (from === value) {
+      setDisplay(value);
+      return;
+    }
+
+    const cappedDuration = Math.min(durationMs, 420);
+
+    if (prefersReducedMotion() || cappedDuration <= 0) {
       fromRef.current = value;
       setDisplay(value);
-      setDirection(value > from ? "up" : "down");
+      if (!isFirstView) {
+        setDirection(value > from ? "up" : "down");
+      }
       return;
     }
 
@@ -47,30 +88,34 @@ export function LiveNumber({
     const delta = value - from;
 
     const tick = (now: number) => {
-      const progress = Math.min(1, (now - start) / durationMs);
+      const progress = Math.min(1, Math.max(0, (now - start) / cappedDuration));
       setDisplay(from + delta * easeOut(progress));
       if (progress < 1) {
         frameRef.current = requestAnimationFrame(tick);
       } else {
         fromRef.current = value;
+        setDisplay(value);
       }
     };
 
-    setDirection(delta > 0 ? "up" : "down");
+    if (!isFirstView) {
+      setDirection(delta > 0 ? "up" : "down");
+    }
     frameRef.current = requestAnimationFrame(tick);
     return () => {
       if (frameRef.current) cancelAnimationFrame(frameRef.current);
     };
-  }, [value, durationMs]);
+  }, [value, durationMs, inView]);
 
   React.useEffect(() => {
     if (direction === "flat") return;
-    const timer = window.setTimeout(() => setDirection("flat"), 900);
+    const timer = window.setTimeout(() => setDirection("flat"), 420);
     return () => window.clearTimeout(timer);
   }, [direction]);
 
   return (
     <span
+      ref={spanRef}
       className={cn("xbm-livenumber", className)}
       data-direction={signal ? direction : "flat"}
       aria-live="polite"
