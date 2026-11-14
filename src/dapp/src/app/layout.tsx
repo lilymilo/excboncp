@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className="scroll-smooth">
-      <body className="min-h-screen bg-xb-bg font-sans text-xb-text antialiased selection:bg-xb-forest/25 selection:text-xb-text">
+      <body className="min-h-screen bg-[#EEF5EC] font-sans text-[#14261A] antialiased selection:bg-[#2E6B3F]/20 selection:text-[#14261A]">
         <DappProvider>{children}</DappProvider>
       </body>
     </html>

@@ -58,14 +58,14 @@ const TX_PAGE_SIZE = 10;
 
 function DeltaIndicator({ current, prev }: { current: number; prev: number | null }) {
   if (prev === null || prev === 0) {
-    return <p className="mt-1 text-[12px] text-[var(--ink-muted)]">tetap</p>;
+    return <p className="font-telemetry text-[11.5px] font-semibold text-[var(--ink-muted)]">tetap</p>;
   }
   const pct = Math.round(((current - prev) / prev) * 100);
   const sign = pct > 0 ? "+" : "";
   const isUp = pct >= 0;
   return (
     <p
-      className={`xb-numeric mt-1 flex items-center gap-1 text-[12px] font-semibold ${
+      className={`font-telemetry flex items-center gap-1 text-[11.5px] font-semibold leading-none ${
         isUp ? "text-[var(--status-verified-ink)]" : "text-[var(--status-dispute-ink)]"
       }`}
     >
@@ -177,13 +177,13 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
           showSimulation
         />
 
-        {/* Period Tabs + Chronological Date Controls (Monday-start weeks, WIB) */}
-        <BotanicalCard className="p-4">
+        {/* Period Tabs + Chronological Date Controls (Apple Segmented Control & Aligned Buttons) */}
+        <BotanicalCard className="p-3 sm:p-3.5 rounded-[16px] border border-[var(--line-subtle)] shadow-xs">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div
               role="tablist"
               aria-label="Pilih periode rekap"
-              className="flex flex-wrap gap-1.5 rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-1"
+              className="flex items-center p-1 rounded-[12px] bg-[var(--surface-sunken)] border border-[var(--line-subtle)] gap-1 overflow-x-auto"
             >
               {(["harian", "mingguan", "bulanan", "tahunan"] as ReportPeriodKey[]).map((key) => {
                 const active = key === periodKey;
@@ -194,9 +194,9 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                     role="tab"
                     aria-selected={active}
                     onClick={() => navigatePeriod(key)}
-                    className={`min-h-[40px] rounded-xl px-4 text-[14.5px] font-semibold ${
+                    className={`min-h-[34px] flex-1 sm:flex-initial px-3.5 text-[13px] font-semibold rounded-[8px] transition-all active:scale-[0.98] ${
                       active
-                        ? "bg-[var(--forest-700)] text-white"
+                        ? "bg-[var(--surface)] text-[var(--ink)] shadow-xs"
                         : "text-[var(--ink-muted)] hover:text-[var(--ink)]"
                     }`}
                   >
@@ -211,16 +211,16 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                 type="button"
                 aria-label="Periode sebelumnya"
                 onClick={() => navigatePeriod(periodKey, prevDate)}
-                className="inline-flex min-h-[44px] items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 text-[14.5px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-soft)]"
+                className="inline-flex min-h-[34px] items-center gap-1 rounded-[9px] border border-[var(--line-subtle)] bg-[var(--surface)] px-3 text-[13px] font-semibold text-[var(--ink)] transition-all hover:bg-[var(--surface-soft)] active:scale-[0.98]"
               >
-                <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+                <ChevronLeft className="h-3.5 w-3.5" aria-hidden="true" />
                 <span>Sebelumnya</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => navigatePeriod(periodKey, todayWib)}
-                className="inline-flex min-h-[44px] items-center rounded-full border border-[var(--line)] bg-[var(--leaf-100)] px-4 text-[14.5px] font-semibold text-[var(--forest-800)] hover:bg-[var(--selection-bg)]"
+                className="inline-flex min-h-[34px] items-center rounded-[9px] border border-[var(--line-subtle)] bg-[var(--leaf-100)] px-3 text-[13px] font-semibold text-[var(--forest-800)] transition-all hover:bg-[var(--selection-bg)] active:scale-[0.98]"
               >
                 {currentPeriodButtonLabel}
               </button>
@@ -230,16 +230,16 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                 aria-label="Periode berikutnya"
                 disabled={!canGoNext}
                 onClick={() => navigatePeriod(periodKey, nextDate)}
-                className="inline-flex min-h-[44px] items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 text-[14.5px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-soft)] disabled:opacity-45"
+                className="inline-flex min-h-[34px] items-center gap-1 rounded-[9px] border border-[var(--line-subtle)] bg-[var(--surface)] px-3 text-[13px] font-semibold text-[var(--ink)] transition-all hover:bg-[var(--surface-soft)] disabled:opacity-40 active:scale-[0.98]"
               >
                 <span>Berikutnya</span>
-                <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
               </button>
             </div>
           </div>
 
           {report.isSimulatedSeed && (
-            <p className="mt-3 border-t border-[var(--line-subtle)] pt-3 text-[13.5px] text-[var(--ink-muted)]">
+            <p className="mt-3 border-t border-[var(--line-subtle)] pt-2.5 text-[12.5px] text-[var(--ink-muted)]">
               Catatan periode: rekap {PERIOD_LABELS[periodKey].toLowerCase()} ini menggabungkan data
               simulasi dari skrip seed lingkungan uji.
             </p>
@@ -255,97 +255,121 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
           emptyActionHref={`/rekap/${periodKey}?tanggal=${encodeURIComponent(todayWib)}`}
           emptyActionLabel={`Buka ${currentPeriodButtonLabel.toLowerCase()}`}
         >
-          {/* 6 Summary KPIs in a compact 6-column strip */}
+          {/* 6 Summary KPIs with concentric borders, uniform baselines, and even spacing */}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
-            <BotanicalCard interactive className="p-3.5">
-              <p className="truncate text-[12.5px] font-medium text-[var(--ink-muted)]">Transaksi</p>
-              <p className="xb-display xb-numeric mt-1 text-[21px] font-bold text-[var(--ink)]">
-                <LiveNumber
-                  value={report.totals.trades}
-                  format={(v) => formatNumber(Math.round(v))}
+            <BotanicalCard interactive className="rounded-[14px] border border-[var(--line-subtle)] bg-[var(--surface)] p-3.5 sm:p-4 shadow-xs flex flex-col justify-between min-h-[112px] transition-all hover:border-[var(--forest-700)]/30 active:scale-[0.98]">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--ink-muted)] truncate">Transaksi</p>
+                <p className="font-display font-bold text-[19px] sm:text-[20px] tracking-tight text-[var(--ink)] tabular-nums leading-none mt-2">
+                  <LiveNumber
+                    value={report.totals.trades}
+                    format={(v) => formatNumber(Math.round(v))}
+                  />
+                </p>
+              </div>
+              <div className="mt-2.5 pt-2 border-t border-[var(--line-subtle)]/60">
+                <DeltaIndicator
+                  current={report.totals.trades}
+                  prev={report.prev_totals?.trades ?? null}
                 />
-              </p>
-              <DeltaIndicator
-                current={report.totals.trades}
-                prev={report.prev_totals?.trades ?? null}
-              />
+              </div>
             </BotanicalCard>
 
-            <BotanicalCard interactive className="p-3.5">
-              <p className="truncate text-[12.5px] font-medium text-[var(--ink-muted)]">Unit terjual</p>
-              <p className="xb-display xb-numeric mt-1 text-[21px] font-bold text-[var(--status-verified-ink)]">
-                <LiveNumber
-                  value={report.totals.units_sold}
-                  format={(v) => formatNumber(Math.round(v))}
-                />{" "}
-                <span className="text-[12.5px] font-semibold text-[var(--ink-muted)]">t</span>
-              </p>
-              <DeltaIndicator
-                current={report.totals.units_sold}
-                prev={report.prev_totals?.units_sold ?? null}
-              />
+            <BotanicalCard interactive className="rounded-[14px] border border-[var(--line-subtle)] bg-[var(--surface)] p-3.5 sm:p-4 shadow-xs flex flex-col justify-between min-h-[112px] transition-all hover:border-[var(--forest-700)]/30 active:scale-[0.98]">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--ink-muted)] truncate">Unit terjual</p>
+                <p className="font-display font-bold text-[19px] sm:text-[20px] tracking-tight text-[var(--status-verified-ink)] tabular-nums leading-none mt-2">
+                  <LiveNumber
+                    value={report.totals.units_sold}
+                    format={(v) => formatNumber(Math.round(v))}
+                  />{" "}
+                  <span className="text-[12px] font-semibold text-[var(--ink-muted)]">t</span>
+                </p>
+              </div>
+              <div className="mt-2.5 pt-2 border-t border-[var(--line-subtle)]/60">
+                <DeltaIndicator
+                  current={report.totals.units_sold}
+                  prev={report.prev_totals?.units_sold ?? null}
+                />
+              </div>
             </BotanicalCard>
 
-            <BotanicalCard interactive className="p-3.5">
-              <p className="truncate text-[12.5px] font-medium text-[var(--ink-muted)]">Pendapatan</p>
-              <p className="xb-display xb-numeric mt-1 truncate text-[19px] font-bold text-[var(--ink)]">
-                <LiveNumber value={report.totals.gross} format={formatIdr} />
-              </p>
-              <DeltaIndicator
-                current={report.totals.gross}
-                prev={report.prev_totals?.gross ?? null}
-              />
+            <BotanicalCard interactive className="rounded-[14px] border border-[var(--line-subtle)] bg-[var(--surface)] p-3.5 sm:p-4 shadow-xs flex flex-col justify-between min-h-[112px] transition-all hover:border-[var(--forest-700)]/30 active:scale-[0.98]">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--ink-muted)] truncate">Pendapatan</p>
+                <p className="font-display font-bold text-[18px] sm:text-[19px] tracking-tight text-[var(--ink)] tabular-nums leading-none mt-2 truncate">
+                  <LiveNumber value={report.totals.gross} format={formatIdr} />
+                </p>
+              </div>
+              <div className="mt-2.5 pt-2 border-t border-[var(--line-subtle)]/60">
+                <DeltaIndicator
+                  current={report.totals.gross}
+                  prev={report.prev_totals?.gross ?? null}
+                />
+              </div>
             </BotanicalCard>
 
-            <BotanicalCard interactive className="p-3.5">
-              <p className="truncate text-[12.5px] font-medium text-[var(--ink-muted)]">
-                Komunitas (60%)
-              </p>
-              <p className="xb-display xb-numeric mt-1 truncate text-[19px] font-bold text-[var(--status-verified-ink)]">
-                <LiveNumber value={report.totals.community} format={formatIdr} />
-              </p>
-              <DeltaIndicator
-                current={report.totals.community}
-                prev={report.prev_totals?.community ?? null}
-              />
+            <BotanicalCard interactive className="rounded-[14px] border border-[var(--line-subtle)] bg-[var(--surface)] p-3.5 sm:p-4 shadow-xs flex flex-col justify-between min-h-[112px] transition-all hover:border-[var(--forest-700)]/30 active:scale-[0.98]">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--ink-muted)] truncate">
+                  Komunitas (60%)
+                </p>
+                <p className="font-display font-bold text-[18px] sm:text-[19px] tracking-tight text-[var(--status-verified-ink)] tabular-nums leading-none mt-2 truncate">
+                  <LiveNumber value={report.totals.community} format={formatIdr} />
+                </p>
+              </div>
+              <div className="mt-2.5 pt-2 border-t border-[var(--line-subtle)]/60">
+                <DeltaIndicator
+                  current={report.totals.community}
+                  prev={report.prev_totals?.community ?? null}
+                />
+              </div>
             </BotanicalCard>
 
-            <BotanicalCard interactive className="p-3.5">
-              <p className="truncate text-[12.5px] font-medium text-[var(--ink-muted)]">
-                Pengelola (40%)
-              </p>
-              <p className="xb-display xb-numeric mt-1 truncate text-[19px] font-bold text-[var(--forest-800)]">
-                <LiveNumber value={report.totals.manager} format={formatIdr} />
-              </p>
-              <DeltaIndicator
-                current={report.totals.manager}
-                prev={report.prev_totals?.manager ?? null}
-              />
+            <BotanicalCard interactive className="rounded-[14px] border border-[var(--line-subtle)] bg-[var(--surface)] p-3.5 sm:p-4 shadow-xs flex flex-col justify-between min-h-[112px] transition-all hover:border-[var(--forest-700)]/30 active:scale-[0.98]">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--ink-muted)] truncate">
+                  Pengelola (40%)
+                </p>
+                <p className="font-display font-bold text-[18px] sm:text-[19px] tracking-tight text-[var(--forest-800)] tabular-nums leading-none mt-2 truncate">
+                  <LiveNumber value={report.totals.manager} format={formatIdr} />
+                </p>
+              </div>
+              <div className="mt-2.5 pt-2 border-t border-[var(--line-subtle)]/60">
+                <DeltaIndicator
+                  current={report.totals.manager}
+                  prev={report.prev_totals?.manager ?? null}
+                />
+              </div>
             </BotanicalCard>
 
-            <BotanicalCard interactive className="p-3.5">
-              <p className="truncate text-[12.5px] font-medium text-[var(--ink-muted)]">Unit beku</p>
-              <p className="xb-display xb-numeric mt-1 text-[21px] font-bold text-[var(--status-blocked-ink)]">
-                <LiveNumber
-                  value={report.totals.units_frozen}
-                  format={(v) => formatNumber(Math.round(v))}
-                />{" "}
-                <span className="text-[12.5px] font-semibold text-[var(--ink-muted)]">t</span>
-              </p>
-              <DeltaIndicator
-                current={report.totals.units_frozen}
-                prev={report.prev_totals?.units_frozen ?? null}
-              />
+            <BotanicalCard interactive className="rounded-[14px] border border-[var(--line-subtle)] bg-[var(--surface)] p-3.5 sm:p-4 shadow-xs flex flex-col justify-between min-h-[112px] transition-all hover:border-[var(--forest-700)]/30 active:scale-[0.98]">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--ink-muted)] truncate">Unit beku</p>
+                <p className="font-display font-bold text-[19px] sm:text-[20px] tracking-tight text-[var(--status-blocked-ink)] tabular-nums leading-none mt-2">
+                  <LiveNumber
+                    value={report.totals.units_frozen}
+                    format={(v) => formatNumber(Math.round(v))}
+                  />{" "}
+                  <span className="text-[12px] font-semibold text-[var(--ink-muted)]">t</span>
+                </p>
+              </div>
+              <div className="mt-2.5 pt-2 border-t border-[var(--line-subtle)]/60">
+                <DeltaIndicator
+                  current={report.totals.units_frozen}
+                  prev={report.prev_totals?.units_frozen ?? null}
+                />
+              </div>
             </BotanicalCard>
           </div>
 
-          {/* Revenue Bar Chart + Key Events */}
-          <div className="grid gap-4 xl:grid-cols-12">
-            <BotanicalCard className="flex h-full flex-col justify-between p-5 xl:col-span-7">
+          {/* Revenue Bar Chart + Key Events (Consistent Padding & Inset Elements) */}
+          <div className="grid gap-4 xl:grid-cols-12 items-stretch">
+            <BotanicalCard className="flex flex-col justify-between p-5 xl:col-span-7 rounded-[16px] border border-[var(--line-subtle)] shadow-xs">
               <div>
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
                   <div>
-                    <h2 className="xb-display text-[17.5px] font-bold text-[var(--ink)]">
+                    <h2 className="font-display text-[16px] font-bold tracking-tight text-[var(--ink)]">
                       Grafik Pendapatan per{" "}
                       {periodKey === "harian"
                         ? "Jam"
@@ -353,7 +377,7 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                         ? "Bulan"
                         : "Hari"}
                     </h2>
-                    <p className="text-[13.5px] text-[var(--ink-muted)]">
+                    <p className="text-[13px] text-[var(--ink-muted)] mt-0.5">
                       Nilai rupiah simulasi beserta jumlah unit per titik observasi.
                     </p>
                   </div>
@@ -380,16 +404,16 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                       />
                       <XAxis
                         dataKey="label"
-                        tick={{ fill: BOTANICAL_CHART_COLORS.inkMuted, fontSize: 13 }}
+                        tick={{ fill: BOTANICAL_CHART_COLORS.inkMuted, fontSize: 12 }}
                         tickLine={false}
                         axisLine={false}
                       />
                       <YAxis
                         tickFormatter={(val) => formatCompactIdrAxis(Number(val))}
-                        tick={{ fill: BOTANICAL_CHART_COLORS.inkMuted, fontSize: 13 }}
+                        tick={{ fill: BOTANICAL_CHART_COLORS.inkMuted, fontSize: 12 }}
                         tickLine={false}
                         axisLine={false}
-                        width={64}
+                        width={60}
                       />
                       <Tooltip
                         cursor={{ fill: "rgba(226, 242, 229, 0.45)" }}
@@ -398,23 +422,25 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                       <Bar
                         dataKey="gross"
                         fill="url(#xbRekapBarGradient)"
-                        radius={[8, 8, 0, 0]}
-                        maxBarSize={44}
+                        radius={[6, 6, 0, 0]}
+                        maxBarSize={40}
                         isAnimationActive={false}
                       />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
-              <ChartBenchmarkBar stats={bucketStats} />
+              <div className="mt-3.5 pt-3 border-t border-[var(--line-subtle)]">
+                <ChartBenchmarkBar stats={bucketStats} />
+              </div>
             </BotanicalCard>
 
-            <BotanicalCard className="flex h-full flex-col justify-between p-5 xl:col-span-5">
+            <BotanicalCard className="flex flex-col justify-between p-5 xl:col-span-5 rounded-[16px] border border-[var(--line-subtle)] shadow-xs">
               <div>
-                <h2 className="xb-display text-[17.5px] font-bold text-[var(--ink)]">
+                <h2 className="font-display text-[16px] font-bold tracking-tight text-[var(--ink)]">
                   Kejadian Penting
                 </h2>
-                <p className="mt-0.5 text-[13.5px] text-[var(--ink-muted)]">
+                <p className="mt-0.5 text-[13px] text-[var(--ink-muted)]">
                   Pembaruan status, sensor, izin warga, dan segel pada periode ini.
                 </p>
                 <ul className="mt-3 space-y-2">
@@ -422,9 +448,9 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                     <li key={ev.id}>
                       <Link
                         href={ev.href}
-                        className="flex min-h-[42px] items-start justify-between gap-2.5 rounded-xl border border-[var(--line)] bg-[var(--surface-soft)] px-3 py-2.5 hover:bg-[var(--leaf-100)]"
+                        className="flex min-h-[42px] items-start justify-between gap-2.5 rounded-[12px] border border-[var(--line-subtle)] bg-[var(--surface-soft)] px-3 py-2.5 transition-all hover:bg-[var(--surface-sunken)] active:scale-[0.99]"
                       >
-                        <div className="flex items-start gap-2">
+                        <div className="flex items-start gap-2 min-w-0">
                           {ev.type === "seal" ? (
                             <ShieldCheck
                               className="mt-0.5 h-4 w-4 shrink-0 text-[var(--seal-600)]"
@@ -441,15 +467,15 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                               aria-hidden="true"
                             />
                           )}
-                          <div>
-                            <p className="xb-numeric text-[12px] font-semibold text-[var(--ink-muted)]">
+                          <div className="min-w-0">
+                            <p className="font-telemetry text-[11.5px] font-semibold text-[var(--ink-muted)]">
                               {formatWibTime(ev.ts)} · {ev.parcel_id}
                             </p>
-                            <p className="line-clamp-1 text-[13.5px] font-medium text-[var(--ink)]">{ev.text}</p>
+                            <p className="line-clamp-1 text-[13px] font-medium text-[var(--ink)]">{ev.text}</p>
                           </div>
                         </div>
                         <ArrowUpRight
-                          className="mt-0.5 h-4 w-4 shrink-0 text-[var(--ink-muted)]"
+                          className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--ink-muted)]"
                           aria-hidden="true"
                         />
                       </Link>
@@ -457,32 +483,39 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                   ))}
                 </ul>
               </div>
-              <div className="mt-3 border-t border-[var(--line-subtle)] pt-2.5 text-[12.5px] text-[var(--ink-muted)]">
+              <div className="mt-3.5 border-t border-[var(--line-subtle)] pt-3 text-[12px] text-[var(--ink-muted)]">
                 Menampilkan {Math.min(4, report.events.length)} dari {report.events.length} catatan kejadian.
               </div>
             </BotanicalCard>
           </div>
 
-          {/* Breakdown Cards: Per Lahan & Per Zona */}
-          <div className="grid gap-5 lg:grid-cols-2">
-            <BotanicalCard className="overflow-hidden p-5">
-              <h2 className="xb-display text-[18px] font-bold text-[var(--ink)]">
-                Rincian per Lahan
-              </h2>
-              <div className="mt-3 hidden overflow-x-auto md:block">
-                <table className="w-full border-collapse text-left text-[15px]">
+          {/* Breakdown Cards: Per Lahan & Per Zona (Inset Grouped Tables with Balanced Vertical Weight) */}
+          <div className="grid gap-5 lg:grid-cols-2 items-start">
+            <BotanicalCard className="overflow-hidden p-5 rounded-[16px] border border-[var(--line-subtle)] shadow-xs">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="font-display text-[16px] font-bold tracking-tight text-[var(--ink)]">
+                    Rincian per Lahan
+                  </h2>
+                  <p className="text-[12.5px] text-[var(--ink-muted)] mt-0.5">
+                    {report.by_parcel.length} lahan aktif terdata pada periode ini
+                  </p>
+                </div>
+              </div>
+              <div className="mt-3 hidden overflow-x-auto rounded-[12px] border border-[var(--line-subtle)] bg-[var(--surface-soft)] md:block">
+                <table className="w-full border-collapse text-left text-[14px]">
                   <thead>
-                    <tr className="border-b border-[var(--line)] text-[13.5px] font-semibold text-[var(--ink-muted)]">
-                      <th scope="col" className="py-2.5 pr-3">Lahan</th>
+                    <tr className="border-b border-[var(--line-subtle)] bg-[var(--surface-sunken)]/60 text-[11.5px] font-semibold uppercase tracking-wider text-[var(--ink-muted)]">
+                      <th scope="col" className="px-3.5 py-2.5">Lahan</th>
                       <th scope="col" className="px-3 py-2.5 text-right">Unit</th>
                       <th scope="col" className="px-3 py-2.5 text-right">Pendapatan</th>
-                      <th scope="col" className="py-2.5 pl-3 text-right">Bagian komunitas</th>
+                      <th scope="col" className="px-3.5 py-2.5 text-right">Bagian komunitas</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[var(--line)]">
+                  <tbody className="divide-y divide-[var(--line-subtle)]">
                     {report.by_parcel.map((row) => (
-                      <tr key={row.parcel_id}>
-                        <td className="py-3 pr-3">
+                      <tr key={row.parcel_id} className="transition-colors hover:bg-[var(--surface)]">
+                        <td className="px-3.5 py-2.5 font-medium">
                           <Link
                             href={`/peta/${encodeURIComponent(row.parcel_id)}`}
                             className="font-semibold text-[var(--forest-800)] hover:underline"
@@ -490,13 +523,13 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                             {row.name}
                           </Link>
                         </td>
-                        <td className="xb-numeric px-3 py-3 text-right font-medium text-[var(--ink)]">
+                        <td className="font-telemetry px-3 py-2.5 text-right text-[13px] font-medium text-[var(--ink)]">
                           {formatNumber(row.units)} t
                         </td>
-                        <td className="xb-numeric px-3 py-3 text-right text-[var(--ink)]">
+                        <td className="font-telemetry px-3 py-2.5 text-right text-[13px] text-[var(--ink)]">
                           {formatIdr(row.gross)}
                         </td>
-                        <td className="xb-numeric py-3 pl-3 text-right font-semibold text-[var(--status-verified-ink)]">
+                        <td className="font-telemetry px-3.5 py-2.5 text-right text-[13px] font-semibold text-[var(--status-verified-ink)]">
                           {formatIdr(row.community)}
                         </td>
                       </tr>
@@ -504,33 +537,33 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                   </tbody>
                 </table>
               </div>
-              <div className="mt-3 space-y-2.5 md:hidden">
+              <div className="mt-3 space-y-2 md:hidden">
                 {report.by_parcel.map((row) => (
                   <div
                     key={row.parcel_id}
-                    className="rounded-xl border border-[var(--line-subtle)] bg-[var(--surface-soft)] p-3.5"
+                    className="rounded-[12px] border border-[var(--line-subtle)] bg-[var(--surface-soft)] p-3"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <Link
                         href={`/peta/${encodeURIComponent(row.parcel_id)}`}
-                        className="font-semibold text-[var(--forest-800)] hover:underline"
+                        className="font-semibold text-[13.5px] text-[var(--forest-800)] hover:underline"
                       >
                         {row.name}
                       </Link>
-                      <span className="xb-numeric text-[14px] font-semibold text-[var(--ink)]">
+                      <span className="font-telemetry text-[13px] font-semibold text-[var(--ink)]">
                         {formatNumber(row.units)} t
                       </span>
                     </div>
-                    <div className="mt-2 grid grid-cols-2 gap-2 text-[13.5px]">
+                    <div className="mt-2 grid grid-cols-2 gap-2 text-[12.5px]">
                       <div>
                         <p className="text-[var(--ink-muted)]">Pendapatan</p>
-                        <p className="xb-numeric font-semibold text-[var(--ink)]">
+                        <p className="font-telemetry font-semibold text-[var(--ink)]">
                           {formatIdr(row.gross)}
                         </p>
                       </div>
                       <div className="text-right">
                         <p className="text-[var(--ink-muted)]">Komunitas</p>
-                        <p className="xb-numeric font-bold text-[var(--status-verified-ink)]">
+                        <p className="font-telemetry font-bold text-[var(--status-verified-ink)]">
                           {formatIdr(row.community)}
                         </p>
                       </div>
@@ -540,31 +573,38 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
               </div>
             </BotanicalCard>
 
-            <BotanicalCard className="overflow-hidden p-5">
-              <h2 className="xb-display text-[18px] font-bold text-[var(--ink)]">
-                Rincian per Zona
-              </h2>
-              <div className="mt-3 hidden overflow-x-auto md:block">
-                <table className="w-full border-collapse text-left text-[15px]">
+            <BotanicalCard className="overflow-hidden p-5 rounded-[16px] border border-[var(--line-subtle)] shadow-xs">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="font-display text-[16px] font-bold tracking-tight text-[var(--ink)]">
+                    Rincian per Zona
+                  </h2>
+                  <p className="text-[12.5px] text-[var(--ink-muted)] mt-0.5">
+                    {report.by_zone.length} zona alokasi aktif terdata pada periode ini
+                  </p>
+                </div>
+              </div>
+              <div className="mt-3 hidden overflow-x-auto rounded-[12px] border border-[var(--line-subtle)] bg-[var(--surface-soft)] md:block">
+                <table className="w-full border-collapse text-left text-[14px]">
                   <thead>
-                    <tr className="border-b border-[var(--line)] text-[13.5px] font-semibold text-[var(--ink-muted)]">
-                      <th scope="col" className="py-2.5 pr-3">Zona</th>
+                    <tr className="border-b border-[var(--line-subtle)] bg-[var(--surface-sunken)]/60 text-[11.5px] font-semibold uppercase tracking-wider text-[var(--ink-muted)]">
+                      <th scope="col" className="px-3.5 py-2.5">Zona</th>
                       <th scope="col" className="px-3 py-2.5 text-right">Unit</th>
                       <th scope="col" className="px-3 py-2.5 text-right">Pendapatan</th>
-                      <th scope="col" className="py-2.5 pl-3 text-right">Bagian komunitas</th>
+                      <th scope="col" className="px-3.5 py-2.5 text-right">Bagian komunitas</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[var(--line)]">
+                  <tbody className="divide-y divide-[var(--line-subtle)]">
                     {report.by_zone.map((row) => (
-                      <tr key={row.zone_id}>
-                        <td className="py-3 pr-3 font-semibold text-[var(--ink)]">{row.name}</td>
-                        <td className="xb-numeric px-3 py-3 text-right font-medium text-[var(--ink)]">
+                      <tr key={row.zone_id} className="transition-colors hover:bg-[var(--surface)]">
+                        <td className="px-3.5 py-2.5 font-semibold text-[var(--ink)]">{row.name}</td>
+                        <td className="font-telemetry px-3 py-2.5 text-right text-[13px] font-medium text-[var(--ink)]">
                           {formatNumber(row.units)} t
                         </td>
-                        <td className="xb-numeric px-3 py-3 text-right text-[var(--ink)]">
+                        <td className="font-telemetry px-3 py-2.5 text-right text-[13px] text-[var(--ink)]">
                           {formatIdr(row.gross)}
                         </td>
-                        <td className="xb-numeric py-3 pl-3 text-right font-semibold text-[var(--status-verified-ink)]">
+                        <td className="font-telemetry px-3.5 py-2.5 text-right text-[13px] font-semibold text-[var(--status-verified-ink)]">
                           {formatIdr(row.community)}
                         </td>
                       </tr>
@@ -572,28 +612,37 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                   </tbody>
                 </table>
               </div>
-              <div className="mt-3 space-y-2.5 md:hidden">
+
+              {/* Informative summary note so the card has balanced visual weight without empty space */}
+              <div className="mt-3.5 rounded-[12px] border border-[var(--line-subtle)] bg-[var(--surface-soft)] p-3 text-[12.5px] text-[var(--ink-muted)]">
+                <p className="font-semibold text-[var(--ink)]">Distribusi Alokasi Zona Kepatuhan</p>
+                <p className="mt-0.5 leading-relaxed">
+                  Seluruh unit serapan terserap disalurkan sesuai regulasi dan kuota mitigasi emisi industri zona terkait.
+                </p>
+              </div>
+
+              <div className="mt-3 space-y-2 md:hidden">
                 {report.by_zone.map((row) => (
                   <div
                     key={row.zone_id}
-                    className="rounded-xl border border-[var(--line-subtle)] bg-[var(--surface-soft)] p-3.5"
+                    className="rounded-[12px] border border-[var(--line-subtle)] bg-[var(--surface-soft)] p-3"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="font-semibold text-[var(--ink)]">{row.name}</span>
-                      <span className="xb-numeric text-[14px] font-semibold text-[var(--ink)]">
+                      <span className="font-semibold text-[13.5px] text-[var(--ink)]">{row.name}</span>
+                      <span className="font-telemetry text-[13px] font-semibold text-[var(--ink)]">
                         {formatNumber(row.units)} t
                       </span>
                     </div>
-                    <div className="mt-2 grid grid-cols-2 gap-2 text-[13.5px]">
+                    <div className="mt-2 grid grid-cols-2 gap-2 text-[12.5px]">
                       <div>
                         <p className="text-[var(--ink-muted)]">Pendapatan</p>
-                        <p className="xb-numeric font-semibold text-[var(--ink)]">
+                        <p className="font-telemetry font-semibold text-[var(--ink)]">
                           {formatIdr(row.gross)}
                         </p>
                       </div>
                       <div className="text-right">
                         <p className="text-[var(--ink-muted)]">Komunitas</p>
-                        <p className="xb-numeric font-bold text-[var(--status-verified-ink)]">
+                        <p className="font-telemetry font-bold text-[var(--status-verified-ink)]">
                           {formatIdr(row.community)}
                         </p>
                       </div>
@@ -604,58 +653,58 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
             </BotanicalCard>
           </div>
 
-          {/* Expandable Transaction List (50 rows slice + Muat lagi) */}
-          <BotanicalCard className="overflow-hidden">
+          {/* Expandable Transaction List (Concentric Inset Container) */}
+          <BotanicalCard className="overflow-hidden rounded-[16px] border border-[var(--line-subtle)] shadow-xs">
             <button
               type="button"
               aria-expanded={showAllTx}
               onClick={() => setShowAllTx((v) => !v)}
-              className="flex min-h-[52px] w-full items-center justify-between px-5 py-3 text-left hover:bg-[var(--surface-soft)]"
+              className="flex min-h-[48px] w-full items-center justify-between px-5 py-3.5 text-left transition-colors hover:bg-[var(--surface-soft)] active:scale-[0.99]"
             >
               <div>
-                <p className="xb-display text-[17px] font-bold text-[var(--ink)]">
+                <p className="font-display text-[15px] font-bold tracking-tight text-[var(--ink)]">
                   Semua transaksi periode ini ({report.transactions.length})
                 </p>
-                <p className="text-[14px] text-[var(--ink-muted)]">
+                <p className="text-[13px] text-[var(--ink-muted)]">
                   Rincian baris per baris siap diperiksa langsung di layar
                 </p>
               </div>
               {showAllTx ? (
-                <ChevronUp className="h-5 w-5 text-[var(--ink-muted)]" aria-hidden="true" />
+                <ChevronUp className="h-4 w-4 text-[var(--ink-muted)]" aria-hidden="true" />
               ) : (
-                <ChevronDown className="h-5 w-5 text-[var(--ink-muted)]" aria-hidden="true" />
+                <ChevronDown className="h-4 w-4 text-[var(--ink-muted)]" aria-hidden="true" />
               )}
             </button>
 
             {showAllTx && (
-              <div className="border-t border-[var(--line)]">
-                <div className="hidden overflow-x-auto md:block">
-                  <table className="w-full border-collapse text-left text-[14.5px]">
+              <div className="border-t border-[var(--line-subtle)] p-4 pt-1">
+                <div className="hidden overflow-x-auto rounded-[12px] border border-[var(--line-subtle)] bg-[var(--surface-soft)] md:block">
+                  <table className="w-full border-collapse text-left text-[14px]">
                     <thead>
-                      <tr className="border-b border-[var(--line)] bg-[var(--surface-soft)] text-[13.5px] font-semibold text-[var(--ink-muted)]">
-                        <th scope="col" className="px-4 py-3">Jam WIB</th>
-                        <th scope="col" className="px-4 py-3">Lahan ke Zona</th>
-                        <th scope="col" className="px-4 py-3 text-right">Unit</th>
-                        <th scope="col" className="px-4 py-3 text-right">Nilai kotor</th>
-                        <th scope="col" className="px-4 py-3 text-right">Komunitas</th>
+                      <tr className="border-b border-[var(--line-subtle)] bg-[var(--surface-sunken)]/60 text-[11.5px] font-semibold uppercase tracking-wider text-[var(--ink-muted)]">
+                        <th scope="col" className="px-4 py-2.5">Jam WIB</th>
+                        <th scope="col" className="px-4 py-2.5">Lahan ke Zona</th>
+                        <th scope="col" className="px-4 py-2.5 text-right">Unit</th>
+                        <th scope="col" className="px-4 py-2.5 text-right">Nilai kotor</th>
+                        <th scope="col" className="px-4 py-2.5 text-right">Komunitas</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[var(--line)]">
+                    <tbody className="divide-y divide-[var(--line-subtle)]">
                       {visibleTransactions.map((tx) => (
-                        <tr key={tx.id}>
-                          <td className="xb-numeric px-4 py-3 text-[var(--ink-muted)]">
+                        <tr key={tx.id} className="transition-colors hover:bg-[var(--surface)]">
+                          <td className="font-telemetry px-4 py-2.5 text-[12.5px] text-[var(--ink-muted)]">
                             {formatWibTime(tx.ts)}
                           </td>
-                          <td className="px-4 py-3 font-medium text-[var(--ink)]">
+                          <td className="px-4 py-2.5 font-medium text-[var(--ink)]">
                             {tx.parcel_id} ke {tx.zone_name}
                           </td>
-                          <td className="xb-numeric px-4 py-3 text-right font-semibold text-[var(--status-verified-ink)]">
+                          <td className="font-telemetry px-4 py-2.5 text-right font-semibold text-[var(--status-verified-ink)]">
                             +{formatNumber(tx.units)} t
                           </td>
-                          <td className="xb-numeric px-4 py-3 text-right text-[var(--ink)]">
+                          <td className="font-telemetry px-4 py-2.5 text-right text-[13px] text-[var(--ink)]">
                             {formatIdr(tx.total_idr)}
                           </td>
-                          <td className="xb-numeric px-4 py-3 text-right font-semibold text-[var(--status-verified-ink)]">
+                          <td className="font-telemetry px-4 py-2.5 text-right text-[13px] font-semibold text-[var(--status-verified-ink)]">
                             {formatIdr(tx.community_idr)}
                           </td>
                         </tr>
@@ -664,20 +713,20 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                   </table>
                 </div>
 
-                <div className="divide-y divide-[var(--line)] md:hidden">
+                <div className="divide-y divide-[var(--line-subtle)] rounded-[12px] border border-[var(--line-subtle)] bg-[var(--surface-soft)] md:hidden">
                   {visibleTransactions.map((tx) => (
-                    <div key={tx.id} className="p-4 text-[14px]">
+                    <div key={tx.id} className="p-3.5 text-[13.5px]">
                       <div className="flex items-center justify-between gap-2">
                         <span className="font-semibold text-[var(--ink)]">
                           {tx.parcel_id} ke {tx.zone_name}
                         </span>
-                        <span className="xb-numeric font-bold text-[var(--status-verified-ink)]">
+                        <span className="font-telemetry font-bold text-[var(--status-verified-ink)]">
                           +{formatNumber(tx.units)} t
                         </span>
                       </div>
-                      <div className="mt-1.5 flex items-center justify-between gap-2 text-[13px] text-[var(--ink-muted)]">
-                        <span className="xb-numeric">{formatWibTime(tx.ts)}</span>
-                        <span className="xb-numeric font-semibold text-[var(--ink)]">
+                      <div className="mt-1 flex items-center justify-between gap-2 text-[12.5px] text-[var(--ink-muted)]">
+                        <span className="font-telemetry">{formatWibTime(tx.ts)}</span>
+                        <span className="font-telemetry font-semibold text-[var(--ink)]">
                           {formatIdr(tx.total_idr)} (Komunitas {formatIdr(tx.community_idr)})
                         </span>
                       </div>
@@ -685,7 +734,7 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                   ))}
                 </div>
 
-                <Pagination page={safeTxPage} pageSize={TX_PAGE_SIZE} totalItems={report.transactions.length} onPageChange={setTxPage} label="Halaman rincian transaksi" className="m-4" />
+                <Pagination page={safeTxPage} pageSize={TX_PAGE_SIZE} totalItems={report.transactions.length} onPageChange={setTxPage} label="Halaman rincian transaksi" className="mt-3" />
               </div>
             )}
           </BotanicalCard>

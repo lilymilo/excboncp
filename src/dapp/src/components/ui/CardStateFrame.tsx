@@ -27,9 +27,9 @@ export function CardStateFrame({
   if (state === "loading") {
     return (
       <div className={`flex flex-col justify-between gap-3 ${skeletonHeight}`} aria-busy="true">
-        <div className="xb-skeleton h-5 w-1/2" />
-        <div className="xb-skeleton h-9 w-3/4" />
-        <div className="xb-skeleton h-4 w-full" />
+        <div className="xb-skeleton h-5 w-1/2 rounded-[6px]" />
+        <div className="xb-skeleton h-9 w-3/4 rounded-[8px]" />
+        <div className="xb-skeleton h-4 w-full rounded-[6px]" />
       </div>
     );
   }

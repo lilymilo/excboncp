@@ -9,6 +9,14 @@ const config: Config = {
   darkMode: "class",
   theme: {
     extend: {
+      fontFamily: {
+        display: ["var(--font-display)", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        sans: ["var(--font-ui)", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        ui: ["var(--font-ui)", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        mono: ["var(--font-telemetry)", "SFMono-Regular", "ui-monospace", "monospace"],
+        telemetry: ["var(--font-telemetry)", "SFMono-Regular", "ui-monospace", "monospace"],
+        rounded: ["var(--font-rounded)", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+      },
       colors: {
         page: "#0B100C",
         surface: {
