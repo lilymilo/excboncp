@@ -141,10 +141,10 @@
   --seal-blue-bg: var(--seal-100);
   --seal-blue-line: var(--seal-line);
 
-  --selection-bg: rgba(174, 218, 45, 0.24);
-  --skeleton-bg: #171C16;
-  --skeleton-sheen: rgba(174, 218, 45, 0.08);
-  --overlay-scrim: rgba(11, 16, 12, 0.68);
+  --selection-bg: rgba(46, 107, 63, 0.18);
+  --skeleton-bg: #E2ECE0;
+  --skeleton-sheen: rgba(255, 255, 255, 0.7);
+  --overlay-scrim: rgba(20, 38, 26, 0.4);
 
   /* 4. Unified Shadow Scale (Dark Default) */
   --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.35);
@@ -247,8 +247,8 @@
   --shadow-button-rest: 0 3px 10px rgba(31, 77, 46, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.18);
   --shadow-button-hover: 0 8px 20px rgba(31, 77, 46, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.28);
   --selection-bg: #cde8d2;
-  --skeleton-bg: #e3ede0;
-  --skeleton-sheen: rgba(255, 255, 255, 0.55);
+  --skeleton-bg: #E2ECE0;
+  --skeleton-sheen: rgba(255, 255, 255, 0.72);
   --overlay-scrim: rgba(20, 38, 26, 0.4);
 
   /* Sunken wells (inputs, tab tracks) and the one deep panel allowed per screen */

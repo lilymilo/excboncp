@@ -424,11 +424,34 @@ export function PageStatePanel({
   if (state === "loading") {
     return (
       <div className="space-y-4" aria-busy="true" aria-label="Memuat konten">
-        <div className="xb-card p-6">
-          <div className="xb-skeleton h-5 w-48" />
-          <div className="xb-skeleton mt-4 h-16 w-full" />
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            {[1, 2, 3, 4].map((item) => <div key={item} className="xb-skeleton h-20 w-full" />)}
+        {/* 6 KPI Cards strip */}
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
+          {[1, 2, 3, 4, 5, 6].map((item) => (
+            <div
+              key={item}
+              className="flex flex-col justify-between h-[112px] rounded-[14px] border border-[var(--line-subtle)] bg-[var(--surface)] p-4 shadow-xs"
+            >
+              <div className="xb-skeleton h-3.5 w-16 rounded-[4px]" />
+              <div className="xb-skeleton h-6 w-24 rounded-[6px]" />
+              <div className="xb-skeleton h-3 w-14 rounded-[4px]" />
+            </div>
+          ))}
+        </div>
+
+        {/* Main dual cards */}
+        <div className="grid gap-4 xl:grid-cols-12">
+          <div className="xl:col-span-7 h-[260px] rounded-[16px] border border-[var(--line-subtle)] bg-[var(--surface)] p-5 shadow-xs flex flex-col justify-between">
+            <div className="xb-skeleton h-5 w-48 rounded-[6px]" />
+            <div className="xb-skeleton h-36 w-full rounded-[10px]" />
+            <div className="xb-skeleton h-4 w-3/4 rounded-[4px]" />
+          </div>
+          <div className="xl:col-span-5 h-[260px] rounded-[16px] border border-[var(--line-subtle)] bg-[var(--surface)] p-5 shadow-xs flex flex-col justify-between">
+            <div className="xb-skeleton h-5 w-40 rounded-[6px]" />
+            <div className="space-y-2.5 mt-2">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="xb-skeleton h-12 w-full rounded-[10px]" />
+              ))}
+            </div>
           </div>
         </div>
       </div>
