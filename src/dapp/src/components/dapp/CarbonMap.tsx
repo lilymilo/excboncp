@@ -514,10 +514,10 @@ export function CarbonMap({
           </div>
         )}
 
-        {/* Map layer selector + Fit bounds control */}
-        <div className="absolute left-3 top-3 z-10 flex flex-wrap items-center gap-1.5 rounded-2xl border border-[#D8E5D4] bg-white/95 p-1 shadow-sm">
-          <span className="ml-2 inline-flex items-center gap-1 text-[13.5px] font-medium text-[#4A5E4F]">
-            <Layers className="h-4 w-4 text-[#2E6B3F]" aria-hidden="true" />
+        {/* Map layer selector + Fit bounds control — Apple Liquid Glass */}
+        <div className="absolute left-3 top-3 z-10 flex flex-wrap items-center gap-1.5 rounded-[14px] border border-black/[0.08] dark:border-white/[0.08] bg-white/85 dark:bg-[#101412]/85 backdrop-blur-xl p-1 shadow-[0_4px_16px_rgba(20,38,26,0.08)]">
+          <span className="ml-1.5 inline-flex items-center gap-1 text-[13px] font-medium text-[#4A5E4F]">
+            <Layers className="h-3.5 w-3.5 text-[#2E6B3F]" aria-hidden="true" />
           </span>
           {(["osm", "satellite"] as const).map((mode) => (
             <button
@@ -526,9 +526,9 @@ export function CarbonMap({
               onClick={() => setMapStyle(mode)}
               aria-pressed={mapStyle === mode}
               className={cx(
-                "min-h-[38px] rounded-xl px-3 text-[13.5px] font-semibold",
+                "min-h-[34px] rounded-[10px] px-3 text-[12.5px] font-semibold transition-all active:scale-[0.97]",
                 mapStyle === mode
-                  ? "bg-[#2E6B3F] text-white"
+                  ? "bg-[#2E6B3F] text-white shadow-xs"
                   : "text-[#4A5E4F] hover:bg-[#F5F9F3] hover:text-[#14261A]"
               )}
             >
@@ -539,16 +539,16 @@ export function CarbonMap({
             type="button"
             onClick={handleFitAll}
             title={boundary ? "Sesuaikan tampilan ke wilayah uji" : "Sesuaikan tampilan ke semua poligon lahan"}
-            className="inline-flex min-h-[38px] items-center gap-1.5 rounded-xl border border-[#D8E5D4] bg-[#F5F9F3] px-3 text-[13.5px] font-semibold text-[#14261A] hover:bg-[#E2F2E5]"
+            className="inline-flex min-h-[34px] items-center gap-1.5 rounded-[10px] border border-[#D8E5D4] bg-[#F5F9F3] px-2.5 text-[12.5px] font-semibold text-[#14261A] hover:bg-[#E2F2E5] transition-all active:scale-[0.97]"
           >
             <Maximize2 className="h-3.5 w-3.5 text-[#2E6B3F]" aria-hidden="true" />
             <span className="hidden sm:inline">Sesuaikan batas</span>
           </button>
         </div>
 
-        <div className="pointer-events-none absolute right-3 top-3 z-10 hidden max-w-[min(48%,320px)] items-center gap-2 rounded-2xl border border-[#D8E5D4] bg-white/95 px-3.5 py-2 shadow-sm sm:flex">
-          <Radio className="h-4 w-4 shrink-0 text-[#1F5A94]" aria-hidden="true" />
-          <span className="xb-numeric truncate text-[13.5px] font-semibold text-[#14261A]">
+        <div className="pointer-events-none absolute right-3 top-3 z-10 hidden max-w-[min(48%,320px)] items-center gap-2 rounded-[14px] border border-black/[0.08] dark:border-white/[0.08] bg-white/85 dark:bg-[#101412]/85 backdrop-blur-xl px-3 py-1.5 shadow-[0_4px_16px_rgba(20,38,26,0.06)] sm:flex">
+          <Radio className="h-3.5 w-3.5 shrink-0 text-[#1F5A94]" aria-hidden="true" />
+          <span className="xb-numeric truncate text-[12.5px] font-semibold text-[#14261A] font-telemetry">
             {boundary ? boundaryLabel : `${sensors.length} titik sensor`}
           </span>
         </div>

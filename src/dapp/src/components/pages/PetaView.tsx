@@ -51,12 +51,12 @@ interface RegionPreset {
   match: (parcel: ParcelItem) => boolean;
 }
 
-const STATUS_FILTER_OPTIONS: { id: StatusFilter; label: string }[] = [
+const STATUS_FILTER_OPTIONS: { id: StatusFilter; label: string; dot?: string }[] = [
   { id: "ALL", label: "Semua lahan" },
-  { id: "VERIFIED", label: "Terverifikasi" },
-  { id: "WARNING", label: "Perlu perhatian" },
-  { id: "DISPUTE", label: "Keberatan warga" },
-  { id: "BLOCKED", label: "Ditahan" },
+  { id: "VERIFIED", label: "Terverifikasi", dot: "bg-[#2e6b3f]" },
+  { id: "WARNING", label: "Perlu perhatian", dot: "bg-[#e8b33c]" },
+  { id: "DISPUTE", label: "Keberatan warga", dot: "bg-[#e8863c]" },
+  { id: "BLOCKED", label: "Ditahan", dot: "bg-[#ef5d6b]" },
 ];
 
 const REGION_PRESETS: RegionPreset[] = [
@@ -517,10 +517,10 @@ export function PetaView({ initialParcelId }: { initialParcelId?: string }) {
           emptyTitle="Belum ada poligon lahan terdaftar"
           emptyDescription="Tambahkan berkas GeoJSON lahan atau periksa sambungan ke layanan data lapangan."
         >
-          {/* Search and canonical status filter bar */}
-          <BotanicalCard className="p-4">
+          {/* Search and canonical status filter bar — Apple HIG Inset Layout */}
+          <BotanicalCard className="p-3.5 sm:p-4">
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-              <div className="relative min-w-0 flex-1 lg:max-w-[360px]">
+              <div className="relative min-w-0 flex-1 lg:max-w-[340px]">
                 <Search
                   className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--ink-muted)]"
                   aria-hidden="true"
@@ -533,12 +533,23 @@ export function PetaView({ initialParcelId }: { initialParcelId?: string }) {
                   type="search"
                   value={searchText}
                   onChange={(e) => setSearchText(e.target.value)}
-                  placeholder="Cari kode lahan, nama blok, atau komunitas..."
-                  className="h-11 w-full rounded-full border border-[var(--line)] bg-[var(--surface-soft)] pl-10 pr-4 text-[15px] text-[var(--ink)] placeholder:text-[var(--ink-muted)] focus:border-[var(--forest-700)] focus:bg-[var(--surface)] focus:outline-none"
+                  placeholder="Cari lahan, blok, komunitas..."
+                  className="h-10 w-full rounded-[10px] border border-[var(--line-subtle)] bg-[var(--surface-sunken)] pl-10 pr-8 text-[14px] text-[var(--ink)] placeholder:text-[var(--ink-muted)] focus:border-[var(--forest-700)] focus:bg-[var(--surface)] focus:outline-none transition-colors"
                 />
+                {searchText && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchText("")}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-[var(--ink-muted)]/20 text-[var(--ink-muted)] flex items-center justify-center text-[10px] hover:bg-[var(--ink-muted)]/40 transition-colors"
+                    aria-label="Bersihkan pencarian"
+                  >
+                    ✕
+                  </button>
+                )}
               </div>
 
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 lg:flex-wrap lg:overflow-visible" role="group" aria-label="Saring status lahan">
+              {/* Status Segmented Filter Pills with Integrated Apple Indicator Dots */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 lg:flex-wrap lg:overflow-visible" role="group" aria-label="Saring status lahan">
                 {STATUS_FILTER_OPTIONS.map((opt) => {
                   const active = statusFilter === opt.id;
                   return (
@@ -547,37 +558,24 @@ export function PetaView({ initialParcelId }: { initialParcelId?: string }) {
                       type="button"
                       onClick={() => setStatusFilter(opt.id)}
                       aria-pressed={active}
-                      className={`min-h-[40px] shrink-0 rounded-full border px-3.5 text-[14px] font-semibold ${
+                      className={`inline-flex items-center gap-1.5 min-h-[36px] shrink-0 rounded-full px-3.5 text-[13px] font-semibold transition-all active:scale-[0.97] ${
                         active
-                          ? "border-[var(--forest-700)] bg-[var(--forest-700)] text-white"
-                          : "border-[var(--line)] bg-[var(--surface-soft)] text-[var(--ink-muted)] hover:bg-[var(--leaf-100)] hover:text-[var(--ink)]"
+                          ? "bg-[var(--forest-700)] text-white shadow-xs"
+                          : "bg-[var(--surface-sunken)] border border-[var(--line-subtle)] text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--leaf-100)]"
                       }`}
                     >
-                      {opt.label}
+                      {opt.dot && (
+                        <span
+                          className={`w-2 h-2 rounded-full transition-colors ${
+                            active ? "bg-white" : opt.dot
+                          }`}
+                        />
+                      )}
+                      <span>{opt.label}</span>
                     </button>
                   );
                 })}
               </div>
-            </div>
-
-            {/* Accessible legend pairing color + icon + label */}
-            <div className="mt-3 flex items-center gap-x-4 gap-y-2 overflow-x-auto border-t border-[var(--line-subtle)] pt-3 text-[12.5px] font-medium text-[var(--ink-muted)] lg:flex-wrap lg:overflow-visible lg:text-[13.5px]">
-              <span className="inline-flex shrink-0 items-center gap-1.5 text-[var(--status-verified-ink)]">
-                <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
-                <span>Terverifikasi (siap)</span>
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-[var(--status-warning-ink)]">
-                <AlertTriangle className="h-4 w-4" aria-hidden="true" />
-                <span>Perlu perhatian (peringatan)</span>
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-[var(--status-dispute-ink)]">
-                <ShieldAlert className="h-4 w-4" aria-hidden="true" />
-                <span>Keberatan warga</span>
-              </span>
-              <span className="inline-flex items-center gap-1.5 text-[var(--status-blocked-ink)]">
-                <Lock className="h-4 w-4" aria-hidden="true" />
-                <span>Ditahan sistem</span>
-              </span>
             </div>
           </BotanicalCard>
 
@@ -588,15 +586,15 @@ export function PetaView({ initialParcelId }: { initialParcelId?: string }) {
                 <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--line)] bg-[var(--surface)] px-5 py-3">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <p className="xb-display text-[16px] font-bold text-[var(--ink)]">
+                      <p className="font-display text-[16px] font-bold tracking-tight text-[var(--ink)]">
                         Peta Interaktif Wilayah
                       </p>
-                      <span className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface-soft)] px-2.5 py-0.5 text-[12px] font-semibold text-[var(--ink-muted)]">
+                      <span className="inline-flex max-w-full items-center gap-1.5 rounded-[8px] border border-[var(--line-subtle)] bg-[var(--surface-sunken)] px-2.5 py-0.5 text-[12px] font-semibold text-[var(--ink-muted)]">
                         <MapPinned className="h-3.5 w-3.5 shrink-0 text-[var(--forest-700)]" aria-hidden="true" />
                         <span className="truncate">{activeRegionLabel}</span>
                       </span>
                     </div>
-                    <p className="text-[13.5px] text-[var(--ink-muted)]">
+                    <p className="text-[13px] text-[var(--ink-muted)]">
                       {regionId === "kustom"
                         ? "Boundary wilayah uji aktif. Klik peta untuk memindahkan pusat, atau buka Uji wilayah untuk mengubah radius."
                         : "Pilih poligon atau titik sensor, atau uji wilayah lain di panel Uji wilayah."}
@@ -607,7 +605,7 @@ export function PetaView({ initialParcelId }: { initialParcelId?: string }) {
                       type="button"
                       onClick={() => setRegionToolsOpen((open) => !open)}
                       aria-expanded={regionToolsOpen}
-                      className="inline-flex min-h-[38px] items-center gap-1.5 rounded-full border border-[var(--forest-700)]/25 bg-[var(--leaf-100)] px-3.5 text-[13.5px] font-semibold text-[var(--forest-800)] transition hover:bg-[var(--leaf-200)]"
+                      className="inline-flex min-h-[36px] items-center gap-1.5 rounded-[10px] border border-[var(--line-subtle)] bg-[var(--leaf-100)] px-3 text-[13px] font-semibold text-[var(--forest-800)] transition-all hover:bg-[var(--leaf-200)] active:scale-[0.97]"
                     >
                       <Globe2 className="h-3.5 w-3.5" aria-hidden="true" />
                       <span>Uji wilayah</span>
@@ -618,7 +616,7 @@ export function PetaView({ initialParcelId }: { initialParcelId?: string }) {
                     </button>
                     <Link
                       href="/screener"
-                      className="inline-flex min-h-[38px] items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface-soft)] px-3.5 text-[13.5px] font-semibold text-[var(--ink)] hover:bg-[var(--leaf-100)]"
+                      className="inline-flex min-h-[36px] items-center gap-1.5 rounded-[10px] border border-[var(--line-subtle)] bg-[var(--surface-soft)] px-3 text-[13px] font-semibold text-[var(--ink)] transition-all hover:bg-[var(--surface-sunken)] active:scale-[0.97]"
                     >
                       <span>Lihat tabel Screener</span>
                       <ArrowUpRight className="h-3.5 w-3.5 text-[var(--forest-700)]" aria-hidden="true" />
@@ -637,18 +635,18 @@ export function PetaView({ initialParcelId }: { initialParcelId?: string }) {
                             type="button"
                             onClick={() => applyPreset(preset.id)}
                             aria-pressed={active}
-                            className={`inline-flex min-h-[40px] items-center gap-2 rounded-full border px-3.5 text-[13.5px] font-semibold transition ${
+                            className={`inline-flex min-h-[36px] items-center gap-2 rounded-[10px] border px-3 text-[13px] font-semibold transition-all active:scale-[0.97] ${
                               active
-                                ? "border-[var(--forest-700)] bg-[var(--forest-700)] text-white"
-                                : "border-[var(--line)] bg-[var(--surface)] text-[var(--ink)] hover:bg-[var(--leaf-100)]"
+                                ? "border-[var(--forest-700)] bg-[var(--forest-700)] text-white shadow-xs"
+                                : "border-[var(--line-subtle)] bg-[var(--surface)] text-[var(--ink)] hover:bg-[var(--leaf-100)]"
                             }`}
                           >
                             <span>{preset.label}</span>
                             <span
-                              className={`rounded-full px-2 py-0.5 text-[11.5px] ${
+                              className={`rounded-[6px] px-1.5 py-0.5 text-[11px] ${
                                 active
-                                  ? "bg-white/15 text-white"
-                                  : "bg-[var(--surface-soft)] text-[var(--ink-muted)]"
+                                  ? "bg-white/20 text-white"
+                                  : "bg-[var(--surface-sunken)] text-[var(--ink-muted)]"
                               }`}
                             >
                               {regionCounts[preset.id]} lahan
