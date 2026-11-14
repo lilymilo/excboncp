@@ -9,6 +9,7 @@ export interface ShimmerButtonProps extends ComponentPropsWithoutRef<"button"> {
   borderRadius?: string;
   shimmerDuration?: string;
   background?: string;
+  loading?: boolean;
   className?: string;
   children?: React.ReactNode;
 }
@@ -19,19 +20,24 @@ export const ShimmerButton = React.forwardRef<
 >(
   (
     {
-      shimmerColor = "rgba(255, 255, 255, 0.45)",
+      shimmerColor = "rgba(255, 255, 255, 0.55)",
       shimmerSize = "1.5px",
-      shimmerDuration = "3.2s",
-      borderRadius = "9999px",
-      background = "#18191D",
+      shimmerDuration = "2.8s",
+      borderRadius = "var(--radius-pill)",
+      background = "var(--color-accent)",
+      loading = false,
       className,
       children,
+      disabled,
       ...props
     },
     ref
   ) => {
     return (
       <button
+        data-loading={loading ? "true" : undefined}
+        aria-busy={loading || undefined}
+        disabled={disabled || loading}
         style={
           {
             "--spread": "90deg",
@@ -45,8 +51,8 @@ export const ShimmerButton = React.forwardRef<
           } as CSSProperties
         }
         className={cn(
-          "group relative z-0 flex cursor-pointer items-center justify-center overflow-hidden border border-white/10 px-6 py-3 whitespace-nowrap text-white",
-          "transform-gpu transition-all duration-300 ease-out hover:brightness-110 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60",
+          "xbm-button xbm-button-primary group relative z-0 inline-flex min-h-[44px] cursor-pointer items-center justify-center overflow-hidden border border-white/15 px-6 py-2.5 whitespace-nowrap text-[var(--color-text-on-accent)] font-semibold shadow-[var(--shadow-button-rest)]",
+          "transform-gpu disabled:cursor-not-allowed disabled:opacity-60",
           className
         )}
         ref={ref}
@@ -79,7 +85,7 @@ export const ShimmerButton = React.forwardRef<
 
         {/* Inner Button Surface */}
         <div
-          className="pointer-events-none absolute -z-10 transition-colors duration-200"
+          className="pointer-events-none absolute -z-10"
           style={{
             inset: shimmerSize,
             borderRadius,
@@ -89,7 +95,7 @@ export const ShimmerButton = React.forwardRef<
 
         {/* Subtle Top Specular Sheen */}
         <div
-          className="pointer-events-none absolute inset-0 shadow-[inset_0_1px_1px_rgba(255,255,255,0.22),inset_0_-6px_12px_rgba(255,255,255,0.06)] group-hover:shadow-[inset_0_1px_2px_rgba(255,255,255,0.35),inset_0_-8px_14px_rgba(255,255,255,0.12)] transition-shadow duration-300"
+          className="pointer-events-none absolute inset-0 shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),inset_0_-6px_12px_rgba(255,255,255,0.08)]"
           style={{ borderRadius }}
         />
 
@@ -102,4 +108,3 @@ export const ShimmerButton = React.forwardRef<
 );
 
 ShimmerButton.displayName = "ShimmerButton";
-

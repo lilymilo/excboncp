@@ -160,7 +160,7 @@ export const ZONES_CATALOG: Record<
     id: "ZONE-DEMO-A",
     name: "Zona contoh A (KEK)",
     kind: "Kawasan Ekonomi Khusus (Simulasi)",
-    jurisdiction: "Bogor & Koridor Industri Hijau",
+    jurisdiction: "Bogor, IKN & Koridor Industri Hijau",
     description:
       "Zona penerima unit serapan simulasi untuk mencatat distribusi manfaat ke kawasan industri percontohan.",
     center: [-6.595, 106.798],
@@ -169,7 +169,7 @@ export const ZONES_CATALOG: Record<
     id: "ZONE-DEMO-B",
     name: "Zona contoh B (kota hijau)",
     kind: "Koridor Kota Hijau (Simulasi)",
-    jurisdiction: "Jawa Barat (Simulasi)",
+    jurisdiction: "Jabodetabek & Kota Hijau IKN",
     description:
       "Zona mitra percontohan kedua untuk pemantauan pemakaian unit karbon terverifikasi.",
     center: [-6.606, 106.814],

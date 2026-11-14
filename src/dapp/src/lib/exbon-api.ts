@@ -10,8 +10,9 @@ import type {
   UserRole,
   VerificationRecord,
 } from "@/context/DappContext";
-import { PRICE_PER_TON, calculateSettlement } from "@/context/DappContext";
+import { DEMO_SENSORS, PRICE_PER_TON, calculateSettlement } from "@/context/DappContext";
 import { toCanonicalStatus, type CanonicalStatus } from "./dashboard-helpers";
+import { ECOSYSTEMS, resolveParcelEcosystem, type EcosystemId } from "./ecosystems";
 import {
   ZONES_CATALOG,
   getMondayOfWibWeek,
@@ -19,29 +20,27 @@ import {
   type ReportPeriodKey,
 } from "./copy";
 
+export interface GeoJsonFeature {
+  type: "Feature";
+  properties: Record<string, unknown>;
+  geometry: {
+    type: "Polygon" | "MultiPolygon";
+    coordinates: number[][][] | number[][][][];
+  };
+}
+
 export interface GeoJsonFeatureCollection {
   type: "FeatureCollection";
   name?: string;
-  features: {
-    type: "Feature";
-    properties: {
-      parcel_id: string;
-      name?: string;
-      community?: string;
-      region?: string;
-      area_ha?: number;
-    };
-    geometry: {
-      type: "Polygon";
-      coordinates: number[][][];
-    };
-  }[];
+  features: GeoJsonFeature[];
 }
 
 export interface ScreenerRow {
   parcel_id: string;
   name: string;
   region: string;
+  ecosystem_id: EcosystemId;
+  ecosystem_label: string;
   zone_id: string;
   zone_name: string;
   status: CanonicalStatus;
@@ -158,7 +157,7 @@ export async function safeJsonFetch<T>(url: string, init?: RequestInit): Promise
     const res = await fetch(url, init);
     if (!res.ok) return null;
     const contentType = res.headers.get("content-type") ?? "";
-    if (!contentType.includes("application/json")) return null;
+    if (!contentType.includes("application/json") && !contentType.includes("+json")) return null;
     return (await res.json()) as T;
   } catch {
     return null;
@@ -171,9 +170,16 @@ export async function fetchBogorGeoJson(): Promise<GeoJsonFeatureCollection | nu
   });
 }
 
+const ZONE_B_PARCELS = new Set([
+  "PARCEL-B",
+  "PARCEL-F",
+  "PARCEL-J",
+  "PARCEL-K",
+  "PARCEL-L",
+]);
+
 export function mapParcelZoneId(parcelId: string): "ZONE-DEMO-A" | "ZONE-DEMO-B" {
-  const upper = parcelId.toUpperCase();
-  return upper.includes("B") || upper.includes("D") ? "ZONE-DEMO-B" : "ZONE-DEMO-A";
+  return ZONE_B_PARCELS.has(parcelId.trim().toUpperCase()) ? "ZONE-DEMO-B" : "ZONE-DEMO-A";
 }
 
 export function buildScreenerData(params: {
@@ -200,20 +206,38 @@ export function buildScreenerData(params: {
   const scopedParcels =
     role === "community" ? parcels.filter((p) => p.id === "PARCEL-A" || p.id === "PARCEL-C") : parcels;
 
-  const rows: ScreenerRow[] = scopedParcels.map((parcel, idx) => {
+  const rows: ScreenerRow[] = scopedParcels.map((parcel) => {
     const status = toCanonicalStatus(parcel.verificationStatus);
     const consent = consentRecords.find((c) => c.parcel_id === parcel.id)?.status ?? parcel.consentStatus;
     const sensor = sensors.find((s) => s.parcel_id === parcel.id);
     const ledger = verificationRecords.find((v) => v.parcel_id === parcel.id);
     const zoneId = mapParcelZoneId(parcel.id);
+    const ecosystemId = resolveParcelEcosystem(parcel.id);
     const sold24h = transactions
       .filter((t) => t.parcel_id === parcel.id)
       .reduce((acc, t) => acc + t.volume_tco2e, 0);
+
+    const trendMap: Record<string, number[]> = {
+      "PARCEL-A": [180, 195, 210, 218, 224, 230, Math.max(parcel.availableUnits, 10)],
+      "PARCEL-B": [95, 92, 88, 70, 50, 20, 0],
+      "PARCEL-C": [142, 155, 164, 172, 181, 190, Math.max(parcel.availableUnits, 10)],
+      "PARCEL-D": [74, 70, 65, 58, 44, 28, 0],
+      "PARCEL-E": [118, 126, 134, 145, 152, 160, Math.max(parcel.availableUnits, 10)],
+      "PARCEL-F": [92, 98, 105, 112, 118, 123, Math.max(parcel.availableUnits, 10)],
+      "PARCEL-G": [140, 155, 168, 182, 196, 205, Math.max(parcel.availableUnits, 10)],
+      "PARCEL-H": [110, 120, 128, 138, 144, 148, Math.max(parcel.availableUnits, 10)],
+      "PARCEL-I": [100, 112, 124, 136, 146, 154, Math.max(parcel.availableUnits, 10)],
+      "PARCEL-J": [70, 78, 86, 96, 104, 112, Math.max(parcel.availableUnits, 10)],
+      "PARCEL-K": [60, 66, 72, 80, 86, 90, Math.max(parcel.availableUnits, 10)],
+      "PARCEL-L": [96, 92, 88, 82, 76, 84, Math.max(parcel.availableUnits, 10)],
+    };
 
     return {
       parcel_id: parcel.id,
       name: parcel.name,
       region: parcel.region,
+      ecosystem_id: ecosystemId,
+      ecosystem_label: ECOSYSTEMS[ecosystemId].label,
       zone_id: zoneId,
       zone_name: ZONES_CATALOG[zoneId].name,
       status,
@@ -228,14 +252,7 @@ export function buildScreenerData(params: {
       ledger_id: ledger ? String(ledger.block_index) : null,
       eas_uid: ledger?.eas_uid ?? null,
       ndvi: parcel.ndvi ?? 0.7,
-      trend_7d:
-        idx === 0
-          ? [180, 195, 210, 218, 224, 230, Math.max(parcel.availableUnits, 10)]
-          : idx === 2
-          ? [142, 155, 164, 172, 181, 190, Math.max(parcel.availableUnits, 10)]
-          : idx === 3
-          ? [74, 70, 65, 58, 44, 28, 0]
-          : [95, 92, 88, 70, 50, 20, 0],
+      trend_7d: trendMap[parcel.id] ?? [80, 90, 100, 110, 115, 120, Math.max(parcel.availableUnits, 10)],
     };
   });
 
@@ -418,10 +435,21 @@ export function buildReportSummary(params: {
   ];
 
   const byParcelMap = new Map<string, { parcel_id: string; name: string; units: number; gross: number; community: number }>();
-  const parcelAUnits = Math.round(baseUnits * 0.56);
-  const parcelCUnits = Math.max(0, baseUnits - parcelAUnits);
+  const parcelAUnits = Math.round(baseUnits * 0.36);
+  const parcelCUnits = Math.round(baseUnits * 0.30);
+  const parcelEUnits = Math.round(baseUnits * 0.20);
+  const parcelFUnits = Math.max(0, baseUnits - parcelAUnits - parcelCUnits - parcelEUnits);
   parcels.forEach((p) => {
-    const units = p.id === "PARCEL-A" ? parcelAUnits : p.id === "PARCEL-C" ? parcelCUnits : 0;
+    const units =
+      p.id === "PARCEL-A"
+        ? parcelAUnits
+        : p.id === "PARCEL-C"
+        ? parcelCUnits
+        : p.id === "PARCEL-E"
+        ? parcelEUnits
+        : p.id === "PARCEL-F"
+        ? parcelFUnits
+        : 0;
     const pGross = units * PRICE_PER_TON;
     const pSettle = calculateSettlement(pGross);
     byParcelMap.set(p.id, {
@@ -554,8 +582,7 @@ export async function lookupVerificationRecord(params: {
         v.parcel_id.toLowerCase() === normalized ||
         v.hash.toLowerCase().startsWith(normalized) ||
         v.eas_uid.toLowerCase().startsWith(normalized)
-    ) ??
-    (trimmed === "1" || trimmed === "2" ? verificationRecords[0] : undefined);
+    );
 
   if (!matched) {
     return {
@@ -583,7 +610,7 @@ export async function lookupVerificationRecord(params: {
   }
 
   const parcel = parcels.find((p) => p.id === matched.parcel_id);
-  const parcelSensors = sensors.filter((s) => s.parcel_id === matched.parcel_id);
+  const parcelSensors = DEMO_SENSORS.filter((s) => s.parcel_id === matched.parcel_id);
   const avgTemp =
     parcelSensors.length > 0
       ? Number(
@@ -613,11 +640,8 @@ export async function lookupVerificationRecord(params: {
     return val;
   };
 
-  const baselineCanonical = JSON.stringify(sortKeysDeep(basePayload));
-  const baselineHash = await sha256HexBrowser(`${matched.prev_hash}${baselineCanonical}`);
-
   let activePayload: Record<string, unknown> = basePayload;
-  let activeCanonical = baselineCanonical;
+  let activeCanonical = JSON.stringify(sortKeysDeep(basePayload));
   let canonicalOk = true;
   if (tamperTestJson !== undefined) {
     try {
@@ -630,12 +654,16 @@ export async function lookupVerificationRecord(params: {
     }
   }
 
-  const recomputedHash =
-    (await sha256HexBrowser(`${matched.prev_hash}${activeCanonical}`)) || matched.hash;
-  const hashMatches =
-    !matched.tampered &&
-    canonicalOk &&
-    (tamperTestJson === undefined ? true : recomputedHash === (baselineHash || matched.hash));
+  const computedHash = await sha256HexBrowser(`${matched.prev_hash}${activeCanonical}`);
+  const recomputedHash = computedHash || "";
+  const hashMatches = Boolean(computedHash) && !matched.tampered && canonicalOk && recomputedHash === matched.hash;
+  const previousRecord = verificationRecords.find(
+    (record) => record.block_index === matched.block_index - 1
+  );
+  const linkMatches = previousRecord
+    ? matched.prev_hash === previousRecord.hash
+    : /^[0-9a-f]{64}$/i.test(matched.prev_hash);
+  const chainValid = hashMatches && linkMatches;
 
   return {
     source: "local",
@@ -643,12 +671,12 @@ export async function lookupVerificationRecord(params: {
     block_index: matched.block_index,
     record_id: matched.record_id,
     parcel_id: matched.parcel_id,
-    valid: hashMatches && !matched.tampered,
+    valid: chainValid,
     hash_matches: hashMatches,
-    link_matches: matched.prev_hash.length === 64,
+    link_matches: linkMatches,
     canonical: canonicalOk,
-    chain_valid: hashMatches && !matched.tampered,
-    hash: baselineHash || matched.hash,
+    chain_valid: chainValid,
+    hash: matched.hash,
     recomputed_hash: recomputedHash,
     prev_hash: matched.prev_hash,
     eas_uid: matched.eas_uid || null,
@@ -659,14 +687,18 @@ export async function lookupVerificationRecord(params: {
       ? "non_canonical"
       : !hashMatches
       ? "hash_mismatch"
+      : !linkMatches
+      ? "link_mismatch"
       : null,
     message: !canonicalOk
       ? "Format JSON tidak valid sehingga segel gagal diverifikasi."
       : !hashMatches
-      ? "Isi diubah! Hash hitung ulang tidak lagi cocok dengan segel tersimpan."
+      ? "Isi diubah! Hash hitung ulang tidak lagi cocok dengan hash tersimpan."
+      : !linkMatches
+      ? "Hash payload cocok, tetapi prev_hash tidak tersambung ke hash blok sebelumnya."
       : matched.eas_uid
-      ? "Cocok dengan rantai hash SHA-256 dan terkunci pada EAS Base Sepolia (testnet)."
-      : "Cocok dengan buku catatan lokal, menunggu penguncian ke EAS Base Sepolia.",
+      ? "Hash cocok dengan rantai demo lokal. EAS masih simulasi dan belum on-chain."
+      : "Hash cocok dengan rantai demo lokal; blok belum di-anchor ke EAS.",
     payload: activePayload,
   };
 }
@@ -715,4 +747,3 @@ export async function fetchMonitoringMetrics(sensors: SensorData[], verification
     sensor_records_total: sensors.length,
   };
 }
-

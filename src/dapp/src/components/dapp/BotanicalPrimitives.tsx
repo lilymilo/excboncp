@@ -27,16 +27,33 @@ import { LiveClock, PulseDot } from "@/components/motion";
 import { useDashboardState } from "@/components/dapp/useDashboardStore";
 
 export function BotanicalCard({
+  id,
   children,
   className = "",
   interactive = false,
+  onClick,
+  onKeyDown,
+  tabIndex,
+  style,
 }: {
+  id?: string;
   children: React.ReactNode;
   className?: string;
   interactive?: boolean;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  onKeyDown?: React.KeyboardEventHandler<HTMLDivElement>;
+  tabIndex?: number;
+  style?: React.CSSProperties;
 }) {
   return (
-    <div className={`xb-card ${interactive ? "xb-card-interactive" : ""} ${className}`}>
+    <div
+      id={id}
+      onClick={onClick}
+      onKeyDown={onKeyDown}
+      tabIndex={tabIndex}
+      style={style}
+      className={`xb-card ${interactive ? "xb-card-interactive" : ""} ${className}`}
+    >
       {children}
     </div>
   );
@@ -138,8 +155,12 @@ export function CanonicalStatusBadge({
   const { cls, Icon } = CANONICAL_STATUS_STYLES[status];
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[13.5px] font-semibold transition-transform duration-150 ${cls}`}
+      key={status}
+      className={`xbm-status-badge font-semibold ${
+        compact ? "px-2.5 py-0.5 text-[12.5px]" : "px-3 py-1 text-[13.5px]"
+      } ${cls}`}
     >
+      <PulseDot pulsing className="h-1.5 w-1.5" />
       <Icon className="h-4 w-4 shrink-0" aria-hidden={true} />
       <span>{compact ? meta.shortLabel : meta.label}</span>
     </span>
@@ -157,10 +178,12 @@ export function ConsentStatusBadge({
   const { cls, Icon } = CONSENT_STATUS_STYLES[status] ?? CONSENT_STATUS_STYLES.none;
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full font-semibold transition-transform duration-150 ${
+      key={status}
+      className={`xbm-status-badge font-semibold ${
         compact ? "px-2.5 py-0.5 text-[12.5px]" : "px-3 py-1 text-[13.5px]"
       } ${cls}`}
     >
+      <PulseDot pulsing={status === "granted"} className="h-1.5 w-1.5" />
       <Icon className="h-4 w-4 shrink-0" aria-hidden={true} />
       <span>{copy.label}</span>
     </span>
@@ -401,17 +424,12 @@ export function PageStatePanel({
   if (state === "loading") {
     return (
       <div className="space-y-4" aria-busy="true" aria-label="Memuat konten">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {["w-32", "w-28", "w-36", "w-28"].map((widthClass, idx) => (
-            <div key={idx} className="xb-card p-5">
-              <div className="xb-skeleton h-4 w-24" />
-              <div className={`xb-skeleton mt-3 h-9 ${widthClass}`} />
-            </div>
-          ))}
-        </div>
         <div className="xb-card p-6">
           <div className="xb-skeleton h-5 w-48" />
-          <div className="xb-skeleton mt-4 h-56 w-full" />
+          <div className="xb-skeleton mt-4 h-16 w-full" />
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {[1, 2, 3, 4].map((item) => <div key={item} className="xb-skeleton h-20 w-full" />)}
+          </div>
         </div>
       </div>
     );
@@ -482,7 +500,7 @@ export function PageStatePanel({
     );
   }
 
-  return <>{children}</>;
+  return <div className="xbm-content-ready">{children}</div>;
 }
 
 export function BotanicalReceiptCard({
@@ -570,10 +588,10 @@ export function BotanicalDrawer({
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="xb-botanical fixed inset-0 z-50 bg-[var(--overlay-scrim)]" />
+        <DialogPrimitive.Overlay className="xb-botanical xbm-drawer-overlay fixed inset-0 z-50 bg-[var(--overlay-scrim)]" />
         <DialogPrimitive.Content
           aria-label={title}
-          className="xb-botanical fixed inset-y-0 right-0 z-50 flex w-full max-w-[460px] flex-col border-l border-[var(--line)] bg-[var(--surface)] p-6 shadow-2xl focus:outline-none"
+          className="xb-botanical xbm-drawer-panel fixed inset-y-0 right-0 z-50 flex w-full max-w-[460px] flex-col border-l border-[var(--line)] bg-[var(--surface)] p-6 shadow-2xl focus:outline-none"
         >
           <div className="flex items-start justify-between gap-3 border-b border-[var(--line)] pb-4">
             <div className="min-w-0">
@@ -588,7 +606,7 @@ export function BotanicalDrawer({
             </div>
             <DialogPrimitive.Close
               aria-label="Tutup panel"
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-[var(--line)] bg-[var(--surface-soft)] text-[var(--ink)] hover:bg-[var(--leaf-100)]"
+              className="xbm-pressable grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-[var(--line)] bg-[var(--surface-soft)] text-[var(--ink)] hover:bg-[var(--leaf-100)]"
             >
               <X className="h-5 w-5" />
             </DialogPrimitive.Close>
@@ -599,4 +617,3 @@ export function BotanicalDrawer({
     </DialogPrimitive.Root>
   );
 }
-

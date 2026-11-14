@@ -1,60 +1,176 @@
-/* Shared motion system. CSS-first: transform/opacity only, one source of timing.
-   Every primitive in components/motion builds on these tokens — pages must not
-   declare their own durations or easings. */
+/* Shared motion vocabulary. CSS-first: transform/opacity (plus clip-path/filter where needed) only.
+   No layout property transitions (width/height/top/left/margin). Max duration <= 420ms for UI. */
 
 :root {
-  --motion-press: 90ms;
-  --motion-micro: 140ms;
-  --motion-standard: 240ms;
-  --motion-panel: 320ms;
-  --motion-chart: 600ms;
+  /* Canonical durations */
+  --dur-fast: 120ms;
+  --dur-base: 240ms;
+  --dur-slow: 420ms;
 
+  /* Legacy aliases mapped to canonical durations */
+  --motion-press: var(--dur-fast);
+  --motion-micro: var(--dur-fast);
+  --motion-standard: var(--dur-base);
+  --motion-panel: var(--dur-slow);
+  --motion-chart: var(--dur-slow);
+
+  /* Canonical easings: 1 primary ease-out + 1 subtle spring for press/sliding indicators */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --ease-in-out: var(--ease-out);
 
-  --press-scale: 0.975;
+  /* Physical press scale */
+  --press-scale: 0.97;
+  --card-press-scale: 0.985;
 }
 
-/* ---------- Pressable ---------- */
-.xbm-pressable {
+/* ---------- 1. Pressable & Button Micro-Interactions ---------- */
+.xbm-pressable,
+.xbm-button {
   position: relative;
-  transition: transform var(--motion-press) var(--ease-out),
-    background-color var(--motion-micro) var(--ease-out),
-    border-color var(--motion-micro) var(--ease-out),
-    box-shadow var(--motion-micro) var(--ease-out),
-    color var(--motion-micro) var(--ease-out);
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    opacity var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 
-.xbm-pressable:active:not(:disabled):not([aria-disabled="true"]) {
-  transform: scale(var(--press-scale));
+@media (hover: hover) and (pointer: fine) {
+  .xbm-pressable:hover:not(:disabled):not([aria-disabled="true"]),
+  .xbm-button:hover:not(:disabled):not([aria-disabled="true"]) {
+    transform: translate3d(0, -2px, 0);
+  }
+
+  .xbm-button-primary:hover:not(:disabled):not([aria-disabled="true"]) {
+    box-shadow: var(--shadow-button-hover);
+  }
 }
 
-.xbm-pressable:focus-visible {
-  outline: 2px solid var(--focus, #1f5a94);
+.xbm-pressable:active:not(:disabled):not([aria-disabled="true"]),
+.xbm-button:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: translate3d(0, 0, 0) scale(var(--press-scale));
+}
+
+.xbm-pressable:focus-visible,
+.xbm-button:focus-visible {
+  outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
 
-/* ---------- Reveal ---------- */
+@keyframes xbm-shimmer-sweep {
+  0% { transform: translate3d(-100%, 0, 0); }
+  100% { transform: translate3d(100%, 0, 0); }
+}
+
+.xbm-button[data-loading="true"] {
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.xbm-button[data-loading="true"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 100%
+  );
+  animation: xbm-shimmer-sweep var(--dur-slow) var(--ease-out) infinite;
+}
+
+/* ---------- 2. Card Micro-Interactions (Hover Lift + Icon Shift + Physical Press) ---------- */
+.xb-card {
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    background-color var(--dur-base) var(--ease-out);
+}
+
+.xb-card-interactive {
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.xb-card .xbm-card-icon,
+.xb-card-interactive .xbm-card-icon {
+  transition: transform var(--dur-base) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .xb-card-interactive:hover,
+  a:hover > .xb-card,
+  button:hover > .xb-card {
+    transform: translate3d(0, -3px, 0);
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .xb-card-interactive:hover .xbm-card-icon,
+  .xb-card:hover .xbm-card-icon,
+  a:hover .xbm-card-icon,
+  button:hover .xbm-card-icon {
+    transform: translate3d(3px, 0, 0);
+  }
+}
+
+.xb-card-interactive:active,
+a:active > .xb-card,
+button:active > .xb-card {
+  transform: translate3d(0, 0, 0) scale(var(--card-press-scale));
+  transition-duration: var(--dur-fast);
+  transition-timing-function: var(--ease-spring);
+}
+
+.xb-card-interactive:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ---------- 3. LiveNumber ---------- */
+.xbm-livenumber {
+  display: inline-block;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  transition: color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+.xbm-livenumber[data-direction="up"] {
+  color: var(--status-verified-ink);
+}
+
+.xbm-livenumber[data-direction="down"] {
+  color: var(--status-dispute-ink);
+}
+
+/* ---------- 4. Reveal (Staggered Entrance 40-80ms) ---------- */
 .xbm-reveal {
   opacity: 0;
-  transform: translate3d(0, 12px, 0);
-  transition: opacity var(--motion-standard) var(--ease-out),
-    transform var(--motion-standard) var(--ease-out);
+  transform: translate3d(0, 14px, 0);
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    transform var(--dur-slow) var(--ease-out);
   transition-delay: var(--reveal-delay, 0ms);
-  will-change: opacity, transform;
 }
 
 .xbm-reveal[data-visible="true"] {
   opacity: 1;
   transform: translate3d(0, 0, 0);
-  will-change: auto;
 }
 
 .xbm-reveal[data-axis="x"] {
-  transform: translate3d(-12px, 0, 0);
+  transform: translate3d(-14px, 0, 0);
 }
 
 .xbm-reveal[data-axis="x"][data-visible="true"] {
@@ -65,29 +181,47 @@
   transform: none;
 }
 
-/* ---------- Segmented ---------- */
+/* ---------- 5. Segmented / Chip / Filter (Spring Sliding Indicator) ---------- */
 .xbm-segmented {
   position: relative;
   display: inline-flex;
+  flex-wrap: nowrap;
   align-items: center;
-  gap: 2px;
-  padding: 3px;
-  border-radius: 999px;
-  background: var(--surface-soft, #f5f9f3);
-  border: 1px solid var(--line, #d8e5d4);
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border-radius: var(--radius-pill);
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.xbm-segmented::-webkit-scrollbar {
+  display: none;
 }
 
 .xbm-segmented-thumb {
   position: absolute;
-  top: 3px;
-  bottom: 3px;
-  border-radius: 999px;
-  background: var(--surface, #fff);
-  box-shadow: 0 1px 3px rgba(20, 38, 26, 0.1);
-  transition: transform var(--motion-standard) var(--ease-spring),
-    width var(--motion-standard) var(--ease-out);
+  top: var(--space-1);
+  bottom: var(--space-1);
+  left: 0;
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  box-shadow: var(--shadow-xs);
+  transition:
+    transform var(--dur-base) var(--ease-spring),
+    opacity var(--dur-fast) var(--ease-out);
   pointer-events: none;
   z-index: 0;
+}
+
+/* Dark lime segmented accent variant for landing & full-screen catalog */
+.xbm-segmented[data-tone="accent"] .xbm-segmented-thumb {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-glow-accent);
 }
 
 .xbm-segmented-item {
@@ -96,38 +230,70 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--space-1-5);
   border: 0;
   background: transparent;
-  border-radius: 999px;
-  padding: 6px 14px;
-  font-size: 13px;
+  border-radius: var(--radius-pill);
+  padding: var(--space-2) var(--space-3-5);
+  font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--ink-muted, #4a5e4f);
+  color: var(--ink-muted);
   cursor: pointer;
   white-space: nowrap;
-  transition: color var(--motion-micro) var(--ease-out),
-    transform var(--motion-press) var(--ease-out);
+  touch-action: manipulation;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-spring);
 }
 
 .xbm-segmented-item[aria-selected="true"] {
-  color: var(--forest-800, #1f4d2e);
+  color: var(--ink);
+}
+
+.xb-botanical .xbm-segmented-item[aria-selected="true"] {
+  color: var(--forest-800);
+}
+
+.xbm-segmented[data-tone="accent"] .xbm-segmented-item[aria-selected="true"] {
+  color: var(--color-text-on-accent);
 }
 
 .xbm-segmented-item:active:not(:disabled) {
-  transform: scale(0.97);
+  transform: scale(var(--press-scale));
 }
 
 .xbm-segmented-item:focus-visible {
-  outline: 2px solid var(--focus, #1f5a94);
+  outline: 2px solid var(--focus);
   outline-offset: 1px;
 }
 
-/* ---------- PulseDot ---------- */
+/* ---------- 6. Status Badge Pop (0.92 -> 1) & Pulsing Dot ---------- */
+@keyframes xbm-badge-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.xbm-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  border-radius: var(--radius-pill);
+  animation: xbm-badge-pop var(--dur-base) var(--ease-spring) both;
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    opacity var(--dur-fast) var(--ease-out);
+}
+
 @keyframes xbm-pulse {
-  0% { transform: scale(0.85); opacity: 0.55; }
-  70% { transform: scale(1.9); opacity: 0; }
-  100% { transform: scale(1.9); opacity: 0; }
+  0% { transform: scale(0.88); opacity: 0.65; }
+  70% { transform: scale(1.85); opacity: 0; }
+  100% { transform: scale(1.85); opacity: 0; }
 }
 
 .xbm-pulse-dot {
@@ -135,7 +301,7 @@
   display: inline-flex;
   width: 8px;
   height: 8px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: currentColor;
   flex: none;
 }
@@ -144,9 +310,154 @@
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   border: 2px solid currentColor;
-  animation: xbm-pulse 2.2s var(--ease-out) infinite;
+  animation: xbm-pulse 1.8s var(--ease-out) infinite;
+}
+
+/* ---------- 7. Inline Link (Left-to-Right Growing Underline) ---------- */
+.xbm-link-inline {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);
+}
+
+.xbm-link-inline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1.5px;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .xbm-link-inline:hover::after {
+    transform: scaleX(1);
+  }
+
+  .xbm-link-inline:hover .xbm-card-icon {
+    transform: translate3d(3px, 0, 0);
+  }
+}
+
+.xbm-link-inline:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* ---------- 8. Ecosystem Full-Screen Scenes, Dots & Parallax ---------- */
+.xbm-eco-scene {
+  opacity: 0.35;
+  transform: translate3d(0, 18px, 0);
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    transform var(--dur-slow) var(--ease-out);
+}
+
+.xbm-eco-scene[data-active="true"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.xbm-parallax-layer {
+  transform: translate3d(0, var(--parallax-y, 0px), 0) scale(1.05);
+  transition: transform var(--dur-base) var(--ease-out);
+  will-change: transform;
+}
+
+.xbm-eco-dot {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background-color: rgba(240, 242, 236, 0.28);
+  transition:
+    transform var(--dur-base) var(--ease-spring),
+    background-color var(--dur-base) var(--ease-out),
+    opacity var(--dur-fast) var(--ease-out);
+}
+
+.xbm-eco-dot[data-active="true"] {
+  background-color: var(--color-accent);
+  transform: scale(1.35);
+  box-shadow: var(--shadow-glow-accent);
+}
+
+/* ---------- 9. Header / Navbar Scroll Shrink & Blur ---------- */
+.xbm-nav-shell {
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    opacity var(--dur-base) var(--ease-out);
+  transform-origin: top center;
+}
+
+.xbm-nav-shell[data-scrolled="true"] {
+  transform: translate3d(0, -4px, 0) scale(0.985);
+}
+
+.xbm-topbar-sticky {
+  position: sticky;
+  top: var(--space-2);
+  z-index: 30;
+  border-radius: var(--radius-pill);
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    background-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    backdrop-filter var(--dur-base) var(--ease-out);
+}
+
+.xbm-topbar-sticky[data-scrolled="true"] {
+  background-color: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-card);
+  transform: translate3d(0, -1px, 0) scale(0.995);
+}
+
+/* ---------- 10. Skeleton Shimmer & Content Enter ---------- */
+.xb-skeleton,
+.xbm-skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--skeleton-bg);
+  border-radius: var(--radius-sm);
+}
+
+.xb-skeleton::after,
+.xbm-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--skeleton-sheen) 50%,
+    transparent 100%
+  );
+  animation: xbm-shimmer-sweep var(--dur-slow) var(--ease-out) infinite;
+}
+
+@keyframes xbm-content-fade {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.xbm-content-ready {
+  animation: xbm-content-fade var(--dur-base) var(--ease-out) both;
 }
 
 /* ---------- Shake ---------- */
@@ -159,7 +470,7 @@
 }
 
 .xbm-shake {
-  animation: xbm-shake var(--motion-standard) var(--ease-in-out);
+  animation: xbm-shake var(--dur-base) var(--ease-out);
 }
 
 .xbm-shake[data-shake-trigger] {
@@ -186,18 +497,18 @@
   position: fixed;
   inset: 0;
   z-index: 60;
-  background: var(--overlay-scrim, rgba(20, 38, 26, 0.4));
+  background: var(--overlay-scrim);
   backdrop-filter: blur(2px);
-  animation: xbm-scrim-in var(--motion-standard) var(--ease-out);
+  animation: xbm-scrim-in var(--dur-base) var(--ease-out);
 }
 
 .xbm-sheet-content {
   position: fixed;
   z-index: 61;
-  background: var(--surface, #fff);
-  border: 1px solid var(--line, #d8e5d4);
-  box-shadow: 0 24px 64px -24px rgba(20, 38, 26, 0.35);
-  animation: xbm-sheet-in var(--motion-panel) var(--ease-out);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-elevated);
+  animation: xbm-sheet-in var(--dur-slow) var(--ease-out);
 }
 
 .xbm-sheet-content[data-side="center"] {
@@ -205,8 +516,8 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: min(92vw, 32rem);
-  border-radius: 20px;
-  padding: 24px;
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
 }
 
 .xbm-sheet-content[data-side="right"] {
@@ -214,8 +525,8 @@
   right: 0;
   bottom: 0;
   width: min(92vw, 26rem);
-  border-radius: 20px 0 0 20px;
-  animation: xbm-sheet-in-right var(--motion-panel) var(--ease-out);
+  border-radius: var(--radius-xl) 0 0 var(--radius-xl);
+  animation: xbm-sheet-in-right var(--dur-slow) var(--ease-out);
   overflow-y: auto;
 }
 
@@ -223,8 +534,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  border-radius: 20px 20px 0 0;
-  padding: 12px 20px 24px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  padding: var(--space-3) var(--space-5) var(--space-6);
   max-height: 88vh;
   overflow-y: auto;
 }
@@ -232,9 +543,9 @@
 .xbm-sheet-handle {
   width: 40px;
   height: 4px;
-  border-radius: 999px;
-  background: var(--line-strong, #c2d4bc);
-  margin: 4px auto 12px;
+  border-radius: var(--radius-pill);
+  background: var(--line-strong);
+  margin: var(--space-1) auto var(--space-3);
 }
 
 /* ---------- RouteTransition ---------- */
@@ -244,21 +555,7 @@
 }
 
 .xbm-route {
-  animation: xbm-route-in var(--motion-standard) var(--ease-out);
-}
-
-/* ---------- LiveNumber ---------- */
-.xbm-livenumber {
-  font-variant-numeric: tabular-nums;
-  transition: color var(--motion-micro) var(--ease-out);
-}
-
-.xbm-livenumber[data-direction="up"] {
-  color: var(--status-verified-ink, #17692f);
-}
-
-.xbm-livenumber[data-direction="down"] {
-  color: var(--status-dispute-ink, #9a4400);
+  animation: xbm-route-in var(--dur-base) var(--ease-out);
 }
 
 /* ---------- LiveClock ---------- */
@@ -267,19 +564,20 @@
   align-items: center;
   font-variant-numeric: tabular-nums lining-nums;
   font-feature-settings: "tnum" 1, "lnum" 1;
-  transition: color var(--motion-micro) var(--ease-out);
+  transition: color var(--dur-fast) var(--ease-out);
 }
 
 /* ---------- KPI hover lift ---------- */
 .xbm-lift {
-  transition: transform var(--motion-micro) var(--ease-out),
-    box-shadow var(--motion-micro) var(--ease-out);
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .xbm-lift:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-hover, 0 8px 24px rgba(31, 77, 46, 0.07));
+    transform: translate3d(0, -2px, 0);
+    box-shadow: var(--shadow-hover);
   }
 }
 
@@ -289,30 +587,150 @@
   to { stroke-dashoffset: 0; }
 }
 
-/* ---------- Reduced motion ---------- */
+@keyframes xbm-spark-draw {
+  from {
+    opacity: 0.4;
+    stroke-dashoffset: 240;
+  }
+  to {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+}
+
+.xbm-sparkline-path {
+  stroke-dasharray: 240;
+  stroke-dashoffset: 0;
+  animation: xbm-spark-draw var(--dur-slow) var(--ease-out) both;
+}
+
+/* ---------- Screener Table Row & Ecosystem Filter Chips ---------- */
+@keyframes xbm-row-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.xbm-table-row {
+  animation: xbm-row-in var(--dur-base) var(--ease-out) both;
+  animation-delay: var(--row-delay, 0ms);
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    background-color var(--dur-fast) var(--ease-out),
+    opacity var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .xbm-table-row:hover {
+    transform: translate3d(0, -1px, 0);
+  }
+}
+
+.xbm-table-row:active {
+  transform: scale(0.98);
+}
+
+.xbm-eco-chip {
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    opacity var(--dur-fast) var(--ease-out),
+    background-color var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .xbm-eco-chip:hover:not(:disabled) {
+    transform: translate3d(0, -1.5px, 0);
+  }
+}
+
+.xbm-eco-chip:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* ---------- Spring Drawer ---------- */
+.xbm-drawer-overlay {
+  animation: xbm-scrim-in var(--dur-base) var(--ease-out) both;
+}
+
+@keyframes xbm-drawer-spring-in {
+  from {
+    opacity: 0;
+    transform: translate3d(32px, 0, 0) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.xbm-drawer-panel {
+  animation: xbm-drawer-spring-in var(--dur-slow) var(--ease-spring) both;
+}
+
+/* ---------- Reduced motion (Accessible Fallback) ---------- */
 @media (prefers-reduced-motion: reduce) {
   .xbm-reveal,
-  .xbm-reveal[data-axis] {
-    opacity: 1;
-    transform: none;
-    transition: none;
+  .xbm-reveal[data-axis],
+  .xbm-eco-scene {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: opacity var(--dur-fast) linear !important;
   }
 
   .xbm-pressable,
+  .xbm-pressable:hover,
   .xbm-pressable:active,
+  .xbm-button,
+  .xbm-button:hover,
+  .xbm-button:active,
+  .xb-card,
+  .xb-card-interactive,
+  .xb-card-interactive:hover,
+  .xb-card-interactive:active,
+  .xbm-card-icon,
   .xbm-segmented-item,
   .xbm-segmented-thumb,
   .xbm-livenumber,
-  .xbm-lift {
-    transition: none;
-    transform: none;
+  .xbm-lift,
+  .xbm-nav-shell,
+  .xbm-topbar-sticky,
+  .xbm-parallax-layer,
+  .xbm-eco-dot,
+  .xbm-table-row,
+  .xbm-table-row:hover,
+  .xbm-table-row:active,
+  .xbm-eco-chip,
+  .xbm-eco-chip:hover,
+  .xbm-eco-chip:active,
+  .xbm-link-inline::after {
+    transition: none !important;
+    transform: none !important;
   }
 
   .xbm-pulse-dot[data-pulsing="true"]::after,
+  .xbm-status-badge,
   .xbm-shake,
   .xbm-route,
   .xbm-sheet-scrim,
-  .xbm-sheet-content {
-    animation: none;
+  .xbm-sheet-content,
+  .xbm-drawer-overlay,
+  .xbm-drawer-panel,
+  .xbm-table-row,
+  .xbm-sparkline-path,
+  .xb-skeleton::after,
+  .xbm-skeleton::after,
+  .xbm-button[data-loading="true"]::after,
+  .xbm-content-ready {
+    animation: none !important;
   }
 }

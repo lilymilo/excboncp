@@ -19,6 +19,9 @@ import { mapParcelZoneId } from "@/lib/exbon-api";
 import { formatWibDateTime, toCanonicalStatus } from "@/lib/dashboard-helpers";
 import { formatIdr, formatNumber } from "@/components/dapp/phantom-ui";
 import { LiveNumber } from "@/components/motion";
+import { Pagination } from "@/components/ui/Pagination";
+
+const ZONE_PAGE_SIZE = 5;
 
 export function ZonaView({ initialZoneId }: { initialZoneId?: string }) {
   const router = useRouter();
@@ -38,6 +41,8 @@ export function ZonaView({ initialZoneId }: { initialZoneId?: string }) {
       : "ZONE-DEMO-A";
 
   const [selectedZoneId, setSelectedZoneId] = useState<string>(defaultZoneId);
+  const [parcelPage, setParcelPage] = useState(1);
+  const [transactionPage, setTransactionPage] = useState(1);
   const zone = ZONES_CATALOG[role === "recipient" ? "ZONE-DEMO-A" : selectedZoneId] ?? ZONES_CATALOG["ZONE-DEMO-A"];
 
   const zoneParcels = useMemo(
@@ -53,6 +58,14 @@ export function ZonaView({ initialZoneId }: { initialZoneId?: string }) {
       }),
     [transactions, zone.id]
   );
+  const safeParcelPage = Math.min(parcelPage, Math.max(1, Math.ceil(zoneParcels.length / ZONE_PAGE_SIZE)));
+  const safeTransactionPage = Math.min(transactionPage, Math.max(1, Math.ceil(zoneTransactions.length / ZONE_PAGE_SIZE)));
+  const visibleParcels = zoneParcels.slice((safeParcelPage - 1) * ZONE_PAGE_SIZE, safeParcelPage * ZONE_PAGE_SIZE);
+  const visibleTransactions = zoneTransactions.slice((safeTransactionPage - 1) * ZONE_PAGE_SIZE, safeTransactionPage * ZONE_PAGE_SIZE);
+  React.useEffect(() => {
+    if (parcelPage > Math.max(1, Math.ceil(zoneParcels.length / ZONE_PAGE_SIZE))) setParcelPage(1);
+    if (transactionPage > Math.max(1, Math.ceil(zoneTransactions.length / ZONE_PAGE_SIZE))) setTransactionPage(1);
+  }, [parcelPage, transactionPage, zone.id, zoneParcels.length, zoneTransactions.length]);
 
   const stats = useMemo(() => {
     const usedUnits = zoneTransactions.reduce((sum, tx) => sum + tx.volume_tco2e, 0);
@@ -83,6 +96,8 @@ export function ZonaView({ initialZoneId }: { initialZoneId?: string }) {
 
   const switchZone = (id: string) => {
     setSelectedZoneId(id);
+    setParcelPage(1);
+    setTransactionPage(1);
     router.replace(`/zona/${encodeURIComponent(id)}`, { scroll: false });
   };
 
@@ -177,7 +192,7 @@ export function ZonaView({ initialZoneId }: { initialZoneId?: string }) {
                   Lahan binaan yang menyuplai unit serapan ke zona ini
                 </p>
                 <div className="mt-4 space-y-3">
-                  {zoneParcels.map((parcel) => {
+                  {visibleParcels.map((parcel) => {
                     const canonical = toCanonicalStatus(parcel.verificationStatus);
                     const rec = verificationRecords.find((v) => v.parcel_id === parcel.id);
                     return (
@@ -216,6 +231,7 @@ export function ZonaView({ initialZoneId }: { initialZoneId?: string }) {
                     );
                   })}
                 </div>
+                <Pagination page={safeParcelPage} pageSize={ZONE_PAGE_SIZE} totalItems={zoneParcels.length} onPageChange={setParcelPage} label="Halaman lahan penyuplai" className="mt-3" />
               </div>
               <p className="mt-4 border-t border-[var(--line-subtle)] pt-3 text-[13px] text-[var(--ink-muted)]">
                 Penyaluran otomatis mengikuti batas kelayakan tiap lahan.
@@ -238,7 +254,7 @@ export function ZonaView({ initialZoneId }: { initialZoneId?: string }) {
                   </div>
                 ) : (
                   <div className="mt-4 space-y-2.5">
-                    {zoneTransactions.map((tx) => (
+                    {visibleTransactions.map((tx) => (
                       <div
                         key={tx.tx_id}
                         className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-4"
@@ -266,9 +282,10 @@ export function ZonaView({ initialZoneId }: { initialZoneId?: string }) {
                     ))}
                   </div>
                 )}
+                <Pagination page={safeTransactionPage} pageSize={ZONE_PAGE_SIZE} totalItems={zoneTransactions.length} onPageChange={setTransactionPage} label="Halaman transaksi zona" className="mt-3" />
               </div>
               <p className="mt-4 border-t border-[var(--line-subtle)] pt-3 text-[13px] text-[var(--ink-muted)]">
-                Menampilkan {zoneTransactions.length} entri catatan transaksi zona ini.
+                Menampilkan {visibleTransactions.length} dari {zoneTransactions.length} catatan transaksi zona.
               </p>
             </BotanicalCard>
           </div>
@@ -277,4 +294,3 @@ export function ZonaView({ initialZoneId }: { initialZoneId?: string }) {
     </BotanicalAppShell>
   );
 }
-

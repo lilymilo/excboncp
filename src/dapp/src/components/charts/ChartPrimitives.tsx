@@ -287,6 +287,7 @@ export function MarketSparkline({
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        className="xbm-sparkline-path"
       />
       <circle
         cx={last.x}

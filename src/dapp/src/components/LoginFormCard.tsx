@@ -69,8 +69,8 @@ export const EXCBON_DEMO_ACCOUNTS: DemoAccount[] = [
     email: "penerima.a@demo.excboncp.test",
     password: "demo123",
     badge: "Akun Pembeli",
-    destinationHref: "/market",
-    destinationLabel: "Buka Market Karbon (/market)",
+    destinationHref: "/screener",
+    destinationLabel: "Buka Pasar Karbon (/screener)",
   },
   {
     id: "auditor",

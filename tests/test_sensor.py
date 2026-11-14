@@ -205,8 +205,8 @@ def test_location_is_stored_or_falls_back_to_parcel_centroid(
     assert (sent["lat"], sent["lon"]) == (-6.2, 106.8)
 
     fallback = _post_reading(test_client, "2026-11-10T11:00:05Z", 27.0, 0)
-    assert fallback["lat"] == pytest.approx(0.1)
-    assert fallback["lon"] == pytest.approx(100.1)
+    assert fallback["lat"] == pytest.approx(-6.5982)
+    assert fallback["lon"] == pytest.approx(106.7928)
 
 
 def test_market_alias_route(test_client: TestClient, seeded_sensor_db: None) -> None:

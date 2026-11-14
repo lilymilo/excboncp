@@ -1,75 +1,169 @@
 "use client";
 
-import { ArrowRight, ShieldCheck } from "lucide-react";
-import SpecularButton from "@/components/SpecularButton";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+  ArrowRight,
+  ClipboardCheck,
+  Factory,
+  LogIn,
+  ShieldCheck,
+  Trees,
+  UserPlus,
+  Users,
+} from "lucide-react";
+import { BotanicalCard } from "@/components/dapp/BotanicalPrimitives";
+import { Reveal } from "@/components/motion";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { RippleButton } from "@/components/ui/ripple-button";
+
+const DEMO_ROLES = [
+  {
+    id: "komunitas",
+    title: "Komunitas Adat",
+    desc: "Kelola izin warga (FPIC), cabut persetujuan bila ada sengketa, dan periksa alokasi kas 60%.",
+    icon: Users,
+    badge: "Hak Veto",
+  },
+  {
+    id: "pengelola",
+    title: "Pengelola Hutan",
+    desc: "Pantau kondisi sensor pohon, status radar satelit, dan kesiapan unit karbon masuk pasar.",
+    icon: Trees,
+    badge: "Monitoring",
+  },
+  {
+    id: "penerima",
+    title: "Kawasan Industri (KEK)",
+    desc: "Simulasikan penyerapan unit karbon terverifikasi untuk dekarbonisasi zona industri.",
+    icon: Factory,
+    badge: "Penerima",
+  },
+  {
+    id: "auditor",
+    title: "Auditor Independen",
+    desc: "Tinjau bukti berlapis sebelum menyetujui penguncian segel digital SHA-256 permanen.",
+    icon: ClipboardCheck,
+    badge: "Penyetuju",
+  },
+] as const;
 
 export function ClosingCtaPanel() {
+  const router = useRouter();
+
   return (
-    <section className="py-20 sm:py-28">
-      <div className="page-shell">
-        {/* Wide Centered Panel with Green Vignette (Section 4.8) */}
-        <div className="relative rounded-card bg-[#101610] border border-[#252D22] p-8 sm:p-16 text-center overflow-hidden shadow-panel">
-          {/* Subtle Side Vignette Gradients */}
-          <div
-            aria-hidden="true"
-            className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#64753E]/12 to-transparent pointer-events-none"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-[#64753E]/12 to-transparent pointer-events-none"
-          />
+    <section id="demo" className="section-spacing border-t border-[var(--color-border-subtle)]">
+      <div className="page-shell space-y-10">
+        {/* Consistent Section Header: Eyebrow + Title + 1-sentence description */}
+        <Reveal className="max-w-3xl">
+          <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)] block mb-2.5">
+            Akses Eksplorasi 4 Peran &amp; Mulai Uji Coba
+          </span>
+          <h2 className="text-[clamp(1.95rem,3.4vw,3.1rem)] font-normal leading-[1.15] tracking-tight text-[var(--color-text-primary)]">
+            Buktikan integritas karbon hutan,{" "}
+            <span className="text-[var(--color-accent)]">langsung di browser</span> kamu.
+          </h2>
+          <p className="mt-3.5 text-[0.95rem] leading-relaxed text-[var(--color-text-secondary)]">
+            Pilih salah satu peran contoh di bawah untuk masuk otomatis tanpa dompet kripto, atau
+            buka dasbor utama untuk menjelajahi seluruh fitur.
+          </p>
+        </Reveal>
 
-          <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
-            <span className="text-[0.75rem] font-semibold text-[#AEDA2D] uppercase tracking-wider block mb-3">
-              Mulai Uji Coba Sekarang
-            </span>
-            <h2 className="text-[clamp(2.1rem,3.8vw,3.5rem)] font-normal text-[#F0F2EC] leading-[1.14] tracking-tight">
-              Buktikan integritas karbon hutan,{" "}
-              <span className="text-[#AEDA2D]">langsung di browser</span> kamu.
-            </h2>
-            <p className="mt-5 text-[0.95rem] text-[#A8AFA2] leading-relaxed max-w-[50ch]">
-              Tanpa unduh aplikasi dan tanpa uang sungguhan. Masuk dengan empat akun contoh
-              untuk memeriksa seluruh alur dari sensor hingga segel digital.
-            </p>
+        {/* 4 Interactive Role Cards */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {DEMO_ROLES.map((r, idx) => {
+            const Icon = r.icon;
+            return (
+              <Reveal key={r.id} delay={idx * 60}>
+                <Link href={`/login?role=${r.id}`} className="block h-full">
+                  <BotanicalCard
+                    interactive
+                    className="flex h-full flex-col justify-between p-6"
+                  >
+                    <div>
+                      <div className="mb-5 flex items-center justify-between">
+                        <span className="grid h-11 w-11 place-items-center rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface-raised)] text-[var(--color-accent)]">
+                          <Icon className="xbm-card-icon h-5 w-5" aria-hidden="true" />
+                        </span>
+                        <span className="rounded-[var(--radius-pill)] border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-2.5 py-1 font-mono text-[10px] text-[var(--color-text-secondary)]">
+                          {r.badge}
+                        </span>
+                      </div>
 
-            <div className="mt-8">
-              {/* Primary CTA — SpecularButton from React Bits */}
-              <SpecularButton
-                size="lg"
-                radius={999}
-                lineColor="#FFFFFF"
-                baseColor="#D8F57A"
-                textColor="#11160B"
-                tint="#AEDA2D"
-                tintOpacity={1}
-                intensity={1.65}
-                idleIntensity={0.7}
-                glow={1.5}
-                thickness={1.8}
-                shineSize={16}
-                shineFade={30}
-                autoAnimate={true}
-                onClick={() => {
-                  const el = document.getElementById("demo");
-                  el?.scrollIntoView({ behavior: "smooth" });
-                }}
-                style={{
-                  backgroundColor: "#AEDA2D",
-                  color: "#11160B",
-                  boxShadow: "0 0 40px rgba(174,218,45,0.35), inset 0 1px 1px rgba(255,255,255,0.45)",
-                }}
-              >
-                Coba 4 Akun Demo
-                <ArrowRight className="w-5 h-5" />
-              </SpecularButton>
-            </div>
+                      <h3 className="text-lg font-medium tracking-tight text-[var(--color-text-primary)]">
+                        {r.title}
+                      </h3>
+                      <p className="mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)]">
+                        {r.desc}
+                      </p>
+                    </div>
 
-            <div className="mt-6 flex items-center gap-1.5 text-[0.75rem] text-[#747D70]">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#64753E]" />
-              <span>Jalur pengujian 5 menit siap saji untuk juri dan panitia</span>
-            </div>
-          </div>
+                    <div className="mt-6 flex items-center justify-between border-t border-[var(--color-border-subtle)] pt-4 text-xs font-semibold text-[var(--color-accent)]">
+                      <span>Masuk Akun Demo</span>
+                      <ArrowRight className="xbm-card-icon h-3.5 w-3.5" aria-hidden="true" />
+                    </div>
+                  </BotanicalCard>
+                </Link>
+              </Reveal>
+            );
+          })}
         </div>
+
+        {/* Closing Anchor Banner */}
+        <Reveal delay={180}>
+          <BotanicalCard className="relative overflow-hidden p-8 sm:p-12 text-center">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[var(--color-accent-muted)]/14 to-transparent"
+            />
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-[var(--color-accent-muted)]/14 to-transparent"
+            />
+
+            <div className="relative z-10 mx-auto flex max-w-2xl flex-col items-center">
+              <h3 className="text-2xl sm:text-3xl font-normal tracking-tight text-[var(--color-text-primary)]">
+                Siap menguji alur penuh dari <span className="text-[var(--color-accent)]">sensor ke segel</span>?
+              </h3>
+              <p className="mt-3 text-sm sm:text-base text-[var(--color-text-secondary)]">
+                Jalur pengujian 5 menit siap pakai untuk meninjau dasbor peran, pasar simulasi, dan
+                katalog 3 ekosistem.
+              </p>
+
+              <div className="mt-7 flex w-full flex-col items-center justify-center gap-3.5 sm:w-auto sm:flex-row">
+                <ShimmerButton
+                  onClick={() => router.push("/login")}
+                  className="w-full sm:w-auto text-sm"
+                >
+                  <LogIn className="h-4 w-4" aria-hidden="true" />
+                  <span>Halaman Log In (4 Peran)</span>
+                </ShimmerButton>
+
+                <RippleButton
+                  onClick={() => router.push("/register")}
+                  className="w-full sm:w-auto rounded-[var(--radius-pill)] border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-6 py-2.5 text-sm font-medium text-[var(--color-text-primary)] hover:border-[var(--color-border-strong)]"
+                >
+                  <UserPlus className="h-4 w-4 text-[var(--color-accent)]" aria-hidden="true" />
+                  <span>Daftar Akun Baru</span>
+                </RippleButton>
+              </div>
+
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs text-[var(--color-text-muted)]">
+                <span className="inline-flex items-center gap-1.5">
+                  <ShieldCheck className="h-3.5 w-3.5 text-[var(--color-accent-muted)]" aria-hidden="true" />
+                  <span>Berjalan di testnet Base Sepolia</span>
+                </span>
+                <span aria-hidden="true">&bull;</span>
+                <Link
+                  href="/bantuan"
+                  className="xbm-link-inline text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
+                >
+                  <span>Baca Panduan Lengkap (/bantuan)</span>
+                </Link>
+              </div>
+            </div>
+          </BotanicalCard>
+        </Reveal>
       </div>
     </section>
   );

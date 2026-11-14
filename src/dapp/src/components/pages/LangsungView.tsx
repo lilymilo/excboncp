@@ -33,8 +33,10 @@ import { ZONES_CATALOG } from "@/lib/copy";
 import { formatWibTime } from "@/lib/dashboard-helpers";
 import { formatIdr, formatNumber } from "@/components/dapp/phantom-ui";
 import { LiveNumber, LiveClock } from "@/components/motion";
+import { Pagination } from "@/components/ui/Pagination";
 
 type StreamStatus = "live" | "reconnecting" | "polling";
+const FEED_PAGE_SIZE = 10;
 
 export function LangsungView() {
   const searchParams = useSearchParams();
@@ -63,6 +65,7 @@ export function LangsungView() {
   const [flashIds, setFlashIds] = useState<Record<string, boolean>>({});
   const [lastSensorSec, setLastSensorSec] = useState(6);
   const [liveAnnouncement, setLiveAnnouncement] = useState("");
+  const [feedPage, setFeedPage] = useState(1);
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
 
@@ -215,6 +218,12 @@ export function LangsungView() {
       todayCommunity,
     };
   }, [parcels, feedRows]);
+  const totalFeedPages = Math.max(1, Math.ceil(feedRows.length / FEED_PAGE_SIZE));
+  const safeFeedPage = Math.min(feedPage, totalFeedPages);
+  const paginatedFeed = feedRows.slice((safeFeedPage - 1) * FEED_PAGE_SIZE, safeFeedPage * FEED_PAGE_SIZE);
+  useEffect(() => {
+    if (feedPage > totalFeedPages) setFeedPage(totalFeedPages);
+  }, [feedPage, totalFeedPages]);
 
   const cumulativeSeries = useMemo(() => {
     const ordered = [...feedRows].reverse();
@@ -322,9 +331,9 @@ export function LangsungView() {
           state={pageState}
           emptyTitle="Belum ada transaksi hari ini"
           emptyDescription="Umpan akan terisi otomatis saat ada alokasi simulasi atau peristiwa skenario baru."
-          emptyActionHref={role === "manager" ? "/pasar/PARCEL-A" : undefined}
+          emptyActionHref={role === "manager" ? "/screener?lahan=PARCEL-A" : undefined}
           emptyActionLabel={
-            role === "manager" ? "Putar skenario di halaman Pasar" : undefined
+            role === "manager" ? "Buka Pasar & Screener" : undefined
           }
         >
           {/* Live Stream Telemetry Strip */}
@@ -433,7 +442,7 @@ export function LangsungView() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[var(--line)] text-[14.5px]">
-                      {feedRows.map((row) => (
+                      {paginatedFeed.map((row) => (
                         <tr
                           key={row.id}
                           className={
@@ -490,7 +499,7 @@ export function LangsungView() {
 
                 {/* Mobile Stacked Feed Cards (< 768px) */}
                 <div className="divide-y divide-[var(--line)] md:hidden">
-                  {feedRows.slice(0, 12).map((row) => (
+                  {paginatedFeed.map((row) => (
                     <div
                       key={row.id}
                       className={`p-4 ${flashIds[row.id] ? "xb-tx-flash" : ""}`}
@@ -529,8 +538,16 @@ export function LangsungView() {
                 </div>
               </div>
 
+              <Pagination
+                page={safeFeedPage}
+                pageSize={FEED_PAGE_SIZE}
+                totalItems={feedRows.length}
+                onPageChange={setFeedPage}
+                label="Halaman umpan transaksi langsung"
+                className="mx-5 mb-3"
+              />
               <p className="border-t border-[var(--line)] bg-[var(--surface-soft)] px-5 py-2.5 text-[13.5px] text-[var(--ink-muted)]">
-                Menampilkan {feedRows.length} baris terbaru (batas memori maks. 200 baris).
+                Halaman {safeFeedPage} dari {totalFeedPages} · riwayat maksimal 200 baris.
               </p>
             </BotanicalCard>
 
@@ -668,4 +685,3 @@ export function LangsungView() {
     </BotanicalAppShell>
   );
 }
-

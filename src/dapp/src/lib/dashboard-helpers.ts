@@ -134,9 +134,9 @@ export function computeRoleNextAction(
       };
     }
     return {
-      label: "Lihat pasar Lahan A",
+      label: "Buka screener pasar",
       description: "Pantau ketersediaan unit terverifikasi dan estimasi pembagian hasil simulasi.",
-      href: "/market",
+      href: "/screener",
       tone: "primary",
     };
   }

@@ -224,7 +224,7 @@ export function useDashboardState() {
         description:
           rec.reasons.length > 0
             ? `Peringatan: ${rec.reasons.join("; ")}`
-            : "Rantai SHA-256 cocok & attestation EAS Base Sepolia tercatat.",
+            : "Rantai SHA-256 cocok; status attestation EAS mengikuti konfigurasi jaringan.",
         parcelId: rec.parcel_id,
         timestamp: rec.timestamp,
         refHash: rec.eas_uid || rec.hash,

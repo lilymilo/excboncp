@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "name": "Bogor Forest Parcels EXBON CP",
+  "name": "EXBON CP Demo Parcel Boundaries",
   "features": [
     {
       "type": "Feature",
@@ -15,12 +15,30 @@
         "type": "Polygon",
         "coordinates": [
           [
-            [106.784, -6.594],
-            [106.796, -6.591],
-            [106.801, -6.598],
-            [106.797, -6.605],
-            [106.786, -6.603],
-            [106.784, -6.594]
+            [
+              106.784,
+              -6.594
+            ],
+            [
+              106.796,
+              -6.591
+            ],
+            [
+              106.801,
+              -6.598
+            ],
+            [
+              106.797,
+              -6.605
+            ],
+            [
+              106.786,
+              -6.603
+            ],
+            [
+              106.784,
+              -6.594
+            ]
           ]
         ]
       }
@@ -38,12 +56,30 @@
         "type": "Polygon",
         "coordinates": [
           [
-            [106.802, -6.592],
-            [106.816, -6.589],
-            [106.821, -6.599],
-            [106.814, -6.608],
-            [106.803, -6.604],
-            [106.802, -6.592]
+            [
+              106.802,
+              -6.592
+            ],
+            [
+              106.816,
+              -6.589
+            ],
+            [
+              106.821,
+              -6.599
+            ],
+            [
+              106.814,
+              -6.608
+            ],
+            [
+              106.803,
+              -6.604
+            ],
+            [
+              106.802,
+              -6.592
+            ]
           ]
         ]
       }
@@ -61,12 +97,30 @@
         "type": "Polygon",
         "coordinates": [
           [
-            [106.788, -6.606],
-            [106.801, -6.606],
-            [106.804, -6.615],
-            [106.793, -6.618],
-            [106.785, -6.613],
-            [106.788, -6.606]
+            [
+              106.788,
+              -6.606
+            ],
+            [
+              106.801,
+              -6.606
+            ],
+            [
+              106.804,
+              -6.615
+            ],
+            [
+              106.793,
+              -6.618
+            ],
+            [
+              106.785,
+              -6.613
+            ],
+            [
+              106.788,
+              -6.606
+            ]
           ]
         ]
       }
@@ -75,7 +129,7 @@
       "type": "Feature",
       "properties": {
         "parcel_id": "PARCEL-D",
-        "name": "Koridor Halimun Blok D",
+        "name": "Sabuk Penyangga Industri Blok D",
         "community": "Masyarakat Adat Ciptagelar",
         "region": "Cijeruk, Bogor",
         "area_ha": 110
@@ -84,12 +138,382 @@
         "type": "Polygon",
         "coordinates": [
           [
-            [106.805, -6.606],
-            [106.818, -6.609],
-            [106.819, -6.617],
-            [106.808, -6.619],
-            [106.804, -6.614],
-            [106.805, -6.606]
+            [
+              106.805,
+              -6.606
+            ],
+            [
+              106.818,
+              -6.609
+            ],
+            [
+              106.819,
+              -6.617
+            ],
+            [
+              106.808,
+              -6.619
+            ],
+            [
+              106.804,
+              -6.614
+            ],
+            [
+              106.805,
+              -6.606
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "PARCEL-E",
+        "name": "Kawasan Energi Hijau Blok E",
+        "community": "Koperasi Hijau Citeureup",
+        "region": "Citeureup, Bogor",
+        "area_ha": 175
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              106.822,
+              -6.592
+            ],
+            [
+              106.835,
+              -6.591
+            ],
+            [
+              106.838,
+              -6.601
+            ],
+            [
+              106.827,
+              -6.606
+            ],
+            [
+              106.821,
+              -6.6
+            ],
+            [
+              106.822,
+              -6.592
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "PARCEL-F",
+        "name": "Koridor Hutan Kota Blok F",
+        "community": "Forum Warga Sabuk Hijau Kota",
+        "region": "Cibinong, Bogor",
+        "area_ha": 132
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              106.774,
+              -6.598
+            ],
+            [
+              106.783,
+              -6.595
+            ],
+            [
+              106.785,
+              -6.605
+            ],
+            [
+              106.777,
+              -6.61
+            ],
+            [
+              106.772,
+              -6.605
+            ],
+            [
+              106.774,
+              -6.598
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "PARCEL-G",
+        "name": "Kawasan Industri Hijau IKN Ring 2",
+        "community": "Koperasi Warga Penajam",
+        "region": "Penajam Paser Utara, Kalimantan Timur",
+        "area_ha": 240
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              116.63531,
+              -1.04567
+            ],
+            [
+              116.62335,
+              -1.03631
+            ],
+            [
+              116.60804,
+              -1.04063
+            ],
+            [
+              116.60469,
+              -1.05433
+            ],
+            [
+              116.61665,
+              -1.06369
+            ],
+            [
+              116.63196,
+              -1.05937
+            ],
+            [
+              116.63531,
+              -1.04567
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "PARCEL-H",
+        "name": "Sabuk Dekarbonisasi KEK Sei Mangkei",
+        "community": "Koperasi Bukit Hijau Simalungun",
+        "region": "Simalungun, Sumatera Utara",
+        "area_ha": 310
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              99.06531,
+              2.95433
+            ],
+            [
+              99.05335,
+              2.96369
+            ],
+            [
+              99.03804,
+              2.95937
+            ],
+            [
+              99.03469,
+              2.94567
+            ],
+            [
+              99.04665,
+              2.93631
+            ],
+            [
+              99.06196,
+              2.94063
+            ],
+            [
+              99.06531,
+              2.95433
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "PARCEL-I",
+        "name": "Buffer Hijau Kawasan Industri Kendal",
+        "community": "Paguyuban Tani Kendal",
+        "region": "Kendal, Jawa Tengah",
+        "area_ha": 185
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              110.21437,
+              -6.94594
+            ],
+            [
+              110.20314,
+              -6.93715
+            ],
+            [
+              110.18877,
+              -6.94121
+            ],
+            [
+              110.18563,
+              -6.95406
+            ],
+            [
+              110.19686,
+              -6.96285
+            ],
+            [
+              110.21123,
+              -6.95879
+            ],
+            [
+              110.21437,
+              -6.94594
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "PARCEL-J",
+        "name": "IKN Smart City — Sumbu Kebangsaan",
+        "community": "Forum Warga Kota Nusantara",
+        "region": "Nusantara, Kalimantan Timur",
+        "area_ha": 96
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              116.72035,
+              -0.96708
+            ],
+            [
+              116.71226,
+              -0.96074
+            ],
+            [
+              116.70191,
+              -0.96367
+            ],
+            [
+              116.69965,
+              -0.97292
+            ],
+            [
+              116.70774,
+              -0.97926
+            ],
+            [
+              116.71809,
+              -0.97633
+            ],
+            [
+              116.72035,
+              -0.96708
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "PARCEL-K",
+        "name": "TOD Balikpapan — Kanopi Hijau",
+        "community": "Komunitas Hijau Balikpapan",
+        "region": "Balikpapan, Kalimantan Timur",
+        "area_ha": 70
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              116.83884,
+              -1.2675
+            ],
+            [
+              116.83193,
+              -1.2621
+            ],
+            [
+              116.82309,
+              -1.26459
+            ],
+            [
+              116.82116,
+              -1.2725
+            ],
+            [
+              116.82807,
+              -1.2779
+            ],
+            [
+              116.83691,
+              -1.27541
+            ],
+            [
+              116.83884,
+              -1.2675
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "PARCEL-L",
+        "name": "Hutan Kota IKN Ring 1",
+        "community": "Forum Warga Kota Nusantara",
+        "region": "Nusantara, Kalimantan Timur",
+        "area_ha": 128
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              116.77195,
+              -0.92662
+            ],
+            [
+              116.76261,
+              -0.91931
+            ],
+            [
+              116.75066,
+              -0.92269
+            ],
+            [
+              116.74805,
+              -0.93338
+            ],
+            [
+              116.75739,
+              -0.94069
+            ],
+            [
+              116.76934,
+              -0.93731
+            ],
+            [
+              116.77195,
+              -0.92662
+            ]
           ]
         ]
       }

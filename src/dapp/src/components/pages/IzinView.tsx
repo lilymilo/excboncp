@@ -248,7 +248,7 @@ export function IzinView({ initialParcelId }: { initialParcelId?: string }) {
                           {consentRecord?.community ?? parcel.community}
                         </span>{" "}
                         · Pembaruan:{" "}
-                        {formatWibDateTime(consentRecord?.timestamp ?? parcel.lastUpdate)} WIB
+                        {formatWibDateTime(consentRecord?.timestamp ?? parcel.lastUpdate)}
                       </p>
                     </div>
                   </div>
@@ -345,7 +345,7 @@ export function IzinView({ initialParcelId }: { initialParcelId?: string }) {
                         <p className="text-[13px] font-medium text-[var(--ink-muted)]">Tautan pemeriksaan</p>
                         <div className="mt-2 flex flex-wrap gap-2">
                           <Link
-                            href={`/pasar/${parcel.id}`}
+                            href={`/screener?lahan=${encodeURIComponent(parcel.id)}`}
                             className="inline-flex min-h-[38px] items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface-soft)] px-3.5 text-[13.5px] font-semibold text-[var(--ink)] transition hover:bg-[var(--leaf-100)]"
                           >
                             <span>Cek status di Pasar</span>
@@ -379,7 +379,7 @@ export function IzinView({ initialParcelId }: { initialParcelId?: string }) {
                     latestSeal?.hash ||
                     "a4b9c2d1e8f7045692a1b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4"
                   }
-                  timestampWib={`${formatWibDateTime(consentRecord?.timestamp ?? parcel.lastUpdate)} WIB`}
+                  timestampWib={formatWibDateTime(consentRecord?.timestamp ?? parcel.lastUpdate)}
                   details={`Dicatat oleh ${consentRecord?.granted_by ?? user?.name ?? "Warga"} untuk ${parcel.name}`}
                   verifyHref={latestSeal ? `/verifikasi/${latestSeal.block_index}` : "/verifikasi"}
                 />

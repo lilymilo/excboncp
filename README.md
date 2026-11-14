@@ -35,6 +35,16 @@ ExcbonCP is a decentralized Monitoring, Reporting, and Verification (MRV) system
 
 ## Quick Start
 
+Untuk menjalankan API, worker MQTT, dan web development dengan satu perintah:
+
+```bash
+./scripts/dev.sh
+```
+
+Web tersedia di `http://localhost:3000` dan API di `http://localhost:8000`.
+Perlu Docker yang berjalan serta Node.js/npm. Tekan `Ctrl+C` untuk menghentikan web;
+layanan backend dapat dihentikan dengan `docker compose down`.
+
 ### Prerequisites
 
 - Docker and Docker Compose

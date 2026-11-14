@@ -62,5 +62,36 @@ export const MOCK_PARCELS: Parcel[] = [
       timestamp: "2026-11-09T14:31:00Z",
     },
   },
+  {
+    id: "lahan-c",
+    name: "Lahan C — Koridor Kanopi Rimba Sentul",
+    location: "Sentul, Kabupaten Bogor",
+    areaHa: 320,
+    carbonUnits: 380,
+    status: "VERIFIED",
+    statusLabel: "Terverifikasi",
+    consent: "granted",
+    consentBy: "KTH Rimba Sentul",
+    telemetry: {
+      deviceId: "esp-04",
+      timestamp: "2026-11-09T14:35:00Z",
+      tempC: 26.8,
+      humidityPct: 79.5,
+      flame: 0,
+      soilPct: 64,
+    },
+    satellite: {
+      polygonId: "lahan-c",
+      date: "2026-11-08",
+      ndviMean: 0.81,
+      sarVvDb: -11.8,
+    },
+    digitalSeal: {
+      hash: "9f3e7a1b5c8d2e6f0a4b8c2d6e0f4a8b2c6d0e4f8a2b6c0d4e8f2a6b0c4d8e2f",
+      prevHash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      easUid: "0x4e9bc2d1a3f5e7b9c1d3e5f7a9b1c3d5e7f9a1b3c5d7e9f1a3b5c7d9e1f3a5b7",
+      approvedBy: "auditor-02@verra-registry.org",
+      timestamp: "2026-11-09T15:10:00Z",
+    },
+  },
 ];
-
