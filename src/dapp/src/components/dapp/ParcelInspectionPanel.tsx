@@ -26,6 +26,8 @@ import {
   formatWibDateTime,
   toCanonicalStatus,
 } from "@/lib/dashboard-helpers";
+import { ExplorerLink } from "@/components/ui/ExplorerLink";
+import { EAS_LIVE, attestationExplorerUrl, txExplorerUrl } from "@/lib/explorer";
 import { formatIdr, formatNumber } from "./phantom-ui";
 import {
   BotanicalCard,
@@ -190,14 +192,6 @@ export function ParcelInspectionPanel({
                 <span>Buka halaman lahan</span>
                 <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
               </Link>
-              {role !== "guest" && (
-                <Link
-                  href={`/pasar/${encodeURIComponent(parcel.id)}`}
-                  className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 text-[14.5px] font-semibold text-[var(--ink)] hover:bg-[var(--surface-soft)]"
-                >
-                  <span>Hitung pembagian</span>
-                </Link>
-              )}
               {role === "community" && (
                 <Link
                   href={`/izin/${encodeURIComponent(parcel.id)}`}
@@ -324,10 +318,19 @@ export function ParcelInspectionPanel({
                       {verification.hash}
                     </p>
                     <p className="mt-0.5 text-[13.5px] text-[var(--ink-muted)]">
-                      {verification.eas_uid
-                        ? "Terkunci di Base Sepolia (testnet)"
-                        : "Menunggu penguncian auditor"}
+                      {EAS_LIVE && verification.eas_uid && /^0x[0-9a-f]{64}$/i.test(verification.eas_uid)
+                        ? "Hash tercatat di EAS testnet"
+                        : "Tersegel di rantai lokal · EAS simulasi"}
                     </p>
+                    {EAS_LIVE && [verification.eas_uid, verification.tx_hash].some((value) => value && /^0x[0-9a-f]{64}$/i.test(value)) && (
+                      <div className="mt-1 flex flex-wrap items-center gap-x-3.5">
+                        <ExplorerLink
+                          href={attestationExplorerUrl(/^0x[0-9a-f]{64}$/i.test(verification.eas_uid) ? verification.eas_uid : null)}
+                          label="Attestation"
+                        />
+                        {verification.tx_hash && /^0x[0-9a-f]{64}$/i.test(verification.tx_hash) && <ExplorerLink href={txExplorerUrl(verification.tx_hash)} label="Transaksi" />}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <Link
@@ -369,4 +372,3 @@ export function ParcelInspectionPanel({
 
   return <BotanicalCard className="overflow-hidden">{innerContent}</BotanicalCard>;
 }
-

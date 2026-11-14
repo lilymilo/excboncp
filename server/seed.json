@@ -25,7 +25,7 @@
     {
       "id": "PARCEL-A",
       "name": "Lahan Demo A (simulasi)",
-      "polygon_geojson": "{\"type\":\"Polygon\",\"coordinates\":[[[100.0,0.0],[100.2,0.0],[100.2,0.2],[100.0,0.2],[100.0,0.0]]],\"properties\":{\"simulation\":true,\"label\":\"Lahan Demo A\"}}",
+      "polygon_geojson": "{\"type\":\"Polygon\",\"coordinates\":[[[106.784,-6.594],[106.796,-6.591],[106.801,-6.598],[106.797,-6.605],[106.786,-6.603],[106.784,-6.594]]],\"properties\":{\"simulation\":true,\"label\":\"Hutan Bogor Blok A\"}}",
       "area_hectares": 120.5,
       "vegetation_type": "hutan sekunder (simulasi)",
       "baseline_ndvi": 0.78,
@@ -36,7 +36,7 @@
     {
       "id": "PARCEL-B",
       "name": "Lahan Demo B (simulasi)",
-      "polygon_geojson": "{\"type\":\"Polygon\",\"coordinates\":[[[100.3,0.0],[100.5,0.0],[100.5,0.2],[100.3,0.2],[100.3,0.0]]],\"properties\":{\"simulation\":true,\"label\":\"Lahan Demo B\"}}",
+      "polygon_geojson": "{\"type\":\"Polygon\",\"coordinates\":[[[106.802,-6.592],[106.816,-6.589],[106.821,-6.599],[106.814,-6.608],[106.803,-6.604],[106.802,-6.592]]],\"properties\":{\"simulation\":true,\"label\":\"Hutan Bogor Blok B\"}}",
       "area_hectares": 85.0,
       "vegetation_type": "hutan sekunder (simulasi)",
       "baseline_ndvi": 0.72,

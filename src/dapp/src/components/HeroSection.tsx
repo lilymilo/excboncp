@@ -1,92 +1,145 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, MapPin, Sparkles, ShieldCheck, Sprout } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ArrowRight, Compass, MapPin, ShieldCheck } from "lucide-react";
+import { BotanicalCard } from "@/components/dapp/BotanicalPrimitives";
+import { LiveNumber, PulseDot, Reveal } from "@/components/motion";
+import { ShimmerButton } from "@/components/ui/shimmer-button";
+import { RippleButton } from "@/components/ui/ripple-button";
+
+const HERO_METRICS = [
+  {
+    id: "verified",
+    label: "Unit Terverifikasi",
+    value: 1307,
+    suffix: " tCO2e",
+    sub: "Siap alokasi pasar simulasi",
+  },
+  {
+    id: "area",
+    label: "Luas Kanopi Dipantau",
+    value: 1961,
+    suffix: " Ha",
+    sub: "Sentinel-2 & radar SAR aktif",
+  },
+  {
+    id: "share",
+    label: "Porsi Kas Komunitas",
+    value: 60,
+    suffix: "%",
+    sub: "Hak veto FPIC warga adat",
+  },
+  {
+    id: "block",
+    label: "Rantai Segel SHA-256",
+    value: 1253,
+    prefix: "#",
+    suffix: "",
+    sub: "Terkunci di Base Sepolia EAS",
+  },
+] as const;
 
 export function HeroSection() {
+  const router = useRouter();
+
   return (
-    <section className="relative pt-16 pb-14 sm:pt-24 sm:pb-20 overflow-hidden">
-      {/* Background Soft Botanical Ambient Glow */}
+    <section className="relative overflow-hidden pt-28 pb-16 sm:pt-36 sm:pb-20">
+      {/* Ambient Radial Halo */}
       <div
         aria-hidden="true"
-        className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] sm:w-[850px] h-[350px] sm:h-[450px] bg-[radial-gradient(ellipse_at_center,rgba(143,203,151,0.25)_0%,rgba(238,245,236,0)_70%)] blur-[90px] pointer-events-none -z-10"
+        className="pointer-events-none absolute top-1/3 left-1/2 -z-10 h-[360px] w-[540px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(100,117,62,0.22)_0%,rgba(11,16,12,0)_70%)] blur-[80px] sm:h-[440px] sm:w-[820px]"
       />
 
       <div className="page-shell flex flex-col items-center text-center">
-        {/* Eyebrow Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-[var(--line)] text-[12.5px] font-semibold text-[var(--forest-800)] mb-6 shadow-xs">
-          <Sprout className="w-3.5 h-3.5 text-[var(--forest-700)]" aria-hidden="true" />
-          <span>Sistem Pemantauan Hutan &amp; Verifikasi Terbuka</span>
+        <Reveal delay={0}>
+          <div className="xbm-status-badge mb-6 border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-3.5 py-1.5 text-xs font-medium text-[var(--color-text-secondary)] shadow-[var(--shadow-xs)]">
+            <PulseDot pulsing className="text-[var(--color-accent)]" />
+            <span>Sistem Pemantauan Hutan &amp; Verifikasi Karbon Terbuka</span>
+          </div>
+        </Reveal>
+
+        <Reveal delay={60}>
+          <h1 className="max-w-4xl text-[clamp(2.35rem,5vw,4.35rem)] font-normal leading-[1.1] tracking-tight text-[var(--color-text-primary)]">
+            Bukti <span className="text-[var(--color-accent)]">kondisi hutan</span>,
+            <br className="hidden sm:inline" /> sebelum menghitung nilai.
+          </h1>
+        </Reveal>
+
+        <Reveal delay={120}>
+          <p className="mt-5 max-w-[58ch] text-[0.95rem] leading-relaxed text-[var(--color-text-secondary)] sm:text-[1.05rem]">
+            Excboncp menyatukan citra satelit, sensor fisik di pepohonan, dan izin tertulis warga adat
+            ke dalam buku catatan terbuka yang disegel secara kriptografis tanpa perantara.
+          </p>
+        </Reveal>
+
+        {/* Primary & Secondary CTAs */}
+        <Reveal delay={180} className="mt-8 flex w-full flex-col items-center justify-center gap-3.5 sm:w-auto sm:flex-row">
+          <ShimmerButton
+            onClick={() => router.push("/screener")}
+            className="w-full sm:w-auto text-[0.9rem]"
+          >
+            <span>Buka Pasar &amp; Screener</span>
+            <ArrowRight className="xbm-card-icon h-4 w-4" aria-hidden="true" />
+          </ShimmerButton>
+
+          <RippleButton
+            onClick={() => router.push("/peta")}
+            className="w-full sm:w-auto rounded-[var(--radius-pill)] border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-6 py-2.5 text-[0.9rem] font-medium text-[var(--color-text-primary)] hover:border-[var(--color-border-strong)] hover:bg-[var(--color-surface-soft)]"
+          >
+            <MapPin className="h-4 w-4 text-[var(--color-accent)]" aria-hidden="true" />
+            <span>Peta Poligon &amp; IoT</span>
+          </RippleButton>
+        </Reveal>
+
+        {/* Quick Navigation Inline Links */}
+        <Reveal delay={240} className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-[var(--color-text-secondary)]">
+          <Link href="/screener" className="xbm-link-inline font-medium text-[var(--color-accent)]">
+            <Compass className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>Screener 3 Ekosistem (/screener)</span>
+          </Link>
+          <span aria-hidden="true" className="text-[var(--color-border-strong)]">&bull;</span>
+          <Link href="/app" className="xbm-link-inline hover:text-[var(--color-text-primary)]">
+            <span>Ringkasan Dasbor (/app)</span>
+          </Link>
+          <span aria-hidden="true" className="text-[var(--color-border-strong)]">&bull;</span>
+          <Link href="/verifikasi/1" className="xbm-link-inline hover:text-[var(--color-text-primary)]">
+            <span>Audit &amp; Segel EAS (/verifikasi)</span>
+          </Link>
+          <span aria-hidden="true" className="text-[var(--color-border-strong)]">&bull;</span>
+          <Link href="/login" className="xbm-link-inline hover:text-[var(--color-text-primary)]">
+            <span>Masuk Akun Demo (/login)</span>
+          </Link>
+        </Reveal>
+
+        {/* 4 Key Metrics Strip */}
+        <div className="mt-12 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 text-left">
+          {HERO_METRICS.map((item, idx) => (
+            <Reveal key={item.id} delay={160 + idx * 60}>
+              <BotanicalCard className="p-5 h-full flex flex-col justify-between">
+                <span className="font-mono text-[0.72rem] uppercase tracking-wider text-[var(--color-text-muted)]">
+                  {item.label}
+                </span>
+                <div className="mt-2.5 flex items-baseline gap-0.5 text-2xl sm:text-3xl font-semibold tracking-tight text-[var(--color-text-primary)]">
+                  {"prefix" in item && item.prefix ? (
+                    <span className="text-[var(--color-accent)]">{item.prefix}</span>
+                  ) : null}
+                  <LiveNumber value={item.value} />
+                  <span className="ml-1 text-sm font-medium text-[var(--color-accent)]">
+                    {item.suffix}
+                  </span>
+                </div>
+                <p className="mt-2 text-xs text-[var(--color-text-secondary)]">
+                  {item.sub}
+                </p>
+              </BotanicalCard>
+            </Reveal>
+          ))}
         </div>
 
-        {/* Two-Tone Botanical Headline */}
-        <h1 className="xb-display text-[clamp(2.4rem,4.8vw,4.4rem)] font-bold tracking-tight text-[var(--ink)] max-w-4xl leading-[1.12] text-balance">
-          Membangun bukti{" "}
-          <span className="text-[var(--forest-800)] underline decoration-[var(--leaf-300)] decoration-wavy decoration-2 underline-offset-4">
-            kondisi hutan
-          </span>
-          ,<br className="hidden sm:inline" /> sebelum menghitung nilai.
-        </h1>
-
-        {/* Supporting Copy */}
-        <p className="mt-5 text-[1rem] sm:text-[1.1rem] text-[var(--ink-muted)] max-w-[58ch] leading-relaxed">
-          ExcbonCP menyatukan citra satelit, sensor di pepohonan, dan izin warga adat
-          ke dalam buku catatan terbuka yang tersegel secara digital di Base Sepolia tanpa perantara.
-        </p>
-
-        {/* Dual CTA Buttons */}
-        <div className="mt-8 flex flex-col sm:flex-row items-center gap-3.5 w-full sm:w-auto">
-          {/* Primary CTA */}
-          <Link
-            href="/app"
-            className="w-full sm:w-auto min-h-[46px] px-7 py-3 rounded-full bg-[var(--forest-800)] text-white hover:bg-[var(--forest-900)] text-[14.5px] font-semibold shadow-xs hover:shadow-md transition-all active:scale-95 inline-flex items-center justify-center gap-2"
-          >
-            <span>Buka Dasbor Pemantauan</span>
-            <ArrowRight className="w-4 h-4" aria-hidden="true" />
-          </Link>
-
-          {/* Secondary CTA */}
-          <Link
-            href="/peta"
-            className="w-full sm:w-auto min-h-[46px] px-6 py-3 rounded-full bg-white text-[var(--ink)] border border-[var(--line)] hover:bg-[var(--surface-soft)] text-[14.5px] font-semibold shadow-xs transition-all active:scale-95 inline-flex items-center justify-center gap-2"
-          >
-            <MapPin className="w-4 h-4 text-[var(--forest-700)]" aria-hidden="true" />
-            <span>Peta Lahan &amp; Telemetri</span>
-          </Link>
-        </div>
-
-        {/* Blueprint Navigation Strip */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-2 text-xs">
-          <Link
-            href="/app"
-            className="px-3.5 py-1.5 rounded-full bg-white border border-[var(--line)] text-[var(--ink)] hover:border-[var(--forest-700)] hover:text-[var(--forest-800)] transition-colors font-medium shadow-xs"
-          >
-            Dasbor Utama (/app)
-          </Link>
-          <Link
-            href="/screener"
-            className="px-3.5 py-1.5 rounded-full bg-white border border-[var(--line)] text-[var(--ink-muted)] hover:border-[var(--forest-700)] hover:text-[var(--forest-800)] transition-colors font-medium shadow-xs"
-          >
-            Screener Karbon (/screener)
-          </Link>
-          <Link
-            href="/peta"
-            className="px-3.5 py-1.5 rounded-full bg-white border border-[var(--line)] text-[var(--ink-muted)] hover:border-[var(--forest-700)] hover:text-[var(--forest-800)] transition-colors font-medium shadow-xs"
-          >
-            Peta Petak Hutan (/peta)
-          </Link>
-          <Link
-            href="/tinjau"
-            className="px-3.5 py-1.5 rounded-full bg-white border border-[var(--line)] text-[var(--ink-muted)] hover:border-[var(--forest-700)] hover:text-[var(--forest-800)] transition-colors font-medium shadow-xs"
-          >
-            Portal Auditor (/tinjau)
-          </Link>
-          <Link
-            href="/login"
-            className="px-3.5 py-1.5 rounded-full bg-white border border-[var(--line)] text-[var(--ink-muted)] hover:border-[var(--forest-700)] hover:text-[var(--forest-800)] transition-colors font-medium shadow-xs"
-          >
-            Halaman Masuk (/login)
-          </Link>
+        <div className="mt-6 flex items-center gap-1.5 text-xs text-[var(--color-text-muted)]">
+          <ShieldCheck className="h-3.5 w-3.5 text-[var(--color-accent-muted)]" aria-hidden="true" />
+          <span>Simulasi sandbox di jaringan uji coba Base Sepolia &bull; Tanpa dompet kripto</span>
         </div>
       </div>
     </section>

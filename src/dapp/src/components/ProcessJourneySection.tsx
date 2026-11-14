@@ -3,143 +3,161 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { BotanicalCard } from "@/components/dapp/BotanicalPrimitives";
+import { Reveal } from "@/components/motion";
+
+const PROCESS_STEPS = [
+  {
+    num: "01",
+    title: "Telemetri Fisik & Satelit",
+    desc: "Sensor di pohon mengukur suhu, kelembapan, dan nyala api tiap 5 detik sementara satelit Sentinel memperbarui kerapatan kanopi.",
+    detail: "Pipa otomasi dMRV berjalan deterministik tanpa intervensi manusia.",
+    actionLabel: "Lihat Indikator Lapangan",
+    href: "/indikator",
+  },
+  {
+    num: "02",
+    title: "Persetujuan Warga Adat (FPIC)",
+    desc: "Komunitas memeriksa batas petak dan memberikan izin tertulis yang sah. Tanpa izin ini, sistem otomatis menahan seluruh unit.",
+    detail: "Status lahan langsung berubah menjadi BLOCKED atau DISPUTE bila izin dicabut.",
+    actionLabel: "Buka Halaman Izin Warga",
+    href: "/izin/PARCEL-A",
+  },
+  {
+    num: "03",
+    title: "Kalkulasi Status & AI Explainer",
+    desc: "Fungsi aturan deterministik menetapkan status kelayakan lahan, lalu asisten AI merangkum bukti ke dalam bahasa yang mudah dipahami.",
+    detail: "Kode yang menentukan angka dan status; AI hanya menjelaskan alasan di baliknya.",
+    actionLabel: "Pantau Umpan Langsung",
+    href: "/langsung",
+  },
+  {
+    num: "04",
+    title: "Audit & Penguncian EAS Sepolia",
+    desc: "Auditor independen meninjau bukti lapangan dan mengunci segel kriptografi SHA-256 ke Ethereum Attestation Service.",
+    detail: "Menghasilkan nomor catatan publik yang bisa diverifikasi ulang di peramban.",
+    actionLabel: "Periksa Segel SHA-256",
+    href: "/verifikasi/1",
+  },
+  {
+    num: "05",
+    title: "Simulasi Pasar & Bagi Hasil 60/40",
+    desc: "Unit terverifikasi masuk ke pasar simulasi dengan pembagian hasil otomatis: 60% untuk kas komunitas adat dan 40% untuk pengelola.",
+    detail: "Jika sensor api menyala, unit karbon seketika dibekukan dari alokasi pasar.",
+    actionLabel: "Buka Screener Pasar",
+    href: "/screener",
+  },
+] as const;
 
 export function ProcessJourneySection() {
   const [activeStep, setActiveStep] = useState<number>(0);
 
-  const steps = [
-    {
-      num: "01",
-      title: "Telemetri Fisik & Satelit",
-      desc: "Sensor di pohon mengukur suhu, kelembapan, dan nyala api tiap 5 detik. Citra satelit Sentinel mengukur kerapatan biomassa secara berkala.",
-      detail: "Proses otomasi dMRV (digital Measurement, Reporting, Verification) berjalan tanpa intervensi manusia.",
-      actionLabel: "Buka Peta & Telemetri",
-      actionHref: "/peta",
-    },
-    {
-      num: "02",
-      title: "Persetujuan Warga Adat",
-      desc: "Komunitas memeriksa peta petak dan memberikan persetujuan tertulis. Tanpa persetujuan ini, sistem menolak penguncian lahan.",
-      detail: "Status lahan otomatis BLOCKED jika izin belum ada, atau DISPUTE jika sengketa dibuka.",
-      actionLabel: "Lihat Izin Warga",
-      actionHref: "/login?role=community",
-    },
-    {
-      num: "03",
-      title: "Kalkulasi Status & AI Explainer",
-      desc: "Fungsi aturan deterministik menentukan kelayakan status (VERIFIED/WARNING/DISPUTE). AI merangkum alasan penjelasan dalam bahasa manusia.",
-      detail: "Kode yang memutuskan status dan angka; AI hanya bertugas menjelaskan alasan kepada pengguna.",
-      actionLabel: "Lihat Indikator Sistem",
-      actionHref: "/indikator",
-    },
-    {
-      num: "04",
-      title: "Audit & Penguncian EAS Sepolia",
-      desc: "Auditor independen meninjau seluruh data bukti. Tombol persetujuan mengunci segel digital SHA-256 ke Ethereum Attestation Service.",
-      detail: "Menghasilkan nomor catatan publik yang dapat diperiksa oleh siapa pun di seluruh dunia.",
-      actionLabel: "Cek Portal Auditor",
-      actionHref: "/tinjau",
-    },
-    {
-      num: "05",
-      title: "Simulasi Pasar & Bagi Hasil",
-      desc: "Unit terverifikasi masuk ke pasar simulasi. Pendapatan otomatis dibagi: 60% untuk kas warga desa adat dan 40% untuk pengelola hutan.",
-      detail: "Jika ada sensor api menyala, unit karbon seketika dibekukan otomatis dari transaksi pasar.",
-      actionLabel: "Buka Screener Pasar",
-      actionHref: "/screener",
-    },
-  ];
-
   return (
-    <section id="proses" className="py-16 sm:py-24 border-t border-[var(--line-subtle)]">
+    <section id="proses" className="section-spacing border-t border-[var(--color-border-subtle)]">
       <div className="page-shell">
-        {/* Intro Section: Two Columns */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-end mb-12 sm:mb-16 pb-8 border-b border-[var(--line-subtle)]">
-          <div>
-            <span className="xb-eyebrow block mb-2">
-              Alur Verifikasi Terbuka
-            </span>
-            <h2 className="xb-display text-[clamp(2.1rem,3.5vw,3.2rem)] font-bold text-[var(--ink)] leading-[1.15] tracking-tight">
-              Dari getaran pohon hingga{" "}
-              <span className="text-[var(--forest-800)]">segel digital</span> di internet.
-            </h2>
-          </div>
-          <div>
-            <p className="text-[1rem] text-[var(--ink-muted)] leading-relaxed">
-              Lima langkah transparan yang memastikan integritas karbon hutan dapat dibuktikan
-              oleh siapa pun tanpa harus mempercayai satu pihak saja.
-            </p>
-          </div>
-        </div>
+        {/* Consistent Section Header: Eyebrow + Title + 1-sentence description */}
+        <Reveal className="max-w-3xl">
+          <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[var(--color-accent)] block mb-2.5">
+            Alur Verifikasi Terbuka
+          </span>
+          <h2 className="text-[clamp(1.95rem,3.4vw,3.1rem)] font-normal leading-[1.15] tracking-tight text-[var(--color-text-primary)]">
+            Dari getaran pohon hingga{" "}
+            <span className="text-[var(--color-accent)]">segel digital</span> di jaringan publik.
+          </h2>
+          <p className="mt-3.5 text-[0.95rem] leading-relaxed text-[var(--color-text-secondary)]">
+            Lima tahapan berurutan yang memastikan integritas karbon hutan dapat dibuktikan
+            secara mandiri oleh siapa pun.
+          </p>
+        </Reveal>
 
-        {/* Process List: Numbered Botanical Rows */}
-        <div className="flex flex-col gap-3">
-          {steps.map((s, index) => {
+        <div className="mt-10 grid grid-cols-1 gap-3.5">
+          {PROCESS_STEPS.map((s, index) => {
             const isActive = activeStep === index;
 
             return (
-              <div
-                key={s.num}
-                onClick={() => setActiveStep(index)}
-                className={`transition-all cursor-pointer rounded-[18px] p-5 sm:p-6 ${
-                  isActive
-                    ? "bg-white border border-[var(--line-strong)] shadow-card"
-                    : "bg-[var(--surface-soft)] border border-[var(--line-subtle)] hover:bg-white hover:border-[var(--line)]"
-                }`}
-              >
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-baseline">
-                  {/* Small Number on Left */}
-                  <div className="md:col-span-2 flex items-center gap-2.5">
-                    <span
-                      className={`xb-numeric inline-flex items-center justify-center w-7 h-7 rounded-full text-[12px] font-bold ${
-                        isActive
-                          ? "bg-[var(--forest-800)] text-white"
-                          : "bg-[var(--leaf-100)] text-[var(--forest-800)]"
-                      }`}
-                    >
-                      {s.num}
-                    </span>
-                    <span className="text-[12.5px] font-semibold text-[var(--ink-dim)] uppercase tracking-wider">
-                      Tahap {s.num}
-                    </span>
-                  </div>
-
-                  {/* Stage Name in Middle */}
-                  <div className="md:col-span-5">
-                    <h3
-                      className={`xb-display text-[1.25rem] sm:text-[1.35rem] font-bold tracking-tight transition-colors ${
-                        isActive ? "text-[var(--forest-800)]" : "text-[var(--ink)]"
-                      }`}
-                    >
-                      {s.title}
-                    </h3>
-                  </div>
-
-                  {/* Description on Right */}
-                  <div className="md:col-span-5 text-[13.5px] text-[var(--ink-muted)] leading-relaxed">
-                    <p>{s.desc}</p>
-
-                    {/* Active Row Expanded Content */}
-                    {isActive && (
-                      <div className="mt-4 pt-3 border-t border-[var(--line-subtle)] space-y-2">
-                        <div className="flex items-center gap-2 text-[var(--ink)] font-medium">
-                          <CheckCircle2 className="w-4 h-4 text-[var(--forest-700)] flex-shrink-0" />
-                          <span>{s.detail}</span>
-                        </div>
-                        <div>
-                          <Link
-                            href={s.actionHref}
-                            className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[var(--forest-800)] hover:underline pt-1"
-                          >
-                            <span>{s.actionLabel}</span>
-                            <ArrowRight className="w-3.5 h-3.5" />
-                          </Link>
-                        </div>
+              <Reveal key={s.num} delay={index * 60}>
+                <div
+                  role="button"
+                  tabIndex={0}
+                  aria-expanded={isActive}
+                  onClick={() => setActiveStep(index)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setActiveStep(index);
+                    }
+                  }}
+                >
+                  <BotanicalCard
+                    interactive
+                    className={`p-5 sm:p-6 ${
+                      isActive
+                        ? "border-[var(--color-accent-line)] bg-[var(--color-surface-raised)]"
+                        : ""
+                    }`}
+                  >
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:items-baseline">
+                      <div className="md:col-span-2 flex items-center gap-2.5 font-mono text-sm">
+                        <span
+                          className={`h-2 w-2 rounded-full ${
+                            isActive
+                              ? "bg-[var(--color-accent)] shadow-[var(--shadow-glow-accent)]"
+                              : "bg-[var(--color-border-strong)]"
+                          }`}
+                        />
+                        <span
+                          className={
+                            isActive
+                              ? "font-bold text-[var(--color-accent)]"
+                              : "text-[var(--color-text-muted)]"
+                          }
+                        >
+                          Tahap {s.num}
+                        </span>
                       </div>
-                    )}
-                  </div>
+
+                      <div className="md:col-span-4">
+                        <h3
+                          className={`text-lg sm:text-xl font-medium tracking-tight ${
+                            isActive
+                              ? "text-[var(--color-accent)]"
+                              : "text-[var(--color-text-primary)]"
+                          }`}
+                        >
+                          {s.title}
+                        </h3>
+                      </div>
+
+                      <div className="md:col-span-6 text-sm leading-relaxed text-[var(--color-text-secondary)]">
+                        <p>{s.desc}</p>
+
+                        {isActive && (
+                          <div className="xbm-content-ready mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--color-border)] pt-3.5 text-xs">
+                            <span className="inline-flex items-center gap-2 text-[var(--color-text-primary)]">
+                              <CheckCircle2
+                                className="h-4 w-4 shrink-0 text-[var(--color-accent)]"
+                                aria-hidden="true"
+                              />
+                              <span>{s.detail}</span>
+                            </span>
+                            <Link
+                              href={s.href}
+                              onClick={(e) => e.stopPropagation()}
+                              className="xbm-link-inline font-semibold text-[var(--color-accent)]"
+                            >
+                              <span>{s.actionLabel}</span>
+                              <ArrowRight
+                                className="xbm-card-icon h-3.5 w-3.5"
+                                aria-hidden="true"
+                              />
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </BotanicalCard>
                 </div>
-              </div>
+              </Reveal>
             );
           })}
         </div>

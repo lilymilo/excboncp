@@ -14,18 +14,20 @@ export interface SegmentedProps<T extends string> {
   value: T;
   onChange: (value: T) => void;
   ariaLabel: string;
+  tone?: "default" | "accent";
   className?: string;
 }
 
 /**
- * Tabs-style control with a thumb that slides between items. Measured with
- * getBoundingClientRect so arbitrary label widths work without layout math.
+ * Tabs-style control with a spring-driven sliding thumb.
+ * Uses transform translate3d for horizontal travel (no layout property transitions).
  */
 export function Segmented<T extends string>({
   options,
   value,
   onChange,
   ariaLabel,
+  tone = "default",
   className,
 }: SegmentedProps<T>) {
   const trackRef = React.useRef<HTMLDivElement>(null);
@@ -53,13 +55,17 @@ export function Segmented<T extends string>({
       ref={trackRef}
       role="tablist"
       aria-label={ariaLabel}
+      data-tone={tone}
       className={cn("xbm-segmented", className)}
     >
       {thumb ? (
         <span
           aria-hidden="true"
           className="xbm-segmented-thumb"
-          style={{ transform: `translateX(${thumb.x}px)`, width: thumb.width }}
+          style={{
+            transform: `translate3d(${thumb.x}px, 0, 0)`,
+            width: thumb.width,
+          }}
         />
       ) : null}
       {options.map((option) => (

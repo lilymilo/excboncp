@@ -1,10 +1,5 @@
-import React, { Suspense } from "react";
-import { ScreenerView } from "@/components/pages/ScreenerView";
+import { redirect } from "next/navigation";
 
 export default function MarketAliasPage() {
-  return (
-    <Suspense fallback={null}>
-      <ScreenerView />
-    </Suspense>
-  );
+  redirect("/screener");
 }

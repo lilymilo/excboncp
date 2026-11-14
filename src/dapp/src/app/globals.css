@@ -1,3 +1,4 @@
+@import "../styles/tokens.css";
 @import "../styles/motion.css";
 
 @tailwind base;
@@ -5,34 +6,8 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
-
-  --color-page: #0d1117;
-  --color-surface: #101610;
-  --color-surface-raised: #161b22;
-  --color-surface-soft: #1f2937;
-  --color-border: #1f2937;
-  --color-border-subtle: #161b22;
-
-  --color-accent: #10b981;
-  --color-accent-hover: #059669;
-  --color-accent-muted: #047857;
-
-  --color-text-primary: #FAF8F5;
-  --color-text-secondary: #FAF8F5;
-  --color-text-muted: #9ca3af;
-  --color-text-on-accent: #0d1117;
-
-  --font-editorial: "Source Serif 4 Variable", Georgia, serif;
-  --font-ui: "Atkinson Hyperlegible Next Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-telemetry: "Atkinson Hyperlegible Mono", ui-monospace, SFMono-Regular, monospace;
-
-  --radius-card: 0.75rem;
-  --radius-panel: 0.5rem;
-  --radius-pill: 9999px;
-
-  --page-max-width: 78rem;
-  --section-space: clamp(5rem, 8vw, 8.5rem);
+  --font-editorial: var(--font-display, "Source Serif 4 Variable", Georgia, serif);
+  --font-telemetry: var(--font-code, "Atkinson Hyperlegible Mono", ui-monospace, SFMono-Regular, monospace);
 }
 
 .font-editorial {
@@ -46,7 +21,6 @@
 .font-telemetry {
   font-family: var(--font-telemetry);
 }
-
 html {
   background: #0d1117;
   scroll-behavior: smooth;
@@ -63,14 +37,29 @@ body {
   overflow-x: hidden;
 }
 
+body:has(.xb-home) {
+  background-color: #153b2f;
+  background-image:
+    linear-gradient(rgba(8, 35, 28, 0.58), rgba(7, 30, 24, 0.72)),
+    url("/backgrounds/rainforest-bg.webp");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+body:has(.xb-home) > div {
+  background: transparent;
+}
+
 .page-shell {
-  width: min(calc(100% - 3rem), var(--page-max-width));
+  width: min(calc(100% - var(--space-12)), var(--page-max-width));
   margin-inline: auto;
 }
 
 @media (max-width: 640px) {
   .page-shell {
-    width: min(calc(100% - 2rem), var(--page-max-width));
+    width: min(calc(100% - var(--space-8)), var(--page-max-width));
   }
 }
 
@@ -86,6 +75,7 @@ body {
   background: #161b22;
   border: 1px solid #1f2937;
   border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
 }
 
 .surface-raised {
@@ -94,42 +84,30 @@ body {
   border-radius: var(--radius-panel);
 }
 
-button, a.button-touch {
-  transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+/* Subtle transitions for buttons and links using canonical motion tokens */
+button,
+a.button-touch {
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    opacity var(--dur-fast) var(--ease-out);
+  touch-action: manipulation;
 }
 
-button:active, a.button-touch:active {
-  transform: scale(0.98);
+button:active:not(:disabled),
+a.button-touch:active {
+  transform: scale(var(--press-scale));
 }
 
 :focus-visible {
-  outline: 2px solid #10b981;
+  outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
 
-:root {
-  --xb-bg: #0d1117;
-  --xb-surface: #161b22;
-  --xb-raised: #1f2937;
-  --xb-soft: #21262d;
-  --xb-line: #30363d;
-  --xb-line-soft: #21262d;
-
-  --xb-text: #FAF8F5;
-  --xb-mute: #8b949e;
-  --xb-dim: #6e7681;
-
-  --xb-forest: #10b981;
-  --xb-forest-dim: #059669;
-  --xb-tech: #60a5fa;
-
-  --xb-verified: #10b981;
-  --xb-warning: #eab308;
-  --xb-blocked: #ef4444;
-  --xb-pending: #60a5fa;
-  --xb-dispute: #f97316;
-}
-
+/* Hairline grid used on terminal panels */
 .xb-grid {
   background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.028) 1px, transparent 1px),
@@ -138,8 +116,8 @@ button:active, a.button-touch:active {
 }
 
 .xb-numeric {
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
 }
 
 .xb-scroll {
@@ -149,11 +127,11 @@ button:active, a.button-touch:active {
 
 .xb-scroll-fade {
   background: linear-gradient(to right, rgba(16, 20, 18, 0) 0%, var(--xb-surface) 76%);
-  transition: opacity 180ms ease;
+  transition: opacity var(--dur-base) var(--ease-out);
 }
 
 .leaflet-container {
-  background: #0A0D0B;
+  background: var(--xb-bg);
   font-family: var(--font-sans);
   outline: none;
 }
@@ -182,9 +160,9 @@ button:active, a.button-touch:active {
 .leaflet-bar,
 .leaflet-control-zoom {
   border: 1px solid var(--xb-line) !important;
-  border-radius: 12px !important;
+  border-radius: var(--radius-sm) !important;
   overflow: hidden;
-  box-shadow: 0 8px 24px -12px rgba(0, 0, 0, 0.9) !important;
+  box-shadow: var(--shadow-card) !important;
 }
 
 .leaflet-bar a,
@@ -208,8 +186,8 @@ button:active, a.button-touch:active {
   background: var(--xb-raised);
   color: var(--xb-text);
   border: 1px solid var(--xb-line);
-  border-radius: 14px;
-  box-shadow: 0 20px 40px -24px rgba(0, 0, 0, 0.95);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-tooltip);
 }
 
 .leaflet-popup-content {
@@ -225,4 +203,82 @@ button:active, a.button-touch:active {
 
 .leaflet-popup-close-button {
   color: var(--xb-mute) !important;
+}
+
+.xb-parcel-tooltip {
+  background: rgba(11, 13, 12, 0.92) !important;
+  border: 1px solid var(--xb-line) !important;
+  border-radius: var(--radius-xs) !important;
+  color: var(--xb-text) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em;
+  padding: 4px 8px !important;
+  box-shadow: none !important;
+}
+
+.xb-parcel-tooltip::before {
+  display: none !important;
+}
+
+@keyframes xb-pulse-ring {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  70% { transform: scale(2.1); opacity: 0; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+.xb-pulse-ring::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-pill);
+  border: 2px solid currentColor;
+  animation: xb-pulse-ring 2.2s var(--ease-out) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xb-pulse-ring::after { animation: none; }
+  html { scroll-behavior: auto; }
+  button, a.button-touch { transition: none; transform: none; }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-page);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-muted);
+}
+
+/* ── App surface: light Forest Paper. Landing keeps the dark terminal palette. ── */
+html:has(.xb-botanical) {
+  background: #eef5ec;
+  color-scheme: light;
+}
+
+body:has(.xb-botanical) {
+  background: #eef5ec;
+  color: #14261a;
+}
+
+body:has(.xb-botanical) ::-webkit-scrollbar-track {
+  background: #eef5ec;
+}
+
+body:has(.xb-botanical) ::-webkit-scrollbar-thumb {
+  background: #c2d4bc;
+}
+
+body:has(.xb-botanical) ::-webkit-scrollbar-thumb:hover {
+  background: #a9c0a4;
+}
+
+body:has(.xb-botanical) :focus-visible {
+  outline-color: #1f5a94;
 }

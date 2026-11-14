@@ -8,7 +8,6 @@ import {
   ArrowRight,
   ArrowUpRight,
   CheckCircle2,
-  ChevronRight,
   Clock,
   FileCheck2,
   FlaskConical,
@@ -23,10 +22,10 @@ import {
   computeRoleNextAction,
   formatWibDateTime,
   formatWibTime,
-  getGreetingWib,
   useDashboardData,
   type CardKey,
 } from "@/lib/dashboard-api";
+import { ROLE_TITLES } from "@/lib/copy";
 import { formatIdr, formatIdrShort, formatNumber } from "@/components/dapp/phantom-ui";
 import { BotanicalRoleBadge } from "@/components/dapp/BotanicalAppShell";
 import { CardStateFrame } from "@/components/ui/CardStateFrame";
@@ -34,7 +33,9 @@ import { HashSeal } from "@/components/dapp/HashSeal";
 import { Mascot } from "@/components/mascot/Mascot";
 import { SimulationRevenueChart } from "@/components/charts/SimulationRevenueChart";
 import { ResultSplitDonut } from "@/components/charts/ResultSplitDonut";
-import { LiveNumber, LiveClock, PulseDot } from "@/components/motion";
+import { LiveNumber, PulseDot } from "@/components/motion";
+import { ExplorerLink } from "@/components/ui/ExplorerLink";
+import { EAS_LIVE, attestationExplorerUrl } from "@/lib/explorer";
 
 function MiniBars({ values }: { values: number[] }) {
   const max = Math.max(...values, 1);
@@ -128,10 +129,15 @@ export function DashboardOverview() {
     role === "recipient" ? "Unit Terpakai Zona" : "Unit Terverifikasi";
   const latestSealHash = verificationRecords[0]?.hash;
 
+  const firstTrendVal = metrics.trend7d[0] ?? 0;
+  const lastTrendVal = metrics.trend7d[metrics.trend7d.length - 1] ?? 0;
+  const unitTrendPct =
+    firstTrendVal > 0 ? Math.round(((lastTrendVal - firstTrendVal) / firstTrendVal) * 100) : null;
+
   const handleCheckSeal = (e: React.FormEvent) => {
     e.preventDefault();
     const target = sealInput.trim() || verificationRecords[0]?.record_id || "VR-001";
-    router.push(`/verify?q=${encodeURIComponent(target)}`);
+    router.push(`/verifikasi/${encodeURIComponent(target)}`);
   };
 
   const statusLegend = [
@@ -142,53 +148,46 @@ export function DashboardOverview() {
   ];
 
   return (
-    <div className="space-y-4">
-      <section className="xb-hero xbm-lift px-5 py-5 sm:px-6 sm:py-6">
+    <div className="space-y-[var(--space-4)]">
+      {/* Compact Hero Status Bar (No duplicated greeting) */}
+      <section className="xb-hero xbm-lift px-5 py-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/illustrations/forest-canopy.jpg"
+          src="/backgrounds/rainforest-bg.webp"
           alt=""
           aria-hidden="true"
           className="xb-hero-media"
         />
-        <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <div className="relative flex flex-col gap-3.5 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0">
             <p className="xb-eyebrow">
-              {isGuest ? "Mode tamu · simulasi testnet" : "Simulasi testnet · MRV hutan"}
+              {isGuest
+                ? "Mode tamu · Simulasi testnet"
+                : `${ROLE_TITLES[role].label} · Simulasi testnet`}
             </p>
-            <h1 className="xb-hero-title mt-2">
-              {getGreetingWib().greeting}, {displayName}
+            <h1 className="xb-display mt-1 line-clamp-2 text-[17.5px] font-bold tracking-[-0.015em] text-[var(--ink)] sm:text-[19px]">
+              {nextAction.description}
             </h1>
-            <p className="xb-hero-sub">{nextAction.description}</p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex shrink-0 flex-wrap items-center gap-2.5">
             <span className="xb-chip">
               <PulseDot className="text-[var(--forest-700)]" label="Data tersegel" />
               Data tersegel
             </span>
-            <span
-              className="xb-numeric hidden items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] px-3.5 py-2 text-[13px] font-semibold text-[var(--ink-muted)] md:inline-flex"
-              aria-label="Jam WIB"
-            >
-              <LiveClock />
-            </span>
-            <Link
-              href={nextAction.href}
-              className="xb-hero-cta transition-transform duration-150 hover:scale-[1.02] active:scale-95"
-            >
+            <Link href={nextAction.href} className="xb-hero-cta">
               <span>{nextAction.label}</span>
-              <ArrowRight className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+              <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
             </Link>
           </div>
         </div>
       </section>
 
-      <div className="flex flex-col items-start gap-4 xl:flex-row">
-        <div className="w-full min-w-0 flex-1 space-y-4">
+      <div className="flex flex-col items-stretch gap-[var(--space-4)] xl:flex-row xl:items-start">
+        <div className="w-full min-w-0 flex-1 space-y-[var(--space-4)]">
           <section
             aria-label="Indikator utama hutan dan verifikasi"
-            className="grid grid-cols-2 items-stretch gap-3 min-[1400px]:grid-cols-4"
+            className="grid grid-cols-2 items-stretch gap-[var(--space-3)] min-[1400px]:grid-cols-4"
           >
             {/* Unit terverifikasi */}
             <div className="xb-kpi xbm-lift">
@@ -199,12 +198,12 @@ export function DashboardOverview() {
                 skeletonHeight="h-24"
               >
                 <Link
-                  href={role === "recipient" ? "/portfolio" : "/market"}
+                  href={role === "recipient" ? "/rekap/harian" : "/screener"}
                   className="xb-kpi-body flex h-full flex-col justify-between"
                 >
                   <div className="xb-kpi-label">
                     <Leaf className="h-4 w-4 shrink-0 text-[var(--forest-700)]" aria-hidden="true" />
-                    <span className="truncate">{primaryUnitsTitle}</span>
+                    <span>{primaryUnitsTitle}</span>
                   </div>
                   <div className="mt-3 flex items-end justify-between gap-2">
                     <div>
@@ -212,14 +211,15 @@ export function DashboardOverview() {
                         <LiveNumber
                           value={primaryUnitsValue}
                           format={(v) => formatNumber(Math.round(v))}
-                          durationMs={650}
                         />
                         <span className="xb-kpi-unit">tCO2e</span>
                       </p>
-                      <p className="xb-numeric mt-2 inline-flex items-center gap-1 whitespace-nowrap text-[12px] font-semibold text-[var(--status-verified-ink)]">
-                        <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                        +12%
-                      </p>
+                      {unitTrendPct !== null && (
+                        <p className="xb-numeric mt-2 inline-flex items-center gap-1 whitespace-nowrap text-[12px] font-semibold text-[var(--status-verified-ink)]">
+                          <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                          {unitTrendPct >= 0 ? `+${unitTrendPct}%` : `${unitTrendPct}%`} (7h)
+                        </p>
+                      )}
                     </div>
                     <div className="shrink-0">
                       <MiniBars values={metrics.trend7d} />
@@ -237,10 +237,10 @@ export function DashboardOverview() {
                 emptyMessage="Belum ada lahan terdaftar."
                 skeletonHeight="h-24"
               >
-                <Link href="/map" className="xb-kpi-body flex h-full flex-col justify-between">
+                <Link href="/peta" className="xb-kpi-body flex h-full flex-col justify-between">
                   <div className="xb-kpi-label">
                     <Users className="h-4 w-4 shrink-0 text-[var(--forest-700)]" aria-hidden="true" />
-                    <span className="truncate">Status Lahan</span>
+                    <span>Status Lahan</span>
                   </div>
                   <p className="xb-kpi-value mt-3">
                     <LiveNumber value={parcels.length} format={(v) => String(Math.round(v))} />
@@ -275,10 +275,10 @@ export function DashboardOverview() {
                 emptyMessage="Masuk akun peran untuk melihat alokasi."
                 skeletonHeight="h-24"
               >
-                <Link href="/portfolio" className="xb-kpi-body flex h-full flex-col justify-between">
+                <Link href="/rekap/harian" className="xb-kpi-body flex h-full flex-col justify-between">
                   <div className="xb-kpi-label">
                     <Sprout className="h-4 w-4 shrink-0 text-[var(--forest-700)]" aria-hidden="true" />
-                    <span className="truncate">Bagian Komunitas</span>
+                    <span>Bagian Komunitas</span>
                   </div>
                   <p
                     title={formatIdr(metrics.totalCommunityToday)}
@@ -305,9 +305,9 @@ export function DashboardOverview() {
                 emptyMessage="Belum ada catatan latensi."
                 skeletonHeight="h-24"
               >
-                <Link href="/verify" className="xb-kpi-body flex h-full flex-col justify-between">
+                <Link href="/verifikasi/1" className="xb-kpi-body flex h-full flex-col justify-between">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[13px] font-semibold leading-tight">Dari Data ke Status</span>
+                    <span className="text-[13px] font-semibold leading-tight">Latensi Status</span>
                     <Clock className="h-4 w-4 shrink-0 opacity-70" aria-hidden="true" />
                   </div>
                   <div className="mt-3 flex items-end justify-between gap-2">
@@ -332,7 +332,7 @@ export function DashboardOverview() {
             </div>
           </section>
 
-          <section className="xb-card p-5 sm:p-6">
+          <section className="xb-card p-5">
             <CardStateFrame
               state={getCardState("chartRevenue", !isGuest && series.points.length > 0)}
               onRetry={() => retryCard("chartRevenue")}
@@ -355,7 +355,7 @@ export function DashboardOverview() {
             </CardStateFrame>
           </section>
 
-          <section className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+          <section className="grid grid-cols-1 gap-[var(--space-4)] xl:grid-cols-2">
             {/* Rantai segel */}
             <div className="xb-card flex flex-col p-5">
               <CardStateFrame
@@ -370,7 +370,7 @@ export function DashboardOverview() {
                       <ShieldCheck className="h-[18px] w-[18px] text-[var(--seal-600)]" aria-hidden="true" />
                       Rantai Segel
                     </h2>
-                    <Link href="/verify" className="xb-link-quiet">
+                    <Link href="/verifikasi/1" className="xb-link-quiet">
                       <span>Lihat semua</span>
                       <ArrowRight className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                     </Link>
@@ -382,7 +382,7 @@ export function DashboardOverview() {
                       return (
                         <Link
                           key={rec.record_id}
-                          href={`/verify?q=${encodeURIComponent(rec.record_id)}`}
+                          href={`/verifikasi/${encodeURIComponent(String(rec.block_index))}`}
                           className="xb-row relative flex items-center justify-between gap-2.5 p-2"
                         >
                           <span
@@ -445,7 +445,7 @@ export function DashboardOverview() {
                       <FileCheck2 className="h-[18px] w-[18px] text-[var(--forest-700)]" aria-hidden="true" />
                       Transaksi Terakhir
                     </h2>
-                    <Link href="/activity" className="xb-link-quiet">
+                    <Link href="/langsung" className="xb-link-quiet">
                       <span>Lihat semua</span>
                       <ArrowRight className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                     </Link>
@@ -454,14 +454,8 @@ export function DashboardOverview() {
                   <div className="mt-2 divide-y divide-[var(--line-subtle)]">
                     {recentTrades.map((tx) => {
                       const isFlashing = flashedTxIds.includes(tx.tx_id);
-                      const cleanParcel = tx.parcel_id.toUpperCase();
-                      const routeLabel = cleanParcel.includes("A")
-                        ? "Lahan A → Zona 1"
-                        : cleanParcel.includes("B")
-                        ? "Lahan B → Zona 2"
-                        : cleanParcel.includes("C")
-                        ? "Lahan C → Zona 1"
-                        : `${tx.parcel_id} → Zona 1`;
+                      const parcelLabel =
+                        parcels.find((p) => p.id === tx.parcel_id)?.name ?? tx.parcel_id;
 
                       return (
                         <div
@@ -476,7 +470,7 @@ export function DashboardOverview() {
                             </span>
                             <div className="min-w-0 flex-1">
                               <p className="truncate text-[13px] font-semibold text-[var(--ink)]">
-                                {routeLabel}
+                                {parcelLabel}
                               </p>
                               <p className="xb-numeric whitespace-nowrap text-[11.5px] text-[var(--ink-muted)]">
                                 +{tx.volume_tco2e} tCO2e · {formatWibTime(tx.timestamp)}
@@ -506,7 +500,7 @@ export function DashboardOverview() {
 
         <aside
           aria-label="Pembagian hasil, kartu peran, dan cek keaslian"
-          className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:w-[320px] xl:shrink-0 xl:grid-cols-1 2xl:w-[348px]"
+          className="grid w-full grid-cols-1 gap-[var(--space-4)] md:grid-cols-2 xl:flex xl:w-[320px] xl:shrink-0 xl:flex-col xl:justify-start 2xl:w-[348px]"
         >
           <div className="xb-card p-5">
             <CardStateFrame
@@ -520,6 +514,10 @@ export function DashboardOverview() {
                   <PieChart className="h-[18px] w-[18px] text-[var(--forest-700)]" aria-hidden="true" />
                   Pembagian Hasil
                 </h2>
+                <Link href="/rekap/harian" className="xb-link-quiet">
+                  <span>Rekap</span>
+                  <ArrowRight className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                </Link>
               </div>
               <ResultSplitDonut
                 communityIdr={metrics.activeSettle.community_idr}
@@ -541,19 +539,16 @@ export function DashboardOverview() {
                   <ShieldCheck className="h-[18px] w-[18px] text-[var(--seal-600)]" aria-hidden="true" />
                   Kartu Saya
                 </h2>
-                <Link
-                  href="/portfolio"
-                  aria-label="Buka ringkasan akun dan bagian hasil"
-                  className="grid h-9 w-9 place-items-center rounded-xl text-[var(--ink-muted)] hover:bg-[var(--surface-soft)] hover:text-[var(--ink)]"
-                >
-                  <ChevronRight className="h-5 w-5" />
+                <Link href="/akun" className="xb-link-quiet">
+                  <span>Akun</span>
+                  <ArrowRight className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                 </Link>
               </div>
 
               <div className="mt-4 flex items-center gap-3.5">
                 <Mascot
                   variant="avatar"
-                  size={60}
+                  size={56}
                   alt="Avatar maskot orangutan pengguna EXBON CP"
                 />
                 <div className="min-w-0">
@@ -563,7 +558,7 @@ export function DashboardOverview() {
                   <div className="mt-1 flex flex-wrap items-center gap-1.5">
                     <BotanicalRoleBadge role={role} />
                   </div>
-                  <p className="mt-1 truncate text-[13.5px] text-[var(--ink-muted)]">
+                  <p className="mt-1 truncate text-[13px] text-[var(--ink-muted)]">
                     {roleCardStats.linkedLabel}
                   </p>
                 </div>
@@ -594,7 +589,7 @@ export function DashboardOverview() {
                           {stat.value}
                         </p>
                       </div>
-                      <p className="mt-1 truncate text-[13px] text-[var(--ink-muted)]">{stat.label}</p>
+                      <p className="mt-1 truncate text-[12.5px] text-[var(--ink-muted)]">{stat.label}</p>
                     </div>
                   );
                 })}
@@ -614,6 +609,10 @@ export function DashboardOverview() {
                   <Lock className="h-[18px] w-[18px] text-[var(--seal-600)]" aria-hidden="true" />
                   Cek Keaslian
                 </h2>
+                <Link href="/verifikasi/1" className="xb-link-quiet">
+                  <span>Pemeriksa</span>
+                  <ArrowRight className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                </Link>
               </div>
 
               <form onSubmit={handleCheckSeal} className="mt-3.5 flex gap-2">
@@ -626,17 +625,17 @@ export function DashboardOverview() {
                   value={sealInput}
                   onChange={(e) => setSealInput(e.target.value)}
                   placeholder="Nomor segel..."
-                  className="xb-mono min-h-[44px] min-w-0 flex-1 rounded-xl border border-[var(--line)] bg-[var(--surface-sunken)] px-3 text-[13.5px] text-[var(--ink)] placeholder:text-[var(--ink-dim)] focus:border-[var(--seal-600)] focus:bg-[var(--surface)] focus:outline-none"
+                  className="xb-mono min-h-[42px] min-w-0 flex-1 rounded-xl border border-[var(--line)] bg-[var(--surface-sunken)] px-3 text-[13.5px] text-[var(--ink)] placeholder:text-[var(--ink-dim)] focus:border-[var(--seal-600)] focus:bg-[var(--surface)] focus:outline-none"
                 />
                 <button
                   type="submit"
-                  className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-xl bg-[var(--forest-800)] px-4 text-[14px] font-semibold text-white hover:bg-[var(--forest-900)]"
+                  className="inline-flex min-h-[42px] shrink-0 items-center justify-center rounded-xl bg-[var(--forest-800)] px-4 text-[14px] font-semibold text-white hover:bg-[var(--forest-900)]"
                 >
                   Periksa
                 </button>
               </form>
 
-              <div className="mt-4 flex items-center gap-3 rounded-2xl border border-[var(--seal-line)] bg-[var(--seal-100)] p-3">
+              <div className="mt-3.5 flex items-center gap-3 rounded-2xl border border-[var(--seal-line)] bg-[var(--seal-100)] p-3">
                 <HashSeal
                   hash={
                     verificationRecords.find(
@@ -651,13 +650,25 @@ export function DashboardOverview() {
                       ? sealInput.trim()
                       : latestSealHash)
                   }
-                  size={52}
+                  size={48}
                   className="shrink-0"
                 />
                 <p className="text-[13px] leading-snug text-[var(--ink)]">
-                  Ubah satu huruf, segelnya berubah total.
+                  Ubah satu huruf, segel berubah total.
                 </p>
               </div>
+
+              {EAS_LIVE && verificationRecords[0]?.eas_uid ? (
+                <ExplorerLink
+                  href={attestationExplorerUrl(verificationRecords[0].eas_uid)}
+                  label="Segel terakhir di Base Sepolia"
+                  className="mt-2"
+                />
+              ) : (
+                <p className="mt-2 text-[12px] leading-relaxed text-[var(--ink-muted)]">
+                  EAS masih simulasi. Tautan explorer aktif setelah attestation on-chain.
+                </p>
+              )}
             </CardStateFrame>
           </div>
         </aside>

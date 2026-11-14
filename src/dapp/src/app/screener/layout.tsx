@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Screener Lahan & Unit",
-  description: "Pantau ketersediaan unit serapan karbon, nilai simulasi, dan status segel tiap lahan.",
+  title: "Pasar Karbon — Screener Ekosistem",
+  description:
+    "Screener pasar karbon lintas ekosistem: jatah tersedia, market cap simulasi, dan segel audit per lahan.",
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

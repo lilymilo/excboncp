@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -52,6 +52,9 @@ import { buildReportSummary } from "@/lib/exbon-api";
 import { formatWibTime } from "@/lib/dashboard-helpers";
 import { formatIdr, formatNumber } from "@/components/dapp/phantom-ui";
 import { LiveNumber } from "@/components/motion";
+import { Pagination } from "@/components/ui/Pagination";
+
+const TX_PAGE_SIZE = 10;
 
 function DeltaIndicator({ current, prev }: { current: number; prev: number | null }) {
   if (prev === null || prev === 0) {
@@ -95,7 +98,8 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
   const role = normalizeUserRole(user?.role, user?.email);
   const periodKey: ReportPeriodKey = normalizePeriodKey(initialPeriod);
   const [showAllTx, setShowAllTx] = useState(false);
-  const [txPageLimit, setTxPageLimit] = useState(50);
+  const [txPage, setTxPage] = useState(1);
+  useEffect(() => setTxPage(1), [periodKey, dateParam]);
 
   const report = useMemo(
     () =>
@@ -120,6 +124,12 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
       ),
     [report.buckets]
   );
+  const totalTxPages = Math.max(1, Math.ceil(report.transactions.length / TX_PAGE_SIZE));
+  const safeTxPage = Math.min(txPage, totalTxPages);
+  const visibleTransactions = report.transactions.slice((safeTxPage - 1) * TX_PAGE_SIZE, safeTxPage * TX_PAGE_SIZE);
+  useEffect(() => {
+    if (txPage > totalTxPages) setTxPage(totalTxPages);
+  }, [txPage, totalTxPages]);
 
   if (role === "guest") {
     return (
@@ -631,7 +641,7 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[var(--line)]">
-                      {report.transactions.slice(0, txPageLimit).map((tx) => (
+                      {visibleTransactions.map((tx) => (
                         <tr key={tx.id}>
                           <td className="xb-numeric px-4 py-3 text-[var(--ink-muted)]">
                             {formatWibTime(tx.ts)}
@@ -655,7 +665,7 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                 </div>
 
                 <div className="divide-y divide-[var(--line)] md:hidden">
-                  {report.transactions.slice(0, txPageLimit).map((tx) => (
+                  {visibleTransactions.map((tx) => (
                     <div key={tx.id} className="p-4 text-[14px]">
                       <div className="flex items-center justify-between gap-2">
                         <span className="font-semibold text-[var(--ink)]">
@@ -675,17 +685,7 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
                   ))}
                 </div>
 
-                {report.transactions.length > txPageLimit && (
-                  <div className="border-t border-[var(--line)] p-4 text-center">
-                    <button
-                      type="button"
-                      onClick={() => setTxPageLimit((n) => n + 50)}
-                      className="inline-flex min-h-[44px] items-center rounded-full border border-[var(--line)] bg-[var(--surface-soft)] px-5 text-[14.5px] font-semibold text-[var(--ink)] hover:bg-[var(--leaf-100)]"
-                    >
-                      Muat lagi
-                    </button>
-                  </div>
-                )}
+                <Pagination page={safeTxPage} pageSize={TX_PAGE_SIZE} totalItems={report.transactions.length} onPageChange={setTxPage} label="Halaman rincian transaksi" className="m-4" />
               </div>
             )}
           </BotanicalCard>
@@ -694,4 +694,3 @@ export function RekapView({ initialPeriod }: { initialPeriod?: string }) {
     </BotanicalAppShell>
   );
 }
-

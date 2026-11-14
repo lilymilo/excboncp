@@ -28,6 +28,7 @@ from typing import Any
 import aiosqlite
 
 from ai_pipeline.rules_engine import explain_status
+from server.config import settings
 from server.market.service import calculate_co2e
 
 logger = logging.getLogger("excboncp.ledger")
@@ -340,8 +341,10 @@ async def verify_block(db: aiosqlite.Connection, block_index: int) -> dict[str, 
             "TIDAK COCOK — ada entri ledger sebelumnya yang tidak valid "
             f"(block {chain['first_invalid_block']})."
         )
-    elif block["eas_uid"]:
+    elif block["eas_uid"] and not settings.EVM_SIMULATION_MODE:
         message = "COCOK — entri sudah dikunci ke EAS."
+    elif block["eas_uid"]:
+        message = "COCOK — hash dan tautan blok sesuai. EAS masih simulasi."
     else:
         message = "Cocok dengan ledger, belum dikunci ke EAS."
 

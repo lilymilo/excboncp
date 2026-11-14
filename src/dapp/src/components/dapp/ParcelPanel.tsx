@@ -201,9 +201,9 @@ export function ParcelPanel({
             </div>
 
             <div className="flex flex-wrap gap-2 pt-2">
-              <Link href="/market" className={buttonClass("lavender", "flex-1 rounded-full")}>
+              <Link href="/screener" className={buttonClass("lavender", "flex-1 rounded-full")}>
                 <Leaf className="h-4 w-4" aria-hidden="true" />
-                Buka di Carbon Market
+                Buka di Screener Pasar
                 <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link href="/consent" className={buttonClass("secondary", "rounded-full")}>

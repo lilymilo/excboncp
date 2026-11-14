@@ -1,0 +1,15 @@
+.git
+**/node_modules
+**/.next
+**/__pycache__
+**/*.pyc
+data
+graphify-out
+docs
+tests
+public
+src/dapp
+src/ai
+src/satellite
+src/firmware
+*.log

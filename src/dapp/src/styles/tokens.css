@@ -1,5 +1,171 @@
-/* Soft Botanical design tokens scoped to .xb-botanical.
-   Preserves landing (/), /login, /register, and non-DApp routes untouched. */
+/* Single source of truth for ExcbonCP design tokens.
+   Covers shared spacing, radius, shadow scales, dark terminal palette (:root),
+   and light Forest Paper palette (.xb-botanical). No ad-hoc values in components. */
+
+:root {
+  color-scheme: dark;
+
+  /* 1. Unified Spacing Scale */
+  --space-1: 0.25rem;   /* 4px */
+  --space-1-5: 0.375rem;/* 6px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-2-5: 0.625rem;/* 10px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-3-5: 0.875rem;/* 14px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-7: 1.75rem;   /* 28px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-14: 3.5rem;   /* 56px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+
+  --page-max-width: 78rem;
+  --section-space: clamp(4.5rem, 7vw, 7.5rem);
+  --section-space-tight: clamp(3rem, 5vw, 5rem);
+
+  /* 2. Unified Radius Scale */
+  --radius-xs: 0.5rem;    /* 8px */
+  --radius-sm: 0.75rem;   /* 12px */
+  --radius-md: 0.875rem;  /* 14px */
+  --radius-lg: 1rem;      /* 16px */
+  --radius-xl: 1.25rem;   /* 20px */
+  --radius-2xl: 1.5rem;   /* 24px */
+  --radius-pill: 999px;
+
+  --radius-panel: var(--radius-md);
+  --radius-card: var(--radius-xl);
+
+  /* 3. Unified Palette — Dark Lime & Institutional Terminal (Landing & Full-Screen Catalog) */
+  --color-page: #0B100C;
+  --color-surface: #101610;
+  --color-surface-raised: #171C16;
+  --color-surface-soft: #1D231B;
+  --color-border: #252D22;
+  --color-border-strong: #64753E;
+  --color-border-subtle: #1B211A;
+
+  --color-accent: #AEDA2D;
+  --color-accent-hover: #BCEB3B;
+  --color-accent-muted: #64753E;
+  --color-accent-tint: rgba(174, 218, 45, 0.12);
+  --color-accent-line: rgba(174, 218, 45, 0.35);
+
+  --color-text-primary: #F0F2EC;
+  --color-text-secondary: #A8AFA2;
+  --color-text-muted: #747D70;
+  --color-text-on-accent: #11160B;
+
+  /* Terminal aliases */
+  --xb-bg: #0B0D0C;
+  --xb-surface: #101412;
+  --xb-raised: #161B18;
+  --xb-soft: #1C231F;
+  --xb-line: #242C27;
+  --xb-line-soft: #1A211D;
+
+  --xb-text: #EDF2EE;
+  --xb-mute: #8A968F;
+  --xb-dim: #5E6A63;
+
+  --xb-forest: #3DD68C;
+  --xb-forest-dim: #2A9A64;
+  --xb-tech: #82B7D9;
+
+  --xb-verified: #3DD68C;
+  --xb-warning: #E8B33C;
+  --xb-blocked: #EF5D6B;
+  --xb-pending: #82B7D9;
+  --xb-dispute: #E8863C;
+
+  /* Semantic tokens mapped in dark context so BotanicalCard & primitives adapt seamlessly */
+  --canvas: var(--color-page);
+  --canvas-mid: var(--color-surface);
+  --canvas-tint: var(--color-surface-raised);
+  --surface: var(--color-surface);
+  --surface-soft: var(--color-surface-raised);
+  --surface-muted: var(--color-surface-soft);
+  --surface-raised: var(--color-surface-raised);
+  --surface-elevated: var(--color-surface-soft);
+  --surface-sunken: #0B0D0C;
+  --surface-deep: #143520;
+  --on-deep: #F0F2EC;
+  --on-deep-muted: #A8AFA2;
+  --deep-line: rgba(255, 255, 255, 0.12);
+
+  --line: var(--color-border);
+  --line-strong: var(--color-border-strong);
+  --line-subtle: var(--color-border-subtle);
+
+  --ink: var(--color-text-primary);
+  --ink-muted: var(--color-text-secondary);
+  --ink-dim: var(--color-text-muted);
+
+  --leaf-300: #8fcb97;
+  --leaf-100: rgba(174, 218, 45, 0.14);
+  --forest-700: #2e6b3f;
+  --forest-800: #1f4d2e;
+  --forest-900: #143520;
+  --seal-600: #82B7D9;
+  --seal-700: #1f5a94;
+  --seal-100: rgba(130, 183, 217, 0.14);
+  --seal-200: rgba(130, 183, 217, 0.24);
+  --seal-line: rgba(130, 183, 217, 0.35);
+  --focus: var(--color-accent);
+
+  --status-verified-ink: #AEDA2D;
+  --status-verified-bg: rgba(174, 218, 45, 0.12);
+  --status-verified-line: rgba(174, 218, 45, 0.36);
+  --status-warning-ink: #E8B33C;
+  --status-warning-bg: rgba(232, 179, 60, 0.14);
+  --status-warning-line: rgba(232, 179, 60, 0.38);
+  --status-dispute-ink: #E8863C;
+  --status-dispute-bg: rgba(232, 134, 60, 0.14);
+  --status-dispute-line: rgba(232, 134, 60, 0.38);
+  --status-blocked-ink: #EF5D6B;
+  --status-blocked-bg: rgba(239, 93, 107, 0.14);
+  --status-blocked-line: rgba(239, 93, 107, 0.38);
+
+  /* Ecosystem semantic aliases (mapped strictly to existing palette) */
+  --leaf-primary: var(--status-verified-ink);
+  --forest-deep: var(--status-verified-bg);
+  --forest-line: var(--status-verified-line);
+  --warning-text: var(--status-warning-ink);
+  --warning-bg: var(--status-warning-bg);
+  --warning-line: var(--status-warning-line);
+  --seal-blue-text: var(--seal-600);
+  --seal-blue-bg: var(--seal-100);
+  --seal-blue-line: var(--seal-line);
+
+  --selection-bg: rgba(174, 218, 45, 0.24);
+  --skeleton-bg: #171C16;
+  --skeleton-sheen: rgba(174, 218, 45, 0.08);
+  --overlay-scrim: rgba(11, 16, 12, 0.68);
+
+  /* 4. Unified Shadow Scale (Dark Default) */
+  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-card: 0 10px 30px -14px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --shadow-hover: 0 18px 42px -14px rgba(0, 0, 0, 0.82), 0 0 24px rgba(174, 218, 45, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --shadow-elevated: 0 24px 64px -20px rgba(0, 0, 0, 0.9);
+  --shadow-tooltip: 0 14px 32px -10px rgba(0, 0, 0, 0.85);
+  --shadow-button-rest: 0 4px 16px -4px rgba(174, 218, 45, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  --shadow-button-hover: 0 10px 28px -4px rgba(174, 218, 45, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  --shadow-glow-accent: 0 0 28px rgba(174, 218, 45, 0.28);
+  --shadow-glow-warning: 0 0 24px rgba(232, 179, 60, 0.28);
+  --shadow-glow-danger: 0 0 24px rgba(239, 93, 107, 0.28);
+
+  /* 5. Typography Stacks */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Source Serif 4 Variable", Georgia, serif;
+  --font-ui: "Atkinson Hyperlegible Next Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-code: "Atkinson Hyperlegible Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Soft Botanical design tokens scoped to .xb-botanical */
 .xb-botanical {
   color-scheme: light;
 
@@ -50,6 +216,17 @@
   --status-blocked-bg: #fde3e1;
   --status-blocked-line: #f0b4ae;
 
+  /* Ecosystem semantic aliases (mapped strictly to existing palette) */
+  --leaf-primary: var(--forest-700);
+  --forest-deep: var(--leaf-100);
+  --forest-line: var(--status-verified-line);
+  --warning-text: var(--status-warning-ink);
+  --warning-bg: var(--status-warning-bg);
+  --warning-line: var(--status-warning-line);
+  --seal-blue-text: var(--seal-600);
+  --seal-blue-bg: var(--seal-100);
+  --seal-blue-line: var(--seal-line);
+
   /* Market & telemetry chart tokens */
   --chart-line: #245e35;
   --chart-line-active: #1f4d2e;
@@ -59,11 +236,16 @@
   --chart-grid: #e4efe1;
 
   /* Elevation & interaction helpers */
+  --shadow-xs: 0 1px 3px rgba(20, 38, 26, 0.06);
   --shadow-card: 0 2px 12px rgba(20, 38, 26, 0.04);
-  --shadow-hover: 0 8px 24px rgba(31, 77, 46, 0.07);
+  --shadow-hover: 0 10px 26px rgba(31, 77, 46, 0.09);
+  --shadow-elevated: 0 24px 64px -24px rgba(20, 38, 26, 0.28);
   --shadow-tooltip: 0 10px 28px rgba(20, 38, 26, 0.1);
+  --shadow-button-rest: 0 3px 10px rgba(31, 77, 46, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  --shadow-button-hover: 0 8px 20px rgba(31, 77, 46, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.28);
   --selection-bg: #cde8d2;
   --skeleton-bg: #e3ede0;
+  --skeleton-sheen: rgba(255, 255, 255, 0.55);
   --overlay-scrim: rgba(20, 38, 26, 0.4);
 
   /* Sunken wells (inputs, tab tracks) and the one deep panel allowed per screen */
@@ -78,11 +260,4 @@
   --chart-2: #1f5a94;
   --chart-3: #8fcb97;
   --chart-4: #b98a2a;
-
-  /* Typography families */
-  --font-display: "Source Serif 4 Variable", Georgia, serif;
-  --font-ui: "Atkinson Hyperlegible Next Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-code: "Atkinson Hyperlegible Mono", ui-monospace, SFMono-Regular, monospace;
 }
-
-

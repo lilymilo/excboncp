@@ -3,6 +3,7 @@
 
 services:
   server:
+    image: excboncp-server
     build:
       context: .
       dockerfile: docker/Dockerfile.server
@@ -19,6 +20,27 @@ services:
       timeout: 5s
       start_period: 10s
       retries: 3
+    restart: unless-stopped
+    networks:
+      - excboncp-network
+
+  sensor-worker:
+    image: excboncp-server
+    container_name: excboncp-sensor-worker
+    command: ["python", "-m", "server.sensor.mqtt_worker"]
+    env_file:
+      - .env
+    environment:
+      MQTT_BROKER: "${MQTT_BROKER:-broker.emqx.io}"
+      MQTT_PORT: "${MQTT_PORT:-1883}"
+      MQTT_TOPIC_FILTER: "CbonCP/#"
+    volumes:
+      - excboncp-data:/app/data
+    depends_on:
+      server:
+        condition: service_healthy
+    healthcheck:
+      disable: true
     restart: unless-stopped
     networks:
       - excboncp-network

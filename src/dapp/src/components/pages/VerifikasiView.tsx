@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
@@ -25,9 +25,40 @@ import {
   SimulasiBadge,
 } from "@/components/dapp/BotanicalPrimitives";
 import { HashSeal } from "@/components/dapp/HashSeal";
+import { ExplorerLink } from "@/components/ui/ExplorerLink";
+import { Pagination } from "@/components/ui/Pagination";
+import { EAS_LIVE, attestationExplorerUrl, txExplorerUrl } from "@/lib/explorer";
 import { useDashboardState } from "@/components/dapp/useDashboardStore";
 import { formatWibDateTime } from "@/lib/dashboard-helpers";
-import { lookupVerificationRecord, type VerifyLookupResult } from "@/lib/exbon-api";
+import { lookupVerificationRecord, sha256HexBrowser, type VerifyLookupResult } from "@/lib/exbon-api";
+
+const BLOCK_PAGE_SIZE = 5;
+
+const VERIFY_STEPS = [
+  {
+    number: "1",
+    title: "Pilih catatan",
+    detail: "Gunakan contoh blok, atau masukkan nomor blok / awalan hash.",
+  },
+  {
+    number: "2",
+    title: "Bandingkan hash",
+    detail: "Hash tersimpan harus sama dengan hash hitung ulang SHA-256.",
+  },
+  {
+    number: "3",
+    title: "Uji perubahan",
+    detail: "Ubah satu nilai pada salinan data; hash tidak lagi cocok.",
+  },
+] as const;
+
+type StatusTone =
+  | "pending"
+  | "not_found"
+  | "tampered"
+  | "broken_link"
+  | "verified_local"
+  | "verified_eas";
 
 function shortHash(value?: string | null): string {
   if (!value) return "-";
@@ -40,6 +71,8 @@ export function VerifikasiView({ initialQueryId }: { initialQueryId?: string }) 
   const stateParam = searchParams.get("state");
   const queryFromUrl = searchParams.get("id") ?? searchParams.get("q");
   const { parcels, sensors, verificationRecords, isLoading } = useDashboardState();
+  const sensorsRef = useRef(sensors);
+  sensorsRef.current = sensors;
 
   const defaultQuery =
     initialQueryId?.trim() ||
@@ -51,35 +84,38 @@ export function VerifikasiView({ initialQueryId }: { initialQueryId?: string }) 
   const [tamperEditorText, setTamperEditorText] = useState("");
   const [isTamperDirty, setIsTamperDirty] = useState(false);
   const [result, setResult] = useState<VerifyLookupResult | null>(null);
+  const [originalResult, setOriginalResult] = useState<VerifyLookupResult | null>(null);
   const [lookupBusy, setLookupBusy] = useState(true);
   const [copiedField, setCopiedField] = useState<"hash" | "recomputed" | "link" | null>(null);
   const [retryKey, setRetryKey] = useState(0);
+  const [blockPage, setBlockPage] = useState(1);
 
   useEffect(() => {
-    const nextDefault =
-      initialQueryId?.trim() ||
-      queryFromUrl?.trim() ||
-      String(verificationRecords[0]?.block_index ?? 1247);
+    const nextDefault = initialQueryId?.trim() || queryFromUrl?.trim();
+    if (!nextDefault) return;
+    if (activeQuery === nextDefault && inputQuery === nextDefault) return;
     setInputQuery(nextDefault);
     setActiveQuery(nextDefault);
     setIsTamperDirty(false);
-  }, [initialQueryId, queryFromUrl, verificationRecords]);
+  }, [initialQueryId, queryFromUrl]);
 
   useEffect(() => {
     let cancelled = false;
     setLookupBusy(true);
 
-    lookupVerificationRecord({
+    const runLookup = () => lookupVerificationRecord({
       queryId: activeQuery,
       verificationRecords,
       parcels,
-      sensors,
-      tamperTestJson: isTamperDirty ? tamperEditorText : undefined,
-    })
+      sensors: sensorsRef.current,
+    });
+    const updateResult = () => runLookup()
       .then((res) => {
         if (cancelled) return;
         setResult(res);
-        if (!isTamperDirty && res.found) {
+        setOriginalResult(res);
+        setIsTamperDirty(false);
+        if (res.found) {
           setTamperEditorText(JSON.stringify(res.payload, null, 2));
         }
         setLookupBusy(false);
@@ -87,11 +123,53 @@ export function VerifikasiView({ initialQueryId }: { initialQueryId?: string }) 
       .catch(() => {
         if (!cancelled) setLookupBusy(false);
       });
+    void updateResult();
 
     return () => {
       cancelled = true;
     };
-  }, [activeQuery, verificationRecords, parcels, sensors, isTamperDirty, tamperEditorText, retryKey]);
+  }, [activeQuery, verificationRecords, parcels, retryKey]);
+
+  useEffect(() => {
+    if (!isTamperDirty || !originalResult?.found) return;
+    let cancelled = false;
+    const timer = window.setTimeout(async () => {
+      let payload = originalResult.payload;
+      let canonical = true;
+      let serialized = tamperEditorText;
+      const sortKeys = (value: unknown): unknown => {
+        if (Array.isArray(value)) return value.map(sortKeys);
+        if (value && typeof value === "object") {
+          const entries = value as Record<string, unknown>;
+          return Object.fromEntries(Object.keys(entries).sort().map((key) => [key, sortKeys(entries[key])]));
+        }
+        return value;
+      };
+      try {
+        payload = JSON.parse(tamperEditorText);
+        serialized = JSON.stringify(sortKeys(payload));
+      } catch {
+        canonical = false;
+      }
+      const hash = await sha256HexBrowser(`${originalResult.prev_hash}${serialized}`);
+      if (cancelled) return;
+      const matches = canonical && Boolean(hash) && hash === originalResult.hash;
+      setResult({
+        ...originalResult,
+        payload,
+        canonical,
+        recomputed_hash: hash,
+        hash_matches: matches,
+        valid: matches && originalResult.link_matches,
+        chain_valid: matches && originalResult.link_matches,
+        message: !canonical ? "Format JSON tidak valid." : matches ? originalResult.message : "Isi salinan berubah. Hash hitung ulang tidak cocok dengan hash tersimpan.",
+      });
+    }, 250);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [isTamperDirty, tamperEditorText, originalResult]);
 
   const pageState: "loading" | "empty" | "error" | "ready" =
     stateParam === "loading" || (isLoading && !result)
@@ -101,6 +179,24 @@ export function VerifikasiView({ initialQueryId }: { initialQueryId?: string }) 
       : stateParam === "empty"
       ? "empty"
       : "ready";
+
+  const totalBlockPages = Math.max(1, Math.ceil(verificationRecords.length / BLOCK_PAGE_SIZE));
+  const safeBlockPage = Math.min(blockPage, totalBlockPages);
+  const visibleBlocks = verificationRecords.slice(
+    (safeBlockPage - 1) * BLOCK_PAGE_SIZE,
+    safeBlockPage * BLOCK_PAGE_SIZE
+  );
+
+  useEffect(() => {
+    const index = verificationRecords.findIndex(
+      (item) => String(item.block_index) === activeQuery.trim()
+    );
+    if (index >= 0) setBlockPage(Math.floor(index / BLOCK_PAGE_SIZE) + 1);
+  }, [activeQuery, verificationRecords]);
+
+  useEffect(() => {
+    if (blockPage > totalBlockPages) setBlockPage(totalBlockPages);
+  }, [blockPage, totalBlockPages]);
 
   const copyValue = async (text: string, tag: "hash" | "recomputed" | "link") => {
     if (typeof navigator !== "undefined" && navigator.clipboard && text) {
@@ -125,18 +221,20 @@ export function VerifikasiView({ initialQueryId }: { initialQueryId?: string }) 
 
   const resetTamperTest = () => {
     setIsTamperDirty(false);
-    if (result?.found && result.payload) {
-      setTamperEditorText(JSON.stringify(result.payload, null, 2));
+    if (originalResult?.found) {
+      setResult(originalResult);
+      setTamperEditorText(JSON.stringify(originalResult.payload, null, 2));
     }
   };
 
-  const statusTone = useMemo(() => {
+  const statusTone = useMemo<StatusTone>(() => {
     if (!result) return "pending";
     if (!result.found) return "not_found";
-    if (!result.valid || !result.hash_matches || !result.canonical) return "tampered";
-    if (result.eas_uid) return "verified_eas";
+    if (!result.hash_matches || !result.canonical) return "tampered";
+    if (!result.link_matches) return "broken_link";
+    if (EAS_LIVE && result.eas_uid && /^0x[0-9a-f]{64}$/i.test(result.eas_uid)) return "verified_eas";
     return "verified_local";
-  }, [result]);
+  }, [EAS_LIVE, result]);
 
   const shareUrl =
     typeof window !== "undefined"
@@ -148,7 +246,7 @@ export function VerifikasiView({ initialQueryId }: { initialQueryId?: string }) 
       <div className="space-y-4">
         <BotanicalPageHeader
           title="Verifikasi Segel & Rantai Hash"
-          description="Pemeriksa keaslian terbuka untuk publik. Hitung ulang hash SHA-256 catatan laporan secara langsung dan uji apa yang terjadi bila satu karakter diubah."
+          description="Pemeriksa keaslian terbuka untuk publik. Hitung ulang hash SHA-256, bandingkan dengan hash tersimpan, dan uji perubahan satu karakter. EAS masih simulasi dan belum on-chain."
           actions={
             <div className="flex flex-wrap items-center gap-2">
               <LiveTelemetryPill label="Rantai SHA-256 Aktif" />
@@ -189,8 +287,8 @@ export function VerifikasiView({ initialQueryId }: { initialQueryId?: string }) 
             </form>
 
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              <span className="text-[13px] font-medium text-[var(--ink-muted)]">Contoh cepat:</span>
-              {verificationRecords.map((rec) => (
+              <span className="text-[13px] font-medium text-[var(--ink-muted)]">Contoh terbaru:</span>
+              {verificationRecords.slice(0, 6).map((rec) => (
                 <button
                   key={rec.record_id}
                   type="button"
@@ -219,12 +317,49 @@ export function VerifikasiView({ initialQueryId }: { initialQueryId?: string }) 
             </div>
           </BotanicalCard>
 
-          {result && !lookupBusy && (
+          <BotanicalCard className="p-4 sm:p-5">
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              <div>
+                <h2 className="xb-display text-[17px] font-bold text-[var(--ink)]">
+                  Cara verifikasi dalam 3 langkah
+                </h2>
+                <p className="mt-0.5 text-[13px] leading-relaxed text-[var(--ink-muted)]">
+                  Catatan diambil dari server atau dataset demo. Uji perubahan salinan berjalan di peramban.
+                </p>
+              </div>
+              <span className="rounded-full border border-[var(--line)] bg-[var(--surface-soft)] px-3 py-1 text-[12px] font-semibold text-[var(--ink-muted)]">
+                Demo lokal + server
+              </span>
+            </div>
+            <ol className="mt-3 grid gap-2 sm:grid-cols-3">
+              {VERIFY_STEPS.map((step) => (
+                <li
+                  key={step.number}
+                  className="flex gap-2.5 rounded-2xl border border-[var(--line)] bg-[var(--surface-soft)] p-3"
+                >
+                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[var(--seal-100)] text-[12px] font-bold text-[var(--seal-700)]">
+                    {step.number}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-bold text-[var(--ink)]">{step.title}</p>
+                    <p className="mt-0.5 text-[12.5px] leading-relaxed text-[var(--ink-muted)]">
+                      {step.detail}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </BotanicalCard>
+
+          {lookupBusy && <p role="status" className="text-[13px] text-[var(--ink-muted)]">Memeriksa catatan…</p>}
+          {result && (
             <>
               <BotanicalCard className="p-5">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                    {statusTone === "tampered" || statusTone === "not_found" ? (
+                    {statusTone === "tampered" ||
+                    statusTone === "not_found" ||
+                    statusTone === "broken_link" ? (
                       <div className="grid h-18 w-18 shrink-0 place-items-center rounded-2xl border border-[var(--status-blocked-line)] bg-[var(--status-blocked-bg)] text-[var(--status-blocked-ink)]">
                         <ShieldAlert className="h-8 w-8" aria-hidden="true" />
                       </div>
@@ -237,19 +372,25 @@ export function VerifikasiView({ initialQueryId }: { initialQueryId?: string }) 
                         {statusTone === "verified_eas" && (
                           <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--seal-100)] px-3 py-0.5 text-[12.5px] font-semibold text-[var(--seal-700)]">
                             <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
-                            <span>Terverifikasi di Rantai & EAS Base Sepolia</span>
+                            <span>Terverifikasi di EAS testnet</span>
                           </span>
                         )}
                         {statusTone === "verified_local" && (
                           <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--status-warning-bg)] px-3 py-0.5 text-[12.5px] font-semibold text-[var(--status-warning-ink)]">
                             <FlaskConical className="h-3.5 w-3.5" aria-hidden="true" />
-                            <span>Hash cocok di lokal, menunggu penguncian EAS</span>
+                            <span>Hash cocok · EAS simulasi</span>
                           </span>
                         )}
                         {statusTone === "tampered" && (
                           <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--status-blocked-bg)] px-3 py-0.5 text-[12.5px] font-semibold text-[var(--status-blocked-ink)]">
                             <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" />
                             <span>Tidak valid / Isi telah berubah</span>
+                          </span>
+                        )}
+                        {statusTone === "broken_link" && (
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--status-blocked-bg)] px-3 py-0.5 text-[12.5px] font-semibold text-[var(--status-blocked-ink)]">
+                            <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" />
+                            <span>Tautan blok sebelumnya putus</span>
                           </span>
                         )}
                         {statusTone === "not_found" && (
@@ -259,22 +400,33 @@ export function VerifikasiView({ initialQueryId }: { initialQueryId?: string }) 
                           </span>
                         )}
                         {result.found && (
-                          <span className="xb-mono text-[13px] font-semibold text-[var(--ink-muted)]">
-                            Blok #{result.block_index} · {result.parcel_id}
-                          </span>
+                          <>
+                            <span className="xb-mono text-[13px] font-semibold text-[var(--ink-muted)]">
+                              Blok #{result.block_index} · {result.parcel_id}
+                            </span>
+                            <span className="rounded-full border border-[var(--line)] bg-[var(--surface-soft)] px-2.5 py-0.5 text-[11.5px] font-semibold text-[var(--ink-muted)]">
+                              {result.source === "server" ? "Server ledger" : "Demo lokal"}
+                            </span>
+                          </>
                         )}
                       </div>
 
                       <h2 className="xb-display mt-1.5 text-[19.5px] font-bold text-[var(--ink)]">
                         {statusTone === "verified_eas"
-                          ? "Segel Utuh dan Terkunci"
+                          ? "Hash cocok dan tercatat di EAS"
                           : statusTone === "verified_local"
-                          ? "Segel Lokal Valid (Menunggu EAS)"
+                          ? "Hash Cocok, EAS Belum On-Chain"
                           : statusTone === "tampered"
                           ? "Hash Berubah, Segel Tidak Cocok"
+                          : statusTone === "broken_link"
+                          ? "Rantai Tidak Tersambung"
                           : "Nomor atau Hash Tidak Ada di Rantai"}
                       </h2>
-                      <p className="mt-0.5 text-[14px] leading-relaxed text-[var(--ink-muted)]">{result.message}</p>
+                      <p className="mt-0.5 text-[14px] leading-relaxed text-[var(--ink-muted)]">
+                        {result.source === "server" && result.valid && !EAS_LIVE
+                          ? "Hash dan tautan blok cocok. EAS masih simulasi dan belum on-chain."
+                          : result.message}
+                      </p>
                     </div>
                   </div>
 
@@ -383,17 +535,50 @@ export function VerifikasiView({ initialQueryId }: { initialQueryId?: string }) 
                       </p>
                     </div>
                     <div className="rounded-xl border border-[var(--line)] bg-[var(--surface-soft)] p-3">
-                      <p className="text-[12.5px] text-[var(--ink-muted)]">EAS UID (Testnet)</p>
+                      <p className="text-[12.5px] text-[var(--ink-muted)]">
+                        EAS UID {EAS_LIVE ? "(testnet)" : "(simulasi)"}
+                      </p>
                       <p className="xb-mono mt-0.5 truncate text-[13px] font-semibold text-[var(--seal-700)]">
                         {result.eas_uid ? shortHash(result.eas_uid) : "Belum terkunci"}
                       </p>
+                        {EAS_LIVE && result.eas_uid && /^0x[0-9a-f]{64}$/i.test(result.eas_uid) ? (
+                        <ExplorerLink
+                          href={attestationExplorerUrl(result.eas_uid)}
+                          label="Attestation"
+                          className="mt-0.5"
+                        />
+                      ) : (
+                        <p className="mt-0.5 text-[11.5px] font-medium text-[var(--ink-muted)]">
+                          Belum on-chain · data demo
+                        </p>
+                      )}
                     </div>
                     <div className="rounded-xl border border-[var(--line)] bg-[var(--surface-soft)] p-3">
                       <p className="text-[12.5px] text-[var(--ink-muted)]">Waktu pencatatan</p>
                       <p className="mt-0.5 text-[13px] font-semibold text-[var(--ink)]">
-                        {result.timestamp ? `${formatWibDateTime(result.timestamp)} WIB` : "-"}
+                        {result.timestamp ? formatWibDateTime(result.timestamp) : "-"}
                       </p>
                     </div>
+                  </div>
+                )}
+                {result.found && (
+                  <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-[var(--line-subtle)] pt-2.5">
+                    {EAS_LIVE && result.eas_uid && /^0x[0-9a-f]{64}$/i.test(result.eas_uid) && (
+                      <ExplorerLink
+                        href={attestationExplorerUrl(result.eas_uid)}
+                        label="Cek attestation EAS"
+                      />
+                    )}
+                    {EAS_LIVE && result.tx_hash && /^0x[0-9a-f]{64}$/i.test(result.tx_hash) && (
+                      <ExplorerLink href={txExplorerUrl(result.tx_hash)} label="Cek transaksi" />
+                    )}
+                    <span className="inline-flex items-center gap-1.5 text-[12px] text-[var(--ink-muted)]">
+                      <ShieldCheck className="h-3.5 w-3.5 text-[var(--seal-600)]" aria-hidden="true" />
+                      EAS masih simulasi; attestation on-chain hanya dibuat setelah EVM diaktifkan.
+                    </span>
+                    <Link href="/bantuan" className="text-[12px] font-semibold text-[var(--seal-700)] hover:underline">
+                      Panduan EAS
+                    </Link>
                   </div>
                 )}
               </BotanicalCard>
@@ -405,11 +590,10 @@ export function VerifikasiView({ initialQueryId }: { initialQueryId?: string }) 
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div>
                           <h2 className="xb-display text-[18px] font-bold text-[var(--ink)]">
-                            Ubah 1 huruf, segel langsung berbeda
+                            Uji perubahan salinan data
                           </h2>
                           <p className="mt-0.5 text-[13.5px] text-[var(--ink-muted)]">
-                            Sunting isi data JSON di bawah ini untuk membuktikan bahwa perubahan kecil
-                            akan menghasilkan hash SHA-256 yang sama sekali berbeda.
+                            Editor ini mengubah salinan payload lokal, bukan catatan sumber di server atau ledger.
                           </p>
                         </div>
                         {isTamperDirty && (
@@ -424,6 +608,22 @@ export function VerifikasiView({ initialQueryId }: { initialQueryId?: string }) 
                         )}
                       </div>
 
+                      <button
+                        type="button"
+                        disabled={lookupBusy || !originalResult?.found}
+                        onClick={() => {
+                          if (!originalResult) return;
+                          const payload = { ...originalResult.payload };
+                          const numericKey = Object.keys(payload).find((key) => typeof payload[key] === "number");
+                          if (numericKey) payload[numericKey] = Number(payload[numericKey]) + 1;
+                          else payload.parcel_id = `${payload.parcel_id ?? "PARCEL"}-uji`;
+                          setTamperEditorText(JSON.stringify(payload, null, 2));
+                          setIsTamperDirty(true);
+                        }}
+                        className="xbm-pressable mt-3 inline-flex min-h-[44px] items-center justify-center rounded-full border border-[var(--seal-line)] bg-[var(--seal-100)] px-4 text-[13px] font-semibold text-[var(--seal-700)] transition hover:bg-[var(--surface-soft)] disabled:opacity-50"
+                      >
+                        Ubah satu nilai contoh
+                      </button>
                       <textarea
                         aria-label="Editor uji perubahan isi segel JSON"
                         rows={7}
@@ -446,10 +646,10 @@ export function VerifikasiView({ initialQueryId }: { initialQueryId?: string }) 
                         Daftar Blok Rantai Segel
                       </h2>
                       <p className="mt-0.5 text-[13.5px] text-[var(--ink-muted)]">
-                        Pilih entri lain untuk memverifikasi tautan antar blok.
+                        Pilih entri lain untuk memverifikasi tautan antar blok. EAS masih simulasi.
                       </p>
                       <div className="mt-3 space-y-2">
-                        {verificationRecords.map((item) => {
+                        {visibleBlocks.map((item) => {
                           const itemStatus = item.tampered
                             ? {
                                 label: "Bermasalah",
@@ -457,7 +657,7 @@ export function VerifikasiView({ initialQueryId }: { initialQueryId?: string }) 
                               }
                             : item.eas_uid
                             ? {
-                                label: "EAS Terkunci",
+                                label: "Hash valid",
                                 cls: "bg-[var(--seal-100)] text-[var(--seal-700)]",
                               }
                             : {
@@ -492,6 +692,15 @@ export function VerifikasiView({ initialQueryId }: { initialQueryId?: string }) 
                           );
                         })}
                       </div>
+
+                      <Pagination
+                        page={safeBlockPage}
+                        pageSize={BLOCK_PAGE_SIZE}
+                        totalItems={verificationRecords.length}
+                        onPageChange={setBlockPage}
+                        label="Navigasi daftar blok segel"
+                        className="mt-3"
+                      />
                     </div>
 
                     <div className="mt-3 border-t border-[var(--line)] pt-3">

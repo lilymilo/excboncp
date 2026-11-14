@@ -398,8 +398,31 @@ def test_verify_endpoint_reports_tampering(ledger_client: Any) -> None:
     assert data["message"].startswith("TIDAK COCOK")
 
 
-def test_verify_endpoint_mentions_eas_lock(ledger_client: Any) -> None:
-    """Anchored blocks tell the verifier that EAS anchoring exists."""
+def test_verify_endpoint_marks_simulated_eas_anchor(ledger_client: Any) -> None:
+    """A simulated anchor is reported as an off-chain EAS preview."""
+    client, db_path = ledger_client
+    _insert_http_ledger_block(db_path, eas_uid="0x-attestation-uid")
+
+    response = client.get("/verify/1")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["valid"] is True
+    assert data["eas_uid"] == "0x-attestation-uid"
+    assert data["message"] == "COCOK — hash dan tautan blok sesuai. EAS masih simulasi."
+
+
+def test_verify_endpoint_mentions_live_eas_lock(
+    ledger_client: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Anchored blocks report a real EAS lock once simulation mode is off."""
+    from server.ledger import service as ledger_service
+
+    monkeypatch.setattr(
+        ledger_service,
+        "settings",
+        replace(ledger_service.settings, EVM_SIMULATION_MODE=False),
+    )
     client, db_path = ledger_client
     _insert_http_ledger_block(db_path, eas_uid="0x-attestation-uid")
 
