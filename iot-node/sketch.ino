@@ -12,6 +12,14 @@
 // 0: Wokwi cloud simulation, 1: physical ESP32 on Wi-Fi.
 #define USE_PHYSICAL_HARDWARE 1
 
+// 0: Suhu stabil 26.5 C (DHT22 fisik rusak/konslet agar tidak ada noise acak)
+// 1: Baca sensor fisik DHT22 (hanya aktifkan jika modul sudah diganti sehat)
+#define USE_PHYSICAL_DHT22    0
+
+// 0: Sensor tanah tidak ditancapkan (kunci 0.0%, abaikan noise kabel)
+// 1: Sensor tanah aktif fisik (otomatis 0.0% dan diam jika tidak tertancap di tanah basah)
+#define USE_PHYSICAL_SOIL     1
+
 // --- GANTI INI SEBELUM UPLOAD ---
 const char* WIFI_SSID     = "GANTI_DENGAN_SSID_WIFI_ANDA";
 const char* WIFI_PASSWORD = "GANTI_DENGAN_PASSWORD_WIFI_ANDA";
@@ -45,13 +53,15 @@ WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 DHT dht(PIN_DHT, DHTTYPE);
 
-float lastSoilMoisture = -999.0;
+float lastSoilMoisture  = 0.0;
 // Bogor: rata-rata suhu udara 26-28°C, lebih sejuk dari Jakarta karena ketinggian 190-330m
-float lastTemp         = 26.5;
-bool  lastFlame        = false;
+float lastTemp          = 26.5;
+bool  lastFlame         = false;
+int   lastFireLevel     = 0;
+bool  initialBootLogged = false;
 
-const float SOIL_THRESHOLD = 1.0;
-const float TEMP_THRESHOLD = 0.5;
+const float SOIL_THRESHOLD = 5.0; // Perubahan tanah minimal 5% baru trigger update
+const float TEMP_THRESHOLD = 1.0;
 
 unsigned long lastSampleTime    = 0;
 unsigned long lastHeartbeatTime = 0;
@@ -185,9 +195,16 @@ String computeSignature(const char* data, const char* secret) {
 }
 
 int computeFireLevel(float temp, bool flame, float soil) {
-  if (flame || temp >= 65.0) return 3;
-  if (temp >= 55.0 || (temp >= 48.0 && soil < 20.0)) return 2;
-  if (temp >= 42.0 || (temp >= 35.0 && soil < 50.0)) return 1;
+  // Level 3 (BAHAYA): Panas ekstrem kebakaran (>= 60C) atau api berkelanjutan dengan panas tinggi (>= 55C)
+  if (temp >= 60.0 || (flame && temp >= 55.0)) return 3;
+
+  // Level 2 (SIAGA): Api terus menyala dan suhu memanas (>= 42C), atau kondisi pre-fire
+  if ((flame && temp >= 42.0) || temp >= 50.0 || (temp >= 45.0 && soil < 25.0)) return 2;
+
+  // Level 1 (WASPADA): Deteksi awal nyala api atau cuaca panas terik tanah mengering
+  if (flame || temp >= 38.0 || (temp >= 34.0 && soil < 45.0)) return 1;
+
+  // Level 0 (NORMAL): Kondisi ambien normal dan aman
   return 0;
 }
 
@@ -200,27 +217,30 @@ const char* getFireStatus(int level) {
   }
 }
 
-// Suhu baseline Taman Koin IPB Dramaga, Bogor: ~26.5°C (ketinggian 250m, lembap tropis)
+// Suhu baseline Taman Koin IPB Dramaga, Bogor: stabil di 26.5°C
+// Suhu hanya berubah/naik saat ada api, dan mendingin perlahan saat api padam
 float simulateTemperature(float prev, bool flameActive) {
+  const float BASELINE_TEMP = 26.5;
+
   if (flameActive) {
-    float next = prev + 2.0;  // naik 2°C per sample saat api aktif
-    return next > 70.0 ? 70.0 : next;
+    // Saat ada api, suhu naik bertahap (+3.5°C per sample) menuju suhu kebakaran (maksimal 68.0°C)
+    float next = prev + 3.5;
+    return next > 68.0 ? 68.0 : next;
   }
-  // Drift kembali ke baseline Bogor 26.5°C
-  float baseline = 26.5;
-  float drift = (prev > baseline + 0.5) ? -0.3 : (prev < baseline - 0.5) ? 0.3 : 0.0;
-  float jitter = (random(0, 60) - 30) / 100.0;
-  float next = prev + drift + jitter;
-  if (next < 24.0) next = 24.0;
-  if (next > 30.5) next = 30.5;
-  return next;
+
+  // Saat api padam, suhu mendingin perlahan (-2.0°C per sample) kembali ke baseline 26.5°C
+  if (prev > BASELINE_TEMP) {
+    float next = prev - 2.0;
+    return next < BASELINE_TEMP ? BASELINE_TEMP : next;
+  }
+
+  // Kondisi normal tanpa api: suhu tetap konstan di baseline (tidak berputar/cycle acak)
+  return BASELINE_TEMP;
 }
 
-// Simulasi kelembapan dinamis: invers longgar dari suhu, rentang 60–80%
+// Kelembapan deterministik stabil mengikuti suhu: 26.5°C -> ~83.2%
 float simulateHumidity(float temp) {
   float hum = 85.0 - (temp - 25.0) * 1.2;
-  float jitter = (random(0, 40) - 20) / 100.0;
-  hum += jitter;
   if (hum < 60.0) hum = 60.0;
   if (hum > 85.0) hum = 85.0;
   return hum;
@@ -328,6 +348,13 @@ void setup() {
   mqttClient.setBufferSize(1024);
 }
 
+// Verifikasi ganda pembacaan pin flame (debounce 20ms) agar kedipan lampu ruangan tidak memicu alarm
+bool isFlameConfirmed() {
+  if (digitalRead(PIN_FLAME) != LOW) return false;
+  delay(20);
+  return (digitalRead(PIN_FLAME) == LOW);
+}
+
 void loop() {
   unsigned long now = millis();
 
@@ -349,42 +376,62 @@ void loop() {
     mqttClient.loop();
   }
 
-  bool currentFlame = (digitalRead(PIN_FLAME) == LOW);
-  if (currentFlame) {
-    currentFireLevel = 3;
-  } else if (currentFireLevel == 3 && lastTemp < 65.0) {
-    currentFireLevel = computeFireLevel(lastTemp > 0 ? lastTemp : 25.0, false, lastSoilMoisture > 0 ? lastSoilMoisture : 50.0);
-  }
+  bool currentFlame = isFlameConfirmed();
+  bool flameChanged = (currentFlame != lastFlame);
 
-  // Update buzzer setelah fire level terkonfirmasi dari pembacaan flame sensor
+  // Jalankan buzzer update terus-menerus non-blocking (bunyi saat Level 3 / BAHAYA)
   updateBuzzer(currentFireLevel == 3);
 
-  if (now - lastSampleTime >= 2000) {
+  // Evaluasi tiap 2000ms ATAU seketika saat status nyala api berubah
+  if ((now - lastSampleTime >= 2000) || flameChanged) {
     lastSampleTime = now;
-    int rawSoil = analogRead(PIN_SOIL);
-    // Sensor kapasitif/resistif fisik: ADC tinggi = kering (0%), ADC rendah = basah (100%)
-    // Rentang kalibrasi default: 2800 (kering udara) – 1200 (air).
-    // Jika hasil masih 0% saat di tanah basah, turunkan nilai DRY_ADC ke nilai rawSoil saat di udara.
-    const int DRY_ADC = 2800;
-    const int WET_ADC = 1200;
-    float soilMoisture = ((float)(DRY_ADC - rawSoil) / (DRY_ADC - WET_ADC)) * 100.0;
-    if (soilMoisture < 0.0)   soilMoisture = 0.0;
-    if (soilMoisture > 100.0) soilMoisture = 100.0;
+    float soilMoisture = 0.0;
+    int rawSoil = 2800;
+
+#if USE_PHYSICAL_SOIL
+    // Averaging 8x pembacaan ADC untuk meredam jitter noise bawaan ESP32
+    long sumSoil = 0;
+    for (int i = 0; i < 8; i++) {
+      sumSoil += analogRead(PIN_SOIL);
+      delay(2);
+    }
+    rawSoil = (int)(sumSoil / 8);
+
+    // Jika sensor di udara bebas / belum ditancapkan ke tanah basah (ADC >= 2500),
+    // kunci kelembapan di 0.0% agar tidak ada fluktuasi acak yang memicu loop output.
+    const int AIR_THRESHOLD_ADC = 2500;
+    const int WET_ADC           = 1200;
+
+    if (rawSoil < AIR_THRESHOLD_ADC && rawSoil > 200) {
+      soilMoisture = ((float)(AIR_THRESHOLD_ADC - rawSoil) / (AIR_THRESHOLD_ADC - WET_ADC)) * 100.0;
+      if (soilMoisture > 100.0) soilMoisture = 100.0;
+    } else {
+      soilMoisture = 0.0; // Tidak ditancapkan: tetap 0.0%
+    }
+#endif
+
+#if USE_PHYSICAL_DHT22
     float rawSuhu = dht.readTemperature();
     float rawHum  = dht.readHumidity();
-
     bool dhtOk = !isnan(rawSuhu) && !isnan(rawHum);
     float suhu = dhtOk ? rawSuhu : simulateTemperature(lastTemp, currentFlame);
     float hum  = dhtOk ? rawHum  : simulateHumidity(suhu);
+#else
+    // DHT22 fisik rusak/konslet: langsung pakai suhu stabil tanpa membaca pin yang glitch
+    float suhu = simulateTemperature(lastTemp, currentFlame);
+    float hum  = simulateHumidity(suhu);
+#endif
 
     currentFireLevel = computeFireLevel(suhu, currentFlame, soilMoisture);
+    updateBuzzer(currentFireLevel == 3);
 
     bool soilChanged  = fabs(soilMoisture - lastSoilMoisture) >= SOIL_THRESHOLD;
     bool tempChanged  = fabs(suhu - lastTemp) >= TEMP_THRESHOLD;
-    bool flameChanged = currentFlame != lastFlame;
+    bool levelChanged = (currentFireLevel != lastFireLevel);
     bool heartbeat    = (now - lastHeartbeatTime >= 60000);
 
-    if (soilChanged || tempChanged || flameChanged || heartbeat) {
+    if (!initialBootLogged || soilChanged || tempChanged || flameChanged || levelChanged || heartbeat) {
+      initialBootLogged = true;
       int flamePinVal = digitalRead(PIN_FLAME);
       Serial.printf("[SENSOR] Suhu: %.1f C | Tanah: %.1f %% (ADC:%d) | Api: %s (Pin%d:%d) | Level: %d (%s) | Buzzer: %s | WiFi: %s\n",
                     suhu,
@@ -400,6 +447,7 @@ void loop() {
       lastSoilMoisture = soilMoisture;
       lastTemp = suhu;
       lastFlame = currentFlame;
+      lastFireLevel = currentFireLevel;
       lastHeartbeatTime = now;
     }
   }
