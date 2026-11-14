@@ -28,8 +28,8 @@ export function EarthGlobe() {
       />
 
       {/* 3D Globe from @aceternity/3d-globe-demo */}
-      <div className="relative w-full h-full flex items-center justify-center">
-        <Globe3DDemo className="w-full h-full min-h-[500px] max-h-[85vh]" />
+      <div className="relative w-full h-full flex items-center justify-center pointer-events-auto">
+        <Globe3DDemo className="w-full h-full min-h-[500px] max-h-[85vh] pointer-events-auto cursor-grab active:cursor-grabbing" />
 
         {/* Interaction Hint */}
         <div

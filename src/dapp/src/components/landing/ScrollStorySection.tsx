@@ -62,7 +62,7 @@ export function ScrollStorySection() {
           {/* Chapter 0: Interactive Earth Globe */}
           <ChapterEarthLayer scrollYProgress={scrollYProgress} />
 
-          {/* Chapters 1-5: photographic keyframes */}
+          {/* Chapters 1-5: photographic keyframes (pure visual, never intercepts mouse events) */}
           {STORY_CHAPTERS.slice(1).map((ch, i) => (
             <StoryLayer
               key={ch.id}
@@ -73,16 +73,16 @@ export function ScrollStorySection() {
             />
           ))}
 
-          {/* Top atmospheric gradient — only for navbar readability */}
+          {/* Top atmospheric gradient — enhances navbar contrast */}
           <div
             aria-hidden="true"
-            className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-black/55 to-transparent z-20 pointer-events-none"
+            className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-[#010409]/80 via-[#010409]/40 to-transparent z-20 pointer-events-none"
           />
 
-          {/* Bottom gradient ramp — lifts narrative ribbon off visual */}
+          {/* Bottom gradient ramp — gives strong contrast backing to narrative text */}
           <div
             aria-hidden="true"
-            className="absolute bottom-0 inset-x-0 h-52 bg-gradient-to-t from-black/85 via-black/50 to-transparent z-20 pointer-events-none"
+            className="absolute bottom-0 inset-x-0 h-64 bg-gradient-to-t from-[#010409]/95 via-[#010409]/65 to-transparent z-20 pointer-events-none"
           />
         </div>
 
@@ -95,22 +95,14 @@ export function ScrollStorySection() {
           />
         ))}
 
-        {/* ── Top HUD strip ────────────────────────────────────────── */}
-        <div className="absolute top-0 inset-x-0 z-30 pt-20 sm:pt-24 px-5 sm:px-10 flex items-center justify-between pointer-events-none">
-          {/* Scene counter badge */}
-          <div className="pointer-events-auto inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 border border-white/12 backdrop-blur-md text-[0.7rem] font-mono text-[#AEDA2D] shadow-lg">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#AEDA2D] animate-ping" />
-            <span className="font-semibold tracking-wider">
-              SCENE {activeChapterIndex + 1} / {STORY_CHAPTERS.length}
-            </span>
-          </div>
-
+        {/* ── Top HUD strip (Audio toggle & Skip button only — Scene tags removed) ── */}
+        <div className="absolute top-0 inset-x-0 z-30 pt-20 sm:pt-24 px-5 sm:px-10 flex items-center justify-end pointer-events-none">
           <div className="pointer-events-auto flex items-center gap-2.5">
             {/* Audio toggle */}
             <button
               onClick={() => setIsAudioMuted(!isAudioMuted)}
               title={isAudioMuted ? "Bunyikan Ambiance Rimba" : "Bisukan Ambiance"}
-              className="p-2 rounded-full bg-black/60 border border-white/12 hover:bg-white/10 transition-colors backdrop-blur-md shadow-lg cursor-pointer"
+              className="p-2.5 rounded-full bg-black/60 border border-white/12 hover:bg-white/10 transition-colors backdrop-blur-md shadow-lg cursor-pointer"
             >
               {isAudioMuted ? (
                 <VolumeX className="w-4 h-4 text-white/50" />
@@ -123,7 +115,7 @@ export function ScrollStorySection() {
             {activeChapterIndex < 5 && (
               <button
                 onClick={() => handleSelectChapter(STORY_CHAPTERS.length - 1)}
-                className="group inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/60 border border-white/12 hover:border-[#AEDA2D]/40 hover:bg-white/10 text-[0.7rem] font-medium text-white/60 hover:text-[#AEDA2D] transition-all backdrop-blur-md shadow-lg cursor-pointer"
+                className="group inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/60 border border-white/12 hover:border-[#AEDA2D]/40 hover:bg-white/10 text-[0.72rem] font-medium text-white/70 hover:text-[#AEDA2D] transition-all backdrop-blur-md shadow-lg cursor-pointer"
               >
                 <span>Ke Babak Akhir</span>
                 <FastForward className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -133,11 +125,11 @@ export function ScrollStorySection() {
         </div>
 
         {/* ── Bottom content area ──────────────────────────────────── */}
-        <div className="absolute bottom-0 inset-x-0 z-30">
+        <div className="absolute bottom-0 inset-x-0 z-30 pointer-events-none">
 
-          {/* Chapter 5 (CTA finale): full-width centered overlay */}
+          {/* Chapter 5 (CTA finale): full-width centered overlay with zero overlap from timeline nav */}
           {activeChapterIndex === 5 && (
-            <div className="flex justify-center pb-10 px-5">
+            <div className="flex justify-center pb-6 sm:pb-8 px-4 pointer-events-auto">
               <StoryCtaOverlay isVisible={activeChapterIndex === 5} />
             </div>
           )}
@@ -146,15 +138,15 @@ export function ScrollStorySection() {
           {activeChapterIndex < 5 && (
             <div className="flex items-end justify-between px-5 sm:px-10 pb-8 sm:pb-10 gap-6">
               {/* Narrative ribbon — left/center */}
-              <div className="flex-1 min-w-0 max-w-2xl">
+              <div className="flex-1 min-w-0 max-w-2xl pointer-events-auto">
                 <StoryNarrativeRibbon
                   chapter={STORY_CHAPTERS[activeChapterIndex]}
                   chapterIndex={activeChapterIndex}
                 />
               </div>
 
-              {/* Timeline nav dots — right edge */}
-              <div className="flex-shrink-0">
+              {/* Minimal vertical timeline nav dots — right edge */}
+              <div className="flex-shrink-0 pointer-events-auto mb-2">
                 <StoryTimelineNav
                   chapters={STORY_CHAPTERS}
                   activeChapterIndex={activeChapterIndex}
@@ -162,18 +154,6 @@ export function ScrollStorySection() {
                   scrollProgress={currentProgress}
                 />
               </div>
-            </div>
-          )}
-
-          {/* CTA chapter: timeline nav still accessible bottom-right */}
-          {activeChapterIndex === 5 && (
-            <div className="absolute bottom-8 right-10">
-              <StoryTimelineNav
-                chapters={STORY_CHAPTERS}
-                activeChapterIndex={activeChapterIndex}
-                onSelectChapter={handleSelectChapter}
-                scrollProgress={currentProgress}
-              />
             </div>
           )}
         </div>
@@ -195,17 +175,11 @@ function ChapterEarthLayer({ scrollYProgress }: { scrollYProgress: any }) {
   return (
     <motion.div
       style={{ opacity, scale }}
-      className="absolute inset-0 w-full h-full transform-gpu will-change-transform"
+      className="absolute inset-0 w-full h-full transform-gpu will-change-transform pointer-events-auto z-10"
     >
-      {/* EarthGlobe is a client interactive component */}
-      <EarthGlobeWrapper />
+      <EarthGlobe />
     </motion.div>
   );
-}
-
-// Lazy wrapper so EarthGlobe stays isolated from SSR
-function EarthGlobeWrapper() {
-  return <EarthGlobe />;
 }
 
 // ─── Chapters 1-5: photographic layers ──────────────────────────────────────
@@ -255,7 +229,7 @@ function StoryLayer({
   return (
     <motion.div
       style={{ opacity, scale, y }}
-      className="absolute inset-0 w-full h-full transform-gpu will-change-transform"
+      className="absolute inset-0 w-full h-full transform-gpu will-change-transform pointer-events-none"
     >
       <Image
         src={image}
@@ -263,7 +237,7 @@ function StoryLayer({
         fill
         priority={chapterIndex <= 2}
         sizes="100vw"
-        className="object-cover object-center"
+        className="object-cover object-center pointer-events-none select-none"
       />
     </motion.div>
   );

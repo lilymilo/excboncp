@@ -447,13 +447,14 @@ function Scene({ markers, config, onMarkerClick, onMarkerHover }: SceneProps) {
         makeDefault
         enablePan={config.enablePan}
         enableZoom={config.enableZoom}
+        enableRotate={true}
         minDistance={config.minDistance}
         maxDistance={config.maxDistance}
-        rotateSpeed={0.4}
+        rotateSpeed={0.9}
         autoRotate={config.autoRotateSpeed > 0}
         autoRotateSpeed={config.autoRotateSpeed}
         enableDamping
-        dampingFactor={0.1}
+        dampingFactor={0.08}
       />
     </>
   );
@@ -516,7 +517,7 @@ export function Globe3D({
   );
 
   return (
-    <div className={cn("relative h-[500px] w-full", className)}>
+    <div className={cn("relative h-[500px] w-full cursor-grab active:cursor-grabbing pointer-events-auto", className)}>
       <Canvas
         gl={{
           antialias: true,
@@ -532,6 +533,7 @@ export function Globe3D({
         }}
         style={{
           background: mergedConfig.backgroundColor || "transparent",
+          pointerEvents: "auto",
         }}
       >
         <Suspense fallback={<LoadingFallback />}>

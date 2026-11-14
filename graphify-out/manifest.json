@@ -1356,9 +1356,9 @@
     "semantic_hash": ""
   },
   "src/dapp/package.json": {
-    "mtime": 1794634595.1446543,
-    "seen": 1794635098.6763387,
-    "ast_hash": "da2e47002072d990eb580a4941044052",
+    "mtime": 1794635431.4916446,
+    "seen": 1794635929.3160896,
+    "ast_hash": "a2b601e8c198a71bf0630b9f9abf160c",
     "semantic_hash": ""
   },
   "src/dapp/postcss.config.mjs": {
@@ -9954,9 +9954,9 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/landing/ScrollStorySection.tsx": {
-    "mtime": 1794634073.842365,
-    "seen": 1794635098.7261646,
-    "ast_hash": "e22dcd8df80f330520c678156906395b",
+    "mtime": 1794635813.07336,
+    "seen": 1794635929.365036,
+    "ast_hash": "929b77cbbbc02157de4802e49a2d39f4",
     "semantic_hash": ""
   },
   "src/dapp/src/components/landing/StoryCard.tsx": {
@@ -9966,15 +9966,15 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/landing/StoryCtaOverlay.tsx": {
-    "mtime": 1794633455.2444808,
-    "seen": 1794633555.3146894,
-    "ast_hash": "f2de5f882e404988f21219648fedcfc5",
+    "mtime": 1794635777.4509714,
+    "seen": 1794635929.365036,
+    "ast_hash": "2dd0c1c958d89ea04a2e3c335b9cdba0",
     "semantic_hash": ""
   },
   "src/dapp/src/components/landing/StoryTimelineNav.tsx": {
-    "mtime": 1794632537.46517,
-    "seen": 1794632726.7514873,
-    "ast_hash": "3642aec28c1b5574c56db746b46cbce2",
+    "mtime": 1794635793.9313552,
+    "seen": 1794635929.365036,
+    "ast_hash": "436c013e14adaf6713f6430654129e1d",
     "semantic_hash": ""
   },
   "src/dapp/src/components/landing/story-data.ts": {
@@ -10098,21 +10098,21 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/landing/EarthGlobe.tsx": {
-    "mtime": 1794634899.4310744,
-    "seen": 1794635098.7261646,
-    "ast_hash": "49af822fd5a3d5936ce3a03e36d904f8",
+    "mtime": 1794635840.4828672,
+    "seen": 1794635929.365036,
+    "ast_hash": "66a16dd2bed68b31d5c1f1d2ca045089",
     "semantic_hash": ""
   },
   "src/dapp/src/components/landing/StoryNarrativeRibbon.tsx": {
-    "mtime": 1794633854.8050175,
-    "seen": 1794635098.7269666,
-    "ast_hash": "3cec28203acb106a3c26db7e819afdd8",
+    "mtime": 1794635787.043969,
+    "seen": 1794635929.365036,
+    "ast_hash": "55b9d5176df8def53c449bed6ea26425",
     "semantic_hash": ""
   },
   "src/dapp/src/components/ui/3d-globe.tsx": {
-    "mtime": 1794634804.229467,
-    "seen": 1794635098.7345254,
-    "ast_hash": "6f435d82de84ca04ec88d2541b8573a4",
+    "mtime": 1794635762.968403,
+    "seen": 1794635929.3731203,
+    "ast_hash": "f3a89017a7aacda4d5531a3d279cc825",
     "semantic_hash": ""
   },
   "iot-node/package-lock.json": {
@@ -10128,9 +10128,9 @@
     "semantic_hash": ""
   },
   "src/dapp/package-lock.json": {
-    "mtime": 1794634595.2814498,
-    "seen": 1794635099.2323122,
-    "ast_hash": "ee99b3a42039e504fe6bcefcd4294f9a",
+    "mtime": 1794635431.6062236,
+    "seen": 1794635929.8424964,
+    "ast_hash": "81fe93db040aa5605722c214e132d96f",
     "semantic_hash": ""
   }
 }
