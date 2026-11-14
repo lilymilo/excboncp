@@ -9948,9 +9948,9 @@
     "semantic_hash": ""
   },
   "scripts/publish-demo-telemetry.py": {
-    "mtime": 1794651237.0350971,
-    "seen": 1794651333.4280157,
-    "ast_hash": "8f386e90b979d0e55e462f94a96bf9be",
+    "mtime": 1794652430.2810104,
+    "seen": 1794652624.0039098,
+    "ast_hash": "027990df596ebec4a997bcb7b715942b",
     "semantic_hash": ""
   },
   "src/dapp/src/app/loading.tsx": {

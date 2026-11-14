@@ -19,9 +19,7 @@ from datetime import UTC, datetime
 try:
     import paho.mqtt.client as mqtt
 except ImportError as exc:  # pragma: no cover - friendly local error
-    raise SystemExit(
-        "paho-mqtt belum terpasang. Jalankan: pip install paho-mqtt"
-    ) from exc
+    raise SystemExit("paho-mqtt belum terpasang. Jalankan: pip install paho-mqtt") from exc
 
 DEFAULT_BROKER = os.getenv("MQTT_BROKER", "broker.emqx.io")
 DEFAULT_PORT = int(os.getenv("MQTT_PORT", "1883"))
@@ -89,7 +87,9 @@ def build_payload(
 
 
 def publish(args: argparse.Namespace) -> None:
-    client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=f"excboncp-demo-{int(time.time())}")
+    client = mqtt.Client(
+        mqtt.CallbackAPIVersion.VERSION2, client_id=f"excboncp-demo-{int(time.time())}"
+    )
     client.connect(args.broker, args.port, keepalive=30)
     client.loop_start()
 
@@ -116,7 +116,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--broker", default=DEFAULT_BROKER, help="MQTT broker host")
     parser.add_argument("--port", type=int, default=DEFAULT_PORT, help="MQTT broker port")
     parser.add_argument("--topic", default=DEFAULT_TOPIC, help="MQTT telemetry topic")
-    parser.add_argument("--device-id", default=DEFAULT_DEVICE, help="Node id understood by the server")
+    parser.add_argument(
+        "--device-id", default=DEFAULT_DEVICE, help="Node id understood by the server"
+    )
     parser.add_argument("--secret", default=DEFAULT_SECRET, help="Shared sensor secret")
     parser.add_argument(
         "--scenario",

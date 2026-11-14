@@ -1,7 +1,7 @@
 # Graph Report - excboncp  (2026-11-14)
 
 ## Corpus Check
-- 570 files · ~541,400 words
+- 570 files · ~541,402 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 50 file(s) not represented in the graph (top: .lottie 20, (none) 8, .toml 5)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `124b1ffa`
+- Built from commit: `dfc33b76`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -415,8 +415,6 @@
 10. `DesignSystemGenerator` - 35 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `3. Hasil Pengujian & Verifikasi Teknis` --references--> `ConsentStatusBadge()`  [INFERRED]
-  docs/visual-refinement/design-polish-audit.md → src/dapp/src/components/dapp/BotanicalPrimitives.tsx
 - `Kebutuhan yang terlacak ke model` --references--> `compute_status()`  [INFERRED]
   docs/context/Excboncp_Blueprint_System_Modeling_6_Hari_v5.md → ai_pipeline/rules_engine.py
 - `Model 7: Deployment Docker` --references--> `compute_status()`  [INFERRED]
@@ -425,6 +423,8 @@
   docs/context/Excboncp_Blueprint_System_Modeling_6_Hari_v5.md → ai_pipeline/rules_engine.py
 - `Token gerak (`src/styles/motion.css`)` --references--> `linear()`  [INFERRED]
   docs/Excboncp Brief Frontend dan Prompt Claude v2.md → src/dapp/public/vendor/lottie.min.js
+- `3. Hasil Pengujian & Verifikasi Teknis` --references--> `ConsentStatusBadge()`  [INFERRED]
+  docs/visual-refinement/design-polish-audit.md → src/dapp/src/components/dapp/BotanicalPrimitives.tsx
 
 ## Import Cycles
 - None detected.
@@ -1852,7 +1852,7 @@ Nodes (3): $type, $value, 8
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `Curve Fitting` connect `Code Output` to `sys`?**
-  _High betweenness centrality (0.049) - this node is a cross-community bridge._
+  _High betweenness centrality (0.068) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `TailwindConfigGenerator` (e.g. with `TestGeneratedConfigIsValidJs` and `TestTailwindConfigGenerator`) actually correct?**
   _`TailwindConfigGenerator` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `excboncp`, `Application Layer`, `Blockchain Layer` to the rest of the system?**
@@ -1860,7 +1860,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Should `ledger/service.py` be split into smaller, more focused modules?**
   _Cohesion score 0.03903286978508218 - nodes in this community are weakly interconnected._
 - **Why does `Judging fit error` connect `sys` to `Code Output`?**
-  _High betweenness centrality (0.048) - this node is a cross-community bridge._
+  _High betweenness centrality (0.066) - this node is a cross-community bridge._
 - **Should `execute_agent` be split into smaller, more focused modules?**
   _Cohesion score 0.12 - nodes in this community are weakly interconnected._
 - **Should `get_db` be split into smaller, more focused modules?**
