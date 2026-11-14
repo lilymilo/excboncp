@@ -1770,9 +1770,9 @@
     "semantic_hash": ""
   },
   "src/dapp/src/app/layout.tsx": {
-    "mtime": 1794631183.8422513,
-    "seen": 1794631381.944213,
-    "ast_hash": "48d75334f636b9ef2e2a115293eebdcd",
+    "mtime": 1794665402.6424415,
+    "seen": 1794665538.3992374,
+    "ast_hash": "1e9b08d78adc02d086619d1df70d4e34",
     "semantic_hash": ""
   },
   "src/dapp/src/app/login/page.tsx": {
@@ -2034,9 +2034,9 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/LoginFormCard.tsx": {
-    "mtime": 1794663038.1745675,
-    "seen": 1794663229.8107457,
-    "ast_hash": "696582ac1d47e60ee49cc661617a3f1b",
+    "mtime": 1794663516.6814058,
+    "seen": 1794664506.3463457,
+    "ast_hash": "8d98597be858bb68c54140a10c60ba0b",
     "semantic_hash": ""
   },
   "src/dapp/src/components/LottieMascotStage.tsx": {
@@ -2118,9 +2118,9 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/dapp/BotanicalPrimitives.tsx": {
-    "mtime": 1794653483.3790176,
-    "seen": 1794653802.3319032,
-    "ast_hash": "f78fd175922e1b575504956e7ab413f5",
+    "mtime": 1794665431.9630678,
+    "seen": 1794665538.42327,
+    "ast_hash": "c280ea6143b7327aa119ffe9b12c24e2",
     "semantic_hash": ""
   },
   "src/dapp/src/components/dapp/CarbonCharts.tsx": {
@@ -2130,9 +2130,9 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/dapp/CarbonMap.tsx": {
-    "mtime": 1794653483.3790176,
-    "seen": 1794653802.3319032,
-    "ast_hash": "12549874ce4cb1f588890a73579e7d05",
+    "mtime": 1794664130.7189188,
+    "seen": 1794664506.3536136,
+    "ast_hash": "394d7fe819d2b56b0030394eee4926b4",
     "semantic_hash": ""
   },
   "src/dapp/src/components/dapp/DashboardOverview.tsx": {
@@ -2148,9 +2148,9 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/dapp/ParcelInspectionPanel.tsx": {
-    "mtime": 1794653483.3813934,
-    "seen": 1794653802.3319032,
-    "ast_hash": "9925479133a98bb8e5750a540ca45518",
+    "mtime": 1794664396.740061,
+    "seen": 1794664506.3541756,
+    "ast_hash": "5ad4318bfba864a9dc439761bdfa048c",
     "semantic_hash": ""
   },
   "src/dapp/src/components/dapp/ParcelPanel.tsx": {
@@ -2268,15 +2268,15 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/pages/PetaView.tsx": {
-    "mtime": 1794653483.3960602,
-    "seen": 1794653802.3319032,
-    "ast_hash": "7e6cecea398b7ed8fe8e8e455a2e4c91",
+    "mtime": 1794664425.8704536,
+    "seen": 1794664506.368621,
+    "ast_hash": "ccd446ebffea5cfd3102b55c9c1e123d",
     "semantic_hash": ""
   },
   "src/dapp/src/components/pages/RekapView.tsx": {
-    "mtime": 1794653483.3960602,
-    "seen": 1794653802.3319032,
-    "ast_hash": "aa457d98bc522eef02dfa9b01ab9c40e",
+    "mtime": 1794665027.29718,
+    "seen": 1794665114.0598986,
+    "ast_hash": "101b6a3d005ee5e52985c20219ac0fed",
     "semantic_hash": ""
   },
   "src/dapp/src/components/pages/ScreenerView.tsx": {
@@ -2304,9 +2304,9 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/ui/CardStateFrame.tsx": {
-    "mtime": 1794631183.9209497,
-    "seen": 1794631381.944213,
-    "ast_hash": "2056679d3e2e9170dd340ac1b72d6faf",
+    "mtime": 1794665443.2974012,
+    "seen": 1794665538.4431803,
+    "ast_hash": "cf5b49e3b96af8a4b259c03848ffa2ba",
     "semantic_hash": ""
   },
   "src/dapp/src/components/ui/blur-fade.tsx": {
@@ -9948,9 +9948,9 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/ExcbonScrollCanvas.tsx": {
-    "mtime": 1794663009.9276989,
-    "seen": 1794663229.80794,
-    "ast_hash": "6d9e87ff8dc2df3ef17eac3fe013c935",
+    "mtime": 1794663586.636986,
+    "seen": 1794664506.343623,
+    "ast_hash": "ec76b4f5f32c5c7b18e155d02224797d",
     "semantic_hash": ""
   },
   "keyframe-animation/ezgif-frame-001.png": {
@@ -13146,9 +13146,9 @@
     "semantic_hash": ""
   },
   "src/dapp/src/app/loading.tsx": {
-    "mtime": 1794653483.356613,
-    "seen": 1794653802.3161752,
-    "ast_hash": "9ed34ae30c3d106fdffce171a94ef172",
+    "mtime": 1794665417.9201148,
+    "seen": 1794665538.3992374,
+    "ast_hash": "0ea46c736efe9509aceaf0ea263f5cc3",
     "semantic_hash": ""
   },
   "src/dapp/src/components/3d-globe-demo.tsx": {
