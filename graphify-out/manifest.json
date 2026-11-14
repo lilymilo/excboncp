@@ -1818,9 +1818,9 @@
     "semantic_hash": ""
   },
   "src/dapp/src/app/page.tsx": {
-    "mtime": 1794631183.8486688,
-    "seen": 1794631381.944213,
-    "ast_hash": "420cc1a3eac930b55a577b20f34676bc",
+    "mtime": 1794632602.7603507,
+    "seen": 1794632726.7348652,
+    "ast_hash": "69d4074a96df5a1e94630d9dba7f81fc",
     "semantic_hash": ""
   },
   "src/dapp/src/app/pasar/[parcelId]/page.tsx": {
@@ -9951,6 +9951,138 @@
     "mtime": 1794631183.9018779,
     "seen": 1794631381.944213,
     "ast_hash": "a30dbec2fb57793f04b7500f16ff57b7",
+    "semantic_hash": ""
+  },
+  "src/dapp/src/components/landing/ScrollStorySection.tsx": {
+    "mtime": 1794632576.5771177,
+    "seen": 1794632726.7514873,
+    "ast_hash": "c6dfcb7ba6844a8a328533703ae933c1",
+    "semantic_hash": ""
+  },
+  "src/dapp/src/components/landing/StoryCard.tsx": {
+    "mtime": 1794632527.506051,
+    "seen": 1794632726.7514873,
+    "ast_hash": "98d8137bb362c2e900d282e927b4c5de",
+    "semantic_hash": ""
+  },
+  "src/dapp/src/components/landing/StoryCtaOverlay.tsx": {
+    "mtime": 1794632552.083565,
+    "seen": 1794632726.7514873,
+    "ast_hash": "e8cf1d5d7a25b3ee537dd0c964c11a07",
+    "semantic_hash": ""
+  },
+  "src/dapp/src/components/landing/StoryTimelineNav.tsx": {
+    "mtime": 1794632537.46517,
+    "seen": 1794632726.7514873,
+    "ast_hash": "3642aec28c1b5574c56db746b46cbce2",
+    "semantic_hash": ""
+  },
+  "src/dapp/src/components/landing/story-data.ts": {
+    "mtime": 1794632665.3677547,
+    "seen": 1794632726.7514873,
+    "ast_hash": "5ab6fdea96fe6126571f4c17bf42a79b",
+    "semantic_hash": ""
+  },
+  "src/dapp/src/components/landing/types.ts": {
+    "mtime": 1794632484.5376828,
+    "seen": 1794632726.7514873,
+    "ast_hash": "5a1a883696d1efe4af70554a3bcc5776",
+    "semantic_hash": ""
+  },
+  "Landing-page-animation/Aerial_dive_into_rainforest_canopy_738b490a.jpg": {
+    "mtime": 1794601810.0,
+    "seen": 1794632726.8248794,
+    "ast_hash": "537b40ff22ce94939dde255db283f540",
+    "semantic_hash": ""
+  },
+  "Landing-page-animation/Camera_plunging_through_rainfore\u2026_76329b63.jpg": {
+    "mtime": 1794601810.0,
+    "seen": 1794632726.8248794,
+    "ast_hash": "2b1f2574df2c816fd52cfbdfa4375792",
+    "semantic_hash": ""
+  },
+  "Landing-page-animation/Diving_through_clouds_to_islands_75f32e13.jpg": {
+    "mtime": 1794601810.0,
+    "seen": 1794632726.8248794,
+    "ast_hash": "c5fb877d089a58466ebf182078d62eaf",
+    "semantic_hash": ""
+  },
+  "Landing-page-animation/Indonesian_archipelago_cartoon_m\u2026_0b44c504.jpg": {
+    "mtime": 1794601810.0,
+    "seen": 1794632726.8248794,
+    "ast_hash": "35f188805e990c9602b32f1694f63df6",
+    "semantic_hash": ""
+  },
+  "Landing-page-animation/Orangutan_waving_near_sensor_box_11e8e487.jpg": {
+    "mtime": 1794601810.0,
+    "seen": 1794632726.8248794,
+    "ast_hash": "859e6f49885468a87fef466480a6366e",
+    "semantic_hash": ""
+  },
+  "Landing-page-animation/Painted_rainforest_landscape_ove\u2026_68055df4.jpg": {
+    "mtime": 1794601810.0,
+    "seen": 1794632726.8248794,
+    "ast_hash": "e6cb40fcdf72f12a22b2f853fc4b3101",
+    "semantic_hash": ""
+  },
+  "Landing-page-animation/Planet_Earth_floating_in_space_bf733e55.jpg": {
+    "mtime": 1794601810.0,
+    "seen": 1794632726.8248794,
+    "ast_hash": "d72452b7a11602034b176a2a632e1987",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/landing-story/01-earth.jpg": {
+    "mtime": 1794601810.0,
+    "seen": 1794632727.1663778,
+    "ast_hash": "d72452b7a11602034b176a2a632e1987",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/landing-story/02-clouds.jpg": {
+    "mtime": 1794601810.0,
+    "seen": 1794632727.1663778,
+    "ast_hash": "c5fb877d089a58466ebf182078d62eaf",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/landing-story/03-indonesia.jpg": {
+    "mtime": 1794601810.0,
+    "seen": 1794632727.1663778,
+    "ast_hash": "35f188805e990c9602b32f1694f63df6",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/landing-story/04-canopy-alt.jpg": {
+    "mtime": 1794601810.0,
+    "seen": 1794632727.1663778,
+    "ast_hash": "537b40ff22ce94939dde255db283f540",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/landing-story/04-canopy.jpg": {
+    "mtime": 1794601810.0,
+    "seen": 1794632727.1663778,
+    "ast_hash": "2b1f2574df2c816fd52cfbdfa4375792",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/landing-story/05-orangutan-iot.jpg": {
+    "mtime": 1794601810.0,
+    "seen": 1794632727.1663778,
+    "ast_hash": "859e6f49885468a87fef466480a6366e",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/landing-story/06-panorama-cta.jpg": {
+    "mtime": 1794601810.0,
+    "seen": 1794632727.1663778,
+    "ast_hash": "e6cb40fcdf72f12a22b2f853fc4b3101",
+    "semantic_hash": ""
+  },
+  "Landing-page-animation/Video_transition_moving_across_i\u2026_7a981ec1.mp4": {
+    "mtime": 1794630819.138144,
+    "seen": 1794632727.1663778,
+    "ast_hash": "b7020edb6c9f98c4ea33b2476d7fc182",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/landing-story/reference-transition.mp4": {
+    "mtime": 1794630819.138144,
+    "seen": 1794632727.1663778,
+    "ast_hash": "b7020edb6c9f98c4ea33b2476d7fc182",
     "semantic_hash": ""
   },
   "iot-node/package-lock.json": {

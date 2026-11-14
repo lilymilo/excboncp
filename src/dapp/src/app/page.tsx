@@ -1,5 +1,5 @@
 import { Navbar } from "@/components/Navbar";
-import { HeroSection } from "@/components/HeroSection";
+import { ScrollStorySection } from "@/components/landing/ScrollStorySection";
 import { DashboardPreviewStrip } from "@/components/DashboardPreviewStrip";
 import { FeatureSpotlight } from "@/components/FeatureSpotlight";
 import { ValuePropositionCards } from "@/components/ValuePropositionCards";
@@ -16,35 +16,38 @@ export default function Home() {
     <>
       <Navbar />
       <main className="flex-1">
-        {/* 1. Hero Section (Centered, Eyebrow, 2-tone headline, dual CTA, halo) */}
-        <HeroSection />
+        {/* 1. Cinematic Scroll-Driven Storytelling (Bumi -> Awan -> Indonesia -> Hutan -> Orangutan -> Panorama Hutan & CTA) */}
+        <ScrollStorySection />
 
-        {/* 2. Dashboard Preview Strip (1fr 1fr 1.55fr, overview cards + lime area chart) */}
-        <DashboardPreviewStrip />
+        {/* 2. Platform Interactive Modules & Sandboxes */}
+        <div id="fitur" className="relative z-10 bg-[#0c120d]">
+          {/* Dashboard Preview Strip (1fr 1fr 1.55fr, overview cards + lime area chart) */}
+          <DashboardPreviewStrip />
 
-        {/* 3. Feature Spotlight (Editorial narrative + interactive mini-interface with filter chips) */}
-        <FeatureSpotlight />
+          {/* Feature Spotlight (Editorial narrative + interactive mini-interface with filter chips) */}
+          <FeatureSpotlight />
 
-        {/* 4. Value Proposition Cards (1 Featured Lime card + 2 dark data viz cards) */}
-        <ValuePropositionCards />
+          {/* Value Proposition Cards (1 Featured Lime card + 2 dark data viz cards) */}
+          <ValuePropositionCards />
 
-        {/* 5. Process Journey Section (2-column intro + 5 numbered horizontal rows 01-05) */}
-        <ProcessJourneySection />
+          {/* Process Journey Section (2-column intro + 5 numbered horizontal rows 01-05) */}
+          <ProcessJourneySection />
 
-        {/* 6. Interactive Geospatial Parcel Verification Sandbox */}
-        <InteractiveMapPreview />
+          {/* Interactive Geospatial Parcel Verification Sandbox */}
+          <InteractiveMapPreview />
 
-        {/* 7. Live Economic Revenue Sharing & Fire Sensor Freeze Simulation */}
-        <LiveSimulationSection />
+          {/* Live Economic Revenue Sharing & Fire Sensor Freeze Simulation */}
+          <LiveSimulationSection />
 
-        {/* 8. Cryptographic Public Tamper Verification Demo (SHA-256) */}
-        <TamperVerificationDemo />
+          {/* Cryptographic Public Tamper Verification Demo (SHA-256) */}
+          <TamperVerificationDemo />
 
-        {/* 9. 4-Role Exploration Sandbox */}
-        <GetStartedSection />
+          {/* 4-Role Exploration Sandbox */}
+          <GetStartedSection />
 
-        {/* 10. Closing CTA Panel (Wide centered panel with side green vignettes) */}
-        <ClosingCtaPanel />
+          {/* Closing CTA Panel */}
+          <ClosingCtaPanel />
+        </div>
       </main>
       <Footer />
     </>
