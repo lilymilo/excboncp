@@ -291,20 +291,20 @@ export default function ExcbonScrollCanvas() {
         )}
       </AnimatePresence>
 
-      <header className="fixed top-0 left-0 right-0 z-40 border-b border-[#1f2937]/50 bg-[#0d1117]/70 backdrop-blur-md transition-colors duration-200">
+      <header className="fixed top-0 left-0 right-0 z-40 border-b border-white/[0.08] bg-[#0d1117]/80 backdrop-blur-xl transition-colors duration-200">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2.5 group">
             <span className="w-2 h-2 rounded-full bg-[#10b981]" />
             <span className="font-ui text-sm font-bold tracking-tight uppercase text-[#FAF8F5]">
               excboncp
             </span>
-            <span className="hidden sm:inline-block font-ui text-[11px] text-[#10b981] border border-[#10b981]/40 px-2 py-0.5 rounded-full">
+            <span className="hidden sm:inline-block font-rounded text-[11px] text-[#10b981] border border-[#10b981]/40 px-2.5 py-0.5 rounded-full">
               MRV Hutan
             </span>
           </Link>
 
           {/* Mobile Current Chapter Indicator (Embedded cleanly in header, no floating clutter) */}
-          <div className="sm:hidden flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] font-ui text-[#FAF8F5]/90">
+          <div className="sm:hidden flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] font-rounded text-[#FAF8F5]/90 backdrop-blur-sm">
             <span className="w-1.5 h-1.5 rounded-full bg-[#10b981]" />
             <span>{CHAPTERS[activeChapterIndex].label}</span>
             <span className="text-white/40">({activeChapterIndex + 1}/6)</span>
@@ -313,7 +313,7 @@ export default function ExcbonScrollCanvas() {
           <div className="flex items-center gap-3">
             <Link
               href="/peta"
-              className="hidden md:inline-flex items-center gap-1.5 font-ui text-xs px-3.5 py-1.5 rounded-full border border-[#1f2937] bg-[#161b22]/80 text-[#FAF8F5] hover:border-[#10b981] transition-colors"
+              className="hidden md:inline-flex items-center gap-1.5 font-ui text-xs px-3.5 py-2 min-h-[40px] rounded-full border border-[#1f2937] bg-[#161b22]/80 text-[#FAF8F5] hover:border-[#10b981] transition-all active:scale-[0.97]"
             >
               <Satellite className="w-3.5 h-3.5 text-[#10b981]" />
               <span>Peta &amp; Telemetri</span>
@@ -321,7 +321,7 @@ export default function ExcbonScrollCanvas() {
 
             <Link
               href="/app"
-              className="inline-flex items-center gap-1.5 font-ui text-xs px-3.5 sm:px-4 py-1.5 rounded-full bg-[#10b981] text-[#0d1117] font-semibold hover:bg-[#059669] transition-colors"
+              className="inline-flex items-center gap-1.5 font-ui text-xs px-4 py-2 min-h-[40px] rounded-full bg-[#10b981] text-[#0d1117] font-semibold hover:bg-[#059669] transition-all active:scale-[0.97]"
             >
               <span>Buka Dasbor</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -588,10 +588,10 @@ export default function ExcbonScrollCanvas() {
                   </span>
                 </div>
 
-                <div className="mt-3.5 sm:mt-4 flex flex-col sm:flex-row items-stretch sm:items-center md:justify-center gap-2.5 sm:gap-3">
+                <div className="mt-4 sm:mt-5 flex flex-col sm:flex-row items-stretch sm:items-center md:justify-center gap-2.5 sm:gap-3 w-full sm:w-auto">
                   <Link
                     href="/app"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-2.5 sm:py-3 rounded-full bg-[#10b981] hover:bg-[#059669] text-[#0d1117] font-ui font-semibold text-xs sm:text-sm shadow-lg shadow-[#10b981]/25 transition-all hover:scale-[1.02] active:scale-95 text-center"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[46px] rounded-full bg-[#10b981] hover:bg-[#059669] text-[#0d1117] font-ui font-semibold text-xs sm:text-sm shadow-lg shadow-[#10b981]/25 transition-all hover:scale-[1.01] active:scale-[0.97] text-center"
                   >
                     <span>Buka Dasbor Platform</span>
                     <ArrowRight className="w-4 h-4" />
@@ -599,7 +599,7 @@ export default function ExcbonScrollCanvas() {
 
                   <Link
                     href="/verifikasi"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-2.5 sm:py-3 rounded-full bg-[#161b22]/90 hover:bg-[#21262d] text-[#FAF8F5] border border-[#30363d] hover:border-[#10b981]/50 font-ui font-semibold text-xs sm:text-sm backdrop-blur-sm shadow-md transition-all hover:scale-[1.02] active:scale-95 text-center"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[46px] rounded-full bg-[#161b22]/90 hover:bg-[#21262d] text-[#FAF8F5] border border-[#30363d] hover:border-[#10b981]/50 font-ui font-semibold text-xs sm:text-sm backdrop-blur-md shadow-md transition-all hover:scale-[1.01] active:scale-[0.97] text-center"
                   >
                     <ShieldCheck className="w-4 h-4 text-[#10b981]" />
                     <span>Periksa Segel Verifikasi</span>

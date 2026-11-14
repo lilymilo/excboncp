@@ -336,10 +336,10 @@ export function LoginFormCard({
       {/* Main Split Botanical Card */}
       <BlurFade delay={0.12} inView>
         <div
-          className={`relative rounded-[28px] sm:rounded-[36px] p-3 sm:p-5 transition-colors duration-300 border ${
+          className={`relative rounded-[24px] sm:rounded-[32px] p-3 sm:p-5 transition-all duration-300 border backdrop-blur-xl ${
             isLight
-              ? "bg-[#FFFFFF] text-[#14261a] border-[#d8e5d4] shadow-[0_20px_60px_rgba(20,38,26,0.06)]"
-              : "bg-[#101610] text-[#FAF8F5] border-[#1f2937] shadow-[0_24px_60px_rgba(0,0,0,0.45)]"
+              ? "bg-[#FFFFFF]/95 text-[#14261a] border-[#d8e5d4] shadow-[0_20px_50px_-12px_rgba(20,38,26,0.08)]"
+              : "bg-[#101610]/95 text-[#FAF8F5] border-[#1f2937] shadow-[0_24px_64px_-16px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.06)]"
           }`}
         >
           <div className="grid grid-cols-1 lg:grid-cols-[1.08fr_1fr] gap-4 sm:gap-6 lg:gap-8 items-stretch">
@@ -662,7 +662,7 @@ export function LoginFormCard({
                               if (status === "error") setStatus("idle");
                             }}
                             placeholder="Contoh: Budi Santoso"
-                            className={`w-full rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all focus:outline-none border ${
+                            className={`w-full min-h-[44px] rounded-[10px] px-3.5 py-2.5 text-sm font-medium transition-all focus:outline-none border ${
                               isLight
                                 ? "bg-[#f5f9f3] border-[#d8e5d4] text-[#14261a] focus:bg-white focus:border-[#1f4d2e] focus:ring-2 focus:ring-[#1f4d2e]/10"
                                 : "bg-[#161b22] border-[#30363d] text-[#FAF8F5] focus:bg-[#1c222b] focus:border-[#10b981] focus:ring-2 focus:ring-[#10b981]/15"
@@ -685,7 +685,7 @@ export function LoginFormCard({
                             onChange={(e) =>
                               setSelectedRoleLabel(e.target.value)
                             }
-                            className={`w-full rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all focus:outline-none border cursor-pointer ${
+                            className={`w-full min-h-[44px] rounded-[10px] px-3.5 py-2.5 text-sm font-medium transition-all focus:outline-none border cursor-pointer ${
                               isLight
                                 ? "bg-[#f5f9f3] border-[#d8e5d4] text-[#14261a] focus:bg-white focus:border-[#1f4d2e]"
                                 : "bg-[#161b22] border-[#30363d] text-[#FAF8F5] focus:bg-[#1c222b] focus:border-[#10b981]"
@@ -731,7 +731,7 @@ export function LoginFormCard({
                           if (status === "error") setStatus("idle");
                         }}
                         placeholder="komunitas.a@demo.excboncp.test"
-                        className={`w-full rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all focus:outline-none border ${
+                        className={`w-full min-h-[44px] rounded-[10px] px-3.5 py-2.5 text-sm font-medium transition-all focus:outline-none border ${
                           isLight
                             ? "bg-[#f5f9f3] border-[#d8e5d4] text-[#14261a] focus:bg-white focus:border-[#1f4d2e] focus:ring-2 focus:ring-[#1f4d2e]/10"
                             : "bg-[#161b22] border-[#30363d] text-[#FAF8F5] focus:bg-[#1c222b] focus:border-[#10b981] focus:ring-2 focus:ring-[#10b981]/15"
@@ -768,7 +768,7 @@ export function LoginFormCard({
                               if (status === "error") setStatus("idle");
                             }}
                             placeholder="demo123"
-                            className={`w-full rounded-xl pl-3.5 pr-11 py-2.5 text-sm font-medium transition-all focus:outline-none border ${
+                            className={`w-full min-h-[44px] rounded-[10px] pl-3.5 pr-12 py-2.5 text-sm font-medium transition-all focus:outline-none border ${
                               isLight
                                 ? "bg-[#f5f9f3] border-[#d8e5d4] text-[#14261a] focus:bg-white focus:border-[#1f4d2e] focus:ring-2 focus:ring-[#1f4d2e]/10"
                                 : "bg-[#161b22] border-[#30363d] text-[#FAF8F5] focus:bg-[#1c222b] focus:border-[#10b981] focus:ring-2 focus:ring-[#10b981]/15"
@@ -782,7 +782,7 @@ export function LoginFormCard({
                                 ? "Sembunyikan kata sandi"
                                 : "Tampilkan kata sandi"
                             }
-                            className={`absolute right-1.5 w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${
+                            className={`absolute right-0.5 w-11 h-11 flex items-center justify-center rounded-[8px] transition-colors ${
                               isLight
                                 ? "text-[#4a5e4f] hover:text-[#14261a] hover:bg-black/5"
                                 : "text-[#FAF8F5]/70 hover:text-[#FAF8F5] hover:bg-white/5"
@@ -807,7 +807,7 @@ export function LoginFormCard({
                     {/* Utility Row: Remember me checkbox + Forgot password? link */}
                     {authMode !== "forgot" && (
                       <div className="flex items-center justify-between gap-2 pt-0.5">
-                        <label className="inline-flex items-center gap-2 cursor-pointer min-h-[36px] py-1 select-none">
+                        <label className="inline-flex items-center gap-2 cursor-pointer min-h-[44px] py-1 select-none">
                           <input
                             type="checkbox"
                             checked={rememberMe}
@@ -833,7 +833,7 @@ export function LoginFormCard({
                               setStatus("idle");
                               setErrorMessage(null);
                             }}
-                            className={`text-xs font-medium min-h-[36px] px-1 transition-colors ${
+                            className={`text-xs font-medium min-h-[44px] px-1 transition-colors ${
                               isLight
                                 ? "text-[#4a5e4f] hover:text-[#1f4d2e]"
                                 : "text-[#FAF8F5]/75 hover:text-[#10b981]"
