@@ -9954,9 +9954,9 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/landing/ScrollStorySection.tsx": {
-    "mtime": 1794635813.07336,
-    "seen": 1794635929.365036,
-    "ast_hash": "929b77cbbbc02157de4802e49a2d39f4",
+    "mtime": 1794637382.1036472,
+    "seen": 1794637685.6996367,
+    "ast_hash": "c641e173d1e9c95e1b8e55aae6e600f2",
     "semantic_hash": ""
   },
   "src/dapp/src/components/landing/StoryCard.tsx": {
@@ -10113,6 +10113,42 @@
     "mtime": 1794635762.968403,
     "seen": 1794635929.3731203,
     "ast_hash": "f3a89017a7aacda4d5531a3d279cc825",
+    "semantic_hash": ""
+  },
+  "src/dapp/src/components/landing/AtmosphereStage.tsx": {
+    "mtime": 1794637259.2006989,
+    "seen": 1794637685.6996367,
+    "ast_hash": "4ed740ca8c6d19a8208a9844426c80f4",
+    "semantic_hash": ""
+  },
+  "src/dapp/src/components/landing/CanopyBiomassStage.tsx": {
+    "mtime": 1794637315.6524148,
+    "seen": 1794637685.6996367,
+    "ast_hash": "13309c0144cc07fedbdeee879bea7e9e",
+    "semantic_hash": ""
+  },
+  "src/dapp/src/components/landing/ClosingEcosystemStage.tsx": {
+    "mtime": 1794637355.519616,
+    "seen": 1794637685.6996367,
+    "ast_hash": "9fcd2a9c62192aed714a50b4e681d74e",
+    "semantic_hash": ""
+  },
+  "src/dapp/src/components/landing/IotHardwareStage.tsx": {
+    "mtime": 1794637338.0437825,
+    "seen": 1794637685.6996367,
+    "ast_hash": "b95d6eede702c7979be2d39f7c409d46",
+    "semantic_hash": ""
+  },
+  "src/dapp/src/components/landing/NusantaraMapStage.tsx": {
+    "mtime": 1794637294.4415228,
+    "seen": 1794637685.6996367,
+    "ast_hash": "759fe158c57be54022150e93dfe9b9be",
+    "semantic_hash": ""
+  },
+  "src/dapp/src/components/ui/particles.tsx": {
+    "mtime": 1794637230.5587997,
+    "seen": 1794637685.7207365,
+    "ast_hash": "7999ca8f3f165de3a75f575c93665020",
     "semantic_hash": ""
   },
   "iot-node/package-lock.json": {
