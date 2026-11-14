@@ -1,72 +1,60 @@
 "use client";
 
-import { ArrowRight, ShieldCheck } from "lucide-react";
-import SpecularButton from "@/components/SpecularButton";
+import Link from "next/link";
+import { ArrowRight, ShieldCheck, LayoutDashboard, LogIn } from "lucide-react";
 
 export function ClosingCtaPanel() {
   return (
-    <section className="py-20 sm:py-28">
+    <section className="py-16 sm:py-24">
       <div className="page-shell">
-        {/* Wide Centered Panel with Green Vignette (Section 4.8) */}
-        <div className="relative rounded-card bg-[#101610] border border-[#252D22] p-8 sm:p-16 text-center overflow-hidden shadow-panel">
-          {/* Subtle Side Vignette Gradients */}
+        {/* Wide Centered Panel in Deep Forest Green */}
+        <div className="relative rounded-[24px] bg-[var(--surface-deep)] text-[var(--on-deep)] border border-[var(--deep-line)] p-8 sm:p-14 text-center overflow-hidden shadow-lg">
+          {/* Subtle Ambient Leaf Vignette Gradients */}
           <div
             aria-hidden="true"
-            className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#64753E]/12 to-transparent pointer-events-none"
+            className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[var(--leaf-300)]/15 to-transparent pointer-events-none"
           />
           <div
             aria-hidden="true"
-            className="absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-[#64753E]/12 to-transparent pointer-events-none"
+            className="absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-[var(--leaf-300)]/15 to-transparent pointer-events-none"
           />
 
           <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
-            <span className="text-[0.75rem] font-semibold text-[#AEDA2D] uppercase tracking-wider block mb-3">
+            <span className="text-[12px] font-semibold text-[var(--leaf-300)] uppercase tracking-wider block mb-3">
               Mulai Uji Coba Sekarang
             </span>
-            <h2 className="text-[clamp(2.1rem,3.8vw,3.5rem)] font-normal text-[#F0F2EC] leading-[1.14] tracking-tight">
+            <h2 className="xb-display text-[clamp(2.1rem,3.8vw,3.5rem)] font-bold text-white leading-[1.14] tracking-tight text-balance">
               Buktikan integritas karbon hutan,{" "}
-              <span className="text-[#AEDA2D]">langsung di browser</span> kamu.
+              <span className="text-[var(--leaf-300)]">langsung di browser</span> kamu.
             </h2>
-            <p className="mt-5 text-[0.95rem] text-[#A8AFA2] leading-relaxed max-w-[50ch]">
+            <p className="mt-5 text-[1rem] text-[var(--on-deep-muted)] leading-relaxed max-w-[52ch]">
               Tanpa unduh aplikasi dan tanpa uang sungguhan. Masuk dengan empat akun contoh
-              untuk memeriksa seluruh alur dari sensor hingga segel digital.
+              untuk memeriksa seluruh alur dari sensor hingga segel digital di Base Sepolia.
             </p>
 
-            <div className="mt-8">
-              {/* Primary CTA — SpecularButton from React Bits */}
-              <SpecularButton
-                size="lg"
-                radius={999}
-                lineColor="#FFFFFF"
-                baseColor="#D8F57A"
-                textColor="#11160B"
-                tint="#AEDA2D"
-                tintOpacity={1}
-                intensity={1.65}
-                idleIntensity={0.7}
-                glow={1.5}
-                thickness={1.8}
-                shineSize={16}
-                shineFade={30}
-                autoAnimate={true}
-                onClick={() => {
-                  const el = document.getElementById("demo");
-                  el?.scrollIntoView({ behavior: "smooth" });
-                }}
-                style={{
-                  backgroundColor: "#AEDA2D",
-                  color: "#11160B",
-                  boxShadow: "0 0 40px rgba(174,218,45,0.35), inset 0 1px 1px rgba(255,255,255,0.45)",
-                }}
+            <div className="mt-8 flex flex-col sm:flex-row items-center gap-3.5 w-full sm:w-auto">
+              <Link
+                href="/app"
+                className="w-full sm:w-auto min-h-[46px] px-8 py-3.5 rounded-full bg-white text-[var(--forest-900)] hover:bg-[var(--leaf-100)] text-[14.5px] font-bold shadow-md hover:shadow-lg transition-all active:scale-95 inline-flex items-center justify-center gap-2"
               >
-                Coba 4 Akun Demo
-                <ArrowRight className="w-5 h-5" />
-              </SpecularButton>
+                <LayoutDashboard className="w-4 h-4 text-[var(--forest-800)]" aria-hidden="true" />
+                <span>Buka Dasbor Pemantauan</span>
+                <ArrowRight className="w-4 h-4 text-[var(--forest-800)]" aria-hidden="true" />
+              </Link>
+
+              <Link
+                href="/login"
+                className="w-full sm:w-auto min-h-[46px] px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 text-[14.5px] font-semibold shadow-xs transition-all active:scale-95 inline-flex items-center justify-center gap-2"
+              >
+                <LogIn className="w-4 h-4" aria-hidden="true" />
+                <span>Masuk Akun Demo</span>
+              </Link>
             </div>
 
-            <div className="mt-6 flex items-center gap-1.5 text-[0.75rem] text-[#747D70]">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#64753E]" />
-              <span>Jalur pengujian 5 menit siap saji untuk juri dan panitia</span>
+            {/* Cryptographic Footnote */}
+            <div className="mt-7 flex items-center justify-center gap-2 text-[12px] text-[var(--on-deep-muted)]">
+              <ShieldCheck className="w-4 h-4 text-[var(--leaf-300)]" aria-hidden="true" />
+              <span>Tersegel Kriptografis Base Sepolia EAS &bull; SHA-256 Hash Chain</span>
             </div>
           </div>
         </div>

@@ -1356,8 +1356,8 @@
     "semantic_hash": ""
   },
   "src/dapp/package.json": {
-    "mtime": 1794631182.5839753,
-    "seen": 1794631381.944213,
+    "mtime": 1794641755.253421,
+    "seen": 1794643668.6432257,
     "ast_hash": "1995007c2bf69f4209a5842e05a8b18a",
     "semantic_hash": ""
   },
@@ -1776,9 +1776,9 @@
     "semantic_hash": ""
   },
   "src/dapp/src/app/login/page.tsx": {
-    "mtime": 1794631183.8428023,
-    "seen": 1794631381.944213,
-    "ast_hash": "8c10bed5916131d027f9bad86b4838e3",
+    "mtime": 1794650539.0948167,
+    "seen": 1794650764.7838817,
+    "ast_hash": "efe1e261bfc425b4e094c21558c7dd10",
     "semantic_hash": ""
   },
   "src/dapp/src/app/manifest.ts": {
@@ -1818,9 +1818,9 @@
     "semantic_hash": ""
   },
   "src/dapp/src/app/page.tsx": {
-    "mtime": 1794631183.8486688,
-    "seen": 1794631381.944213,
-    "ast_hash": "420cc1a3eac930b55a577b20f34676bc",
+    "mtime": 1794645546.9051735,
+    "seen": 1794645659.862271,
+    "ast_hash": "cacdbc1a938c2438b73fb479484f4087",
     "semantic_hash": ""
   },
   "src/dapp/src/app/pasar/[parcelId]/page.tsx": {
@@ -1872,9 +1872,9 @@
     "semantic_hash": ""
   },
   "src/dapp/src/app/register/page.tsx": {
-    "mtime": 1794631183.8564343,
-    "seen": 1794631381.944213,
-    "ast_hash": "d43bd371011a6430ebb7714b77ba5707",
+    "mtime": 1794650549.261344,
+    "seen": 1794650764.7886362,
+    "ast_hash": "5e056599d23e3723cfc7345998db8f86",
     "semantic_hash": ""
   },
   "src/dapp/src/app/rekap/[periode]/page.tsx": {
@@ -1980,15 +1980,15 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/ClosingCtaPanel.tsx": {
-    "mtime": 1794631183.871024,
-    "seen": 1794631381.944213,
-    "ast_hash": "3a58442db3a97432c96e2e781858469b",
+    "mtime": 1794643006.5630126,
+    "seen": 1794643668.692219,
+    "ast_hash": "d2cea3b77b6f3463a7107857a887800f",
     "semantic_hash": ""
   },
   "src/dapp/src/components/DashboardPreviewStrip.tsx": {
-    "mtime": 1794631183.871024,
-    "seen": 1794631381.944213,
-    "ast_hash": "a29069c9ce169b73e4e1fc993bc80eba",
+    "mtime": 1794642591.0137725,
+    "seen": 1794643668.692219,
+    "ast_hash": "4cb729ab6d58d0bda9457f45e8d98501",
     "semantic_hash": ""
   },
   "src/dapp/src/components/FeatureModules.tsx": {
@@ -1998,51 +1998,51 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/FeatureSpotlight.tsx": {
-    "mtime": 1794631183.8755543,
-    "seen": 1794631381.944213,
-    "ast_hash": "f0a15ee601a5caf8952d1d7e72ca37a1",
+    "mtime": 1794642614.743935,
+    "seen": 1794643668.6932201,
+    "ast_hash": "f566419af7add1b98475f013b75fd5b5",
     "semantic_hash": ""
   },
   "src/dapp/src/components/Footer.tsx": {
-    "mtime": 1794631183.876141,
-    "seen": 1794631381.944213,
-    "ast_hash": "b81a2ef410219b19dda0f8ad45c7f13c",
+    "mtime": 1794643028.0490437,
+    "seen": 1794643668.6932201,
+    "ast_hash": "7eb703660e08870b92a43791aa0fc55d",
     "semantic_hash": ""
   },
   "src/dapp/src/components/GetStartedSection.tsx": {
-    "mtime": 1794631183.8766856,
-    "seen": 1794631381.944213,
-    "ast_hash": "4b393179dc53b246991fba1a572bd196",
+    "mtime": 1794642996.0359235,
+    "seen": 1794643668.6932201,
+    "ast_hash": "d723eb3c2e72838ca8950899e2c93096",
     "semantic_hash": ""
   },
   "src/dapp/src/components/HeroSection.tsx": {
-    "mtime": 1794631183.8772366,
-    "seen": 1794631381.944213,
-    "ast_hash": "a4d6bf64a0f0b0e597dafaf9fde2fde3",
+    "mtime": 1794642565.517841,
+    "seen": 1794643668.6932201,
+    "ast_hash": "4361f7d8fe5710542108c530074fb0dc",
     "semantic_hash": ""
   },
   "src/dapp/src/components/InteractiveMapPreview.tsx": {
-    "mtime": 1794631183.8777864,
-    "seen": 1794631381.944213,
-    "ast_hash": "b2e3c107caadc68322a83b6f14cac4b3",
+    "mtime": 1794642709.7429242,
+    "seen": 1794643668.6932201,
+    "ast_hash": "fad37d075ca2d6dd93f0abb368ce20dd",
     "semantic_hash": ""
   },
   "src/dapp/src/components/LiveSimulationSection.tsx": {
-    "mtime": 1794631183.8783362,
-    "seen": 1794631381.944213,
-    "ast_hash": "3b888e26bc6428c2ea22a09b6ef559fe",
+    "mtime": 1794642792.7498932,
+    "seen": 1794643668.6932201,
+    "ast_hash": "4ace1ccdd4da8ff317910e5f52cd8c23",
     "semantic_hash": ""
   },
   "src/dapp/src/components/LoginFormCard.tsx": {
-    "mtime": 1794631183.879438,
-    "seen": 1794631381.944213,
-    "ast_hash": "26a3022661332e1ceceeb817c79e4c93",
+    "mtime": 1794650525.2486167,
+    "seen": 1794650764.7986042,
+    "ast_hash": "ee338f72a7bafb4e9884c51309bcc554",
     "semantic_hash": ""
   },
   "src/dapp/src/components/LottieMascotStage.tsx": {
-    "mtime": 1794631183.8799849,
-    "seen": 1794631381.944213,
-    "ast_hash": "00af272b08bdbe68771eeafb477d08c3",
+    "mtime": 1794650636.246894,
+    "seen": 1794650764.7986042,
+    "ast_hash": "ed41017d50a0a99a4c7de3d36ec605ef",
     "semantic_hash": ""
   },
   "src/dapp/src/components/MagicBento.tsx": {
@@ -2052,15 +2052,15 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/Navbar.tsx": {
-    "mtime": 1794631183.8816535,
-    "seen": 1794631381.944213,
-    "ast_hash": "7353aa327db7df26b9507b6602a8c41e",
+    "mtime": 1794642548.6782131,
+    "seen": 1794643668.6942184,
+    "ast_hash": "243851fab8b1c02e9a39e1050db607c4",
     "semantic_hash": ""
   },
   "src/dapp/src/components/ProcessJourneySection.tsx": {
-    "mtime": 1794631183.8822062,
-    "seen": 1794631381.944213,
-    "ast_hash": "a63e400701c81ac42b69e4f1161d10c4",
+    "mtime": 1794642674.5290794,
+    "seen": 1794643668.6942184,
+    "ast_hash": "ed039903fcd89165bc6e38269abb7c72",
     "semantic_hash": ""
   },
   "src/dapp/src/components/SpecularButton.tsx": {
@@ -2070,15 +2070,15 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/TamperVerificationDemo.tsx": {
-    "mtime": 1794631183.8840122,
-    "seen": 1794631381.944213,
-    "ast_hash": "46a0c22bd94e9f4ae044ffa1704fd46d",
+    "mtime": 1794642976.9787934,
+    "seen": 1794643668.695219,
+    "ast_hash": "02319944bf2540ecb828ed6e8367010d",
     "semantic_hash": ""
   },
   "src/dapp/src/components/ValuePropositionCards.tsx": {
-    "mtime": 1794631183.884566,
-    "seen": 1794631381.944213,
-    "ast_hash": "c3a7c7c6414126f96e718d3110f6f6c0",
+    "mtime": 1794642648.9426,
+    "seen": 1794643668.695219,
+    "ast_hash": "6b4be4e3a8376c91336c7d080b7f9525",
     "semantic_hash": ""
   },
   "src/dapp/src/components/charts/ChartPrimitives.tsx": {
@@ -9953,6 +9953,3192 @@
     "ast_hash": "a30dbec2fb57793f04b7500f16ff57b7",
     "semantic_hash": ""
   },
+  "src/dapp/src/components/ExcbonScrollCanvas.tsx": {
+    "mtime": 1794649641.5485547,
+    "seen": 1794649719.4112809,
+    "ast_hash": "362fa2d7bef17ecd2a242b6e20bc3971",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-001.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "be19f513cf6ddb8193caf588bb388164",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-002.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "9a3239cf5c137f1bd4e5bff226283586",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-003.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "892256595ce7f1b22fff517591b765ed",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-004.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "0e39b4469cd4f2fe54de080cc5e3b8bc",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-005.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "349af6d770f1e704c2682e86b2759f1c",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-006.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "bc85ad0fa942b35bee632f592211498d",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-007.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "9a1bf1943ba612029536cb388564c9da",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-008.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "29198e29c0ca5e7844651f3340325093",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-009.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "7c10c35f92023ff8770baff46be4286a",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-010.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "dc478b04198c4e0d1ea9d053022b0dd6",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-011.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "d5fde9c1b6f546e3fa03b3413d39d381",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-012.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "58cf9549ad6f4550cc19fee912f0a4e1",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-013.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "249958debc317e9a4f84187e957317f9",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-014.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "9c39ae874e234b12bc1431b3cf91744d",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-015.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "ab9d45a68f6a084872c62ec0e2200761",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-016.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "cf3e2ca7828865c3d0f9dcb9bdda8bb4",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-017.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "05b99c2d75630eb9068d92af7e3b1b6b",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-018.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "a3fd1ca4307bd36733dae2def2d8a6c9",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-019.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "3eafbc0ddde17b1dac57f8cc72181981",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-020.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "6e73c53ec73fbacbf5af071b24cf6bec",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-021.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "6df818c87b944878369bcbd2bade7361",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-022.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "5de2846123a9096d5e63fa2d98474e0e",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-023.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "cafa14c39968c28ed3d7e3ad3955662c",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-024.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "667900975d1e334129d73c9b1595ba44",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-025.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "15f4602400aa44b4d468f503ec54026b",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-026.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "fe091a9f18bdb987c242a7e0ac489b4d",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-027.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "7b024e7494636440305b97af20c14129",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-028.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "4a3f86ed4a9cdb66c1d999a11f46fdc0",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-029.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "3592b0b4920ca3df962980503d8b4955",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-030.png": {
+    "mtime": 1794622512.0,
+    "seen": 1794644896.8917837,
+    "ast_hash": "4416244ed9accb823903bedd1be6f862",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-031.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "683a18903dc2845fd8ce9259b8635855",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-032.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "3c50c2a1acf2ba11d564172d6934fe5a",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-033.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "f760448193847018347f73714dd961aa",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-034.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "ca603f268e2adbc81536298196704bf4",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-035.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "291a212f9a93eb44f9d6ddbc1005534e",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-036.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "5e5164b225d8db4724d0782701f326ea",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-037.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "b9f52517f151e651e58867b833a0ef42",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-038.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "ff56c1cc199f9b0d0ac52d990fa808e5",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-039.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "0035199aecd2a02e60f595fc89dc3ff1",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-040.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "f92a5781ae2dd24d24008719a8fb618b",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-041.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "b6bf5aac89f8bfeee05356e5f29744c2",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-042.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "4cddf73ef00f69a7e4c4a80ed5c4fe5a",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-043.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "ee5d3deab2ef36e4210aa8e2e7db13d7",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-044.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "802d628503d60a5ba813b8ae33b7ecc3",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-045.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "8188354545355409f209d237d68c9aef",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-046.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "0379412169327102beb0d608fe9da9f7",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-047.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "14b6323dd4683976b8e52370ca261586",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-048.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "4a1778aea0b68a6d36f2980d81bacb22",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-049.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "dac60727d927bedb3c31b9c39d5c73f5",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/ezgif-frame-050.png": {
+    "mtime": 1794622514.0,
+    "seen": 1794644896.8927875,
+    "ast_hash": "4d28b698bd552b5039f1ac3fd3cca8b0",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-001.webp": {
+    "mtime": 1794647595.1567194,
+    "seen": 1794647767.4674964,
+    "ast_hash": "c4a0814abf169a15b73f1838f841b7e5",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-002.webp": {
+    "mtime": 1794647595.2026584,
+    "seen": 1794647767.4674964,
+    "ast_hash": "391b62cea8a8f3fbea7527286c49b589",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-003.webp": {
+    "mtime": 1794647595.1663973,
+    "seen": 1794647767.4674964,
+    "ast_hash": "02ac0f11ef24d38e67f2a77b256d17aa",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-004.webp": {
+    "mtime": 1794647595.2026584,
+    "seen": 1794647767.4674964,
+    "ast_hash": "d942133426bbabaf10eebd3c3765eb80",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-005.webp": {
+    "mtime": 1794647595.184938,
+    "seen": 1794647767.4674964,
+    "ast_hash": "cbedcd847c97846c47460c570437e93e",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-006.webp": {
+    "mtime": 1794647595.1751645,
+    "seen": 1794647767.4674964,
+    "ast_hash": "4ac6151cdde7c850c0acfe97401e2159",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-007.webp": {
+    "mtime": 1794647595.1978903,
+    "seen": 1794647767.4674964,
+    "ast_hash": "956877ae4400dd6d37bbfd36960630a7",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-008.webp": {
+    "mtime": 1794647595.2136998,
+    "seen": 1794647767.4674964,
+    "ast_hash": "3b6ec4a36d88d2ecef69e7cebbc7d87b",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-009.webp": {
+    "mtime": 1794647595.181219,
+    "seen": 1794647767.4674964,
+    "ast_hash": "9c5e04ff3d2363097dc7fbcf9b35f055",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-010.webp": {
+    "mtime": 1794647595.219718,
+    "seen": 1794647767.4674964,
+    "ast_hash": "f6855097f3a6c099db62d393afde50c3",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-011.webp": {
+    "mtime": 1794647595.1435852,
+    "seen": 1794647767.4674964,
+    "ast_hash": "51c44c2f183b53c6d8afc56ad1c221a8",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-012.webp": {
+    "mtime": 1794647595.1772006,
+    "seen": 1794647767.4674964,
+    "ast_hash": "8325b765ea508c8975d1c3c1b5b4e620",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-013.webp": {
+    "mtime": 1794647595.5332065,
+    "seen": 1794647767.4674964,
+    "ast_hash": "c84ec65aadec3a396d99ea0d5663c5b8",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-014.webp": {
+    "mtime": 1794647595.5254347,
+    "seen": 1794647767.4674964,
+    "ast_hash": "064e094e661e46dc86025d11f403554a",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-015.webp": {
+    "mtime": 1794647595.5352118,
+    "seen": 1794647767.4674964,
+    "ast_hash": "7eeea0176caa80e2e22e5b4b75c66e4e",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-016.webp": {
+    "mtime": 1794647595.5352118,
+    "seen": 1794647767.4674964,
+    "ast_hash": "86de8208e084b9ddd963a9fd81f2d197",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-017.webp": {
+    "mtime": 1794647595.5489488,
+    "seen": 1794647767.4674964,
+    "ast_hash": "08bdd2dd915b60666ffabc9f75b5bc57",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-018.webp": {
+    "mtime": 1794647595.5469427,
+    "seen": 1794647767.4674964,
+    "ast_hash": "1745304f20e487382bf43ec6c9a96826",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-019.webp": {
+    "mtime": 1794647595.566753,
+    "seen": 1794647767.4674964,
+    "ast_hash": "77ec025c95718292bb5542e526af34e2",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-020.webp": {
+    "mtime": 1794647595.5627432,
+    "seen": 1794647767.4674964,
+    "ast_hash": "0cc7cb197a65d37e282b6ec0f1687706",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-021.webp": {
+    "mtime": 1794647595.582553,
+    "seen": 1794647767.4674964,
+    "ast_hash": "1adeaea013571b8877321f46739beae1",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-022.webp": {
+    "mtime": 1794647595.5727692,
+    "seen": 1794647767.4674964,
+    "ast_hash": "0edc690429e028225fd69ece3b297fc1",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-023.webp": {
+    "mtime": 1794647595.582553,
+    "seen": 1794647767.4674964,
+    "ast_hash": "ee93de9c409884a1d9e8f4e9c4c8f6dd",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-024.webp": {
+    "mtime": 1794647595.5845587,
+    "seen": 1794647767.4674964,
+    "ast_hash": "129c61de3687d263ae2706a10f6db4a6",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-025.webp": {
+    "mtime": 1794647595.8835852,
+    "seen": 1794647767.4674964,
+    "ast_hash": "b1531f85a339633a7fb2800c2891977b",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-026.webp": {
+    "mtime": 1794647595.891618,
+    "seen": 1794647767.4674964,
+    "ast_hash": "bce6d7577c8ea9245a4f4582a111fa93",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-027.webp": {
+    "mtime": 1794647595.9033997,
+    "seen": 1794647767.4674964,
+    "ast_hash": "bba967601410ed71858681a28df72603",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-028.webp": {
+    "mtime": 1794647595.931174,
+    "seen": 1794647767.4674964,
+    "ast_hash": "36f532271328ce73d715a635ce7bfb29",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-029.webp": {
+    "mtime": 1794647595.925192,
+    "seen": 1794647767.4674964,
+    "ast_hash": "aa62c22216c9c7ee9e6a03274c9b08ca",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-030.webp": {
+    "mtime": 1794647595.9182582,
+    "seen": 1794647767.4674964,
+    "ast_hash": "f23c02b96df8b10ae0e79a3f1f7e661a",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-031.webp": {
+    "mtime": 1794647595.9324827,
+    "seen": 1794647767.4674964,
+    "ast_hash": "f5f97e4fd2a04ff9d370911716b19505",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-032.webp": {
+    "mtime": 1794647595.938473,
+    "seen": 1794647767.4674964,
+    "ast_hash": "de25eacb481cd20553624422d4af4e48",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-033.webp": {
+    "mtime": 1794647595.9524884,
+    "seen": 1794647767.4674964,
+    "ast_hash": "9677ae343bfcbcbfe5f8ac3294ac1063",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-034.webp": {
+    "mtime": 1794647595.9524884,
+    "seen": 1794647767.4674964,
+    "ast_hash": "1b6600fc43cbd64473801227d50d1d09",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-035.webp": {
+    "mtime": 1794647595.9797614,
+    "seen": 1794647767.4674964,
+    "ast_hash": "a58cdd61d2f3f77c43ce6fdda2f9dadd",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-036.webp": {
+    "mtime": 1794647595.996826,
+    "seen": 1794647767.4674964,
+    "ast_hash": "0a23b3e853186da7d2255d7f3e2ccf7c",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-037.webp": {
+    "mtime": 1794647596.2673159,
+    "seen": 1794647767.4674964,
+    "ast_hash": "213ed76e3bc51f912770d1b59ea18e1c",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-038.webp": {
+    "mtime": 1794647596.2943175,
+    "seen": 1794647767.4674964,
+    "ast_hash": "9e2a4e42ee81baacc54448149d390e05",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-039.webp": {
+    "mtime": 1794647596.2861786,
+    "seen": 1794647767.4674964,
+    "ast_hash": "336bd65534cc721337cd771cf9ed4c0d",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-040.webp": {
+    "mtime": 1794647596.295319,
+    "seen": 1794647767.4674964,
+    "ast_hash": "5cc47bbcee18f7e593a20073bf8f2819",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-041.webp": {
+    "mtime": 1794647596.3408425,
+    "seen": 1794647767.4674964,
+    "ast_hash": "4f9c01120d4c6d87b22a602d1923f7e7",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-042.webp": {
+    "mtime": 1794647596.3267252,
+    "seen": 1794647767.4674964,
+    "ast_hash": "9d215a8b79c8656747bdc90944b7420a",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-043.webp": {
+    "mtime": 1794647596.318128,
+    "seen": 1794647767.4674964,
+    "ast_hash": "e80c0b3c21a69fa7b6478ee21ec25a91",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-044.webp": {
+    "mtime": 1794647596.3408425,
+    "seen": 1794647767.4674964,
+    "ast_hash": "9f398bcb57cfcc8c0cb367b36bc70cfe",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-045.webp": {
+    "mtime": 1794647596.3308108,
+    "seen": 1794647767.4674964,
+    "ast_hash": "944fbcc9ffde4d8c1b1833aecef4d94f",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-046.webp": {
+    "mtime": 1794647596.3845718,
+    "seen": 1794647767.4674964,
+    "ast_hash": "8a0009d23be9e8261d66bc7fccbe18cd",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-047.webp": {
+    "mtime": 1794647596.360103,
+    "seen": 1794647767.4674964,
+    "ast_hash": "d88585b37336a1fcf40edf1d2766c4bc",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-048.webp": {
+    "mtime": 1794647596.4111416,
+    "seen": 1794647767.4674964,
+    "ast_hash": "1987e7483c36c9e8ee24fdaec2049132",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-049.webp": {
+    "mtime": 1794647596.6828597,
+    "seen": 1794647767.4674964,
+    "ast_hash": "c66b98e127dd0f823e6c00d3ac2a3f0c",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-050.webp": {
+    "mtime": 1794647596.6511548,
+    "seen": 1794647767.4674964,
+    "ast_hash": "0ec1857f9e304180d21f33842bfdc715",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-051.webp": {
+    "mtime": 1794647596.6922364,
+    "seen": 1794647767.4674964,
+    "ast_hash": "cdfbe825669754a7b0767a80db3ceb94",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-052.webp": {
+    "mtime": 1794647596.6922364,
+    "seen": 1794647767.4674964,
+    "ast_hash": "78cba50a6bc16f8c66703ca61990268d",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-053.webp": {
+    "mtime": 1794647596.751934,
+    "seen": 1794647767.4674964,
+    "ast_hash": "bfd33a6e5613c7de6e112303a4537727",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-054.webp": {
+    "mtime": 1794647596.7311432,
+    "seen": 1794647767.4674964,
+    "ast_hash": "d9b4b5537f0b5cd2a206a62adcff8b23",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-055.webp": {
+    "mtime": 1794647596.7106075,
+    "seen": 1794647767.4674964,
+    "ast_hash": "1c65a83bc6ba9bd7a67d74799801f6b4",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-056.webp": {
+    "mtime": 1794647596.751934,
+    "seen": 1794647767.4674964,
+    "ast_hash": "c6a5e90187315669d88ee8e497fbe3ae",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-057.webp": {
+    "mtime": 1794647596.7391715,
+    "seen": 1794647767.4674964,
+    "ast_hash": "52d2e8339e332fa7e8ef9839cc0db67f",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-058.webp": {
+    "mtime": 1794647596.7391715,
+    "seen": 1794647767.4674964,
+    "ast_hash": "24532d3eb50575082906b36d8dc37dd7",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-059.webp": {
+    "mtime": 1794647596.7759817,
+    "seen": 1794647767.4674964,
+    "ast_hash": "b79ee7644e30a3a1924d46e2b5884bc8",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-060.webp": {
+    "mtime": 1794647596.8117132,
+    "seen": 1794647767.4674964,
+    "ast_hash": "3c1c127b4c168e22ec013fd5a471d7d0",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-061.webp": {
+    "mtime": 1794647597.0457766,
+    "seen": 1794647767.4674964,
+    "ast_hash": "e173f8789804d87ca7bedb99c76c6e49",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-062.webp": {
+    "mtime": 1794647597.0983887,
+    "seen": 1794647767.4674964,
+    "ast_hash": "e77488df649e27ac1b8b8f73a9440afb",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-063.webp": {
+    "mtime": 1794647597.1087751,
+    "seen": 1794647767.4674964,
+    "ast_hash": "022d60a5dd7a35d7553626a0f89dda87",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-064.webp": {
+    "mtime": 1794647597.0766265,
+    "seen": 1794647767.4674964,
+    "ast_hash": "65726b33152e6748109526ed9a093e4c",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-065.webp": {
+    "mtime": 1794647597.0833323,
+    "seen": 1794647767.4674964,
+    "ast_hash": "b6264269d81a05c27cc3e3db0373bb2b",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-066.webp": {
+    "mtime": 1794647597.148419,
+    "seen": 1794647767.4674964,
+    "ast_hash": "78f46a796daf58d0b373e3b5502f56b0",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-067.webp": {
+    "mtime": 1794647597.1445613,
+    "seen": 1794647767.4674964,
+    "ast_hash": "f43a2fabf2f767e1e7af32a0cec172c5",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-068.webp": {
+    "mtime": 1794647597.165145,
+    "seen": 1794647767.4674964,
+    "ast_hash": "0ebe175a0785bbed37df7185ef7f69e2",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-069.webp": {
+    "mtime": 1794647597.1193953,
+    "seen": 1794647767.4674964,
+    "ast_hash": "678e546409331644a2af430f01005587",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-070.webp": {
+    "mtime": 1794647597.1173859,
+    "seen": 1794647767.4674964,
+    "ast_hash": "7f16400fdc90d0b2de3bc4b1f71a2a70",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-071.webp": {
+    "mtime": 1794647597.2052915,
+    "seen": 1794647767.4674964,
+    "ast_hash": "3eb0c6a904aa1a5b342ecd7c6d268003",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-072.webp": {
+    "mtime": 1794647597.1975856,
+    "seen": 1794647767.4674964,
+    "ast_hash": "35f20ffdcc5f956c188c9ca549217959",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-073.webp": {
+    "mtime": 1794647597.4356768,
+    "seen": 1794647767.4674964,
+    "ast_hash": "01436f277f11b2aa0697ceb1573f2b94",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-074.webp": {
+    "mtime": 1794647597.4849348,
+    "seen": 1794647767.4674964,
+    "ast_hash": "2675cdcb33bc076af41ae1b262312b54",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-075.webp": {
+    "mtime": 1794647597.4751666,
+    "seen": 1794647767.4674964,
+    "ast_hash": "f04e46ffd59965550fa16d7b9427e818",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-076.webp": {
+    "mtime": 1794647597.4849348,
+    "seen": 1794647767.4674964,
+    "ast_hash": "c768e1e93e7a0a24e504b85f5b2b803c",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-077.webp": {
+    "mtime": 1794647597.4829297,
+    "seen": 1794647767.4674964,
+    "ast_hash": "6a2d0f962ddfd451cf78713ed749798c",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-078.webp": {
+    "mtime": 1794647597.4969857,
+    "seen": 1794647767.4674964,
+    "ast_hash": "9d232ec609cc074591784ec46daa1f25",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-079.webp": {
+    "mtime": 1794647597.512774,
+    "seen": 1794647767.4674964,
+    "ast_hash": "89b1588a6901c7777cf6cc13b184b538",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-080.webp": {
+    "mtime": 1794647597.522046,
+    "seen": 1794647767.4674964,
+    "ast_hash": "9ec614cf9bcd9f1d08a63d392b60ed27",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-081.webp": {
+    "mtime": 1794647597.5421572,
+    "seen": 1794647767.4674964,
+    "ast_hash": "d32320ecc4a8f5bfafd05ec39f7936db",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-082.webp": {
+    "mtime": 1794647597.5585752,
+    "seen": 1794647767.4674964,
+    "ast_hash": "7cc7cdd7740695940a35b117cd216aaa",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-083.webp": {
+    "mtime": 1794647597.5720587,
+    "seen": 1794647767.4674964,
+    "ast_hash": "6d5664cf180e1f91f64a6ef3c6be6d2c",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-084.webp": {
+    "mtime": 1794647597.568904,
+    "seen": 1794647767.4674964,
+    "ast_hash": "b023f6d52cca8bf1f91376d4e820cbfc",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-085.webp": {
+    "mtime": 1794647597.8052819,
+    "seen": 1794647767.4674964,
+    "ast_hash": "2340a71d435f9041970fda82b9a1ef9b",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-086.webp": {
+    "mtime": 1794647597.8839366,
+    "seen": 1794647767.4674964,
+    "ast_hash": "0d218a0b5e4b43b28522f95b9689543d",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-087.webp": {
+    "mtime": 1794647597.9091756,
+    "seen": 1794647767.4674964,
+    "ast_hash": "a240d68814feabb7071220a52cc13900",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-088.webp": {
+    "mtime": 1794647597.8642316,
+    "seen": 1794647767.4674964,
+    "ast_hash": "500a0f7b7408b5f83c4104b8e0871f27",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-089.webp": {
+    "mtime": 1794647597.8605397,
+    "seen": 1794647767.4674964,
+    "ast_hash": "a16b0802cc726943e8204f007c545362",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-090.webp": {
+    "mtime": 1794647597.9515655,
+    "seen": 1794647767.4674964,
+    "ast_hash": "5197f3297aef868d3a7e6205c4f5cea4",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-091.webp": {
+    "mtime": 1794647597.896629,
+    "seen": 1794647767.4674964,
+    "ast_hash": "ff5e3f9b866a4d4d0d4364f23521bcf7",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-092.webp": {
+    "mtime": 1794647597.9133725,
+    "seen": 1794647767.4674964,
+    "ast_hash": "f596daf3f8ff88552a43f7b4519354d3",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-093.webp": {
+    "mtime": 1794647597.9426918,
+    "seen": 1794647767.4674964,
+    "ast_hash": "04c3ef4e9ed09faa403d5e0127ec8e1d",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-094.webp": {
+    "mtime": 1794647597.9595883,
+    "seen": 1794647767.4674964,
+    "ast_hash": "0ae0ab3018e8bb8a059886df684f6425",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-095.webp": {
+    "mtime": 1794647597.9595883,
+    "seen": 1794647767.4674964,
+    "ast_hash": "9c9c111b7fad34ead71b6930d1d6fb7c",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-096.webp": {
+    "mtime": 1794647597.9957676,
+    "seen": 1794647767.4674964,
+    "ast_hash": "8b634e9a55a475dfc2900f191ba54b44",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-097.webp": {
+    "mtime": 1794647598.215734,
+    "seen": 1794647767.4674964,
+    "ast_hash": "2319bb67efe82e66fd6afedd8f7be315",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-098.webp": {
+    "mtime": 1794647598.289042,
+    "seen": 1794647767.4674964,
+    "ast_hash": "abfbc25f5b2f4663a3bf1d83b35082fe",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-099.webp": {
+    "mtime": 1794647598.3129246,
+    "seen": 1794647767.4674964,
+    "ast_hash": "11e48be2d4493a6c450ec59c5ff4d174",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-100.webp": {
+    "mtime": 1794647598.343752,
+    "seen": 1794647767.4674964,
+    "ast_hash": "4f75af29a446e6c7833b6d203428eed1",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-101.webp": {
+    "mtime": 1794647598.343752,
+    "seen": 1794647767.4674964,
+    "ast_hash": "6bf693bd35b3e086f91ce5b80f049bcd",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-102.webp": {
+    "mtime": 1794647598.3507557,
+    "seen": 1794647767.4674964,
+    "ast_hash": "aa75ffd623047febd5a00d82f8cf9cc6",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-103.webp": {
+    "mtime": 1794647598.3771517,
+    "seen": 1794647767.4674964,
+    "ast_hash": "a524fa767087916a8fe1c00409f97931",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-104.webp": {
+    "mtime": 1794647598.4151266,
+    "seen": 1794647767.4674964,
+    "ast_hash": "40afa7a0f3f08e359f5ddcf7312cde36",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-105.webp": {
+    "mtime": 1794647598.3671145,
+    "seen": 1794647767.4674964,
+    "ast_hash": "983104dea1d3ef8b2920f587e4d089ac",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-106.webp": {
+    "mtime": 1794647598.398376,
+    "seen": 1794647767.4674964,
+    "ast_hash": "5762134f4d8ca1fbd4ca9debff443c99",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-107.webp": {
+    "mtime": 1794647598.3818917,
+    "seen": 1794647767.4674964,
+    "ast_hash": "cd35688df3262785d04638e96ae81708",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-108.webp": {
+    "mtime": 1794647598.4482732,
+    "seen": 1794647767.4674964,
+    "ast_hash": "1a45f0d6e7d052d6b26cc940b228b51e",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-109.webp": {
+    "mtime": 1794647598.6336746,
+    "seen": 1794647767.4674964,
+    "ast_hash": "6fdefd5970baccbe13ca850648d45e84",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-110.webp": {
+    "mtime": 1794647598.7376368,
+    "seen": 1794647767.4674964,
+    "ast_hash": "ff47fa48388280b2cc6d4bf80279de86",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-111.webp": {
+    "mtime": 1794647598.7829206,
+    "seen": 1794647767.4674964,
+    "ast_hash": "d0d0d7ee09e3d5c30aeaf4186e044692",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-112.webp": {
+    "mtime": 1794647598.7849298,
+    "seen": 1794647767.4674964,
+    "ast_hash": "4e718f9f73fe9765bf1b01c26a8ff16e",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-113.webp": {
+    "mtime": 1794647598.7697687,
+    "seen": 1794647767.4674964,
+    "ast_hash": "13d011d1434dd6a5c66ed6463826d468",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-114.webp": {
+    "mtime": 1794647598.7829206,
+    "seen": 1794647767.4674964,
+    "ast_hash": "0eef12d88d3f81050b64b8f92803154d",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-115.webp": {
+    "mtime": 1794647598.8612237,
+    "seen": 1794647767.4674964,
+    "ast_hash": "9d08de2172dcdf88a7d78f284546e78d",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-116.webp": {
+    "mtime": 1794647598.8718421,
+    "seen": 1794647767.4674964,
+    "ast_hash": "8fa77cc690fcf5ea4a50afa9ad09c527",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-117.webp": {
+    "mtime": 1794647598.8414245,
+    "seen": 1794647767.4674964,
+    "ast_hash": "3baa35c750eb6c219885a3661a6fec79",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-118.webp": {
+    "mtime": 1794647598.839414,
+    "seen": 1794647767.4674964,
+    "ast_hash": "0b9e71f176bcaac8346834cecb01ac1d",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-119.webp": {
+    "mtime": 1794647598.8925383,
+    "seen": 1794647767.4674964,
+    "ast_hash": "125aca993111f9884bf5d3e8a22e0282",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-120.webp": {
+    "mtime": 1794647598.919836,
+    "seen": 1794647767.4674964,
+    "ast_hash": "c1f77518aab1d0bb0c640ae0ab50eb0f",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-121.webp": {
+    "mtime": 1794647599.048834,
+    "seen": 1794647767.4674964,
+    "ast_hash": "74683c4589a92c6c24c1d33844531b8e",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-122.webp": {
+    "mtime": 1794647599.208644,
+    "seen": 1794647767.4674964,
+    "ast_hash": "c5035e07f9d0afc89699945fb40f429b",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-123.webp": {
+    "mtime": 1794647599.2026253,
+    "seen": 1794647767.4674964,
+    "ast_hash": "42ecea486d668d8d74aedfeace41f8c6",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-124.webp": {
+    "mtime": 1794647599.1908393,
+    "seen": 1794647767.4674964,
+    "ast_hash": "2ae76b0c274665eb2cf7726a877ed185",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-125.webp": {
+    "mtime": 1794647599.1848176,
+    "seen": 1794647767.4674964,
+    "ast_hash": "458adc94a4dd29c836b3a1b79196e0b8",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-126.webp": {
+    "mtime": 1794647599.1548245,
+    "seen": 1794647767.4674964,
+    "ast_hash": "8aaaf7d5ce419bd05c8abcccfefd8ae1",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-127.webp": {
+    "mtime": 1794647599.2124002,
+    "seen": 1794647767.4674964,
+    "ast_hash": "f9d133b3873da036868b00ac618f65f4",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-128.webp": {
+    "mtime": 1794647599.21842,
+    "seen": 1794647767.4674964,
+    "ast_hash": "707e17651e4aaf1152ef299acb662bae",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-129.webp": {
+    "mtime": 1794647599.2665417,
+    "seen": 1794647767.4674964,
+    "ast_hash": "eaabdada6ac5da802eccaac8c4a4f8d1",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-130.webp": {
+    "mtime": 1794647599.2580137,
+    "seen": 1794647767.4674964,
+    "ast_hash": "0223b090c53a2dc40db6f8f413a54868",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-131.webp": {
+    "mtime": 1794647599.3102057,
+    "seen": 1794647767.4674964,
+    "ast_hash": "0a9a9597b42047eaa86d2d1fc6df4370",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-132.webp": {
+    "mtime": 1794647599.3195598,
+    "seen": 1794647767.4674964,
+    "ast_hash": "a172b2ea421886ad3fc1f0e33cc084c8",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-133.webp": {
+    "mtime": 1794647599.441746,
+    "seen": 1794647767.4674964,
+    "ast_hash": "d76d0da386372f557d6e4848a591ba7c",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-134.webp": {
+    "mtime": 1794647599.5457416,
+    "seen": 1794647767.4674964,
+    "ast_hash": "a03b78894f2e94a3e03179f6e73ba303",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-135.webp": {
+    "mtime": 1794647599.5557644,
+    "seen": 1794647767.4674964,
+    "ast_hash": "4748ebe76b9b5da90124e4fc60a58dc4",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-136.webp": {
+    "mtime": 1794647599.5932283,
+    "seen": 1794647767.4674964,
+    "ast_hash": "2c35c25a038c319dbb4d7535835abc77",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-137.webp": {
+    "mtime": 1794647599.592223,
+    "seen": 1794647767.4674964,
+    "ast_hash": "941d11d97ca59353dffbb7e44c5001cf",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-138.webp": {
+    "mtime": 1794647599.5952332,
+    "seen": 1794647767.4674964,
+    "ast_hash": "a7469bdf4c10dbdd96ada9d8d5e1ff26",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-139.webp": {
+    "mtime": 1794647599.5952332,
+    "seen": 1794647767.4674964,
+    "ast_hash": "4aa26ec1524a7a48d365388775c840e2",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-140.webp": {
+    "mtime": 1794647599.603261,
+    "seen": 1794647767.4674964,
+    "ast_hash": "7f2f517f11d47cd7c8807459906d578d",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-141.webp": {
+    "mtime": 1794647599.7002842,
+    "seen": 1794647767.4674964,
+    "ast_hash": "2feec5ed42729fdd8852a074a2ac1931",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-142.webp": {
+    "mtime": 1794647599.652756,
+    "seen": 1794647767.4674964,
+    "ast_hash": "f0aa777bb6e9d8e1e37cb1de4bb66a3d",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-143.webp": {
+    "mtime": 1794647599.689139,
+    "seen": 1794647767.4674964,
+    "ast_hash": "76e7edae1bd946da56d93e145fe3ea94",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-144.webp": {
+    "mtime": 1794647599.7123182,
+    "seen": 1794647767.4674964,
+    "ast_hash": "7b105ddf6e23286a3d87830b1b83c8d4",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-145.webp": {
+    "mtime": 1794647599.818689,
+    "seen": 1794647767.4674964,
+    "ast_hash": "4b7f15e4dfe4e1ee0b50c7d337c2088a",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-146.webp": {
+    "mtime": 1794647599.9496405,
+    "seen": 1794647767.4674964,
+    "ast_hash": "6be3c667834164c8b0e6321c2eff40b8",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-147.webp": {
+    "mtime": 1794647599.9674356,
+    "seen": 1794647767.4674964,
+    "ast_hash": "f43bce947103b163e6a8cf08d4b6f3b1",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-148.webp": {
+    "mtime": 1794647599.976542,
+    "seen": 1794647767.4674964,
+    "ast_hash": "cc6f45c7808f1a970e49a4e5c858815b",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-149.webp": {
+    "mtime": 1794647599.9871671,
+    "seen": 1794647767.4674964,
+    "ast_hash": "6fcee103119dc2a8d01912778ce0d05f",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-150.webp": {
+    "mtime": 1794647599.9861674,
+    "seen": 1794647767.4674964,
+    "ast_hash": "a27b4c195d3394969e2108dc81734a3a",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-151.webp": {
+    "mtime": 1794647599.9975588,
+    "seen": 1794647767.4674964,
+    "ast_hash": "6a4cc84ee03e7caa06d5bddb2ccc6511",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-152.webp": {
+    "mtime": 1794647599.9915307,
+    "seen": 1794647767.4674964,
+    "ast_hash": "49bd5e99bccd3dc751fd6d4ab6a8cab5",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-153.webp": {
+    "mtime": 1794647600.0397704,
+    "seen": 1794647767.4674964,
+    "ast_hash": "5e4d8f343094636d9ae127e883f29d27",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-154.webp": {
+    "mtime": 1794647600.1025069,
+    "seen": 1794647767.4674964,
+    "ast_hash": "d1536cb062a810d4c7655192c232e19b",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-155.webp": {
+    "mtime": 1794647600.1175964,
+    "seen": 1794647767.4674964,
+    "ast_hash": "664c16e326cb2e849f6e8e3af406bf1a",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-156.webp": {
+    "mtime": 1794647600.1323116,
+    "seen": 1794647767.4674964,
+    "ast_hash": "7947e66c95f54ce58c062cb6a57ec1c6",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-157.webp": {
+    "mtime": 1794647600.2606812,
+    "seen": 1794647767.4674964,
+    "ast_hash": "3c2986aed137b4eb77f53ed7f7d3e44d",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-158.webp": {
+    "mtime": 1794647600.3599315,
+    "seen": 1794647767.4674964,
+    "ast_hash": "ff3194f1f07ec9d2f617b78d57622e51",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-159.webp": {
+    "mtime": 1794647600.3927076,
+    "seen": 1794647767.4674964,
+    "ast_hash": "3f48fd890db88d11dbd1a397da69573e",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-160.webp": {
+    "mtime": 1794647600.3761919,
+    "seen": 1794647767.4674964,
+    "ast_hash": "c52eb633ce3644741eaf8bbc875704d6",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-161.webp": {
+    "mtime": 1794647600.3837402,
+    "seen": 1794647767.4674964,
+    "ast_hash": "9a73b5d678bfe77cbccf9b9598346f89",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-162.webp": {
+    "mtime": 1794647600.428053,
+    "seen": 1794647767.4674964,
+    "ast_hash": "954206bdea353f4315bfb4506dedcd6c",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-163.webp": {
+    "mtime": 1794647600.400488,
+    "seen": 1794647767.4674964,
+    "ast_hash": "3883af9395f6b392e0229472eb3d3872",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-164.webp": {
+    "mtime": 1794647600.4534335,
+    "seen": 1794647767.4674964,
+    "ast_hash": "0c2983c48100adf280dc2bd0b825e223",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-165.webp": {
+    "mtime": 1794647600.5034318,
+    "seen": 1794647767.4674964,
+    "ast_hash": "6cbc8da6630a252a616c223d27a56dc9",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-166.webp": {
+    "mtime": 1794647600.5284154,
+    "seen": 1794647767.4674964,
+    "ast_hash": "5a9f8fc81c4856ffd90d5900d72dcfc3",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-167.webp": {
+    "mtime": 1794647600.541141,
+    "seen": 1794647767.4674964,
+    "ast_hash": "485d3bae65bb89e69ef22bf0369ce598",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-168.webp": {
+    "mtime": 1794647600.5948324,
+    "seen": 1794647767.4674964,
+    "ast_hash": "471113c8b898b8dfa2a1436b49378593",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-169.webp": {
+    "mtime": 1794647600.6752486,
+    "seen": 1794647767.4674964,
+    "ast_hash": "1a657666c2bc68e10c28c746de4ffddf",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-170.webp": {
+    "mtime": 1794647600.8123572,
+    "seen": 1794647767.4674964,
+    "ast_hash": "4c3761169162132091b71f7eb0b0d88f",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-171.webp": {
+    "mtime": 1794647600.7790964,
+    "seen": 1794647767.4674964,
+    "ast_hash": "5afda31925d21da6e13fe9003e7e809c",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-172.webp": {
+    "mtime": 1794647600.788035,
+    "seen": 1794647767.4674964,
+    "ast_hash": "9eeb6cef3c3aa8519427abc6d986c6df",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-173.webp": {
+    "mtime": 1794647600.810352,
+    "seen": 1794647767.4674964,
+    "ast_hash": "b6d6eed2747897226cd28cdb0b62201b",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-174.webp": {
+    "mtime": 1794647600.798458,
+    "seen": 1794647767.4674964,
+    "ast_hash": "c4b43c2d3319b752eb4e81066a11709e",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-175.webp": {
+    "mtime": 1794647600.8765893,
+    "seen": 1794647767.4674964,
+    "ast_hash": "039122b9bbd767f6244124282095b343",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-176.webp": {
+    "mtime": 1794647600.8785954,
+    "seen": 1794647767.4674964,
+    "ast_hash": "85806fdf5a8d2b191134caad296db659",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-177.webp": {
+    "mtime": 1794647600.958086,
+    "seen": 1794647767.4674964,
+    "ast_hash": "fdb0b281a891ea378ee0a2bbc5d50590",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-178.webp": {
+    "mtime": 1794647600.9789975,
+    "seen": 1794647767.4674964,
+    "ast_hash": "2211e76ba8c0b4da17eb244dbef6a823",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-179.webp": {
+    "mtime": 1794647600.998636,
+    "seen": 1794647767.4674964,
+    "ast_hash": "d181c197ba4574b531adfc41925f3228",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-180.webp": {
+    "mtime": 1794647601.0513299,
+    "seen": 1794647767.4674964,
+    "ast_hash": "e7cab88d08de9c36a56418dd727a16a6",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-181.webp": {
+    "mtime": 1794647601.1072183,
+    "seen": 1794647767.4674964,
+    "ast_hash": "fe256b8ec32b75f441603b4d83d52df9",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-182.webp": {
+    "mtime": 1794647601.2489915,
+    "seen": 1794647767.4674964,
+    "ast_hash": "52d4dfbb41b605e869681e102d1af7c7",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-183.webp": {
+    "mtime": 1794647601.2111223,
+    "seen": 1794647767.4674964,
+    "ast_hash": "f5c962c98d753c36b98bad76e1b82c44",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-184.webp": {
+    "mtime": 1794647601.220759,
+    "seen": 1794647767.4674964,
+    "ast_hash": "f82c6befdfef71cd85a04ec98c435ece",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-185.webp": {
+    "mtime": 1794647601.258427,
+    "seen": 1794647767.4674964,
+    "ast_hash": "4397d07c1fa494f8f48627dcc0042010",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-186.webp": {
+    "mtime": 1794647601.2317865,
+    "seen": 1794647767.4674964,
+    "ast_hash": "d480cbf3c089019cd5f8a70d51b00ea0",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-187.webp": {
+    "mtime": 1794647601.3405612,
+    "seen": 1794647767.4674964,
+    "ast_hash": "debb03b091619302b4fff0beab24a56b",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-188.webp": {
+    "mtime": 1794647601.3207705,
+    "seen": 1794647767.4674964,
+    "ast_hash": "d1d93552069d97a0783f3f387e7f0438",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-189.webp": {
+    "mtime": 1794647601.3963137,
+    "seen": 1794647767.4674964,
+    "ast_hash": "67c43a1e038763153bf68f147925f94b",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-190.webp": {
+    "mtime": 1794647601.4378858,
+    "seen": 1794647767.4674964,
+    "ast_hash": "8eb675f4309bf7c9d2c26b3e872e9416",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-191.webp": {
+    "mtime": 1794647601.4691987,
+    "seen": 1794647767.4674964,
+    "ast_hash": "3f1bcc4a4f43dcb65342961792e91335",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-192.webp": {
+    "mtime": 1794647601.4947503,
+    "seen": 1794647767.4674964,
+    "ast_hash": "53a83543d4f3b1d50a52809591c16a41",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-193.webp": {
+    "mtime": 1794647601.516545,
+    "seen": 1794647767.4674964,
+    "ast_hash": "eecae5a76e35b6aa4397873cfa8712cc",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-194.webp": {
+    "mtime": 1794647601.6244774,
+    "seen": 1794647767.4674964,
+    "ast_hash": "04ec6db12640545de6f79d066681b8fa",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-195.webp": {
+    "mtime": 1794647601.639231,
+    "seen": 1794647767.4674964,
+    "ast_hash": "9e59423dadef51258fb3c40d74fb1f3a",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-196.webp": {
+    "mtime": 1794647601.646252,
+    "seen": 1794647767.4674964,
+    "ast_hash": "d32a7a9cc406a9b08418af4582468f57",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-197.webp": {
+    "mtime": 1794647601.664493,
+    "seen": 1794647767.4674964,
+    "ast_hash": "c51031e8913c2f0fd5d5dc61bc75593c",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-198.webp": {
+    "mtime": 1794647601.6737385,
+    "seen": 1794647767.4674964,
+    "ast_hash": "3544d07dddaa31d7f15b20734a8d4153",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-199.webp": {
+    "mtime": 1794647601.7563646,
+    "seen": 1794647767.4674964,
+    "ast_hash": "3f3670e549b8a4e40fbb5131441836d5",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-200.webp": {
+    "mtime": 1794647601.7597404,
+    "seen": 1794647767.4674964,
+    "ast_hash": "dd528e6a1f4b9980da4fed62c5239549",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-201.webp": {
+    "mtime": 1794647601.8443522,
+    "seen": 1794647767.4674964,
+    "ast_hash": "d620559d27973f6903b15d1c5a39a8a1",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-202.webp": {
+    "mtime": 1794647601.894813,
+    "seen": 1794647767.4674964,
+    "ast_hash": "039d80bd1874f5b100effcfb2ab0b264",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-203.webp": {
+    "mtime": 1794647601.9301162,
+    "seen": 1794647767.4674964,
+    "ast_hash": "0f8af7f4c8046c7b5a97db1d6f43ab0d",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-204.webp": {
+    "mtime": 1794647601.9537005,
+    "seen": 1794647767.4674964,
+    "ast_hash": "34ce70fbea2176f006bfeece9f74b166",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-205.webp": {
+    "mtime": 1794647601.936009,
+    "seen": 1794647767.4674964,
+    "ast_hash": "453784e0c10e0d3a97a156ed4e4193fe",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-206.webp": {
+    "mtime": 1794647602.0481012,
+    "seen": 1794647767.4674964,
+    "ast_hash": "8b21bbc89437797e6f83dffd30363256",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-207.webp": {
+    "mtime": 1794647602.059581,
+    "seen": 1794647767.4674964,
+    "ast_hash": "18335367e43784de8c46a24b1c73ba0b",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-208.webp": {
+    "mtime": 1794647602.0686376,
+    "seen": 1794647767.4674964,
+    "ast_hash": "10e38b7a0a51f9b3438775ee53833301",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-209.webp": {
+    "mtime": 1794647602.0882416,
+    "seen": 1794647767.4674964,
+    "ast_hash": "0961839992a5d2e398aa32ad3500df84",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-210.webp": {
+    "mtime": 1794647602.1029356,
+    "seen": 1794647767.4674964,
+    "ast_hash": "3b82cc3199a7c795d4e85bfb61ec9025",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-211.webp": {
+    "mtime": 1794647602.1970682,
+    "seen": 1794647767.4674964,
+    "ast_hash": "11794ee96621ed5089bfc39172b99fc9",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-212.webp": {
+    "mtime": 1794647602.1801887,
+    "seen": 1794647767.4674964,
+    "ast_hash": "ce528805ba52f3930f85e79ba2ccd1b4",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-213.webp": {
+    "mtime": 1794647602.2965226,
+    "seen": 1794647767.4674964,
+    "ast_hash": "796863e2a5e2de33bf7b5992194b5339",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-214.webp": {
+    "mtime": 1794647602.3493018,
+    "seen": 1794647767.4674964,
+    "ast_hash": "d7e79b3da345c08fbf758c5a1c127ac7",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-215.webp": {
+    "mtime": 1794647602.3770418,
+    "seen": 1794647767.4674964,
+    "ast_hash": "3d8bf1504cb0fb520043174c35b76ffe",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-216.webp": {
+    "mtime": 1794647602.4158683,
+    "seen": 1794647767.4674964,
+    "ast_hash": "f9e19ec3ffc1794c37c972ed6a8a26e5",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-217.webp": {
+    "mtime": 1794647602.3897052,
+    "seen": 1794647767.4674964,
+    "ast_hash": "12b9472300584d01aa9ecd7e0437e60c",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-218.webp": {
+    "mtime": 1794647602.4608786,
+    "seen": 1794647767.4674964,
+    "ast_hash": "6b8d5b2cc96afcfd2c4338e7499426ee",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-219.webp": {
+    "mtime": 1794647602.4710548,
+    "seen": 1794647767.4674964,
+    "ast_hash": "e1c98c68eb5a37c56120cdb1f436769c",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-220.webp": {
+    "mtime": 1794647602.489866,
+    "seen": 1794647767.4674964,
+    "ast_hash": "3a817b0eb020733517793ec234f24f0e",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-221.webp": {
+    "mtime": 1794647602.514569,
+    "seen": 1794647767.4674964,
+    "ast_hash": "b76f6944b5b9fc25e216e578767a4682",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-222.webp": {
+    "mtime": 1794647602.556066,
+    "seen": 1794647767.4674964,
+    "ast_hash": "89ff7a9e3b143837a53d397608fcfcab",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-223.webp": {
+    "mtime": 1794647602.6622236,
+    "seen": 1794647767.4674964,
+    "ast_hash": "7c9b39a2059e4c92dc29cf2c58fc1540",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-224.webp": {
+    "mtime": 1794647602.6642318,
+    "seen": 1794647767.4674964,
+    "ast_hash": "5e86f784f93e748b3f32a503881e8f91",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-225.webp": {
+    "mtime": 1794647602.7377818,
+    "seen": 1794647767.4674964,
+    "ast_hash": "c818714546d7335b955f208820c5e1c4",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-226.webp": {
+    "mtime": 1794647602.8474324,
+    "seen": 1794647767.4674964,
+    "ast_hash": "93123df297965d172dcae0f078f502ae",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-227.webp": {
+    "mtime": 1794647602.8132138,
+    "seen": 1794647767.4674964,
+    "ast_hash": "0ba04277003692869f4914a0ea43089d",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-228.webp": {
+    "mtime": 1794647602.8216872,
+    "seen": 1794647767.4674964,
+    "ast_hash": "d291c89651158df09a9872d7a730ff45",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-229.webp": {
+    "mtime": 1794647602.8474324,
+    "seen": 1794647767.4674964,
+    "ast_hash": "ad790532983278cbbb88c3cc5895c3a9",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-230.webp": {
+    "mtime": 1794647602.8817964,
+    "seen": 1794647767.4674964,
+    "ast_hash": "ff4ed153ea167fd11354146dd1621093",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-231.webp": {
+    "mtime": 1794647602.887478,
+    "seen": 1794647767.4674964,
+    "ast_hash": "5ed8eae5038fc8c24edf2409387bbbc6",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-232.webp": {
+    "mtime": 1794647602.9011722,
+    "seen": 1794647767.4674964,
+    "ast_hash": "76a791e69ff88f5d7e02bc19a87428aa",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-233.webp": {
+    "mtime": 1794647602.9384966,
+    "seen": 1794647767.4674964,
+    "ast_hash": "84afbfc5aa0440cb2095bf56483355b6",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-234.webp": {
+    "mtime": 1794647602.9905498,
+    "seen": 1794647767.4674964,
+    "ast_hash": "935e36c72fc819b1e53c6419509fd3fc",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-235.webp": {
+    "mtime": 1794647603.0700145,
+    "seen": 1794647767.4674964,
+    "ast_hash": "6821377ca2bb2962a608366f8b694cbb",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-236.webp": {
+    "mtime": 1794647603.0934064,
+    "seen": 1794647767.4674964,
+    "ast_hash": "cd3751eae36b543cfb2877e635bc443b",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-237.webp": {
+    "mtime": 1794647603.1447432,
+    "seen": 1794647767.4674964,
+    "ast_hash": "ecc7559d1ec54ac7b5624bb519b63741",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-238.webp": {
+    "mtime": 1794647603.1712787,
+    "seen": 1794647767.4674964,
+    "ast_hash": "492e8547779437465f2d568c6dc89a25",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-239.webp": {
+    "mtime": 1794647603.2048252,
+    "seen": 1794647767.4674964,
+    "ast_hash": "5b371f788e9119a4f16fbdc9bbb0edb0",
+    "semantic_hash": ""
+  },
+  "keyframe-animation/frame-240.webp": {
+    "mtime": 1794647603.1950648,
+    "seen": 1794647767.4674964,
+    "ast_hash": "128bfce8273bd76410e583413bd02cf7",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-001.webp": {
+    "mtime": 1794647595.1567194,
+    "seen": 1794647767.8005023,
+    "ast_hash": "c4a0814abf169a15b73f1838f841b7e5",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-002.webp": {
+    "mtime": 1794647595.2026584,
+    "seen": 1794647767.8005023,
+    "ast_hash": "391b62cea8a8f3fbea7527286c49b589",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-003.webp": {
+    "mtime": 1794647595.1663973,
+    "seen": 1794647767.8005023,
+    "ast_hash": "02ac0f11ef24d38e67f2a77b256d17aa",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-004.webp": {
+    "mtime": 1794647595.2026584,
+    "seen": 1794647767.8005023,
+    "ast_hash": "d942133426bbabaf10eebd3c3765eb80",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-005.webp": {
+    "mtime": 1794647595.184938,
+    "seen": 1794647767.8005023,
+    "ast_hash": "cbedcd847c97846c47460c570437e93e",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-006.webp": {
+    "mtime": 1794647595.1751645,
+    "seen": 1794647767.8005023,
+    "ast_hash": "4ac6151cdde7c850c0acfe97401e2159",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-007.webp": {
+    "mtime": 1794647595.1978903,
+    "seen": 1794647767.8005023,
+    "ast_hash": "956877ae4400dd6d37bbfd36960630a7",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-008.webp": {
+    "mtime": 1794647595.2136998,
+    "seen": 1794647767.8005023,
+    "ast_hash": "3b6ec4a36d88d2ecef69e7cebbc7d87b",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-009.webp": {
+    "mtime": 1794647595.181219,
+    "seen": 1794647767.8005023,
+    "ast_hash": "9c5e04ff3d2363097dc7fbcf9b35f055",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-010.webp": {
+    "mtime": 1794647595.219718,
+    "seen": 1794647767.8005023,
+    "ast_hash": "f6855097f3a6c099db62d393afde50c3",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-011.webp": {
+    "mtime": 1794647595.1435852,
+    "seen": 1794647767.8005023,
+    "ast_hash": "51c44c2f183b53c6d8afc56ad1c221a8",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-012.webp": {
+    "mtime": 1794647595.1772006,
+    "seen": 1794647767.8005023,
+    "ast_hash": "8325b765ea508c8975d1c3c1b5b4e620",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-013.webp": {
+    "mtime": 1794647595.5332065,
+    "seen": 1794647767.8005023,
+    "ast_hash": "c84ec65aadec3a396d99ea0d5663c5b8",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-014.webp": {
+    "mtime": 1794647595.5254347,
+    "seen": 1794647767.8005023,
+    "ast_hash": "064e094e661e46dc86025d11f403554a",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-015.webp": {
+    "mtime": 1794647595.5352118,
+    "seen": 1794647767.8005023,
+    "ast_hash": "7eeea0176caa80e2e22e5b4b75c66e4e",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-016.webp": {
+    "mtime": 1794647595.5352118,
+    "seen": 1794647767.8005023,
+    "ast_hash": "86de8208e084b9ddd963a9fd81f2d197",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-017.webp": {
+    "mtime": 1794647595.5489488,
+    "seen": 1794647767.8005023,
+    "ast_hash": "08bdd2dd915b60666ffabc9f75b5bc57",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-018.webp": {
+    "mtime": 1794647595.5469427,
+    "seen": 1794647767.8005023,
+    "ast_hash": "1745304f20e487382bf43ec6c9a96826",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-019.webp": {
+    "mtime": 1794647595.566753,
+    "seen": 1794647767.8005023,
+    "ast_hash": "77ec025c95718292bb5542e526af34e2",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-020.webp": {
+    "mtime": 1794647595.5627432,
+    "seen": 1794647767.8005023,
+    "ast_hash": "0cc7cb197a65d37e282b6ec0f1687706",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-021.webp": {
+    "mtime": 1794647595.582553,
+    "seen": 1794647767.8005023,
+    "ast_hash": "1adeaea013571b8877321f46739beae1",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-022.webp": {
+    "mtime": 1794647595.5727692,
+    "seen": 1794647767.8005023,
+    "ast_hash": "0edc690429e028225fd69ece3b297fc1",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-023.webp": {
+    "mtime": 1794647595.582553,
+    "seen": 1794647767.8005023,
+    "ast_hash": "ee93de9c409884a1d9e8f4e9c4c8f6dd",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-024.webp": {
+    "mtime": 1794647595.5845587,
+    "seen": 1794647767.8005023,
+    "ast_hash": "129c61de3687d263ae2706a10f6db4a6",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-025.webp": {
+    "mtime": 1794647595.8835852,
+    "seen": 1794647767.8005023,
+    "ast_hash": "b1531f85a339633a7fb2800c2891977b",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-026.webp": {
+    "mtime": 1794647595.891618,
+    "seen": 1794647767.8005023,
+    "ast_hash": "bce6d7577c8ea9245a4f4582a111fa93",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-027.webp": {
+    "mtime": 1794647595.9033997,
+    "seen": 1794647767.8005023,
+    "ast_hash": "bba967601410ed71858681a28df72603",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-028.webp": {
+    "mtime": 1794647595.931174,
+    "seen": 1794647767.8005023,
+    "ast_hash": "36f532271328ce73d715a635ce7bfb29",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-029.webp": {
+    "mtime": 1794647595.925192,
+    "seen": 1794647767.8005023,
+    "ast_hash": "aa62c22216c9c7ee9e6a03274c9b08ca",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-030.webp": {
+    "mtime": 1794647595.9182582,
+    "seen": 1794647767.8005023,
+    "ast_hash": "f23c02b96df8b10ae0e79a3f1f7e661a",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-031.webp": {
+    "mtime": 1794647595.9324827,
+    "seen": 1794647767.8005023,
+    "ast_hash": "f5f97e4fd2a04ff9d370911716b19505",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-032.webp": {
+    "mtime": 1794647595.938473,
+    "seen": 1794647767.8005023,
+    "ast_hash": "de25eacb481cd20553624422d4af4e48",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-033.webp": {
+    "mtime": 1794647595.9524884,
+    "seen": 1794647767.8005023,
+    "ast_hash": "9677ae343bfcbcbfe5f8ac3294ac1063",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-034.webp": {
+    "mtime": 1794647595.9524884,
+    "seen": 1794647767.8005023,
+    "ast_hash": "1b6600fc43cbd64473801227d50d1d09",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-035.webp": {
+    "mtime": 1794647595.9797614,
+    "seen": 1794647767.8005023,
+    "ast_hash": "a58cdd61d2f3f77c43ce6fdda2f9dadd",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-036.webp": {
+    "mtime": 1794647595.996826,
+    "seen": 1794647767.8005023,
+    "ast_hash": "0a23b3e853186da7d2255d7f3e2ccf7c",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-037.webp": {
+    "mtime": 1794647596.2673159,
+    "seen": 1794647767.8005023,
+    "ast_hash": "213ed76e3bc51f912770d1b59ea18e1c",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-038.webp": {
+    "mtime": 1794647596.2943175,
+    "seen": 1794647767.8005023,
+    "ast_hash": "9e2a4e42ee81baacc54448149d390e05",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-039.webp": {
+    "mtime": 1794647596.2861786,
+    "seen": 1794647767.8005023,
+    "ast_hash": "336bd65534cc721337cd771cf9ed4c0d",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-040.webp": {
+    "mtime": 1794647596.295319,
+    "seen": 1794647767.8005023,
+    "ast_hash": "5cc47bbcee18f7e593a20073bf8f2819",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-041.webp": {
+    "mtime": 1794647596.3408425,
+    "seen": 1794647767.8005023,
+    "ast_hash": "4f9c01120d4c6d87b22a602d1923f7e7",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-042.webp": {
+    "mtime": 1794647596.3267252,
+    "seen": 1794647767.8005023,
+    "ast_hash": "9d215a8b79c8656747bdc90944b7420a",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-043.webp": {
+    "mtime": 1794647596.318128,
+    "seen": 1794647767.8005023,
+    "ast_hash": "e80c0b3c21a69fa7b6478ee21ec25a91",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-044.webp": {
+    "mtime": 1794647596.3408425,
+    "seen": 1794647767.8005023,
+    "ast_hash": "9f398bcb57cfcc8c0cb367b36bc70cfe",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-045.webp": {
+    "mtime": 1794647596.3308108,
+    "seen": 1794647767.8005023,
+    "ast_hash": "944fbcc9ffde4d8c1b1833aecef4d94f",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-046.webp": {
+    "mtime": 1794647596.3845718,
+    "seen": 1794647767.8005023,
+    "ast_hash": "8a0009d23be9e8261d66bc7fccbe18cd",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-047.webp": {
+    "mtime": 1794647596.360103,
+    "seen": 1794647767.8005023,
+    "ast_hash": "d88585b37336a1fcf40edf1d2766c4bc",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-048.webp": {
+    "mtime": 1794647596.4111416,
+    "seen": 1794647767.8005023,
+    "ast_hash": "1987e7483c36c9e8ee24fdaec2049132",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-049.webp": {
+    "mtime": 1794647596.6828597,
+    "seen": 1794647767.8005023,
+    "ast_hash": "c66b98e127dd0f823e6c00d3ac2a3f0c",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-050.webp": {
+    "mtime": 1794647596.6511548,
+    "seen": 1794647767.8005023,
+    "ast_hash": "0ec1857f9e304180d21f33842bfdc715",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-051.webp": {
+    "mtime": 1794647596.6922364,
+    "seen": 1794647767.8005023,
+    "ast_hash": "cdfbe825669754a7b0767a80db3ceb94",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-052.webp": {
+    "mtime": 1794647596.6922364,
+    "seen": 1794647767.8005023,
+    "ast_hash": "78cba50a6bc16f8c66703ca61990268d",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-053.webp": {
+    "mtime": 1794647596.751934,
+    "seen": 1794647767.8005023,
+    "ast_hash": "bfd33a6e5613c7de6e112303a4537727",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-054.webp": {
+    "mtime": 1794647596.7311432,
+    "seen": 1794647767.8005023,
+    "ast_hash": "d9b4b5537f0b5cd2a206a62adcff8b23",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-055.webp": {
+    "mtime": 1794647596.7106075,
+    "seen": 1794647767.8005023,
+    "ast_hash": "1c65a83bc6ba9bd7a67d74799801f6b4",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-056.webp": {
+    "mtime": 1794647596.751934,
+    "seen": 1794647767.8005023,
+    "ast_hash": "c6a5e90187315669d88ee8e497fbe3ae",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-057.webp": {
+    "mtime": 1794647596.7391715,
+    "seen": 1794647767.8005023,
+    "ast_hash": "52d2e8339e332fa7e8ef9839cc0db67f",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-058.webp": {
+    "mtime": 1794647596.7391715,
+    "seen": 1794647767.8005023,
+    "ast_hash": "24532d3eb50575082906b36d8dc37dd7",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-059.webp": {
+    "mtime": 1794647596.7759817,
+    "seen": 1794647767.8005023,
+    "ast_hash": "b79ee7644e30a3a1924d46e2b5884bc8",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-060.webp": {
+    "mtime": 1794647596.8117132,
+    "seen": 1794647767.8005023,
+    "ast_hash": "3c1c127b4c168e22ec013fd5a471d7d0",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-061.webp": {
+    "mtime": 1794647597.0457766,
+    "seen": 1794647767.8005023,
+    "ast_hash": "e173f8789804d87ca7bedb99c76c6e49",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-062.webp": {
+    "mtime": 1794647597.0983887,
+    "seen": 1794647767.8005023,
+    "ast_hash": "e77488df649e27ac1b8b8f73a9440afb",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-063.webp": {
+    "mtime": 1794647597.1087751,
+    "seen": 1794647767.8005023,
+    "ast_hash": "022d60a5dd7a35d7553626a0f89dda87",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-064.webp": {
+    "mtime": 1794647597.0766265,
+    "seen": 1794647767.8005023,
+    "ast_hash": "65726b33152e6748109526ed9a093e4c",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-065.webp": {
+    "mtime": 1794647597.0833323,
+    "seen": 1794647767.8005023,
+    "ast_hash": "b6264269d81a05c27cc3e3db0373bb2b",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-066.webp": {
+    "mtime": 1794647597.148419,
+    "seen": 1794647767.8005023,
+    "ast_hash": "78f46a796daf58d0b373e3b5502f56b0",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-067.webp": {
+    "mtime": 1794647597.1445613,
+    "seen": 1794647767.8005023,
+    "ast_hash": "f43a2fabf2f767e1e7af32a0cec172c5",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-068.webp": {
+    "mtime": 1794647597.165145,
+    "seen": 1794647767.8005023,
+    "ast_hash": "0ebe175a0785bbed37df7185ef7f69e2",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-069.webp": {
+    "mtime": 1794647597.1193953,
+    "seen": 1794647767.8005023,
+    "ast_hash": "678e546409331644a2af430f01005587",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-070.webp": {
+    "mtime": 1794647597.1173859,
+    "seen": 1794647767.8005023,
+    "ast_hash": "7f16400fdc90d0b2de3bc4b1f71a2a70",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-071.webp": {
+    "mtime": 1794647597.2052915,
+    "seen": 1794647767.8005023,
+    "ast_hash": "3eb0c6a904aa1a5b342ecd7c6d268003",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-072.webp": {
+    "mtime": 1794647597.1975856,
+    "seen": 1794647767.8005023,
+    "ast_hash": "35f20ffdcc5f956c188c9ca549217959",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-073.webp": {
+    "mtime": 1794647597.4356768,
+    "seen": 1794647767.8005023,
+    "ast_hash": "01436f277f11b2aa0697ceb1573f2b94",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-074.webp": {
+    "mtime": 1794647597.4849348,
+    "seen": 1794647767.8005023,
+    "ast_hash": "2675cdcb33bc076af41ae1b262312b54",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-075.webp": {
+    "mtime": 1794647597.4751666,
+    "seen": 1794647767.8005023,
+    "ast_hash": "f04e46ffd59965550fa16d7b9427e818",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-076.webp": {
+    "mtime": 1794647597.4849348,
+    "seen": 1794647767.8005023,
+    "ast_hash": "c768e1e93e7a0a24e504b85f5b2b803c",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-077.webp": {
+    "mtime": 1794647597.4829297,
+    "seen": 1794647767.8005023,
+    "ast_hash": "6a2d0f962ddfd451cf78713ed749798c",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-078.webp": {
+    "mtime": 1794647597.4969857,
+    "seen": 1794647767.8005023,
+    "ast_hash": "9d232ec609cc074591784ec46daa1f25",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-079.webp": {
+    "mtime": 1794647597.512774,
+    "seen": 1794647767.8005023,
+    "ast_hash": "89b1588a6901c7777cf6cc13b184b538",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-080.webp": {
+    "mtime": 1794647597.522046,
+    "seen": 1794647767.8005023,
+    "ast_hash": "9ec614cf9bcd9f1d08a63d392b60ed27",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-081.webp": {
+    "mtime": 1794647597.5421572,
+    "seen": 1794647767.8005023,
+    "ast_hash": "d32320ecc4a8f5bfafd05ec39f7936db",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-082.webp": {
+    "mtime": 1794647597.5585752,
+    "seen": 1794647767.8005023,
+    "ast_hash": "7cc7cdd7740695940a35b117cd216aaa",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-083.webp": {
+    "mtime": 1794647597.5720587,
+    "seen": 1794647767.8005023,
+    "ast_hash": "6d5664cf180e1f91f64a6ef3c6be6d2c",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-084.webp": {
+    "mtime": 1794647597.568904,
+    "seen": 1794647767.8005023,
+    "ast_hash": "b023f6d52cca8bf1f91376d4e820cbfc",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-085.webp": {
+    "mtime": 1794647597.8052819,
+    "seen": 1794647767.8005023,
+    "ast_hash": "2340a71d435f9041970fda82b9a1ef9b",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-086.webp": {
+    "mtime": 1794647597.8839366,
+    "seen": 1794647767.8005023,
+    "ast_hash": "0d218a0b5e4b43b28522f95b9689543d",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-087.webp": {
+    "mtime": 1794647597.9091756,
+    "seen": 1794647767.8005023,
+    "ast_hash": "a240d68814feabb7071220a52cc13900",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-088.webp": {
+    "mtime": 1794647597.8642316,
+    "seen": 1794647767.8005023,
+    "ast_hash": "500a0f7b7408b5f83c4104b8e0871f27",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-089.webp": {
+    "mtime": 1794647597.8605397,
+    "seen": 1794647767.8005023,
+    "ast_hash": "a16b0802cc726943e8204f007c545362",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-090.webp": {
+    "mtime": 1794647597.9515655,
+    "seen": 1794647767.8005023,
+    "ast_hash": "5197f3297aef868d3a7e6205c4f5cea4",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-091.webp": {
+    "mtime": 1794647597.896629,
+    "seen": 1794647767.8005023,
+    "ast_hash": "ff5e3f9b866a4d4d0d4364f23521bcf7",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-092.webp": {
+    "mtime": 1794647597.9133725,
+    "seen": 1794647767.8005023,
+    "ast_hash": "f596daf3f8ff88552a43f7b4519354d3",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-093.webp": {
+    "mtime": 1794647597.9426918,
+    "seen": 1794647767.8005023,
+    "ast_hash": "04c3ef4e9ed09faa403d5e0127ec8e1d",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-094.webp": {
+    "mtime": 1794647597.9595883,
+    "seen": 1794647767.8005023,
+    "ast_hash": "0ae0ab3018e8bb8a059886df684f6425",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-095.webp": {
+    "mtime": 1794647597.9595883,
+    "seen": 1794647767.8005023,
+    "ast_hash": "9c9c111b7fad34ead71b6930d1d6fb7c",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-096.webp": {
+    "mtime": 1794647597.9957676,
+    "seen": 1794647767.8005023,
+    "ast_hash": "8b634e9a55a475dfc2900f191ba54b44",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-097.webp": {
+    "mtime": 1794647598.215734,
+    "seen": 1794647767.8005023,
+    "ast_hash": "2319bb67efe82e66fd6afedd8f7be315",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-098.webp": {
+    "mtime": 1794647598.289042,
+    "seen": 1794647767.8005023,
+    "ast_hash": "abfbc25f5b2f4663a3bf1d83b35082fe",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-099.webp": {
+    "mtime": 1794647598.3129246,
+    "seen": 1794647767.8005023,
+    "ast_hash": "11e48be2d4493a6c450ec59c5ff4d174",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-100.webp": {
+    "mtime": 1794647598.343752,
+    "seen": 1794647767.8005023,
+    "ast_hash": "4f75af29a446e6c7833b6d203428eed1",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-101.webp": {
+    "mtime": 1794647598.343752,
+    "seen": 1794647767.8005023,
+    "ast_hash": "6bf693bd35b3e086f91ce5b80f049bcd",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-102.webp": {
+    "mtime": 1794647598.3507557,
+    "seen": 1794647767.8005023,
+    "ast_hash": "aa75ffd623047febd5a00d82f8cf9cc6",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-103.webp": {
+    "mtime": 1794647598.3771517,
+    "seen": 1794647767.8005023,
+    "ast_hash": "a524fa767087916a8fe1c00409f97931",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-104.webp": {
+    "mtime": 1794647598.4151266,
+    "seen": 1794647767.8005023,
+    "ast_hash": "40afa7a0f3f08e359f5ddcf7312cde36",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-105.webp": {
+    "mtime": 1794647598.3671145,
+    "seen": 1794647767.8005023,
+    "ast_hash": "983104dea1d3ef8b2920f587e4d089ac",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-106.webp": {
+    "mtime": 1794647598.398376,
+    "seen": 1794647767.8005023,
+    "ast_hash": "5762134f4d8ca1fbd4ca9debff443c99",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-107.webp": {
+    "mtime": 1794647598.3818917,
+    "seen": 1794647767.8005023,
+    "ast_hash": "cd35688df3262785d04638e96ae81708",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-108.webp": {
+    "mtime": 1794647598.4482732,
+    "seen": 1794647767.8005023,
+    "ast_hash": "1a45f0d6e7d052d6b26cc940b228b51e",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-109.webp": {
+    "mtime": 1794647598.6336746,
+    "seen": 1794647767.8005023,
+    "ast_hash": "6fdefd5970baccbe13ca850648d45e84",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-110.webp": {
+    "mtime": 1794647598.7376368,
+    "seen": 1794647767.8005023,
+    "ast_hash": "ff47fa48388280b2cc6d4bf80279de86",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-111.webp": {
+    "mtime": 1794647598.7829206,
+    "seen": 1794647767.8005023,
+    "ast_hash": "d0d0d7ee09e3d5c30aeaf4186e044692",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-112.webp": {
+    "mtime": 1794647598.7849298,
+    "seen": 1794647767.8005023,
+    "ast_hash": "4e718f9f73fe9765bf1b01c26a8ff16e",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-113.webp": {
+    "mtime": 1794647598.7697687,
+    "seen": 1794647767.8005023,
+    "ast_hash": "13d011d1434dd6a5c66ed6463826d468",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-114.webp": {
+    "mtime": 1794647598.7829206,
+    "seen": 1794647767.8005023,
+    "ast_hash": "0eef12d88d3f81050b64b8f92803154d",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-115.webp": {
+    "mtime": 1794647598.8612237,
+    "seen": 1794647767.8005023,
+    "ast_hash": "9d08de2172dcdf88a7d78f284546e78d",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-116.webp": {
+    "mtime": 1794647598.8718421,
+    "seen": 1794647767.8005023,
+    "ast_hash": "8fa77cc690fcf5ea4a50afa9ad09c527",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-117.webp": {
+    "mtime": 1794647598.8414245,
+    "seen": 1794647767.8005023,
+    "ast_hash": "3baa35c750eb6c219885a3661a6fec79",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-118.webp": {
+    "mtime": 1794647598.839414,
+    "seen": 1794647767.8005023,
+    "ast_hash": "0b9e71f176bcaac8346834cecb01ac1d",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-119.webp": {
+    "mtime": 1794647598.8925383,
+    "seen": 1794647767.8005023,
+    "ast_hash": "125aca993111f9884bf5d3e8a22e0282",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-120.webp": {
+    "mtime": 1794647598.919836,
+    "seen": 1794647767.8005023,
+    "ast_hash": "c1f77518aab1d0bb0c640ae0ab50eb0f",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-121.webp": {
+    "mtime": 1794647599.048834,
+    "seen": 1794647767.8005023,
+    "ast_hash": "74683c4589a92c6c24c1d33844531b8e",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-122.webp": {
+    "mtime": 1794647599.208644,
+    "seen": 1794647767.8005023,
+    "ast_hash": "c5035e07f9d0afc89699945fb40f429b",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-123.webp": {
+    "mtime": 1794647599.2026253,
+    "seen": 1794647767.8005023,
+    "ast_hash": "42ecea486d668d8d74aedfeace41f8c6",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-124.webp": {
+    "mtime": 1794647599.1908393,
+    "seen": 1794647767.8005023,
+    "ast_hash": "2ae76b0c274665eb2cf7726a877ed185",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-125.webp": {
+    "mtime": 1794647599.1848176,
+    "seen": 1794647767.8005023,
+    "ast_hash": "458adc94a4dd29c836b3a1b79196e0b8",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-126.webp": {
+    "mtime": 1794647599.1548245,
+    "seen": 1794647767.8005023,
+    "ast_hash": "8aaaf7d5ce419bd05c8abcccfefd8ae1",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-127.webp": {
+    "mtime": 1794647599.2124002,
+    "seen": 1794647767.8005023,
+    "ast_hash": "f9d133b3873da036868b00ac618f65f4",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-128.webp": {
+    "mtime": 1794647599.21842,
+    "seen": 1794647767.8005023,
+    "ast_hash": "707e17651e4aaf1152ef299acb662bae",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-129.webp": {
+    "mtime": 1794647599.2665417,
+    "seen": 1794647767.8005023,
+    "ast_hash": "eaabdada6ac5da802eccaac8c4a4f8d1",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-130.webp": {
+    "mtime": 1794647599.2580137,
+    "seen": 1794647767.8005023,
+    "ast_hash": "0223b090c53a2dc40db6f8f413a54868",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-131.webp": {
+    "mtime": 1794647599.3102057,
+    "seen": 1794647767.8005023,
+    "ast_hash": "0a9a9597b42047eaa86d2d1fc6df4370",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-132.webp": {
+    "mtime": 1794647599.3195598,
+    "seen": 1794647767.8005023,
+    "ast_hash": "a172b2ea421886ad3fc1f0e33cc084c8",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-133.webp": {
+    "mtime": 1794647599.441746,
+    "seen": 1794647767.8005023,
+    "ast_hash": "d76d0da386372f557d6e4848a591ba7c",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-134.webp": {
+    "mtime": 1794647599.5457416,
+    "seen": 1794647767.8005023,
+    "ast_hash": "a03b78894f2e94a3e03179f6e73ba303",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-135.webp": {
+    "mtime": 1794647599.5557644,
+    "seen": 1794647767.8005023,
+    "ast_hash": "4748ebe76b9b5da90124e4fc60a58dc4",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-136.webp": {
+    "mtime": 1794647599.5932283,
+    "seen": 1794647767.8005023,
+    "ast_hash": "2c35c25a038c319dbb4d7535835abc77",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-137.webp": {
+    "mtime": 1794647599.592223,
+    "seen": 1794647767.8005023,
+    "ast_hash": "941d11d97ca59353dffbb7e44c5001cf",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-138.webp": {
+    "mtime": 1794647599.5952332,
+    "seen": 1794647767.8005023,
+    "ast_hash": "a7469bdf4c10dbdd96ada9d8d5e1ff26",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-139.webp": {
+    "mtime": 1794647599.5952332,
+    "seen": 1794647767.8005023,
+    "ast_hash": "4aa26ec1524a7a48d365388775c840e2",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-140.webp": {
+    "mtime": 1794647599.603261,
+    "seen": 1794647767.8005023,
+    "ast_hash": "7f2f517f11d47cd7c8807459906d578d",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-141.webp": {
+    "mtime": 1794647599.7002842,
+    "seen": 1794647767.8005023,
+    "ast_hash": "2feec5ed42729fdd8852a074a2ac1931",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-142.webp": {
+    "mtime": 1794647599.652756,
+    "seen": 1794647767.8005023,
+    "ast_hash": "f0aa777bb6e9d8e1e37cb1de4bb66a3d",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-143.webp": {
+    "mtime": 1794647599.689139,
+    "seen": 1794647767.8005023,
+    "ast_hash": "76e7edae1bd946da56d93e145fe3ea94",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-144.webp": {
+    "mtime": 1794647599.7123182,
+    "seen": 1794647767.8005023,
+    "ast_hash": "7b105ddf6e23286a3d87830b1b83c8d4",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-145.webp": {
+    "mtime": 1794647599.818689,
+    "seen": 1794647767.8005023,
+    "ast_hash": "4b7f15e4dfe4e1ee0b50c7d337c2088a",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-146.webp": {
+    "mtime": 1794647599.9496405,
+    "seen": 1794647767.8005023,
+    "ast_hash": "6be3c667834164c8b0e6321c2eff40b8",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-147.webp": {
+    "mtime": 1794647599.9674356,
+    "seen": 1794647767.8005023,
+    "ast_hash": "f43bce947103b163e6a8cf08d4b6f3b1",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-148.webp": {
+    "mtime": 1794647599.976542,
+    "seen": 1794647767.8005023,
+    "ast_hash": "cc6f45c7808f1a970e49a4e5c858815b",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-149.webp": {
+    "mtime": 1794647599.9871671,
+    "seen": 1794647767.8005023,
+    "ast_hash": "6fcee103119dc2a8d01912778ce0d05f",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-150.webp": {
+    "mtime": 1794647599.9861674,
+    "seen": 1794647767.8005023,
+    "ast_hash": "a27b4c195d3394969e2108dc81734a3a",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-151.webp": {
+    "mtime": 1794647599.9975588,
+    "seen": 1794647767.8005023,
+    "ast_hash": "6a4cc84ee03e7caa06d5bddb2ccc6511",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-152.webp": {
+    "mtime": 1794647599.9915307,
+    "seen": 1794647767.8005023,
+    "ast_hash": "49bd5e99bccd3dc751fd6d4ab6a8cab5",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-153.webp": {
+    "mtime": 1794647600.0397704,
+    "seen": 1794647767.8005023,
+    "ast_hash": "5e4d8f343094636d9ae127e883f29d27",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-154.webp": {
+    "mtime": 1794647600.1025069,
+    "seen": 1794647767.8005023,
+    "ast_hash": "d1536cb062a810d4c7655192c232e19b",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-155.webp": {
+    "mtime": 1794647600.1175964,
+    "seen": 1794647767.8005023,
+    "ast_hash": "664c16e326cb2e849f6e8e3af406bf1a",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-156.webp": {
+    "mtime": 1794647600.1323116,
+    "seen": 1794647767.8005023,
+    "ast_hash": "7947e66c95f54ce58c062cb6a57ec1c6",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-157.webp": {
+    "mtime": 1794647600.2606812,
+    "seen": 1794647767.8005023,
+    "ast_hash": "3c2986aed137b4eb77f53ed7f7d3e44d",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-158.webp": {
+    "mtime": 1794647600.3599315,
+    "seen": 1794647767.8005023,
+    "ast_hash": "ff3194f1f07ec9d2f617b78d57622e51",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-159.webp": {
+    "mtime": 1794647600.3927076,
+    "seen": 1794647767.8005023,
+    "ast_hash": "3f48fd890db88d11dbd1a397da69573e",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-160.webp": {
+    "mtime": 1794647600.3761919,
+    "seen": 1794647767.8005023,
+    "ast_hash": "c52eb633ce3644741eaf8bbc875704d6",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-161.webp": {
+    "mtime": 1794647600.3837402,
+    "seen": 1794647767.8005023,
+    "ast_hash": "9a73b5d678bfe77cbccf9b9598346f89",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-162.webp": {
+    "mtime": 1794647600.428053,
+    "seen": 1794647767.8005023,
+    "ast_hash": "954206bdea353f4315bfb4506dedcd6c",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-163.webp": {
+    "mtime": 1794647600.400488,
+    "seen": 1794647767.8005023,
+    "ast_hash": "3883af9395f6b392e0229472eb3d3872",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-164.webp": {
+    "mtime": 1794647600.4534335,
+    "seen": 1794647767.8005023,
+    "ast_hash": "0c2983c48100adf280dc2bd0b825e223",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-165.webp": {
+    "mtime": 1794647600.5034318,
+    "seen": 1794647767.8005023,
+    "ast_hash": "6cbc8da6630a252a616c223d27a56dc9",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-166.webp": {
+    "mtime": 1794647600.5284154,
+    "seen": 1794647767.8005023,
+    "ast_hash": "5a9f8fc81c4856ffd90d5900d72dcfc3",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-167.webp": {
+    "mtime": 1794647600.541141,
+    "seen": 1794647767.8005023,
+    "ast_hash": "485d3bae65bb89e69ef22bf0369ce598",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-168.webp": {
+    "mtime": 1794647600.5948324,
+    "seen": 1794647767.8005023,
+    "ast_hash": "471113c8b898b8dfa2a1436b49378593",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-169.webp": {
+    "mtime": 1794647600.6752486,
+    "seen": 1794647767.8005023,
+    "ast_hash": "1a657666c2bc68e10c28c746de4ffddf",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-170.webp": {
+    "mtime": 1794647600.8123572,
+    "seen": 1794647767.8005023,
+    "ast_hash": "4c3761169162132091b71f7eb0b0d88f",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-171.webp": {
+    "mtime": 1794647600.7790964,
+    "seen": 1794647767.8005023,
+    "ast_hash": "5afda31925d21da6e13fe9003e7e809c",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-172.webp": {
+    "mtime": 1794647600.788035,
+    "seen": 1794647767.8005023,
+    "ast_hash": "9eeb6cef3c3aa8519427abc6d986c6df",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-173.webp": {
+    "mtime": 1794647600.810352,
+    "seen": 1794647767.8005023,
+    "ast_hash": "b6d6eed2747897226cd28cdb0b62201b",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-174.webp": {
+    "mtime": 1794647600.798458,
+    "seen": 1794647767.8005023,
+    "ast_hash": "c4b43c2d3319b752eb4e81066a11709e",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-175.webp": {
+    "mtime": 1794647600.8765893,
+    "seen": 1794647767.8005023,
+    "ast_hash": "039122b9bbd767f6244124282095b343",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-176.webp": {
+    "mtime": 1794647600.8785954,
+    "seen": 1794647767.8005023,
+    "ast_hash": "85806fdf5a8d2b191134caad296db659",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-177.webp": {
+    "mtime": 1794647600.958086,
+    "seen": 1794647767.8005023,
+    "ast_hash": "fdb0b281a891ea378ee0a2bbc5d50590",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-178.webp": {
+    "mtime": 1794647600.9789975,
+    "seen": 1794647767.8005023,
+    "ast_hash": "2211e76ba8c0b4da17eb244dbef6a823",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-179.webp": {
+    "mtime": 1794647600.998636,
+    "seen": 1794647767.8005023,
+    "ast_hash": "d181c197ba4574b531adfc41925f3228",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-180.webp": {
+    "mtime": 1794647601.0513299,
+    "seen": 1794647767.8005023,
+    "ast_hash": "e7cab88d08de9c36a56418dd727a16a6",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-181.webp": {
+    "mtime": 1794647601.1072183,
+    "seen": 1794647767.8005023,
+    "ast_hash": "fe256b8ec32b75f441603b4d83d52df9",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-182.webp": {
+    "mtime": 1794647601.2489915,
+    "seen": 1794647767.8005023,
+    "ast_hash": "52d4dfbb41b605e869681e102d1af7c7",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-183.webp": {
+    "mtime": 1794647601.2111223,
+    "seen": 1794647767.8005023,
+    "ast_hash": "f5c962c98d753c36b98bad76e1b82c44",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-184.webp": {
+    "mtime": 1794647601.220759,
+    "seen": 1794647767.8005023,
+    "ast_hash": "f82c6befdfef71cd85a04ec98c435ece",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-185.webp": {
+    "mtime": 1794647601.258427,
+    "seen": 1794647767.8005023,
+    "ast_hash": "4397d07c1fa494f8f48627dcc0042010",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-186.webp": {
+    "mtime": 1794647601.2317865,
+    "seen": 1794647767.8005023,
+    "ast_hash": "d480cbf3c089019cd5f8a70d51b00ea0",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-187.webp": {
+    "mtime": 1794647601.3405612,
+    "seen": 1794647767.8005023,
+    "ast_hash": "debb03b091619302b4fff0beab24a56b",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-188.webp": {
+    "mtime": 1794647601.3207705,
+    "seen": 1794647767.8005023,
+    "ast_hash": "d1d93552069d97a0783f3f387e7f0438",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-189.webp": {
+    "mtime": 1794647601.3963137,
+    "seen": 1794647767.8005023,
+    "ast_hash": "67c43a1e038763153bf68f147925f94b",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-190.webp": {
+    "mtime": 1794647601.4378858,
+    "seen": 1794647767.8005023,
+    "ast_hash": "8eb675f4309bf7c9d2c26b3e872e9416",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-191.webp": {
+    "mtime": 1794647601.4691987,
+    "seen": 1794647767.8005023,
+    "ast_hash": "3f1bcc4a4f43dcb65342961792e91335",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-192.webp": {
+    "mtime": 1794647601.4947503,
+    "seen": 1794647767.8005023,
+    "ast_hash": "53a83543d4f3b1d50a52809591c16a41",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-193.webp": {
+    "mtime": 1794647601.516545,
+    "seen": 1794647767.8005023,
+    "ast_hash": "eecae5a76e35b6aa4397873cfa8712cc",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-194.webp": {
+    "mtime": 1794647601.6244774,
+    "seen": 1794647767.8005023,
+    "ast_hash": "04ec6db12640545de6f79d066681b8fa",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-195.webp": {
+    "mtime": 1794647601.639231,
+    "seen": 1794647767.8005023,
+    "ast_hash": "9e59423dadef51258fb3c40d74fb1f3a",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-196.webp": {
+    "mtime": 1794647601.646252,
+    "seen": 1794647767.8005023,
+    "ast_hash": "d32a7a9cc406a9b08418af4582468f57",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-197.webp": {
+    "mtime": 1794647601.664493,
+    "seen": 1794647767.8005023,
+    "ast_hash": "c51031e8913c2f0fd5d5dc61bc75593c",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-198.webp": {
+    "mtime": 1794647601.6737385,
+    "seen": 1794647767.8005023,
+    "ast_hash": "3544d07dddaa31d7f15b20734a8d4153",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-199.webp": {
+    "mtime": 1794647601.7563646,
+    "seen": 1794647767.8005023,
+    "ast_hash": "3f3670e549b8a4e40fbb5131441836d5",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-200.webp": {
+    "mtime": 1794647601.7597404,
+    "seen": 1794647767.8005023,
+    "ast_hash": "dd528e6a1f4b9980da4fed62c5239549",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-201.webp": {
+    "mtime": 1794647601.8443522,
+    "seen": 1794647767.8005023,
+    "ast_hash": "d620559d27973f6903b15d1c5a39a8a1",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-202.webp": {
+    "mtime": 1794647601.894813,
+    "seen": 1794647767.8005023,
+    "ast_hash": "039d80bd1874f5b100effcfb2ab0b264",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-203.webp": {
+    "mtime": 1794647601.9301162,
+    "seen": 1794647767.8005023,
+    "ast_hash": "0f8af7f4c8046c7b5a97db1d6f43ab0d",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-204.webp": {
+    "mtime": 1794647601.9537005,
+    "seen": 1794647767.8005023,
+    "ast_hash": "34ce70fbea2176f006bfeece9f74b166",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-205.webp": {
+    "mtime": 1794647601.936009,
+    "seen": 1794647767.8005023,
+    "ast_hash": "453784e0c10e0d3a97a156ed4e4193fe",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-206.webp": {
+    "mtime": 1794647602.0481012,
+    "seen": 1794647767.8005023,
+    "ast_hash": "8b21bbc89437797e6f83dffd30363256",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-207.webp": {
+    "mtime": 1794647602.059581,
+    "seen": 1794647767.8005023,
+    "ast_hash": "18335367e43784de8c46a24b1c73ba0b",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-208.webp": {
+    "mtime": 1794647602.0686376,
+    "seen": 1794647767.8005023,
+    "ast_hash": "10e38b7a0a51f9b3438775ee53833301",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-209.webp": {
+    "mtime": 1794647602.0882416,
+    "seen": 1794647767.8005023,
+    "ast_hash": "0961839992a5d2e398aa32ad3500df84",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-210.webp": {
+    "mtime": 1794647602.1029356,
+    "seen": 1794647767.8005023,
+    "ast_hash": "3b82cc3199a7c795d4e85bfb61ec9025",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-211.webp": {
+    "mtime": 1794647602.1970682,
+    "seen": 1794647767.8005023,
+    "ast_hash": "11794ee96621ed5089bfc39172b99fc9",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-212.webp": {
+    "mtime": 1794647602.1801887,
+    "seen": 1794647767.8005023,
+    "ast_hash": "ce528805ba52f3930f85e79ba2ccd1b4",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-213.webp": {
+    "mtime": 1794647602.2965226,
+    "seen": 1794647767.8005023,
+    "ast_hash": "796863e2a5e2de33bf7b5992194b5339",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-214.webp": {
+    "mtime": 1794647602.3493018,
+    "seen": 1794647767.8005023,
+    "ast_hash": "d7e79b3da345c08fbf758c5a1c127ac7",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-215.webp": {
+    "mtime": 1794647602.3770418,
+    "seen": 1794647767.8005023,
+    "ast_hash": "3d8bf1504cb0fb520043174c35b76ffe",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-216.webp": {
+    "mtime": 1794647602.4158683,
+    "seen": 1794647767.8005023,
+    "ast_hash": "f9e19ec3ffc1794c37c972ed6a8a26e5",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-217.webp": {
+    "mtime": 1794647602.3897052,
+    "seen": 1794647767.8005023,
+    "ast_hash": "12b9472300584d01aa9ecd7e0437e60c",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-218.webp": {
+    "mtime": 1794647602.4608786,
+    "seen": 1794647767.8005023,
+    "ast_hash": "6b8d5b2cc96afcfd2c4338e7499426ee",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-219.webp": {
+    "mtime": 1794647602.4710548,
+    "seen": 1794647767.8005023,
+    "ast_hash": "e1c98c68eb5a37c56120cdb1f436769c",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-220.webp": {
+    "mtime": 1794647602.489866,
+    "seen": 1794647767.8005023,
+    "ast_hash": "3a817b0eb020733517793ec234f24f0e",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-221.webp": {
+    "mtime": 1794647602.514569,
+    "seen": 1794647767.8005023,
+    "ast_hash": "b76f6944b5b9fc25e216e578767a4682",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-222.webp": {
+    "mtime": 1794647602.556066,
+    "seen": 1794647767.8005023,
+    "ast_hash": "89ff7a9e3b143837a53d397608fcfcab",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-223.webp": {
+    "mtime": 1794647602.6622236,
+    "seen": 1794647767.8005023,
+    "ast_hash": "7c9b39a2059e4c92dc29cf2c58fc1540",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-224.webp": {
+    "mtime": 1794647602.6642318,
+    "seen": 1794647767.8005023,
+    "ast_hash": "5e86f784f93e748b3f32a503881e8f91",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-225.webp": {
+    "mtime": 1794647602.7377818,
+    "seen": 1794647767.8005023,
+    "ast_hash": "c818714546d7335b955f208820c5e1c4",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-226.webp": {
+    "mtime": 1794647602.8474324,
+    "seen": 1794647767.8005023,
+    "ast_hash": "93123df297965d172dcae0f078f502ae",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-227.webp": {
+    "mtime": 1794647602.8132138,
+    "seen": 1794647767.8005023,
+    "ast_hash": "0ba04277003692869f4914a0ea43089d",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-228.webp": {
+    "mtime": 1794647602.8216872,
+    "seen": 1794647767.8005023,
+    "ast_hash": "d291c89651158df09a9872d7a730ff45",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-229.webp": {
+    "mtime": 1794647602.8474324,
+    "seen": 1794647767.8005023,
+    "ast_hash": "ad790532983278cbbb88c3cc5895c3a9",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-230.webp": {
+    "mtime": 1794647602.8817964,
+    "seen": 1794647767.8005023,
+    "ast_hash": "ff4ed153ea167fd11354146dd1621093",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-231.webp": {
+    "mtime": 1794647602.887478,
+    "seen": 1794647767.8005023,
+    "ast_hash": "5ed8eae5038fc8c24edf2409387bbbc6",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-232.webp": {
+    "mtime": 1794647602.9011722,
+    "seen": 1794647767.8005023,
+    "ast_hash": "76a791e69ff88f5d7e02bc19a87428aa",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-233.webp": {
+    "mtime": 1794647602.9384966,
+    "seen": 1794647767.8005023,
+    "ast_hash": "84afbfc5aa0440cb2095bf56483355b6",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-234.webp": {
+    "mtime": 1794647602.9905498,
+    "seen": 1794647767.8005023,
+    "ast_hash": "935e36c72fc819b1e53c6419509fd3fc",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-235.webp": {
+    "mtime": 1794647603.0700145,
+    "seen": 1794647767.8005023,
+    "ast_hash": "6821377ca2bb2962a608366f8b694cbb",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-236.webp": {
+    "mtime": 1794647603.0934064,
+    "seen": 1794647767.8005023,
+    "ast_hash": "cd3751eae36b543cfb2877e635bc443b",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-237.webp": {
+    "mtime": 1794647603.1447432,
+    "seen": 1794647767.8005023,
+    "ast_hash": "ecc7559d1ec54ac7b5624bb519b63741",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-238.webp": {
+    "mtime": 1794647603.1712787,
+    "seen": 1794647767.8005023,
+    "ast_hash": "492e8547779437465f2d568c6dc89a25",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-239.webp": {
+    "mtime": 1794647603.2048252,
+    "seen": 1794647767.8005023,
+    "ast_hash": "5b371f788e9119a4f16fbdc9bbb0edb0",
+    "semantic_hash": ""
+  },
+  "src/dapp/public/keyframe-animation/frame-240.webp": {
+    "mtime": 1794647603.1950648,
+    "seen": 1794647767.8005023,
+    "ast_hash": "128bfce8273bd76410e583413bd02cf7",
+    "semantic_hash": ""
+  },
   "iot-node/package-lock.json": {
     "mtime": 1794368527.971033,
     "seen": 1794631381.944213,
@@ -9966,8 +13152,8 @@
     "semantic_hash": ""
   },
   "src/dapp/package-lock.json": {
-    "mtime": 1794631182.5839753,
-    "seen": 1794631381.944213,
+    "mtime": 1794641755.251321,
+    "seen": 1794643669.2635193,
     "ast_hash": "6142778c79c7e1f61e7c9daefae71262",
     "semantic_hash": ""
   }

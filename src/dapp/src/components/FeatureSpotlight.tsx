@@ -1,57 +1,56 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, ShieldCheck, Check, Layers, AlertCircle } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, ShieldCheck, Check, Layers, Radio, Users, CheckCircle2 } from "lucide-react";
 
 export function FeatureSpotlight() {
   const [activeChip, setActiveChip] = useState<"satelit" | "sensor" | "izin">("satelit");
 
   return (
-    <section id="fitur" className="py-20 sm:py-28 border-t border-[#1B211A]">
+    <section id="fitur" className="py-16 sm:py-24 border-t border-[var(--line-subtle)]">
       <div className="page-shell">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-12 sm:gap-16 items-center">
-          
-          {/* Left Column: Editorial Narrative (Headline with Lime Highlight, Body, Small CTA) */}
+          {/* Left Column: Editorial Narrative */}
           <div className="max-w-xl">
-            <span className="text-[0.75rem] font-semibold text-[#AEDA2D] uppercase tracking-wider block mb-3">
+            <span className="xb-eyebrow block mb-2">
               Multi-Layer Verification
             </span>
-            <h2 className="text-[clamp(2.1rem,3.5vw,3.4rem)] font-normal text-[#F0F2EC] leading-[1.15] tracking-tight">
+            <h2 className="xb-display text-[clamp(2.1rem,3.5vw,3.4rem)] font-bold text-[var(--ink)] leading-[1.15] tracking-tight">
               Tiga lapis bukti,{" "}
-              <span className="text-[#AEDA2D]">tanpa celah manipulasi</span> data.
+              <span className="text-[var(--forest-800)]">tanpa celah manipulasi</span> data.
             </h2>
-            <p className="mt-5 text-[0.95rem] text-[#A8AFA2] leading-relaxed">
+            <p className="mt-5 text-[1rem] text-[var(--ink-muted)] leading-relaxed">
               Kondisi vegetasi diuji dari orbit antariksa oleh radar Sentinel, suhu pohon dipantau
               oleh sensor fisik di lapangan, dan kedaulatan tanah dipegang penuh oleh persetujuan warga desa.
             </p>
-            <p className="mt-3 text-[0.875rem] text-[#747D70] leading-relaxed">
+            <p className="mt-3 text-[0.925rem] text-[var(--ink-dim)] leading-relaxed">
               Jika salah satu lapis bukti gagal atau izin warga tidak terpenuhi, kode sistem secara
               deterministik menghentikan proses penguncian segel.
             </p>
 
             <div className="mt-8">
-              <a
-                href="#proses"
-                className="button-touch inline-flex items-center gap-2 px-5 py-2.5 rounded-pill text-[0.825rem] font-semibold bg-[#171C16] text-[#F0F2EC] border border-[#252D22] hover:border-[#64753E] hover:bg-[#1D231B] transition-all"
+              <Link
+                href="/tinjau"
+                className="inline-flex min-h-[42px] items-center gap-2 px-5 py-2.5 rounded-full text-[14px] font-semibold bg-[var(--forest-800)] text-white hover:bg-[var(--forest-900)] shadow-xs transition-transform active:scale-95"
               >
-                Pelajari Alur Lengkap
-                <ArrowRight className="w-3.5 h-3.5 text-[#AEDA2D]" />
-              </a>
+                <span>Periksa Validasi Auditor</span>
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
+              </Link>
             </div>
           </div>
 
-          {/* Right Column: Mini Product Interface (Chips, Interactive Panel, Status Cards) */}
-          <div className="surface-card p-6 sm:p-7 shadow-panel flex flex-col gap-5">
-            
-            {/* Filter / Category Chips (Section 5.3) */}
-            <div className="flex flex-wrap items-center gap-2 pb-4 border-b border-[#1B211A]">
+          {/* Right Column: Mini Product Interface (Soft Botanical Card) */}
+          <div className="xb-card p-6 sm:p-7 flex flex-col gap-5">
+            {/* Filter / Category Chips */}
+            <div className="flex flex-wrap items-center gap-2 pb-4 border-b border-[var(--line-subtle)]">
               <button
                 type="button"
                 onClick={() => setActiveChip("satelit")}
-                className={`button-touch px-3.5 py-1.5 rounded-pill text-[0.78rem] font-medium transition-colors ${
+                className={`min-h-[38px] px-4 py-1.5 rounded-full text-[13px] font-semibold transition-all ${
                   activeChip === "satelit"
-                    ? "bg-[#AEDA2D] text-[#11160B]"
-                    : "bg-[#171C16] text-[#A8AFA2] hover:text-[#F0F2EC] border border-[#252D22]"
+                    ? "bg-[var(--forest-800)] text-white shadow-xs"
+                    : "bg-[var(--surface-soft)] text-[var(--ink-muted)] hover:bg-[var(--surface-sunken)] hover:text-[var(--ink)] border border-[var(--line)]"
                 }`}
               >
                 1. Citra Satelit Radar
@@ -59,10 +58,10 @@ export function FeatureSpotlight() {
               <button
                 type="button"
                 onClick={() => setActiveChip("sensor")}
-                className={`button-touch px-3.5 py-1.5 rounded-pill text-[0.78rem] font-medium transition-colors ${
+                className={`min-h-[38px] px-4 py-1.5 rounded-full text-[13px] font-semibold transition-all ${
                   activeChip === "sensor"
-                    ? "bg-[#AEDA2D] text-[#11160B]"
-                    : "bg-[#171C16] text-[#A8AFA2] hover:text-[#F0F2EC] border border-[#252D22]"
+                    ? "bg-[var(--forest-800)] text-white shadow-xs"
+                    : "bg-[var(--surface-soft)] text-[var(--ink-muted)] hover:bg-[var(--surface-sunken)] hover:text-[var(--ink)] border border-[var(--line)]"
                 }`}
               >
                 2. Sensor Fisik Pohon
@@ -70,10 +69,10 @@ export function FeatureSpotlight() {
               <button
                 type="button"
                 onClick={() => setActiveChip("izin")}
-                className={`button-touch px-3.5 py-1.5 rounded-pill text-[0.78rem] font-medium transition-colors ${
+                className={`min-h-[38px] px-4 py-1.5 rounded-full text-[13px] font-semibold transition-all ${
                   activeChip === "izin"
-                    ? "bg-[#AEDA2D] text-[#11160B]"
-                    : "bg-[#171C16] text-[#A8AFA2] hover:text-[#F0F2EC] border border-[#252D22]"
+                    ? "bg-[var(--forest-800)] text-white shadow-xs"
+                    : "bg-[var(--surface-soft)] text-[var(--ink-muted)] hover:bg-[var(--surface-sunken)] hover:text-[var(--ink)] border border-[var(--line)]"
                 }`}
               >
                 3. Hak Izin Adat
@@ -81,17 +80,19 @@ export function FeatureSpotlight() {
             </div>
 
             {/* Interactive Telemetry Inspector Box */}
-            <div className="surface-raised p-4 rounded-panel border border-[#252D22] text-[0.825rem]">
+            <div className="rounded-[16px] bg-[var(--surface-soft)] p-4 border border-[var(--line)] text-[13.5px]">
               {activeChip === "satelit" && (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-[#A8AFA2] flex items-center gap-1.5 font-medium">
-                      <Layers className="w-4 h-4 text-[#AEDA2D]" />
+                    <span className="text-[var(--ink)] flex items-center gap-2 font-semibold">
+                      <Layers className="w-4 h-4 text-[var(--forest-700)]" />
                       Sentinel-1 SAR Radar &amp; Sentinel-2 MSI
                     </span>
-                    <span className="text-[0.7rem] font-mono text-[#64753E]">GEE Cache: Valid</span>
+                    <span className="xb-numeric text-[11.5px] font-bold text-[var(--forest-700)] bg-[var(--leaf-100)] px-2 py-0.5 rounded">
+                      Cache GEE: Valid
+                    </span>
                   </div>
-                  <p className="text-[0.78rem] text-[#747D70] leading-relaxed">
+                  <p className="text-[13px] text-[var(--ink-muted)] leading-relaxed">
                     Radar C-band menembus tutupan awan hujan Kalimantan untuk mengukur kelembapan kanopi (-12.4 dB).
                     Indeks kehijauan rata-rata berada pada 0.78 NDVI.
                   </p>
@@ -101,13 +102,15 @@ export function FeatureSpotlight() {
               {activeChip === "sensor" && (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-[#A8AFA2] flex items-center gap-1.5 font-medium">
-                      <ShieldCheck className="w-4 h-4 text-[#AEDA2D]" />
+                    <span className="text-[var(--ink)] flex items-center gap-2 font-semibold">
+                      <Radio className="w-4 h-4 text-[var(--forest-700)]" />
                       Mikrokontroler ESP32 + DHT22 + KY-026
                     </span>
-                    <span className="text-[0.7rem] font-mono text-[#AEDA2D]">Ping: 5 Detik</span>
+                    <span className="xb-numeric text-[11.5px] font-bold text-[var(--forest-700)] bg-[var(--leaf-100)] px-2 py-0.5 rounded">
+                      Ping: 5 Detik
+                    </span>
                   </div>
-                  <p className="text-[0.78rem] text-[#747D70] leading-relaxed">
+                  <p className="text-[13px] text-[var(--ink-muted)] leading-relaxed">
                     Dipasang di pohon penyangga dengan baterai mandiri. Menghitung suhu permukaan 31.4&deg;C,
                     kelembapan udara 68.2%, dan status nyala api 0 (Aman).
                   </p>
@@ -117,50 +120,49 @@ export function FeatureSpotlight() {
               {activeChip === "izin" && (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-[#A8AFA2] flex items-center gap-1.5 font-medium">
-                      <Check className="w-4 h-4 text-[#AEDA2D]" />
+                    <span className="text-[var(--ink)] flex items-center gap-2 font-semibold">
+                      <Users className="w-4 h-4 text-[var(--forest-700)]" />
                       Konsensus Lembaga Adat Desa
                     </span>
-                    <span className="text-[0.7rem] font-mono text-[#AEDA2D]">Terekam di Ledger</span>
+                    <span className="xb-numeric text-[11.5px] font-bold text-[var(--forest-700)] bg-[var(--leaf-100)] px-2 py-0.5 rounded">
+                      Tercatat di Ledger
+                    </span>
                   </div>
-                  <p className="text-[0.78rem] text-[#747D70] leading-relaxed">
-                    Izin resmi diberikan dengan tanda tangan digital terotentikasi. Warga memiliki hak veto
+                  <p className="text-[13px] text-[var(--ink-muted)] leading-relaxed">
+                    Izin resmi diberikan dengan persetujuan 70% kuorum warga. Warga memiliki hak veto
                     untuk membuka sengketa yang seketika menghentikan transaksi.
                   </p>
                 </div>
               )}
             </div>
 
-            {/* Two Mini Status Cards (Section 4.5 right column) */}
+            {/* Two Mini Status Cards */}
             <div className="grid grid-cols-2 gap-3.5">
-              <div className="surface-soft p-3.5 rounded-panel border border-[#252D22]">
-                <span className="text-[0.7rem] text-[#747D70] block">Status Verifikasi</span>
-                <span className="text-[0.95rem] font-medium text-[#F0F2EC] mt-1 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#AEDA2D]" />
+              <div className="rounded-[16px] bg-white p-3.5 border border-[var(--line)] shadow-xs">
+                <span className="text-[11.5px] font-medium text-[var(--ink-dim)] block">Status Verifikasi</span>
+                <span className="text-[14.5px] font-semibold text-[var(--status-verified-ink)] mt-1 flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-[var(--forest-700)]" />
                   Terverifikasi
                 </span>
-                <span className="text-[0.72rem] text-[#64753E] mt-1 block">
+                <span className="text-[12px] text-[var(--ink-muted)] mt-1 block">
                   600 unit siap rilis
                 </span>
               </div>
 
-              <div className="surface-soft p-3.5 rounded-panel border border-[#252D22]">
-                <span className="text-[0.7rem] text-[#747D70] block">Integritas Hash</span>
-                <span className="text-[0.95rem] font-medium text-[#F0F2EC] mt-1 flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#AEDA2D]" />
+              <div className="rounded-[16px] bg-white p-3.5 border border-[var(--line)] shadow-xs">
+                <span className="text-[11.5px] font-medium text-[var(--ink-dim)] block">Integritas Hash</span>
+                <span className="text-[14.5px] font-semibold text-[var(--seal-600)] mt-1 flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-[var(--seal-600)]" />
                   Cocok 100%
                 </span>
-                <span className="text-[0.72rem] text-[#747D70] font-mono mt-1 block truncate">
+                <span className="xb-mono text-[11.5px] text-[var(--ink-muted)] mt-1 block truncate">
                   0x7f83b165...
                 </span>
               </div>
             </div>
-
           </div>
-
         </div>
       </div>
     </section>
   );
 }
-

@@ -18,6 +18,7 @@ import {
   LogOut,
   ArrowUpRight,
   KeyRound,
+  ShieldCheck,
 } from "lucide-react";
 
 export interface DemoAccount {
@@ -34,11 +35,11 @@ export interface DemoAccount {
 export const EXCBON_DEMO_ACCOUNTS: DemoAccount[] = [
   {
     id: "komunitas",
-    role: "Komunitas",
+    role: "Komunitas Adat",
     name: "Sari Dewi",
     email: "komunitas.a@demo.excboncp.test",
     password: "demo123",
-    badge: "Hak Veto & Kas 60%",
+    badge: "Hak Veto & Kas 70%",
     destinationHref: "/app",
     destinationLabel: "Buka Dashboard (/app)",
   },
@@ -58,7 +59,7 @@ export const EXCBON_DEMO_ACCOUNTS: DemoAccount[] = [
     name: "Ahmad Fauzi",
     email: "pengelola.a@demo.excboncp.test",
     password: "demo123",
-    badge: "Monitoring & Operasi 40%",
+    badge: "Monitoring & Operasi 20%",
     destinationHref: "/app",
     destinationLabel: "Buka Dashboard (/app)",
   },
@@ -116,7 +117,7 @@ export function LoginFormCard({
   >("none");
   const [paused, setPaused] = useState(false);
 
-  // UI States (R-27: Empty/Idle, Loading, Error, Success)
+  // UI States (Idle, Loading, Error, Success)
   const [status, setStatus] = useState<
     "idle" | "loading" | "error" | "success" | "reset-sent" | "registered"
   >("idle");
@@ -195,8 +196,6 @@ export function LoginFormCard({
       return;
     }
 
-    // Sandbox ini memakai akun yang sudah disediakan; pendaftaran mandiri
-    // hanya mencatat permintaan, bukan membuat sesi baru.
     if (authMode === "register") {
       setStatus("loading");
       window.setTimeout(() => setStatus("registered"), 450);
@@ -235,7 +234,7 @@ export function LoginFormCard({
         name: trimmedEmail.split("@")[0],
         email: trimmedEmail,
         password: "",
-        badge: "JWT Session Active",
+        badge: "Sesi Aktif",
         destinationHref: "/app",
         destinationLabel: "Buka Dashboard (/app)",
       }
@@ -277,25 +276,26 @@ export function LoginFormCard({
 
   return (
     <div className="w-full max-w-[1080px] mx-auto">
-      {/* Top Floating Attribution & Theme Pill (Matches reference pill above the card) */}
+      {/* Top Floating Attribution & Theme Pill */}
       <BlurFade delay={0.05} inView>
         <div className="flex flex-wrap items-center justify-center gap-3 mb-4 sm:mb-6">
           <div
-            className={`inline-flex items-center gap-2.5 pl-2 pr-4 py-1.5 rounded-full border shadow-sm transition-colors ${
+            className={`inline-flex items-center gap-2.5 pl-2.5 pr-4 py-1.5 rounded-full border shadow-xs transition-colors ${
               isLight
-                ? "bg-[#F3F4F6] border-black/10 text-[#18191D]"
-                : "bg-[#171D16] border-[#263024] text-[#F0F2EC]"
+                ? "bg-white/80 border-[#d8e5d4] text-[#14261a]"
+                : "bg-[#161b22] border-[#30363d] text-[#FAF8F5]"
             }`}
           >
-            <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-[#1D4ED8] via-[#3B5BFF] to-[#60A5FA] flex items-center justify-center text-white text-xs font-bold shadow-inner">
-              E
-            </div>
-            <span className="text-[13px] font-semibold tracking-tight">
+            <span className="w-2 h-2 rounded-full bg-[#10b981]" />
+            <span className="text-xs font-bold tracking-tight uppercase font-ui">
               excboncp.id
+            </span>
+            <span className="text-[10px] text-[#10b981] font-semibold border border-[#10b981]/40 px-2 py-0.5 rounded-full">
+              Portal MRV
             </span>
           </div>
 
-          {/* Working Card Theme Switcher (R-21 & R-34 compliant) */}
+          {/* Theme Switcher Toggle (Soft Botanical vs Forest Dark) */}
           <button
             type="button"
             onClick={() =>
@@ -303,27 +303,27 @@ export function LoginFormCard({
             }
             aria-label={
               isLight
-                ? "Ubah kartu ke mode gelap"
-                : "Ubah kartu ke mode terang (referensi)"
+                ? "Ubah tampilan ke mode Forest Dark"
+                : "Ubah tampilan ke mode Soft Botanical"
             }
-            className={`inline-flex items-center gap-2 px-3.5 py-1.5 min-h-[40px] rounded-full text-xs font-semibold border transition-all ${
+            className={`inline-flex items-center gap-2 px-3.5 py-1.5 min-h-[38px] rounded-full text-xs font-semibold border transition-all ${
               isLight
-                ? "bg-white text-[#18191D] border-black/10 hover:bg-[#F3F4F6]"
-                : "bg-[#171D16] text-[#AEDA2D] border-[#2B3529] hover:border-[#AEDA2D]/50"
+                ? "bg-white text-[#1f4d2e] border-[#d8e5d4] hover:bg-[#f5f9f3]"
+                : "bg-[#161b22] text-[#10b981] border-[#30363d] hover:border-[#10b981]/50"
             }`}
           >
             {isLight ? (
               <>
                 <Sun
-                  className="w-3.5 h-3.5 text-[#D97706]"
+                  className="w-3.5 h-3.5 text-amber-600"
                   aria-hidden="true"
                 />
-                <span>Studio Light</span>
+                <span>Soft Botanical</span>
               </>
             ) : (
               <>
                 <Moon
-                  className="w-3.5 h-3.5 text-[#AEDA2D]"
+                  className="w-3.5 h-3.5 text-[#10b981]"
                   aria-hidden="true"
                 />
                 <span>Forest Dark</span>
@@ -333,17 +333,17 @@ export function LoginFormCard({
         </div>
       </BlurFade>
 
-      {/* Main Split Rounded Card (Matches reference image layout & proportions) */}
+      {/* Main Split Botanical Card */}
       <BlurFade delay={0.12} inView>
         <div
-          className={`relative rounded-[28px] sm:rounded-[36px] p-3 sm:p-4 lg:p-5 transition-colors duration-300 shadow-[0_28px_80px_rgba(18,20,28,0.18)] border ${
+          className={`relative rounded-[28px] sm:rounded-[36px] p-3 sm:p-5 transition-colors duration-300 border ${
             isLight
-              ? "bg-[#FFFFFF] text-[#18191D] border-black/5"
-              : "bg-[#121712] text-[#F0F2EC] border-[#252E23]"
+              ? "bg-[#FFFFFF] text-[#14261a] border-[#d8e5d4] shadow-[0_20px_60px_rgba(20,38,26,0.06)]"
+              : "bg-[#101610] text-[#FAF8F5] border-[#1f2937] shadow-[0_24px_60px_rgba(0,0,0,0.45)]"
           }`}
         >
-          <div className="grid grid-cols-1 lg:grid-cols-[1.06fr_1fr] gap-4 sm:gap-6 lg:gap-8 items-stretch">
-            {/* LEFT COLUMN: 3D Lottie Mascot & Interactive 3D Stage */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1.08fr_1fr] gap-4 sm:gap-6 lg:gap-8 items-stretch">
+            {/* LEFT COLUMN: Official Orangutan Mascot Stage */}
             <div className="w-full h-full">
               <LottieMascotStage
                 activeField={activeField}
@@ -352,89 +352,79 @@ export function LoginFormCard({
                 cardTheme={cardTheme}
                 paused={paused}
                 onTogglePause={() => setPaused((p) => !p)}
+                selectedRole={activeAccount.role}
               />
             </div>
 
-            {/* RIGHT COLUMN: Minimalist Editorial Form Area */}
-            <div className="flex flex-col justify-between px-4 sm:px-8 lg:px-10 py-6 sm:py-9">
-              {/* Top Brand Mark (Matches 'Kreative' cute squircle icon + wordmark in reference) */}
-              <div className="flex items-center justify-center gap-2 mb-5 sm:mb-7">
-                <div
-                  className={`w-6 h-6 rounded-[7px] flex items-center justify-center shadow-sm ${
-                    isLight
-                      ? "bg-[#18191D] text-white"
-                      : "bg-[#AEDA2D] text-[#111610]"
-                  }`}
-                  aria-hidden="true"
-                >
-                  <div className="flex flex-col items-center justify-center gap-[2px]">
-                    <div className="flex items-center gap-[4px]">
-                      <span className="w-[3.5px] h-[3.5px] rounded-full bg-current" />
-                      <span className="w-[3.5px] h-[3.5px] rounded-full bg-current" />
-                    </div>
-                    <span className="w-2 h-[1.5px] rounded-full bg-current opacity-80" />
-                  </div>
-                </div>
+            {/* RIGHT COLUMN: Minimalist Botanical Form Area */}
+            <div className="flex flex-col justify-between px-4 sm:px-8 lg:px-9 py-6 sm:py-8">
+              {/* Top Brand Mark */}
+              <div className="flex items-center justify-center gap-2 mb-5 sm:mb-6">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] animate-pulse" />
                 <span
-                  className={`text-[15px] font-bold tracking-tight ${
-                    isLight ? "text-[#18191D]" : "text-[#F0F2EC]"
+                  className={`text-[17px] font-bold tracking-tight uppercase font-ui ${
+                    isLight ? "text-[#14261a]" : "text-[#FAF8F5]"
                   }`}
                 >
                   Excboncp
                 </span>
+                <span className="text-[11px] font-ui font-medium px-2 py-0.5 rounded-full border border-[#10b981]/40 text-[#10b981]">
+                  MRV Hutan
+                </span>
               </div>
 
               {/* Center Form Block */}
-              <div className="w-full max-w-[360px] mx-auto my-auto">
+              <div className="w-full max-w-[380px] mx-auto my-auto">
                 {/* Title & Subtitle */}
-                <div className="text-center mb-6 sm:mb-7">
+                <div className="text-center mb-5 sm:mb-6">
                   <h1
-                    className={`text-[28px] sm:text-[34px] font-extrabold tracking-[-0.03em] leading-[1.15] ${
-                      isLight ? "text-[#18191D]" : "text-[#F0F2EC]"
+                    className={`font-ui text-2xl sm:text-3xl font-bold tracking-tight leading-tight ${
+                      isLight ? "text-[#14261a]" : "text-[#FAF8F5]"
                     }`}
                   >
                     {authMode === "login"
-                      ? "Welcome Back!"
+                      ? "Selamat Datang"
                       : authMode === "register"
-                        ? "Create Account"
-                        : "Reset Password"}
+                        ? "Daftar Akun Baru"
+                        : "Pemulihan Akses"}
                   </h1>
                   <p
-                    className={`mt-1.5 text-[12.5px] font-medium ${
-                      isLight ? "text-[#5E626A]" : "text-[#9CA596]"
+                    className={`font-ui mt-1 text-xs sm:text-[13px] leading-relaxed ${
+                      isLight ? "text-[#4a5e4f]" : "text-[#FAF8F5]/70"
                     }`}
                   >
                     {authMode === "forgot"
-                      ? "Masukkan email terdaftar untuk menerima tautan pemulihan"
+                      ? "Masukkan email terdaftar untuk menerima petunjuk akses sandbox."
                       : authMode === "register"
-                        ? "Register Your Details Below"
-                        : "Enter Your Details Below"}
+                        ? "Daftarkan peran pemantauan hutan Anda pada jaringan Base Sepolia."
+                        : "Pilih peran demo di bawah untuk masuk instan, atau isi kredensial."}
                   </p>
                 </div>
 
                 {/* Quick Demo Role Selector Pills (Shown on Login mode) */}
                 {authMode === "login" && (
                   <div className="mb-5">
-                    <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center justify-between mb-2">
                       <span
-                        className={`text-[11px] font-semibold ${
-                          isLight ? "text-[#5E626A]" : "text-[#9CA596]"
+                        className={`text-[11px] font-semibold uppercase tracking-wider font-ui ${
+                          isLight ? "text-[#4a5e4f]" : "text-[#FAF8F5]/65"
                         }`}
                       >
-                        Isi Cepat Akun Demo:
+                        Pilih Cepat Akun Demo:
                       </span>
                       <button
                         type="button"
                         onClick={handleClearFields}
                         className={`text-[11px] font-semibold underline underline-offset-2 transition-colors min-h-[28px] px-1 ${
                           isLight
-                            ? "text-[#4B5563] hover:text-[#18191D]"
-                            : "text-[#A8AFA2] hover:text-[#AEDA2D]"
+                            ? "text-[#4a5e4f] hover:text-[#1f4d2e]"
+                            : "text-[#FAF8F5]/70 hover:text-[#10b981]"
                         }`}
                       >
                         Kosongkan
                       </button>
                     </div>
+
                     <div className="flex flex-wrap gap-1.5">
                       {EXCBON_DEMO_ACCOUNTS.map((acc) => {
                         const isSelected =
@@ -444,14 +434,14 @@ export function LoginFormCard({
                             key={acc.id}
                             type="button"
                             onClick={() => handleSelectDemoAccount(acc)}
-                            className={`px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all min-h-[32px] ${
+                            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all min-h-[34px] ${
                               isSelected
                                 ? isLight
-                                  ? "bg-[#18191D] text-white border-[#18191D]"
-                                  : "bg-[#AEDA2D] text-[#111610] border-[#AEDA2D]"
+                                  ? "bg-[#1f4d2e] text-white border-[#1f4d2e] shadow-xs"
+                                  : "bg-[#10b981] text-[#0d1117] border-[#10b981] shadow-xs"
                                 : isLight
-                                  ? "bg-[#F3F4F6] text-[#374151] border-[#D1D5DB] hover:border-[#18191D]"
-                                  : "bg-[#1A2119] text-[#C6CEC0] border-[#2B3529] hover:border-[#AEDA2D]/60"
+                                  ? "bg-[#f5f9f3] text-[#14261a] border-[#d8e5d4] hover:border-[#1f4d2e]/40"
+                                  : "bg-[#161b22] text-[#FAF8F5]/80 border-[#30363d] hover:border-[#10b981]/50"
                             }`}
                           >
                             {acc.role}
@@ -462,22 +452,20 @@ export function LoginFormCard({
                   </div>
                 )}
 
-                {/* SUCCESS STATE (Authenticated Session View) */}
+                {/* SUCCESS STATE */}
                 {status === "success" ? (
                   <div
                     role="status"
                     aria-live="polite"
                     className={`rounded-2xl p-5 border ${
                       isLight
-                        ? "bg-[#F8FAFC] border-[#CBD5E1] text-[#18191D]"
-                        : "bg-[#171E16] border-[#2C3829] text-[#F0F2EC]"
+                        ? "bg-[#f5f9f3] border-[#d8e5d4] text-[#14261a]"
+                        : "bg-[#161b22] border-[#30363d] text-[#FAF8F5]"
                     }`}
                   >
                     <div className="flex items-start gap-3">
                       <CheckCircle2
-                        className={`w-5 h-5 shrink-0 mt-0.5 ${
-                          isLight ? "text-[#15803D]" : "text-[#AEDA2D]"
-                        }`}
+                        className="w-5 h-5 shrink-0 mt-0.5 text-[#10b981]"
                         aria-hidden="true"
                       />
                       <div className="flex-1 min-w-0">
@@ -488,8 +476,8 @@ export function LoginFormCard({
                           <span
                             className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                               isLight
-                                ? "bg-[#DCFCE7] text-[#166534]"
-                                : "bg-[#AEDA2D]/20 text-[#AEDA2D]"
+                                ? "bg-[#e2f3e6] text-[#17692f]"
+                                : "bg-[#10b981]/20 text-[#10b981]"
                             }`}
                           >
                             {activeAccount.badge}
@@ -497,19 +485,19 @@ export function LoginFormCard({
                         </div>
                         <p
                           className={`text-xs mt-0.5 truncate ${
-                            isLight ? "text-[#4B5563]" : "text-[#9CA596]"
+                            isLight ? "text-[#4a5e4f]" : "text-[#FAF8F5]/70"
                           }`}
                         >
                           {activeAccount.email} • {activeAccount.role}
                         </p>
                         <p
                           className={`mt-3 text-xs leading-relaxed ${
-                            isLight ? "text-[#374151]" : "text-[#C6CEC0]"
+                            isLight ? "text-[#14261a]" : "text-[#FAF8F5]/85"
                           }`}
                         >
                           {authMode === "register"
-                            ? "Pendaftaran akun berhasil! Sesi peran kamu telah aktif di jaringan sandbox ExcbonCP."
-                            : "Sesi autentikasi berhasil diverifikasi. Hak akses sesuai peran telah diaktifkan pada jaringan sandbox ExcbonCP."}
+                            ? "Pendaftaran akun berhasil! Sesi peran Anda telah aktif di jaringan sandbox ExcbonCP."
+                            : "Sesi autentikasi berhasil diverifikasi. Hak akses sesuai peran telah diaktifkan pada jaringan sandbox Base Sepolia."}
                         </p>
 
                         <div className="mt-4 flex flex-col sm:flex-row gap-2">
@@ -517,8 +505,8 @@ export function LoginFormCard({
                             href={activeAccount.destinationHref}
                             className={`flex-1 min-h-[44px] px-4 py-2.5 rounded-full text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
                               isLight
-                                ? "bg-[#18191D] text-white hover:bg-[#2B2D33]"
-                                : "bg-[#AEDA2D] text-[#111610] hover:brightness-105"
+                                ? "bg-[#1f4d2e] hover:bg-[#143520] text-white shadow-xs"
+                                : "bg-[#10b981] hover:bg-[#059669] text-[#0d1117] shadow-xs"
                             }`}
                           >
                             <span>{activeAccount.destinationLabel}</span>
@@ -532,8 +520,8 @@ export function LoginFormCard({
                             onClick={() => setStatus("idle")}
                             className={`min-h-[44px] px-4 py-2.5 rounded-full text-xs font-semibold border flex items-center justify-center gap-1.5 transition-all ${
                               isLight
-                                ? "bg-white text-[#18191D] border-[#CBD5E1] hover:bg-[#F1F5F9]"
-                                : "bg-[#121712] text-[#C6CEC0] border-[#2C3829] hover:text-white"
+                                ? "bg-white text-[#14261a] border-[#d8e5d4] hover:bg-[#f5f9f3]"
+                                : "bg-[#161b22] text-[#FAF8F5] border-[#30363d] hover:bg-[#1c222b]"
                             }`}
                           >
                             <LogOut
@@ -552,30 +540,29 @@ export function LoginFormCard({
                     aria-live="polite"
                     className={`rounded-2xl p-5 border ${
                       isLight
-                        ? "bg-[#F8FAFC] border-[#CBD5E1] text-[#18191D]"
-                        : "bg-[#171E16] border-[#2C3829] text-[#F0F2EC]"
+                        ? "bg-[#f5f9f3] border-[#d8e5d4] text-[#14261a]"
+                        : "bg-[#161b22] border-[#30363d] text-[#FAF8F5]"
                     }`}
                   >
                     <div className="flex items-start gap-3">
                       <KeyRound
-                        className={`w-5 h-5 shrink-0 mt-0.5 ${
-                          isLight ? "text-[#2563EB]" : "text-[#AEDA2D]"
-                        }`}
+                        className="w-5 h-5 shrink-0 mt-0.5 text-[#10b981]"
                         aria-hidden="true"
                       />
                       <div>
                         <p className="text-sm font-bold">
-                          Pemulihan Kata Sandi Belum Aktif
+                          Pemulihan Akses Sandbox
                         </p>
                         <p
                           className={`text-xs mt-1 leading-relaxed ${
-                            isLight ? "text-[#4B5563]" : "text-[#9CA596]"
+                            isLight ? "text-[#4a5e4f]" : "text-[#FAF8F5]/70"
                           }`}
                         >
-                          Pengiriman email pemulihan belum tersambung pada
-                          sandbox ini. Semua akun demo memakai kata sandi tetap{" "}
-                          <strong className="font-semibold">demo123</strong> —
-                          kembali ke Log in lalu pilih akun demo yang tersedia.
+                          Seluruh akun demo telah dikonfigurasi dengan kata sandi tetap{" "}
+                          <strong className="font-semibold text-[#10b981]">
+                            demo123
+                          </strong>
+                          . Silakan kembali ke halaman masuk dan pilih salah satu peran yang tersedia.
                         </p>
                         <button
                           type="button"
@@ -583,13 +570,13 @@ export function LoginFormCard({
                             setAuthMode("login");
                             setStatus("idle");
                           }}
-                          className={`mt-4 min-h-[44px] px-5 py-2 rounded-full text-xs font-bold ${
+                          className={`mt-4 min-h-[40px] px-5 py-2 rounded-full text-xs font-bold ${
                             isLight
-                              ? "bg-[#18191D] text-white"
-                              : "bg-[#AEDA2D] text-[#111610]"
+                              ? "bg-[#1f4d2e] text-white"
+                              : "bg-[#10b981] text-[#0d1117]"
                           }`}
                         >
-                          Kembali ke Log in
+                          Kembali ke Halaman Masuk
                         </button>
                       </div>
                     </div>
@@ -600,39 +587,37 @@ export function LoginFormCard({
                     aria-live="polite"
                     className={`rounded-2xl p-5 border ${
                       isLight
-                        ? "bg-[#F8FAFC] border-[#CBD5E1] text-[#18191D]"
-                        : "bg-[#171E16] border-[#2C3829] text-[#F0F2EC]"
+                        ? "bg-[#f5f9f3] border-[#d8e5d4] text-[#14261a]"
+                        : "bg-[#161b22] border-[#30363d] text-[#FAF8F5]"
                     }`}
                   >
                     <div className="flex items-start gap-3">
                       <CheckCircle2
-                        className={`w-5 h-5 shrink-0 mt-0.5 ${
-                          isLight ? "text-[#2563EB]" : "text-[#82B7D9]"
-                        }`}
+                        className="w-5 h-5 shrink-0 mt-0.5 text-[#10b981]"
                         aria-hidden="true"
                       />
                       <div>
                         <p className="text-sm font-bold">
-                          Permintaan Akun Tercatat
+                          Pendaftaran Akun Terbuka
                         </p>
                         <p
                           className={`text-xs mt-1 leading-relaxed ${
-                            isLight ? "text-[#4B5563]" : "text-[#9CA596]"
+                            isLight ? "text-[#4a5e4f]" : "text-[#FAF8F5]/70"
                           }`}
                         >
-                          Pendaftaran mandiri belum membuka sesi di sandbox ini.
-                          Akun peran dibuat oleh admin proyek — untuk mencoba
-                          sekarang, masuk lewat salah satu akun demo.
+                          Permintaan akun baru Anda telah dicatat. Untuk menguji
+                          alur pemantauan langsung, Anda dapat masuk instan
+                          menggunakan salah satu akun demo.
                         </p>
                         <Link
                           href="/login"
-                          className={`mt-4 inline-flex min-h-[44px] px-5 py-2 rounded-full text-xs font-bold items-center gap-1.5 ${
+                          className={`mt-4 inline-flex min-h-[40px] px-5 py-2 rounded-full text-xs font-bold items-center gap-1.5 ${
                             isLight
-                              ? "bg-[#18191D] text-white"
-                              : "bg-[#AEDA2D] text-[#111610]"
+                              ? "bg-[#1f4d2e] text-white"
+                              : "bg-[#10b981] text-[#0d1117]"
                           }`}
                         >
-                          Buka Halaman Log in
+                          Buka Halaman Masuk
                         </Link>
                       </div>
                     </div>
@@ -643,11 +628,7 @@ export function LoginFormCard({
                     {status === "error" && errorMessage && (
                       <div
                         role="alert"
-                        className={`flex items-start gap-2.5 p-3 rounded-xl border text-xs font-medium ${
-                          isLight
-                            ? "bg-[#FEF2F2] border-[#FECACA] text-[#991B1B]"
-                            : "bg-[#2C1517] border-[#7F1D1D] text-[#FCA5A5]"
-                        }`}
+                        className="flex items-start gap-2.5 p-3 rounded-xl border text-xs font-medium bg-[#fde3e1] border-[#f0b4ae] text-[#b3261e]"
                       >
                         <AlertCircle
                           className="w-4 h-4 shrink-0 mt-0.5"
@@ -663,11 +644,11 @@ export function LoginFormCard({
                         <div>
                           <label
                             htmlFor="excbon-login-name"
-                            className={`block text-[11.5px] font-medium mb-1 ${
-                              isLight ? "text-[#5E626A]" : "text-[#9CA596]"
+                            className={`block text-xs font-semibold mb-1.5 ${
+                              isLight ? "text-[#4a5e4f]" : "text-[#FAF8F5]/80"
                             }`}
                           >
-                            Full Name
+                            Nama Lengkap
                           </label>
                           <input
                             id="excbon-login-name"
@@ -680,11 +661,11 @@ export function LoginFormCard({
                               setFullName(e.target.value);
                               if (status === "error") setStatus("idle");
                             }}
-                            placeholder="Enter your full name"
-                            className={`w-full bg-transparent border-0 border-b-2 pb-2.5 pt-1 text-[14px] font-semibold transition-colors focus:outline-none ${
+                            placeholder="Contoh: Budi Santoso"
+                            className={`w-full rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all focus:outline-none border ${
                               isLight
-                                ? "border-[#9499A3] focus:border-[#18191D] text-[#18191D] placeholder:text-[#737780]"
-                                : "border-[#546150] focus:border-[#AEDA2D] text-[#F0F2EC] placeholder:text-[#6E776A]"
+                                ? "bg-[#f5f9f3] border-[#d8e5d4] text-[#14261a] focus:bg-white focus:border-[#1f4d2e] focus:ring-2 focus:ring-[#1f4d2e]/10"
+                                : "bg-[#161b22] border-[#30363d] text-[#FAF8F5] focus:bg-[#1c222b] focus:border-[#10b981] focus:ring-2 focus:ring-[#10b981]/15"
                             }`}
                           />
                         </div>
@@ -692,11 +673,11 @@ export function LoginFormCard({
                         <div>
                           <label
                             htmlFor="excbon-register-role"
-                            className={`block text-[11.5px] font-medium mb-1 ${
-                              isLight ? "text-[#5E626A]" : "text-[#9CA596]"
+                            className={`block text-xs font-semibold mb-1.5 ${
+                              isLight ? "text-[#4a5e4f]" : "text-[#FAF8F5]/80"
                             }`}
                           >
-                            Role in Ecosystem
+                            Peran dalam Ekosistem
                           </label>
                           <select
                             id="excbon-register-role"
@@ -704,14 +685,14 @@ export function LoginFormCard({
                             onChange={(e) =>
                               setSelectedRoleLabel(e.target.value)
                             }
-                            className={`w-full bg-transparent border-0 border-b-2 pb-2.5 pt-1 text-[14px] font-semibold transition-colors focus:outline-none cursor-pointer ${
+                            className={`w-full rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all focus:outline-none border cursor-pointer ${
                               isLight
-                                ? "border-[#9499A3] focus:border-[#18191D] text-[#18191D]"
-                                : "border-[#546150] focus:border-[#AEDA2D] text-[#F0F2EC] bg-[#121712]"
+                                ? "bg-[#f5f9f3] border-[#d8e5d4] text-[#14261a] focus:bg-white focus:border-[#1f4d2e]"
+                                : "bg-[#161b22] border-[#30363d] text-[#FAF8F5] focus:bg-[#1c222b] focus:border-[#10b981]"
                             }`}
                           >
                             <option value="Komunitas Adat">
-                              Komunitas Adat (Hak Veto &amp; Kas 60%)
+                              Komunitas Adat (Hak Veto &amp; Kas 70%)
                             </option>
                             <option value="Pengelola Hutan">
                               Pengelola Hutan (Monitoring IoT &amp; Satelit)
@@ -731,11 +712,11 @@ export function LoginFormCard({
                     <div>
                       <label
                         htmlFor="excbon-login-email"
-                        className={`block text-[11.5px] font-medium mb-1 ${
-                          isLight ? "text-[#5E626A]" : "text-[#9CA596]"
+                        className={`block text-xs font-semibold mb-1.5 ${
+                          isLight ? "text-[#4a5e4f]" : "text-[#FAF8F5]/80"
                         }`}
                       >
-                        Email
+                        Alamat Email
                       </label>
                       <input
                         id="excbon-login-email"
@@ -749,11 +730,11 @@ export function LoginFormCard({
                           setEmail(e.target.value);
                           if (status === "error") setStatus("idle");
                         }}
-                        placeholder="hello.alex@gmail.com"
-                        className={`w-full bg-transparent border-0 border-b-2 pb-2.5 pt-1 text-[14px] font-semibold transition-colors focus:outline-none ${
+                        placeholder="komunitas.a@demo.excboncp.test"
+                        className={`w-full rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all focus:outline-none border ${
                           isLight
-                            ? "border-[#9499A3] focus:border-[#18191D] text-[#18191D] placeholder:text-[#737780]"
-                            : "border-[#546150] focus:border-[#AEDA2D] text-[#F0F2EC] placeholder:text-[#6E776A]"
+                            ? "bg-[#f5f9f3] border-[#d8e5d4] text-[#14261a] focus:bg-white focus:border-[#1f4d2e] focus:ring-2 focus:ring-[#1f4d2e]/10"
+                            : "bg-[#161b22] border-[#30363d] text-[#FAF8F5] focus:bg-[#1c222b] focus:border-[#10b981] focus:ring-2 focus:ring-[#10b981]/15"
                         }`}
                       />
                     </div>
@@ -763,19 +744,13 @@ export function LoginFormCard({
                       <div>
                         <label
                           htmlFor="excbon-login-password"
-                          className={`block text-[11.5px] font-medium mb-1 ${
-                            isLight ? "text-[#5E626A]" : "text-[#9CA596]"
+                          className={`block text-xs font-semibold mb-1.5 ${
+                            isLight ? "text-[#4a5e4f]" : "text-[#FAF8F5]/80"
                           }`}
                         >
-                          Password
+                          Kata Sandi
                         </label>
-                        <div
-                          className={`relative flex items-center border-b-2 transition-colors ${
-                            isLight
-                              ? "border-[#9499A3] focus-within:border-[#18191D]"
-                              : "border-[#546150] focus-within:border-[#AEDA2D]"
-                          }`}
-                        >
+                        <div className="relative flex items-center">
                           <input
                             id="excbon-login-password"
                             type={showPassword ? "text" : "password"}
@@ -792,11 +767,11 @@ export function LoginFormCard({
                               setPassword(e.target.value);
                               if (status === "error") setStatus("idle");
                             }}
-                            placeholder="Enter password"
-                            className={`w-full bg-transparent border-0 pb-2.5 pt-1 pr-11 text-[14px] font-semibold focus:outline-none ${
+                            placeholder="demo123"
+                            className={`w-full rounded-xl pl-3.5 pr-11 py-2.5 text-sm font-medium transition-all focus:outline-none border ${
                               isLight
-                                ? "text-[#18191D] placeholder:text-[#737780]"
-                                : "text-[#F0F2EC] placeholder:text-[#6E776A]"
+                                ? "bg-[#f5f9f3] border-[#d8e5d4] text-[#14261a] focus:bg-white focus:border-[#1f4d2e] focus:ring-2 focus:ring-[#1f4d2e]/10"
+                                : "bg-[#161b22] border-[#30363d] text-[#FAF8F5] focus:bg-[#1c222b] focus:border-[#10b981] focus:ring-2 focus:ring-[#10b981]/15"
                             }`}
                           />
                           <button
@@ -807,20 +782,20 @@ export function LoginFormCard({
                                 ? "Sembunyikan kata sandi"
                                 : "Tampilkan kata sandi"
                             }
-                            className={`-mr-2 w-11 h-11 flex items-center justify-center rounded-full transition-colors ${
+                            className={`absolute right-1.5 w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${
                               isLight
-                                ? "text-[#4E525A] hover:text-[#18191D] hover:bg-black/5"
-                                : "text-[#9CA596] hover:text-[#F0F2EC] hover:bg-white/5"
+                                ? "text-[#4a5e4f] hover:text-[#14261a] hover:bg-black/5"
+                                : "text-[#FAF8F5]/70 hover:text-[#FAF8F5] hover:bg-white/5"
                             }`}
                           >
                             {showPassword ? (
                               <EyeOff
-                                className="w-[18px] h-[18px]"
+                                className="w-4 h-4"
                                 aria-hidden="true"
                               />
                             ) : (
                               <Eye
-                                className="w-[18px] h-[18px]"
+                                className="w-4 h-4"
                                 aria-hidden="true"
                               />
                             )}
@@ -832,21 +807,21 @@ export function LoginFormCard({
                     {/* Utility Row: Remember me checkbox + Forgot password? link */}
                     {authMode !== "forgot" && (
                       <div className="flex items-center justify-between gap-2 pt-0.5">
-                        <label className="inline-flex items-center gap-2 cursor-pointer min-h-[44px] py-1 select-none">
+                        <label className="inline-flex items-center gap-2 cursor-pointer min-h-[36px] py-1 select-none">
                           <input
                             type="checkbox"
                             checked={rememberMe}
                             onChange={(e) => setRememberMe(e.target.checked)}
-                            className="w-4 h-4 rounded border-[#6E737D] text-[#18191D] focus:ring-2 focus:ring-[#3B5BFF] cursor-pointer accent-[#18191D]"
+                            className="w-4 h-4 rounded border-[#d8e5d4] text-[#1f4d2e] focus:ring-2 focus:ring-[#1f4d2e] cursor-pointer accent-[#1f4d2e]"
                           />
                           <span
-                            className={`text-[12px] font-medium ${
-                              isLight ? "text-[#4E525A]" : "text-[#A8AFA2]"
+                            className={`text-xs font-medium ${
+                              isLight ? "text-[#4a5e4f]" : "text-[#FAF8F5]/75"
                             }`}
                           >
                             {authMode === "register"
-                              ? "Agree to open MRV ledger terms"
-                              : "Remember me"}
+                              ? "Setujui aturan verifikasi terbuka"
+                              : "Ingat saya di perangkat ini"}
                           </span>
                         </label>
 
@@ -858,48 +833,44 @@ export function LoginFormCard({
                               setStatus("idle");
                               setErrorMessage(null);
                             }}
-                            className={`text-[12px] font-medium min-h-[44px] px-1 transition-colors ${
+                            className={`text-xs font-medium min-h-[36px] px-1 transition-colors ${
                               isLight
-                                ? "text-[#5E626A] hover:text-[#18191D]"
-                                : "text-[#9CA596] hover:text-[#AEDA2D]"
+                                ? "text-[#4a5e4f] hover:text-[#1f4d2e]"
+                                : "text-[#FAF8F5]/75 hover:text-[#10b981]"
                             }`}
                           >
-                            Forgot password?
+                            Lupa kata sandi?
                           </button>
                         )}
                       </div>
                     )}
 
-                    {/* Action Buttons Stack (Magic UI ShimmerButton + RippleButton) */}
-                    <div className="pt-2 space-y-3">
+                    {/* Action Buttons Stack */}
+                    <div className="pt-2 space-y-2.5">
                       <ShimmerButton
                         type="submit"
                         disabled={status === "loading"}
-                        background={isLight ? "#18191D" : "#AEDA2D"}
-                        shimmerColor={
-                          isLight
-                            ? "rgba(255,255,255,0.55)"
-                            : "rgba(255,255,255,0.8)"
-                        }
+                        background={isLight ? "#1f4d2e" : "#10b981"}
+                        shimmerColor="rgba(255,255,255,0.45)"
                         borderRadius="9999px"
-                        className={`w-full min-h-[50px] text-[13.5px] font-bold tracking-tight shadow-md ${
-                          isLight ? "text-white" : "!text-[#111610]"
+                        className={`w-full min-h-[48px] text-sm font-semibold tracking-tight shadow-md transition-all hover:scale-[1.01] active:scale-95 ${
+                          isLight ? "text-white" : "!text-[#0d1117]"
                         }`}
                       >
                         {status === "loading" ? (
                           <>
                             <Loader2
-                              className="w-4 h-4 animate-spin"
+                              className="w-4 h-4 animate-spin mr-2"
                               aria-hidden="true"
                             />
-                            <span>Memproses...</span>
+                            <span>Memproses Masuk...</span>
                           </>
                         ) : authMode === "login" ? (
-                          <span>Log in</span>
+                          <span>Masuk ke Dashboard</span>
                         ) : authMode === "register" ? (
-                          <span>Sign Up</span>
+                          <span>Daftarkan Akun</span>
                         ) : (
-                          <span>Send Recovery Link</span>
+                          <span>Kirim Tautan Pemulihan</span>
                         )}
                       </ShimmerButton>
 
@@ -908,11 +879,11 @@ export function LoginFormCard({
                           type="button"
                           disabled={status === "loading"}
                           onClick={handleGoogleLogin}
-                          rippleColor={isLight ? "#CBD5E1" : "#2E3B2B"}
-                          className={`w-full min-h-[50px] rounded-full text-[13.5px] font-bold border transition-colors ${
+                          rippleColor={isLight ? "#d8e5d4" : "#2E3B2B"}
+                          className={`w-full min-h-[46px] rounded-full text-xs sm:text-sm font-semibold border transition-all hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-2 ${
                             isLight
-                              ? "bg-[#F3F4F6] hover:bg-[#EAECEF] text-[#18191D] border-[#D1D5DB]"
-                              : "bg-[#1A2119] hover:bg-[#222B21] text-[#F0F2EC] border-[#2E3A2C]"
+                              ? "bg-white hover:bg-[#f5f9f3] text-[#14261a] border-[#d8e5d4] shadow-xs"
+                              : "bg-[#161b22] hover:bg-[#1c222b] text-[#FAF8F5] border-[#30363d] shadow-xs"
                           }`}
                         >
                           <svg
@@ -937,11 +908,7 @@ export function LoginFormCard({
                               d="M12 5.8c1.5 0 2.8.5 3.8 1.5l2.9-2.9C16.9 2.8 14.7 2 12 2 8.1 2 4.7 4.2 3.1 7.5l3.3 2.6c.8-2.3 3-4.3 5.6-4.3z"
                             />
                           </svg>
-                          <span>
-                            {authMode === "register"
-                              ? "Sign up with Google"
-                              : "Log in with Google"}
-                          </span>
+                          <span>Masuk dengan Google</span>
                         </RippleButton>
                       )}
                     </div>
@@ -949,38 +916,38 @@ export function LoginFormCard({
                 )}
               </div>
 
-              {/* Bottom Footer Prompt navigating between /login and /register */}
-              <div className="mt-7 text-center">
+              {/* Bottom Footer Prompt */}
+              <div className="mt-6 text-center">
                 {authMode === "login" ? (
                   <p
-                    className={`text-[12px] font-medium ${
-                      isLight ? "text-[#5E626A]" : "text-[#9CA596]"
+                    className={`text-xs font-medium ${
+                      isLight ? "text-[#4a5e4f]" : "text-[#FAF8F5]/70"
                     }`}
                   >
-                    Don&apos;t have an account?{" "}
+                    Belum memiliki akun peran?{" "}
                     <Link
                       href="/register"
-                      className={`inline-flex items-center font-bold underline-offset-4 hover:underline min-h-[44px] px-1 ${
-                        isLight ? "text-[#18191D]" : "text-[#AEDA2D]"
+                      className={`font-semibold underline underline-offset-4 hover:opacity-80 transition-opacity ${
+                        isLight ? "text-[#1f4d2e]" : "text-[#10b981]"
                       }`}
                     >
-                      Sign Up
+                      Daftar Akun
                     </Link>
                   </p>
                 ) : (
                   <p
-                    className={`text-[12px] font-medium ${
-                      isLight ? "text-[#5E626A]" : "text-[#9CA596]"
+                    className={`text-xs font-medium ${
+                      isLight ? "text-[#4a5e4f]" : "text-[#FAF8F5]/70"
                     }`}
                   >
-                    Already have an account?{" "}
+                    Sudah memiliki akun?{" "}
                     <Link
                       href="/login"
-                      className={`inline-flex items-center font-bold underline-offset-4 hover:underline min-h-[44px] px-1 ${
-                        isLight ? "text-[#18191D]" : "text-[#AEDA2D]"
+                      className={`font-semibold underline underline-offset-4 hover:opacity-80 transition-opacity ${
+                        isLight ? "text-[#1f4d2e]" : "text-[#10b981]"
                       }`}
                     >
-                      Log in
+                      Masuk ke Akun
                     </Link>
                   </p>
                 )}
