@@ -1,14 +1,15 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Image from "next/image";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { FastForward, Volume2, VolumeX } from "lucide-react";
 import { STORY_CHAPTERS } from "./story-data";
-import { StoryCard } from "./StoryCard";
+import { StoryNarrativeRibbon } from "./StoryNarrativeRibbon";
 import { StoryTimelineNav } from "./StoryTimelineNav";
 import { StoryCtaOverlay } from "./StoryCtaOverlay";
 import { StoryHotspots } from "./StoryHotspots";
+import { EarthGlobe } from "./EarthGlobe";
+import Image from "next/image";
 
 export function ScrollStorySection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -24,19 +25,12 @@ export function ScrollStorySection() {
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     setCurrentProgress(latest);
     let nextIndex = 0;
-    if (latest >= 0.88) {
-      nextIndex = 5;
-    } else if (latest >= 0.70) {
-      nextIndex = 4;
-    } else if (latest >= 0.52) {
-      nextIndex = 3;
-    } else if (latest >= 0.34) {
-      nextIndex = 2;
-    } else if (latest >= 0.16) {
-      nextIndex = 1;
-    } else {
-      nextIndex = 0;
-    }
+    if (latest >= 0.88) nextIndex = 5;
+    else if (latest >= 0.70) nextIndex = 4;
+    else if (latest >= 0.52) nextIndex = 3;
+    else if (latest >= 0.34) nextIndex = 2;
+    else if (latest >= 0.16) nextIndex = 1;
+    else nextIndex = 0;
 
     if (nextIndex !== activeChapterIndex) {
       setActiveChapterIndex(nextIndex);
@@ -51,44 +45,48 @@ export function ScrollStorySection() {
     const maxScroll = containerHeight - viewportHeight;
     const targetScroll =
       containerTop + (index / (STORY_CHAPTERS.length - 1)) * maxScroll;
-
-    window.scrollTo({
-      top: targetScroll,
-      behavior: "smooth",
-    });
-  };
-
-  const handleSkipAnimation = () => {
-    handleSelectChapter(STORY_CHAPTERS.length - 1);
+    window.scrollTo({ top: targetScroll, behavior: "smooth" });
   };
 
   return (
     <section
       ref={containerRef}
-      className="relative w-full h-[600vh] bg-[#070b08] select-none"
+      className="relative w-full h-[600vh] bg-[#010409] select-none"
     >
-      {/* Sticky Stage Container (Full-bleed 100vh viewport) */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between">
-        {/* Layered Keyframe Images — Full visual prominence, no obscuring black masks */}
-        <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
-          {STORY_CHAPTERS.map((ch, idx) => (
+      {/* Sticky full-viewport stage */}
+      <div className="sticky top-0 h-screen w-full overflow-hidden">
+
+        {/* ── Visual Layer Stack ───────────────────────────────────── */}
+        <div className="absolute inset-0 w-full h-full">
+
+          {/* Chapter 0: Interactive Earth Globe */}
+          <ChapterEarthLayer scrollYProgress={scrollYProgress} />
+
+          {/* Chapters 1-5: photographic keyframes */}
+          {STORY_CHAPTERS.slice(1).map((ch, i) => (
             <StoryLayer
               key={ch.id}
-              chapterIndex={idx}
+              chapterIndex={i + 1}
               image={ch.image}
               totalChapters={STORY_CHAPTERS.length}
               scrollYProgress={scrollYProgress}
             />
           ))}
 
-          {/* Minimal Top Atmospheric Vignette (purely for navbar contrast) */}
+          {/* Top atmospheric gradient — only for navbar readability */}
           <div
             aria-hidden="true"
-            className="absolute top-0 inset-x-0 h-24 bg-gradient-to-b from-[#070b08]/60 to-transparent z-10 pointer-events-none"
+            className="absolute top-0 inset-x-0 h-28 bg-gradient-to-b from-black/55 to-transparent z-20 pointer-events-none"
+          />
+
+          {/* Bottom gradient ramp — lifts narrative ribbon off visual */}
+          <div
+            aria-hidden="true"
+            className="absolute bottom-0 inset-x-0 h-52 bg-gradient-to-t from-black/85 via-black/50 to-transparent z-20 pointer-events-none"
           />
         </div>
 
-        {/* Interactive Hotspots for the active chapter (e.g. Orangutan, IoT Node, Archipelago) */}
+        {/* ── Interactive Hotspots ─────────────────────────────────── */}
         {STORY_CHAPTERS.map((ch, idx) => (
           <StoryHotspots
             key={`hotspot-${ch.id}`}
@@ -97,73 +95,120 @@ export function ScrollStorySection() {
           />
         ))}
 
-        {/* Top Control Strip */}
-        <div className="relative z-30 pt-20 sm:pt-24 px-4 sm:px-8 flex items-center justify-between pointer-events-none">
-          {/* Chapter indicator */}
-          <div className="pointer-events-auto inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#0c130d]/80 border border-white/12 backdrop-blur-md text-[0.72rem] font-mono text-[#AEDA2D] shadow-md">
-            <span className="w-2 h-2 rounded-full bg-[#AEDA2D] animate-ping" />
-            <span className="font-semibold">
-              SCENE {activeChapterIndex + 1} OF {STORY_CHAPTERS.length}
+        {/* ── Top HUD strip ────────────────────────────────────────── */}
+        <div className="absolute top-0 inset-x-0 z-30 pt-20 sm:pt-24 px-5 sm:px-10 flex items-center justify-between pointer-events-none">
+          {/* Scene counter badge */}
+          <div className="pointer-events-auto inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 border border-white/12 backdrop-blur-md text-[0.7rem] font-mono text-[#AEDA2D] shadow-lg">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#AEDA2D] animate-ping" />
+            <span className="font-semibold tracking-wider">
+              SCENE {activeChapterIndex + 1} / {STORY_CHAPTERS.length}
             </span>
           </div>
 
           <div className="pointer-events-auto flex items-center gap-2.5">
-            {/* Audio Toggle */}
+            {/* Audio toggle */}
             <button
               onClick={() => setIsAudioMuted(!isAudioMuted)}
               title={isAudioMuted ? "Bunyikan Ambiance Rimba" : "Bisukan Ambiance"}
-              className="p-2 rounded-full bg-[#0c130d]/80 border border-white/12 text-[#AEDA2D] hover:bg-[#162215] transition-colors backdrop-blur-md shadow-md cursor-pointer"
+              className="p-2 rounded-full bg-black/60 border border-white/12 hover:bg-white/10 transition-colors backdrop-blur-md shadow-lg cursor-pointer"
             >
               {isAudioMuted ? (
-                <VolumeX className="w-4 h-4 text-[#84947d]" />
+                <VolumeX className="w-4 h-4 text-white/50" />
               ) : (
                 <Volume2 className="w-4 h-4 text-[#AEDA2D] animate-pulse" />
               )}
             </button>
 
-            {/* Skip to final chapter CTA */}
+            {/* Skip to CTA */}
             {activeChapterIndex < 5 && (
               <button
-                onClick={handleSkipAnimation}
-                className="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0c130d]/80 border border-white/12 hover:border-[#AEDA2D]/50 hover:bg-[#162215] text-[0.72rem] font-medium text-[#C8D4BF] hover:text-[#AEDA2D] transition-all backdrop-blur-md shadow-md cursor-pointer"
+                onClick={() => handleSelectChapter(STORY_CHAPTERS.length - 1)}
+                className="group inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/60 border border-white/12 hover:border-[#AEDA2D]/40 hover:bg-white/10 text-[0.7rem] font-medium text-white/60 hover:text-[#AEDA2D] transition-all backdrop-blur-md shadow-lg cursor-pointer"
               >
-                <span>Ke Babak Akhir &amp; CTA</span>
+                <span>Ke Babak Akhir</span>
                 <FastForward className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
               </button>
             )}
           </div>
         </div>
 
-        {/* Story Narrative & Navigation Area */}
-        <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-8 pb-6 sm:pb-10 flex items-end justify-between">
-          {/* Chapters 0-4: Left-aligned narrative card leaving right side visually free */}
-          {activeChapterIndex < 5 ? (
-            <div className="w-full max-w-lg">
-              <StoryCard
-                chapter={STORY_CHAPTERS[activeChapterIndex]}
-                isActive={activeChapterIndex < 5}
-              />
-            </div>
-          ) : (
-            /* Chapter 5: Grand Finale Center-staged CTA */
-            <div className="w-full flex justify-center">
+        {/* ── Bottom content area ──────────────────────────────────── */}
+        <div className="absolute bottom-0 inset-x-0 z-30">
+
+          {/* Chapter 5 (CTA finale): full-width centered overlay */}
+          {activeChapterIndex === 5 && (
+            <div className="flex justify-center pb-10 px-5">
               <StoryCtaOverlay isVisible={activeChapterIndex === 5} />
             </div>
           )}
 
-          {/* Right-side timeline navigation dots */}
-          <StoryTimelineNav
-            chapters={STORY_CHAPTERS}
-            activeChapterIndex={activeChapterIndex}
-            onSelectChapter={handleSelectChapter}
-            scrollProgress={currentProgress}
-          />
+          {/* Chapters 0-4: bottom narrative ribbon + right timeline nav */}
+          {activeChapterIndex < 5 && (
+            <div className="flex items-end justify-between px-5 sm:px-10 pb-8 sm:pb-10 gap-6">
+              {/* Narrative ribbon — left/center */}
+              <div className="flex-1 min-w-0 max-w-2xl">
+                <StoryNarrativeRibbon
+                  chapter={STORY_CHAPTERS[activeChapterIndex]}
+                  chapterIndex={activeChapterIndex}
+                />
+              </div>
+
+              {/* Timeline nav dots — right edge */}
+              <div className="flex-shrink-0">
+                <StoryTimelineNav
+                  chapters={STORY_CHAPTERS}
+                  activeChapterIndex={activeChapterIndex}
+                  onSelectChapter={handleSelectChapter}
+                  scrollProgress={currentProgress}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* CTA chapter: timeline nav still accessible bottom-right */}
+          {activeChapterIndex === 5 && (
+            <div className="absolute bottom-8 right-10">
+              <StoryTimelineNav
+                chapters={STORY_CHAPTERS}
+                activeChapterIndex={activeChapterIndex}
+                onSelectChapter={handleSelectChapter}
+                scrollProgress={currentProgress}
+              />
+            </div>
+          )}
         </div>
       </div>
     </section>
   );
 }
 
+// ─── Chapter 0: Earth globe with scroll-driven fade-out ──────────────────────
+function ChapterEarthLayer({ scrollYProgress }: { scrollYProgress: any }) {
+  const step = 1 / (STORY_CHAPTERS.length - 1);
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, step * 0.35, step * 0.85],
+    [1, 1, 0]
+  );
+  const scale = useTransform(scrollYProgress, [0, step * 0.85], [1, 1.04]);
+
+  return (
+    <motion.div
+      style={{ opacity, scale }}
+      className="absolute inset-0 w-full h-full transform-gpu will-change-transform"
+    >
+      {/* EarthGlobe is a client interactive component */}
+      <EarthGlobeWrapper />
+    </motion.div>
+  );
+}
+
+// Lazy wrapper so EarthGlobe stays isolated from SSR
+function EarthGlobeWrapper() {
+  return <EarthGlobe />;
+}
+
+// ─── Chapters 1-5: photographic layers ──────────────────────────────────────
 function StoryLayer({
   chapterIndex,
   image,
@@ -178,16 +223,13 @@ function StoryLayer({
   const step = 1 / (totalChapters - 1);
   const center = chapterIndex * step;
 
-  const fadeInStart = Math.max(0, center - step * 0.7);
-  const fadeOutEnd = Math.min(1, center + step * 0.7);
+  const fadeInStart = Math.max(0, center - step * 0.85);
+  const fadeOutEnd = Math.min(1, center + step * 0.85);
 
   let inputRanges: number[];
   let outputOpacities: number[];
 
-  if (chapterIndex === 0) {
-    inputRanges = [0, center + step * 0.35, fadeOutEnd];
-    outputOpacities = [1, 1, 0];
-  } else if (chapterIndex === totalChapters - 1) {
+  if (chapterIndex === totalChapters - 1) {
     inputRanges = [fadeInStart, center - step * 0.35, 1];
     outputOpacities = [0, 1, 1];
   } else {
@@ -196,25 +238,30 @@ function StoryLayer({
   }
 
   const opacity = useTransform(scrollYProgress, inputRanges, outputOpacities);
+
+  // Cinematic parallax: subtle Y drift as layer transitions
+  const y = useTransform(
+    scrollYProgress,
+    [fadeInStart, center, fadeOutEnd],
+    ["3%", "0%", "-3%"]
+  );
+
   const scale = useTransform(
     scrollYProgress,
     [fadeInStart, center, fadeOutEnd],
-    [1.03, 1.07, 1.12]
+    [1.04, 1.07, 1.11]
   );
 
   return (
     <motion.div
-      style={{
-        opacity,
-        scale,
-      }}
-      className="absolute inset-0 w-full h-full transform-gpu will-change-transform will-change-opacity"
+      style={{ opacity, scale, y }}
+      className="absolute inset-0 w-full h-full transform-gpu will-change-transform"
     >
       <Image
         src={image}
-        alt={`Keyframe ${chapterIndex + 1}`}
+        alt={`Keyframe scene ${chapterIndex + 1}`}
         fill
-        priority={chapterIndex < 2}
+        priority={chapterIndex <= 2}
         sizes="100vw"
         className="object-cover object-center"
       />
