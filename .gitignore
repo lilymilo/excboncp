@@ -85,18 +85,9 @@ CLAUDE.md
 GEMINI.md
 skills-lock.json
 
-# === Graphify (ignore machine-local cache & paths, keep shared graph/viz/wiki) ===
-graphify-out/cache/
-graphify-out/.graphify_python
-graphify-out/.graphify_root
-graphify-out/.graphify_detect.json
-graphify-out/.graphify_extract.json
-graphify-out/.graphify_ast.json
-graphify-out/.graphify_semantic.json
-graphify-out/.graphify_analysis.json
-graphify-out/.graphify_chunk_*.json
-graphify-out/.graphify_partial.txt
-graphify-out/.graphify_build_state.json
-graphify-out/.graphify_labels.*
-graphify-out/.needs_update
-graphify-out/20*/
+# Local Media, Raw Animation & Cache (Untracked from remote root tree)
+/Landing-page-animation/
+/keyframe-animation/
+/graphify-out/
+/ci/
+/shared-schemas/
