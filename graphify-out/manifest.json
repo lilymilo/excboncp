@@ -2034,9 +2034,9 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/LoginFormCard.tsx": {
-    "mtime": 1794653483.3701065,
-    "seen": 1794653802.3272257,
-    "ast_hash": "62b664ea16327d84fc398c71e249c718",
+    "mtime": 1794663038.1745675,
+    "seen": 1794663229.8107457,
+    "ast_hash": "696582ac1d47e60ee49cc661617a3f1b",
     "semantic_hash": ""
   },
   "src/dapp/src/components/LottieMascotStage.tsx": {
@@ -2394,9 +2394,9 @@
     "semantic_hash": ""
   },
   "src/dapp/tailwind.config.ts": {
-    "mtime": 1794631183.9346855,
-    "seen": 1794631381.944213,
-    "ast_hash": "2b2b2b89b2561a01f5b77e8bb858f2ac",
+    "mtime": 1794662938.1067772,
+    "seen": 1794663229.843551,
+    "ast_hash": "f7d3e4e686e6ed98f7c94cf7f5c395b7",
     "semantic_hash": ""
   },
   "src/dapp/tests/dashboard.test.mjs": {
@@ -9948,9 +9948,9 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/ExcbonScrollCanvas.tsx": {
-    "mtime": 1794649641.5485547,
-    "seen": 1794649719.4112809,
-    "ast_hash": "362fa2d7bef17ecd2a242b6e20bc3971",
+    "mtime": 1794663009.9276989,
+    "seen": 1794663229.80794,
+    "ast_hash": "6d9e87ff8dc2df3ef17eac3fe013c935",
     "semantic_hash": ""
   },
   "keyframe-animation/ezgif-frame-001.png": {

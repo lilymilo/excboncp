@@ -1,3 +1,6 @@
+@import url("https://fonts.cdnfonts.com/css/sf-pro-display");
+@import url("https://fonts.cdnfonts.com/css/sf-mono");
+@import url("https://fonts.cdnfonts.com/css/sf-pro-rounded");
 @import "../styles/tokens.css";
 @import "../styles/motion.css";
 
@@ -6,20 +9,36 @@
 @tailwind utilities;
 
 :root {
-  --font-editorial: var(--font-display, "Source Serif 4 Variable", Georgia, serif);
-  --font-telemetry: var(--font-code, "Atkinson Hyperlegible Mono", ui-monospace, SFMono-Regular, monospace);
+  --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, "SF Pro", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-ui: "SF Pro Text", "SF Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-sans: "SF Pro Text", "SF Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-editorial: var(--font-display);
+  --font-telemetry: var(--font-code, "SF Mono", "SFMono-Regular", ui-monospace, Menlo, Monaco, Consolas, monospace);
+  --font-rounded: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "SF Pro", "Segoe UI", sans-serif;
 }
 
-.font-editorial {
-  font-family: var(--font-editorial);
+.font-editorial,
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.018em;
 }
 
-.font-ui {
+.font-ui,
+.font-sans {
   font-family: var(--font-ui);
+  letter-spacing: -0.005em;
 }
 
-.font-telemetry {
+.font-telemetry,
+.font-mono {
   font-family: var(--font-telemetry);
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
+}
+
+.font-rounded {
+  font-family: var(--font-rounded);
+  letter-spacing: -0.004em;
 }
 html {
   background: #0d1117;

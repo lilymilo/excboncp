@@ -158,11 +158,14 @@
   --shadow-glow-warning: 0 0 24px rgba(232, 179, 60, 0.28);
   --shadow-glow-danger: 0 0 24px rgba(239, 93, 107, 0.28);
 
-  /* 5. Typography Stacks */
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-display: "Source Serif 4 Variable", Georgia, serif;
-  --font-ui: "Atkinson Hyperlegible Next Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-code: "Atkinson Hyperlegible Mono", ui-monospace, SFMono-Regular, monospace;
+  /* 5. Typography Stacks — Apple San Francisco Design System */
+  --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, "SF Pro", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-ui: "SF Pro Text", "SF Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-sans: "SF Pro Text", "SF Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-code: "SF Mono", "SFMono-Regular", ui-monospace, Menlo, Monaco, Consolas, monospace;
+  --font-rounded: "SF Pro Rounded", -apple-system, BlinkMacSystemFont, "SF Pro", "Segoe UI", sans-serif;
+  --font-editorial: var(--font-display);
+  --font-telemetry: var(--font-code);
 }
 
 /* Soft Botanical design tokens scoped to .xb-botanical */

@@ -391,12 +391,12 @@ export default function ExcbonScrollCanvas() {
               className="absolute inset-x-3 bottom-6 sm:bottom-10 md:inset-0 md:flex md:flex-col md:items-center md:justify-center text-center px-0 md:px-6 pointer-events-none"
             >
               <div className="max-w-2xl mx-auto flex flex-col items-center bg-[#0d1117]/85 md:bg-transparent backdrop-blur-md md:backdrop-blur-none p-5 sm:p-6 md:p-0 rounded-2xl md:rounded-none border border-white/10 md:border-transparent shadow-2xl md:shadow-none pointer-events-auto">
-                <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30 text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-2.5 sm:mb-4 drop-shadow-sm">
+                <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30 text-[11px] sm:text-xs font-rounded font-semibold uppercase tracking-wider mb-2.5 sm:mb-4 drop-shadow-sm">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#10b981]" />
                   01 • Sistem Pemantauan Hutan Terbuka
                 </span>
 
-                <h1 className="font-ui text-xl sm:text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#FAF8F5] leading-tight text-balance drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
+                <h1 className="font-display text-xl sm:text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#FAF8F5] leading-tight text-balance drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
                   Membuktikan Kondisi Hutan, Sebelum Menghitung Nilai.
                 </h1>
 
@@ -417,12 +417,12 @@ export default function ExcbonScrollCanvas() {
               className="absolute inset-x-3 bottom-6 sm:bottom-10 md:inset-0 md:flex md:items-center px-0 md:px-14 lg:px-24 pointer-events-none"
             >
               <div className="max-w-xl text-left bg-[#0d1117]/85 md:bg-transparent backdrop-blur-md md:backdrop-blur-none p-5 sm:p-6 md:p-0 rounded-2xl md:rounded-none border border-white/10 md:border-transparent shadow-2xl md:shadow-none pointer-events-auto">
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ef4444]/15 text-[#ef4444] border border-[#ef4444]/30 text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-2.5 sm:mb-4 drop-shadow-sm">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#ef4444]/15 text-[#ef4444] border border-[#ef4444]/30 text-[11px] sm:text-xs font-rounded font-semibold uppercase tracking-wider mb-2.5 sm:mb-4 drop-shadow-sm">
                   <Flame className="w-3.5 h-3.5" />
                   02 • Krisis Pasar Karbon Lama
                 </span>
 
-                <h2 className="font-ui text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#FAF8F5] leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
+                <h2 className="font-display text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#FAF8F5] leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
                   Banyak Sertifikat, Minim Bukti Lapangan.
                 </h2>
 
@@ -447,12 +447,12 @@ export default function ExcbonScrollCanvas() {
               className="absolute inset-x-3 bottom-6 sm:bottom-10 md:inset-0 md:flex md:items-center md:justify-end px-0 md:px-14 lg:px-24 pointer-events-none"
             >
               <div className="max-w-xl text-left bg-[#0d1117]/85 md:bg-transparent backdrop-blur-md md:backdrop-blur-none p-5 sm:p-6 md:p-0 rounded-2xl md:rounded-none border border-white/10 md:border-transparent shadow-2xl md:shadow-none pointer-events-auto">
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30 text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-2.5 sm:mb-4 drop-shadow-sm">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30 text-[11px] sm:text-xs font-rounded font-semibold uppercase tracking-wider mb-2.5 sm:mb-4 drop-shadow-sm">
                   <Satellite className="w-3.5 h-3.5" />
                   03 • Pantauan dari Antariksa
                 </span>
 
-                <h2 className="font-ui text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#FAF8F5] leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
+                <h2 className="font-display text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#FAF8F5] leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
                   Melihat Tutupan Hijau Menembus Awan.
                 </h2>
 
@@ -476,12 +476,12 @@ export default function ExcbonScrollCanvas() {
               className="absolute inset-x-3 bottom-6 sm:bottom-10 md:inset-0 md:flex md:items-center md:justify-end px-0 md:px-14 lg:px-24 pointer-events-none"
             >
               <div className="max-w-xl text-left bg-[#0d1117]/85 md:bg-transparent backdrop-blur-md md:backdrop-blur-none p-5 sm:p-6 md:p-0 rounded-2xl md:rounded-none border border-white/10 md:border-transparent shadow-2xl md:shadow-none pointer-events-auto">
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30 text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-2.5 sm:mb-4 drop-shadow-sm">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30 text-[11px] sm:text-xs font-rounded font-semibold uppercase tracking-wider mb-2.5 sm:mb-4 drop-shadow-sm">
                   <Trees className="w-3.5 h-3.5" />
                   04 • Penjaga Alami di Bawah Kanopi
                 </span>
 
-                <h2 className="font-ui text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#FAF8F5] leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
+                <h2 className="font-display text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#FAF8F5] leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
                   Warga Adat Memegang Hak Penuh.
                 </h2>
 
@@ -505,12 +505,12 @@ export default function ExcbonScrollCanvas() {
               className="absolute inset-x-3 bottom-6 sm:bottom-10 md:inset-0 md:flex md:items-center px-0 md:px-14 lg:px-24 pointer-events-none"
             >
               <div className="max-w-xl text-left bg-[#0d1117]/85 md:bg-transparent backdrop-blur-md md:backdrop-blur-none p-5 sm:p-6 md:p-0 rounded-2xl md:rounded-none border border-white/10 md:border-transparent shadow-2xl md:shadow-none pointer-events-auto">
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#60a5fa]/15 text-[#60a5fa] border border-[#60a5fa]/30 text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-2.5 sm:mb-4 drop-shadow-sm">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#60a5fa]/15 text-[#60a5fa] border border-[#60a5fa]/30 text-[11px] sm:text-xs font-rounded font-semibold uppercase tracking-wider mb-2.5 sm:mb-4 drop-shadow-sm">
                   <Cpu className="w-3.5 h-3.5" />
                   05 • Saksi Fisik di Pepohonan
                 </span>
 
-                <h2 className="font-ui text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#FAF8F5] leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
+                <h2 className="font-display text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-[#FAF8F5] leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
                   Sensor yang Bekerja Tanpa Kompromi.
                 </h2>
 
@@ -557,12 +557,12 @@ export default function ExcbonScrollCanvas() {
                 {/* Mobile Drag Indicator Handle */}
                 <div className="md:hidden w-8 h-1 rounded-full bg-white/20 mx-auto mb-2.5" />
 
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#161b22]/90 text-[#10b981] border border-[#10b981]/40 text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-2 sm:mb-2.5 w-fit md:mx-auto shadow-md backdrop-blur-sm">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#161b22]/90 text-[#10b981] border border-[#10b981]/40 text-[11px] sm:text-xs font-rounded font-semibold uppercase tracking-wider mb-2 sm:mb-2.5 w-fit md:mx-auto shadow-md backdrop-blur-sm">
                   <ShieldCheck className="w-3.5 h-3.5 text-[#10b981]" />
                   06 • Terbuka &amp; Tersegel Permanen
                 </span>
 
-                <h2 className="font-ui text-lg sm:text-2xl md:text-3xl lg:text-[32px] font-bold tracking-tight text-[#FAF8F5] leading-snug drop-shadow-[0_2px_16px_rgba(0,0,0,1)] max-w-lg md:mx-auto md:text-center">
+                <h2 className="font-display text-lg sm:text-2xl md:text-3xl lg:text-[32px] font-bold tracking-tight text-[#FAF8F5] leading-snug drop-shadow-[0_2px_16px_rgba(0,0,0,1)] max-w-lg md:mx-auto md:text-center">
                   Dari Akar Pohon ke Buku Catatan Publik.
                 </h2>
 

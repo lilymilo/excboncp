@@ -368,7 +368,7 @@ export function LoginFormCard({
                 >
                   Excboncp
                 </span>
-                <span className="text-[11px] font-ui font-medium px-2 py-0.5 rounded-full border border-[#10b981]/40 text-[#10b981]">
+                <span className="text-[11px] font-rounded font-semibold px-2 py-0.5 rounded-full border border-[#10b981]/40 text-[#10b981]">
                   MRV Hutan
                 </span>
               </div>
@@ -378,7 +378,7 @@ export function LoginFormCard({
                 {/* Title & Subtitle */}
                 <div className="text-center mb-5 sm:mb-6">
                   <h1
-                    className={`font-ui text-2xl sm:text-3xl font-bold tracking-tight leading-tight ${
+                    className={`font-display text-2xl sm:text-3xl font-bold tracking-tight leading-tight ${
                       isLight ? "text-[#14261a]" : "text-[#FAF8F5]"
                     }`}
                   >
@@ -434,7 +434,7 @@ export function LoginFormCard({
                             key={acc.id}
                             type="button"
                             onClick={() => handleSelectDemoAccount(acc)}
-                            className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all min-h-[34px] ${
+                            className={`px-3 py-1.5 rounded-full text-xs font-rounded font-semibold border transition-all min-h-[34px] ${
                               isSelected
                                 ? isLight
                                   ? "bg-[#1f4d2e] text-white border-[#1f4d2e] shadow-xs"
