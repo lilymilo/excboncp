@@ -10,6 +10,13 @@
 |----------|-------------|
 | [AGENTS.md](../AGENTS.md) | Agent configuration index — 8 AI engineering agents with scope and context |
 
+## Project Story
+
+| Document | Description |
+|----------|-------------|
+| [ExcbonCP: Dari Hutan yang Dijaga Menjadi Bukti yang Dapat Dipercaya](Excboncp_Blueprint_System_Modeling_6_Hari_v5.md) | Latar belakang, tujuan, perjalanan bukti, arsitektur, batas prototipe, dan arah proyek |
+| [Blueprint teknis v5](context/Excboncp_Blueprint_System_Modeling_6_Hari_v5.md) | Model teknis rinci dan referensi historis yang menjadi acuan kontrak sistem |
+
 ## Architecture
 
 | Document | Description |
