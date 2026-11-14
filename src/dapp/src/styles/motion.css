@@ -289,8 +289,20 @@
   to { stroke-dashoffset: 0; }
 }
 
+/* ---------- Scroll Story GPU Acceleration ---------- */
+.story-gpu-layer {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
 /* ---------- Reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {
+  .story-gpu-layer {
+    will-change: auto;
+    transform: none;
+  }
+
   .xbm-reveal,
   .xbm-reveal[data-axis] {
     opacity: 1;
