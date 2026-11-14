@@ -1,24 +1,24 @@
 # Graph Report - excboncp  (2026-11-14)
 
 ## Corpus Check
-- 570 files · ~534,980 words
+- 574 files · ~537,390 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 49 file(s) not represented in the graph (top: .lottie 20, (none) 7, .toml 5)
 
 ## Summary
-- 7401 nodes · 12984 edges · 409 communities (351 shown, 58 thin omitted)
+- 7438 nodes · 13054 edges · 413 communities (359 shown, 54 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 448 edges (avg confidence: 0.89)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `86283628`
+- Built from commit: `7442f8bb`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - test_ledger.py
 - test_blockchain_api.py
-- tasks/router.py
+- credentials/service.py
 - dapp/package.json
 - generate-slide.py
 - README.md
@@ -28,8 +28,8 @@
 - EasClient
 - cip/generate.py
 - blockchain/README.md
-- database.py
-- public_metrics
+- test_eas.py
+- tasks/service.py
 - Excboncp — Blueprint System Modeling (6 Hari)
 - tests/conftest.py
 - docs/database-schema.md
@@ -37,7 +37,7 @@
 - CONTRIBUTING.md
 - TestClient
 - handle_telemetry_message
-- test_relevance_evaluator.py
+- unittest
 - docs/runbook.md
 - market/service.py
 - docs/architecture/CENTRAL_SERVER.md
@@ -54,9 +54,9 @@
 - contracts/README.md
 - docs/agent-workflow.md
 - generate-secrets.py
-- seed_demo_data
+- seed.py
 - mqtt_subscriber.py
-- docs/models/ER_DIAGRAM.md
+- database.py
 - docs/INDEX.md
 - docs/deployment.md
 - TestAIPipeline
@@ -64,7 +64,7 @@
 - .github/ISSUE_TEMPLATE/bug_report.md
 - jobs
 - docs/models/DEPLOYMENT_DIAGRAM.md
-- restore.sh
+- execute_agent
 - docs/security/ACCESS_CONTROL.md
 - .github/ISSUE_TEMPLATE/task.md
 - steps
@@ -74,18 +74,18 @@
 - package.json
 - docs/models/DEPLOYMENT_DIAGRAM.md
 - docs/models/SEQUENCE_DIAGRAM.md
-- docs/security/THREAT_MODEL.md
+- test_sensor.py
 - docs/token-efficiency.md
 - main.py
 - env
 - docs/models/USE_CASE_DIAGRAM.md
 - docs/models/STATE_DIAGRAM.md
 - mqtt_subscriber.py
-- tests/conftest.py
+- create-admin.py
 - on
 - logging
 - next
-- audit.py
+- approve_parcel_endpoint
 - test_telemetry_parser.py
 - docker
 - test
@@ -97,16 +97,17 @@
 - CLAUDE.md
 - GEMINI.md
 - copilot-instructions.md
-- ScrollStorySection.tsx
+- CardNav.tsx
 - .__init__
-- render-html.py
+- aiosqlite
 - docs/security/INCIDENT_RESPONSE.md
 - _get_append_lock
-- dependencies.py
+- gray
 - get_db
-- docs/models/USE_CASE_DIAGRAM.md
+- attest_block
 - UserResponse
 - start-server.sh
+- primitive
 - Panduan Penggunaan & Eksekusi
 - Client
 - seed.py
@@ -116,6 +117,7 @@
 - docs/security/THREAT_MODEL.md
 - test_security.py
 - json
+- 3d-globe.tsx
 - setup.sh
 - Exception
 - database.py
@@ -123,7 +125,7 @@
 - BaseModel
 - StrEnum
 - post
-- MonkeyPatch
+- DappContext.tsx
 - Connection
 - Any
 - reset_failed_attempts
@@ -138,6 +140,7 @@
 - 2. Feature Classification Inventory
 - AttestationResult
 - test_register_first_user_is_owner
+- re
 - test_login_invalid_password
 - get
 - Logo Usage Rules
@@ -146,6 +149,7 @@
 - shadcn/ui Accessibility Patterns
 - build-mascot-lottie.mjs
 - Excboncp: Brief Frontend dan Prompt Claude (v2)
+- SpecularButton.tsx
 - updatePendingCounter
 - csv
 - UI Styling Skill
@@ -164,13 +168,13 @@
 - onboard.md
 - Design System
 - Tailwind CSS Customization
-- BM25
+- ScrollStorySection.tsx
 - logo/search.py
 - spacing
 - TestTailwindConfigGenerator
 - The Toolkit
 - components.json
-- BotanicalAppShell.tsx
+- _insert_http_ledger_block
 - dapp/components.json
 - createLiveBrowserDomHelpers
 - createLiveBrowserSessionState
@@ -182,11 +186,13 @@
 - Asset Organization Guide
 - Primary Color Meanings
 - Core Logo Types
+- fit_curves.py
 - color
 - PolynomialBezier
 - initiateExpression
 - index.ts
 - compilerOptions
+- StoryChapter
 - ui-animation/SKILL.md
 - Glossary
 - 3. Logo Usage
@@ -232,6 +238,7 @@
 - Layout Patterns
 - TailwindConfigGenerator
 - TestWebStackFreshness
+- test_style_taxonomy.py
 - Impeccable Asset Producer
 - volumes
 - Aturan Struktur Khas Indonesia
@@ -244,6 +251,7 @@
 - .test_node_check_parses_generated_config
 - TestDomainDetection
 - TestSearchDomains
+- Ballpit.tsx
 - critique.md
 - Simplify the Design
 - Hardening Dimensions
@@ -296,8 +304,8 @@
 - Shape
 - Animation Review Format
 - 3. 3D Mascot MCP Evaluation (Meshy MCP & Spline MCP)
-- docs/models/DAPP_FLOWCHART.md
-- BM25
+- Operate mode depth (and Read notes)
+- docs/team-ownership.md
 - Android platform
 - Persona-Based Design Testing
 - Extract Flow
@@ -306,6 +314,7 @@
 - Measurement Guide
 - Aturan Anti-Translationese
 - 9. AI TELLS (Forbidden Patterns)
+- $type
 - Content Rules
 - 2. Daftar Halaman & Komponen Terpasang
 - input
@@ -315,6 +324,7 @@
 - Impeccable Finish Reviewer
 - Impeccable Manual Edit Applier
 - live-browser-ignores.js
+- 50
 - Aturan Konten
 - APPENDICES - Real Source-Backed Reference Material
 - 11. REDESIGN PROTOCOL
@@ -339,6 +349,7 @@
 - char-3d-7/manifest.json
 - char-3d-8/manifest.json
 - char-3d-9/manifest.json
+- react
 - Visualize: Direction Comps & Asset Production
 - Interface SFX
 - Sections
@@ -355,11 +366,11 @@
 - 8. DARK MODE PROTOCOL
 - Web Interface Guidelines
 - EXBON CP — Landing Page Blueprint (`/`)
+- 800
 - EXBON CP — Laporan Integrasi Peta Nyata (Leaflet + OpenStreetMap)
 - $type
 - radius
-- lg
-- sm
+- white
 - scripts
 - emoji-3d-2/manifest.json
 - mascot-3d/manifest.json
@@ -370,15 +381,9 @@
 - 7. DIAL DEFINITIONS (Technical Reference)
 - EXBON CP — Antigravity Skill Utilization Report
 - padding-y
-- xl
-- none
 - package.json
 - Brief Maskot Orangutan EXBON CP
 - intersectsImpl
-- 16
-- 1
-- 3
-- 8
 - destructive
 - destructive-foreground
 - muted
@@ -402,13 +407,13 @@
 - _typeof$6
 
 ## God Nodes (most connected - your core abstractions)
-1. `react` - 91 edges
+1. `react` - 92 edges
 2. `get_db()` - 62 edges
 3. `TailwindConfigGenerator` - 58 edges
-4. `next` - 54 edges
+4. `next` - 55 edges
 5. `UserResponse` - 51 edges
 6. `EasClient` - 49 edges
-7. `lucide-react` - 43 edges
+7. `lucide-react` - 44 edges
 8. `useDashboardState()` - 40 edges
 9. `TestTailwindConfigGenerator` - 35 edges
 10. `DesignSystemGenerator` - 35 edges
@@ -428,23 +433,23 @@
 ## Import Cycles
 - None detected.
 
-## Communities (409 total, 58 thin omitted)
+## Communities (413 total, 54 thin omitted)
 
 ### Community 0 - "test_ledger.py"
-Cohesion: 0.04
-Nodes (42): ApprovalLogEntry, ApproveParcelRequest, ApproveParcelResponse, LedgerVerifyResponse, approve_parcel_endpoint(), get_approvals_endpoint(), retry_approve_anchoring_endpoint(), verify_ledger_block() (+34 more)
+Cohesion: 0.07
+Nodes (28): append_block(), approve_parcel(), canonical_json(), _collect_sensor_and_ndvi(), compute_hash(), _evaluate_parcel_status(), _explorer_urls(), _get_append_lock() (+20 more)
 
 ### Community 1 - "test_blockchain_api.py"
 Cohesion: 0.16
 Nodes (10): blockchain_client(), _login(), _seed_api_database(), test_attest_missing_block_returns_404(), test_attest_rejects_identity_mismatch(), test_double_attestation_returns_conflict(), test_full_attestation_flow(), test_non_auditor_cannot_attest() (+2 more)
 
-### Community 2 - "tasks/router.py"
-Cohesion: 0.03
-Nodes (41): AgentDefinition, AgentExecutionRequest, AgentType, get_agent(), list_agents(), execute_agent(), execute_agent_direct(), get_agent_details() (+33 more)
+### Community 2 - "credentials/service.py"
+Cohesion: 0.07
+Nodes (18): CredentialCreate, CredentialResponse, CredentialUpdate, Provider, delete_own_credential(), list_credentials(), list_providers(), save_credential() (+10 more)
 
 ### Community 3 - "dapp/package.json"
-Cohesion: 0.05
-Nodes (57): autoprefixer, class-variance-authority, clsx, @fontsource/atkinson-hyperlegible-mono, @fontsource-variable/atkinson-hyperlegible-next, @fontsource-variable/source-serif-4, @hugeicons/core-free-icons, @hugeicons/react (+49 more)
+Cohesion: 0.03
+Nodes (81): autoprefixer, class-variance-authority, clsx, cobe, @fontsource/atkinson-hyperlegible-mono, @fontsource-variable/atkinson-hyperlegible-next, @fontsource-variable/source-serif-4, @hugeicons/core-free-icons (+73 more)
 
 ### Community 4 - "generate-slide.py"
 Cohesion: 0.13
@@ -467,8 +472,8 @@ Cohesion: 0.05
 Nodes (37): 1. Authentication & Session Management, 2. Per-User AI Credential Vault, 3. Agent Execution & Orchestration, 4. Task Management & Workspaces, 5. System Health & Monitoring, 6. Public Ledger Verification, 7. Blockchain — EAS Attestation (Day 3, R7), DELETE /api/credentials/{credential_id} (+29 more)
 
 ### Community 9 - "EasClient"
-Cohesion: 0.04
-Nodes (26): AttestationResult, EasClient, EasClientError, attest_block(), attestation_status(), list_attestations(), register_schema(), simulation_status() (+18 more)
+Cohesion: 0.08
+Nodes (7): AttestationResult, EasClient, EasClientError, test_attest_rejects_duplicate_block(), test_attest_rejects_non_verified_status(), test_attest_simulation(), test_register_schema_simulation()
 
 ### Community 10 - "cip/generate.py"
 Cohesion: 0.19
@@ -478,13 +483,13 @@ Nodes (7): build_cip_prompt(), check_logo_required(), generate_cip_set(), genera
 Cohesion: 0.13
 Nodes (14): 1. Install Hardhat and EAS dependencies, 2. Deploy the contract, 3. Configure .env, 4. Register and verify, Architecture, Components, Contract reference, Deployment to Base Sepolia (Day 4) (+6 more)
 
-### Community 12 - "database.py"
-Cohesion: 0.03
-Nodes (41): References, Day 3 Implementation (R7), Metadata, Metadata, 2. Feature Classification Inventory, R1–R14: Mandatory Demo, _load_settings(), Settings (+33 more)
+### Community 12 - "test_eas.py"
+Cohesion: 0.05
+Nodes (32): References, Day 3 Implementation (R7), Metadata, R1–R14: Mandatory Demo, _compute_schema_id(), get_eas_client(), reset_eas_client(), _eas_dependency() (+24 more)
 
-### Community 13 - "public_metrics"
-Cohesion: 0.23
-Nodes (5): health_check(), public_metrics(), query_audit_logs(), server_metrics(), server_status()
+### Community 13 - "tasks/service.py"
+Cohesion: 0.07
+Nodes (19): TaskCreate, TaskResponse, TaskStatus, TaskUpdate, cancel_existing_task(), delete_existing_task(), get_task_details(), get_tasks() (+11 more)
 
 ### Community 14 - "Excboncp — Blueprint System Modeling (6 Hari)"
 Cohesion: 0.08
@@ -514,16 +519,16 @@ Nodes (18): Run specific test, Run specific test file, reset_failed_attempts(), 
 Cohesion: 0.18
 Nodes (5): generate_google_maps_url(), format_coord_sync_log(), format_realtime_sync_log(), handle_telemetry_message(), test_format_realtime_sync_log()
 
-### Community 21 - "test_relevance_evaluator.py"
-Cohesion: 0.12
-Nodes (3): TestFixtureValidation, TestMetricMath, TestThresholdGate
+### Community 21 - "unittest"
+Cohesion: 0.06
+Nodes (5): _rows(), TestNativeDesktopStackFreshness, TestFixtureValidation, TestMetricMath, TestThresholdGate
 
 ### Community 22 - "docs/runbook.md"
-Cohesion: 0.10
-Nodes (19): 1.1.1 Loading Simulation-Only MRV Demo Data, 1.1.2 Windows Setup Helper (PowerShell), 1.1 Initial Setup, 1.2 Starting the Central Server, 1.3 Stopping the Server, 1. Clone repository, 1. Server Lifecycle Management, 2.1 Registering a New Member (+11 more)
+Cohesion: 0.08
+Nodes (26): 1.1.1 Loading Simulation-Only MRV Demo Data, 1.1.2 Windows Setup Helper (PowerShell), 1.1 Initial Setup, 1.2 Starting the Central Server, 1.3 Stopping the Server, 1. Clone repository, 1. Server Lifecycle Management, 2.1 Registering a New Member (+18 more)
 
 ### Community 23 - "market/service.py"
-Cohesion: 0.09
+Cohesion: 0.08
 Nodes (30): settle(), TestEconomySettlement, MarketOrderCreate, MarketOrderResponse, MarketOrderStatus, ParcelMarketResponse, SettlementBreakdown, ZoneReportResponse (+22 more)
 
 ### Community 24 - "docs/architecture/CENTRAL_SERVER.md"
@@ -548,15 +553,15 @@ Nodes (86): abortSvelteComponentInjection(), applyParamDefaults(), applyParamVal
 
 ### Community 30 - "anchor_block_to_eas"
 Cohesion: 0.08
-Nodes (67): @radix-ui/react-dialog, react, AkunPage(), ApprovePage(), AuditPage(), BantuanPage(), ConsentPage(), IndikatorPage() (+59 more)
+Nodes (59): @radix-ui/react-dialog, ActivityAliasPage(), AkunPage(), ApprovePage(), AuditPage(), BantuanPage(), ConsentPage(), IndikatorPage() (+51 more)
 
 ### Community 31 - "docs/toolchain.md"
 Cohesion: 0.13
 Nodes (14): 1. Verified Toolchain Inventory, 2. Package Management & Virtual Environments, 3. Code Style & Quality Configuration, 4. Rollback and Cleanup, Automatically fix supported lint issues, Check code formatting, Check for lint errors, Clean temporary Python artifacts and caches (+6 more)
 
 ### Community 32 - "test_approve.py"
-Cohesion: 0.10
-Nodes (15): hash_password(), verify_password(), approve_client(), _login(), _seed_approve_database(), test_approve_accepts_shared_schema_alias(), test_approve_keeps_ledger_entry_when_eas_fails(), test_approve_rejects_blocked_parcel_without_writing_ledger() (+7 more)
+Cohesion: 0.14
+Nodes (11): approve_client(), _login(), _seed_approve_database(), test_approve_accepts_shared_schema_alias(), test_approve_keeps_ledger_entry_when_eas_fails(), test_approve_rejects_blocked_parcel_without_writing_ledger(), test_approve_rejects_community_and_guest_roles(), test_approve_rejects_dispute_parcel() (+3 more)
 
 ### Community 33 - "docs/models/USE_CASE_DIAGRAM.md"
 Cohesion: 0.22
@@ -565,6 +570,10 @@ Nodes (6): acquire_lock(), _get_or_create_user(), test_file_locking_isolation(),
 ### Community 34 - "with"
 Cohesion: 0.17
 Nodes (12): with, cache, cache-from, cache-to, context, fetch-depth, file, name (+4 more)
+
+### Community 35 - "blockchain/router.py"
+Cohesion: 0.05
+Nodes (3): main(), ShadcnInstaller, TestShadcnInstaller
 
 ### Community 36 - "contracts/README.md"
 Cohesion: 0.18
@@ -578,25 +587,25 @@ Nodes (10): 1. Agent Execution Lifecycle, 2. Standardized Agent Handoff Formats,
 Cohesion: 0.22
 Nodes (6): 2. Configure environment, 4. Troubleshooting Guide, 3. Copy environment config, generate_fernet_key(), generate_jwt_secret(), main()
 
-### Community 39 - "seed_demo_data"
-Cohesion: 0.12
-Nodes (10): _insert_rows(), load_seed_data(), seed_demo_data(), _seed_ledger_blocks(), test_seed_file_is_explicitly_simulated_and_has_no_passwords(), test_seed_is_idempotent(), test_seed_links_existing_auth_account_without_overwriting_role(), test_seed_loads_parcels_accounts_and_readings() (+2 more)
+### Community 39 - "seed.py"
+Cohesion: 0.07
+Nodes (18): Metadata, hash_password(), verify_password(), _insert_rows(), load_seed_data(), _main(), _print_seed_accounts(), seed_demo_data() (+10 more)
 
 ### Community 40 - "mqtt_subscriber.py"
 Cohesion: 0.17
 Nodes (8): fetch_satellite_data(), generate_copernicus_browser_url(), _get_cache_path(), initialize_gee(), _is_placeholder_credential(), load_cached_satellite_data(), test_generate_copernicus_browser_url_amsterdam(), test_generate_copernicus_browser_url_negative_coordinates()
 
-### Community 41 - "docs/models/ER_DIAGRAM.md"
-Cohesion: 0.40
-Nodes (4): Entity-Relationship Diagram (ERD), Metadata, Relationship Notes, Storage & Integrity Principles
+### Community 41 - "database.py"
+Cohesion: 0.06
+Nodes (15): Entity-Relationship Diagram (ERD), Metadata, Relationship Notes, Storage & Integrity Principles, _extract_token(), get_current_user(), require_owner(), require_role() (+7 more)
 
 ### Community 42 - "docs/INDEX.md"
-Cohesion: 0.07
-Nodes (22): Agent System, Architecture, ExcbonCP Documentation Index, Operations, Project Management, Root, Security, System Models (+14 more)
+Cohesion: 0.08
+Nodes (21): Agent System, Architecture, ExcbonCP Documentation Index, Operations, Project Management, Root, Security, System Models (+13 more)
 
 ### Community 43 - "docs/deployment.md"
-Cohesion: 0.11
-Nodes (18): 1. Clone repository to server host, 1. Environment Topology, 1. Stop containers, 2.1 Server Host Provisioning, 2.2 Automated Deployment Steps, 2. Central Team Server Deployment, 2. Reset database and run migrations, 3. Build and launch container stack (+10 more)
+Cohesion: 0.14
+Nodes (13): 1. Clone repository to server host, 1. Environment Topology, 1. Stop containers, 2.1 Server Host Provisioning, 2.2 Automated Deployment Steps, 2. Central Team Server Deployment, 2. Reset database and run migrations, 3. Build and launch container stack (+5 more)
 
 ### Community 44 - "TestAIPipeline"
 Cohesion: 0.11
@@ -618,9 +627,9 @@ Nodes (8): concurrency, cancel-in-progress, group, jobs, security, name, name, r
 Cohesion: 0.11
 Nodes (16): context, dockerfile, build, command, environment, ports, volumes, services (+8 more)
 
-### Community 49 - "restore.sh"
-Cohesion: 0.39
-Nodes (7): List available snapshots, Restore specific snapshot, error(), info(), restore.sh script, success(), warn()
+### Community 49 - "execute_agent"
+Cohesion: 0.11
+Nodes (9): AgentDefinition, AgentExecutionRequest, AgentType, get_agent(), list_agents(), execute_agent(), execute_agent_direct(), get_agent_details() (+1 more)
 
 ### Community 50 - "docs/security/ACCESS_CONTROL.md"
 Cohesion: 0.25
@@ -658,9 +667,9 @@ Nodes (31): BM25, _contains_phrase(), detect_domain(), _domain_keywords(), _exac
 Cohesion: 0.33
 Nodes (5): 1. Sensor Ingestion & Deterministic Evaluation, 2. Community Consent Workflow, 3. EAS Blockchain Attestation Workflow, Metadata, Sequence Diagram
 
-### Community 59 - "docs/security/THREAT_MODEL.md"
-Cohesion: 0.40
-Nodes (4): 1. Konsolidasi Token Desain & Sistem Warna (`tokens.css` + `dashboard-botanical.css`), 2. Perbaikan Keseimbangan Grid, Kekosongan Ruang, & Kepadatan Konten per Halaman, 3. Hasil Pengujian & Verifikasi Teknis, EXBON CP — Design Polish & Visual Refinement Audit
+### Community 59 - "test_sensor.py"
+Cohesion: 0.13
+Nodes (18): evaluate_fire_level(), resolve_sensor_flag(), compute_json_signature(), compute_wire_signature(), verify_telemetry_signature(), _post_reading(), seeded_sensor_db(), test_accept_simulator_null_signature() (+10 more)
 
 ### Community 60 - "docs/token-efficiency.md"
 Cohesion: 0.33
@@ -672,7 +681,7 @@ Nodes (6): CREDENTIAL_ENCRYPTION_KEY, DATABASE_PATH, GITHUB_TOKEN, GITLEAKS_CONF
 
 ### Community 63 - "docs/models/USE_CASE_DIAGRAM.md"
 Cohesion: 0.08
-Nodes (46): AuditorExplorerView(), CheckList(), formatDateTime(), RecordFilter, RecordHashes(), ViewTab, ParcelNdviChart(), ParcelSupplyChart() (+38 more)
+Nodes (44): AppDashboardPage(), AppShell(), AuditorExplorerView(), CheckList(), formatDateTime(), RecordFilter, RecordHashes(), ViewTab (+36 more)
 
 ### Community 64 - "docs/models/STATE_DIAGRAM.md"
 Cohesion: 0.40
@@ -682,21 +691,25 @@ Nodes (4): Domain Invariants, Metadata, Precedence Hierarchy, State Diagram — 
 Cohesion: 0.15
 Nodes (9): create_mqtt_client(), get_config(), main(), on_connect(), on_disconnect(), on_message(), _save_event_record(), start_subscriber() (+1 more)
 
-### Community 66 - "tests/conftest.py"
-Cohesion: 0.19
-Nodes (6): auth_headers(), owner_headers(), _setup_env(), test_client(), test_owner(), test_user()
+### Community 66 - "create-admin.py"
+Cohesion: 0.09
+Nodes (15): async_main(), main(), validate_password(), get_user_by_username(), close_db(), init_db(), lifespan(), run_worker() (+7 more)
 
 ### Community 67 - "on"
 Cohesion: 0.40
 Nodes (5): on, pull_request, push, branches, branches
 
 ### Community 68 - "logging"
-Cohesion: 0.07
-Nodes (33): SensorReadingResponse, SensorReadingWire, SensorSummaryResponse, create_client(), on_message(), _normalize_payload(), process_message(), get_sensor_readings() (+25 more)
+Cohesion: 0.09
+Nodes (21): get_db(), health_check(), public_metrics(), query_audit_logs(), server_metrics(), server_status(), SensorReadingResponse, SensorReadingWire (+13 more)
 
 ### Community 69 - "next"
 Cohesion: 0.03
 Nodes (22): next, metadata, metadata, metadata, metadata, metadata, metadata, metadata (+14 more)
+
+### Community 70 - "approve_parcel_endpoint"
+Cohesion: 0.11
+Nodes (8): ApprovalLogEntry, ApproveParcelRequest, ApproveParcelResponse, LedgerVerifyResponse, approve_parcel_endpoint(), get_approvals_endpoint(), retry_approve_anchoring_endpoint(), verify_ledger_block()
 
 ### Community 71 - "test_telemetry_parser.py"
 Cohesion: 0.12
@@ -720,51 +733,55 @@ Nodes (32): name, needs, runs-on, steps, jobs, docker-ci, test-and-lint, verify-
 
 ### Community 85 - "Connection"
 Cohesion: 0.06
-Nodes (44): read_rows(), TestAccessibilityGuidance, TestChartsTypographyAndIcons, TestCurrentReactGuidance, TestSemanticColors, TestGeneratedCatalogContract, _catalog_date(), _check_app_interface_contract() (+36 more)
+Nodes (45): read_rows(), TestAccessibilityGuidance, TestChartsTypographyAndIcons, TestCurrentReactGuidance, TestSemanticColors, read_rows(), TestGeneratedCatalogContract, TestLandingAndStackContract (+37 more)
 
 ### Community 86 - "design_system.py"
 Cohesion: 0.04
 Nodes (19): ansi_ljust(), _detect_page_type(), format_ascii_box(), format_markdown(), format_master_md(), format_page_override_md(), generate_design_system(), _generate_intelligent_overrides() (+11 more)
 
-### Community 90 - "ScrollStorySection.tsx"
-Cohesion: 0.07
-Nodes (43): framer-motion, Home(), AnchorProps, CardNav(), CardNavCta, CardNavItem, CardNavLink, CardNavProps (+35 more)
+### Community 90 - "CardNav.tsx"
+Cohesion: 0.18
+Nodes (14): Home(), AnchorProps, CardNav(), CardNavCta, CardNavItem, CardNavLink, CardNavProps, clamp() (+6 more)
 
 ### Community 91 - ".__init__"
 Cohesion: 0.09
 Nodes (53): ae(), be(), bt(), Ce(), Ct(), de(), dt(), _e() (+45 more)
 
-### Community 92 - "render-html.py"
-Cohesion: 0.25
-Nodes (4): generate_html(), get_deliverable_info(), get_image_base64(), main()
+### Community 92 - "aiosqlite"
+Cohesion: 0.13
+Nodes (9): get_db_context(), _migrate_schema(), _table_columns(), test_foreign_keys_are_enforced(), test_migration_adds_r23_columns_to_legacy_users_table(), test_mrv_tables_exist(), test_sensor_columns_follow_blueprint_v5(), test_sensor_source_must_be_esp_or_simulator() (+1 more)
 
 ### Community 93 - "docs/security/INCIDENT_RESPONSE.md"
-Cohesion: 0.20
-Nodes (9): 1. Incident Classification Matrix, 2. Incident Response Workflow, 3. Playbooks for Common Incidents, 4. Post-Incident Review, Docker mode, ExcbonCP Incident Response Plan, Playbook A: Leaked AI Provider API Key, Playbook B: Database Tampering or Corruption (+1 more)
+Cohesion: 0.13
+Nodes (14): 4. Verify deployment health, 3.1 Executing Health Checks, 1. Incident Classification Matrix, 2. Incident Response Workflow, 3. Playbooks for Common Incidents, 4. Post-Incident Review, Docker mode, ExcbonCP Incident Response Plan (+6 more)
 
 ### Community 94 - "_get_append_lock"
 Cohesion: 0.07
 Nodes (55): actionLabel(), applyConfigureBarChrome(), bindConfigureCountPillTooltip(), bindConfigureInlineControlHover(), bindConfigureModifierPillHover(), buildConfigureActionControl(), buildConfigureCountControl(), buildConfigureRow() (+47 more)
 
-### Community 95 - "dependencies.py"
-Cohesion: 0.05
-Nodes (53): $type, $value, $type, $value, $type, $value, $type, $value (+45 more)
+### Community 95 - "gray"
+Cohesion: 0.11
+Nodes (19): $type, $value, $type, $value, $type, $value, $type, $value (+11 more)
 
 ### Community 96 - "get_db"
 Cohesion: 0.06
 Nodes (52): addManualContextText(), applyEditing(), buildLocatorForLeaf(), canRestoreManualEditElement(), collectEditableTextRows(), visit(), collectManualContextPieces(), walk() (+44 more)
 
-### Community 97 - "docs/models/USE_CASE_DIAGRAM.md"
-Cohesion: 0.50
-Nodes (3): Actor Descriptions, Use Case Descriptions, Use Case Diagram
+### Community 97 - "attest_block"
+Cohesion: 0.12
+Nodes (7): attest_block(), attestation_status(), list_attestations(), register_schema(), simulation_status(), test_eas_client_creation(), test_eas_client_without_key_uses_simulation()
 
 ### Community 98 - "UserResponse"
-Cohesion: 0.04
-Nodes (52): async_main(), main(), validate_password(), audit_auth_action(), _extract_token(), get_current_user(), require_owner(), require_role() (+44 more)
+Cohesion: 0.07
+Nodes (35): audit_auth_action(), RoleUpdate, StatusUpdate, TokenResponse, UserCreate, UserLogin, UserResponse, UserUpdate (+27 more)
 
 ### Community 100 - "start-server.sh"
 Cohesion: 0.25
 Nodes (10): Mode A: Production / Staging using Docker Compose, Mode B: Local Development with Uvicorn Hot-Reload, 2. Start the server, 3. Start the server with Docker, 4. Start in local mode with hot reload, error(), info(), start-server.sh script (+2 more)
+
+### Community 101 - "primitive"
+Cohesion: 0.18
+Nodes (19): $type, $value, $type, $value, 500, 600, blue, green (+11 more)
 
 ### Community 102 - "Panduan Penggunaan & Eksekusi"
 Cohesion: 0.20
@@ -799,8 +816,12 @@ Cohesion: 0.23
 Nodes (6): _get_or_create_user(), test_audit_logs_role_enforcement(), test_health_check_unauthenticated(), test_public_metrics_endpoint(), test_server_status_authenticated(), test_system_metrics_aggregation()
 
 ### Community 111 - "json"
-Cohesion: 0.07
-Nodes (22): _build_timestamp(), generate_payload(), run_publisher(), apply_color(), apply_viewbox_size(), extract_svgs(), generate_batch(), generate_icon() (+14 more)
+Cohesion: 0.08
+Nodes (18): _build_timestamp(), generate_payload(), run_publisher(), generate_html(), get_deliverable_info(), get_image_base64(), main(), enhance_prompt() (+10 more)
+
+### Community 115 - "3d-globe.tsx"
+Cohesion: 0.16
+Nodes (17): Globe3DDemo(), sampleMarkers, Atmosphere(), AtmosphereProps, defaultConfig, Globe3D(), Globe3DConfig, Globe3DProps (+9 more)
 
 ### Community 116 - "setup.sh"
 Cohesion: 0.36
@@ -819,20 +840,20 @@ Cohesion: 0.05
 Nodes (43): Arbitrary Values, Aspect Ratio, Background Colors, Border Color, Border Radius, Border Style, Border Width, Borders (+35 more)
 
 ### Community 120 - "BaseModel"
-Cohesion: 0.10
-Nodes (35): 3. Hasil Pengujian & Verifikasi Teknis, 5.1. Resolusi 49 Error `tsconfig.json` (`.next/types/app/**/*.ts`), 5.2. Pemulihan 4 Kartu KPI Utama (Bebas Truncation), 5.3. Penyelarasan Kartu Rantai Segel & Transaksi Terakhir, 5. Pemulihan Visual & Penyelesaian 49 Error TypeScript (Iterasi Lanjut), AppDashboardPage(), SimulationRevenueChartProps, AppShell() (+27 more)
+Cohesion: 0.11
+Nodes (35): 3. Hasil Pengujian & Verifikasi Teknis, 5.1. Resolusi 49 Error `tsconfig.json` (`.next/types/app/**/*.ts`), 5.2. Pemulihan 4 Kartu KPI Utama (Bebas Truncation), 5.3. Penyelarasan Kartu Rantai Segel & Transaksi Terakhir, 5. Pemulihan Visual & Penyelesaian 49 Error TypeScript (Iterasi Lanjut), ResultSplitDonut(), SimulationRevenueChart(), SimulationRevenueChartProps (+27 more)
 
 ### Community 121 - "StrEnum"
 Cohesion: 0.06
 Nodes (33): DashboardPreviewStrip(), AnalyticsVisual(), APPS, BARS, BORDER_STYLE, CardState, CHART, clamp() (+25 more)
 
 ### Community 122 - "post"
-Cohesion: 0.08
-Nodes (46): 1. Arsitektur Primitif Grafik Bersama (`ChartPrimitives.tsx`), 2. Cakupan Penerapan per Halaman & Komponen, 3. Verifikasi Grafik & Kesesuaian Kepatuhan Produk, EXBON CP — Chart & Financial Analytics Refinement Report, recharts, MarketAliasPage(), PortfolioPage(), RekapIndexPage() (+38 more)
+Cohesion: 0.06
+Nodes (61): 1. Arsitektur Primitif Grafik Bersama (`ChartPrimitives.tsx`), 2. Cakupan Penerapan per Halaman & Komponen, 3. Verifikasi Grafik & Kesesuaian Kepatuhan Produk, EXBON CP — Chart & Financial Analytics Refinement Report, 1. Konsolidasi Token Desain & Sistem Warna (`tokens.css` + `dashboard-botanical.css`), 2. Perbaikan Keseimbangan Grid, Kekosongan Ruang, & Kepadatan Konten per Halaman, 3. Hasil Pengujian & Verifikasi Teknis, EXBON CP — Design Polish & Visual Refinement Audit (+53 more)
 
-### Community 123 - "MonkeyPatch"
-Cohesion: 0.05
-Nodes (64): 1. Arsitektur Bersama & Navigasi Shell, ActivityAliasPage(), LangsungPage(), metadata, RootLayout(), viewport, BASEMAPS, CarbonMapProps (+56 more)
+### Community 123 - "DappContext.tsx"
+Cohesion: 0.07
+Nodes (33): metadata, RootLayout(), viewport, DashboardActivityEvent, EMPTY_OVERRIDES, ExtendedVerificationRecord, getServerSnapshot(), getSnapshot() (+25 more)
 
 ### Community 124 - "Connection"
 Cohesion: 0.05
@@ -843,8 +864,8 @@ Cohesion: 0.06
 Nodes (33): Apply at system scale, Audit before choosing, Choose a strategy, Contrast and perception, Live-mode signature params, Verify, Visitor mode, Step 1: Parse the request (+25 more)
 
 ### Community 126 - "reset_failed_attempts"
-Cohesion: 0.06
-Nodes (30): Before you finish, Scope is sovereign, The amplification, The skeleton test, Why it reads flat, Craft floor, Refuse, Verify (+22 more)
+Cohesion: 0.08
+Nodes (21): Before you finish, Scope is sovereign, The amplification, The skeleton test, Why it reads flat, Craft floor, Refuse, Verify (+13 more)
 
 ### Community 127 - "fixture"
 Cohesion: 0.06
@@ -863,8 +884,8 @@ Cohesion: 0.20
 Nodes (9): 1. Architect, 2. Backend, 3. Frontend, 4. IoT, 5. Data/AI, 6. Blockchain, 7. Security, 8. Reviewer (+1 more)
 
 ### Community 133 - "backup.sh"
-Cohesion: 0.27
-Nodes (8): 3. Pre-Demo Security Hardening Checklist, Berkas dan dokumen non-kode, Jadwal F-5 sampai F0 (centang saat selesai), 3.2 Creating a Snapshot Backup, info(), backup.sh script, success(), warn()
+Cohesion: 0.16
+Nodes (12): 3. Pre-Demo Security Hardening Checklist, Berkas dan dokumen non-kode, Jadwal F-5 sampai F0 (centang saat selesai), 1. Executive Summary, 2. Feature Classification Inventory, 3. Human Team Milestones, ExcbonCP Project Status & Implementation Dashboard, 3.2 Creating a Snapshot Backup (+4 more)
 
 ### Community 134 - "create_new_task"
 Cohesion: 0.11
@@ -884,15 +905,19 @@ Nodes (32): 1. Mobile-First Design, 2. Consistent Breakpoint Usage, 3. Test at B
 
 ### Community 138 - "AttestationResult"
 Cohesion: 0.06
-Nodes (12): DesignSystemGenerator, apply_decision_rules(), _object_without_duplicates(), parse_decision_rules(), _validate_action(), TestReasoningMatch, read_rows(), split_values() (+4 more)
+Nodes (11): DesignSystemGenerator, apply_decision_rules(), _object_without_duplicates(), parse_decision_rules(), _validate_action(), TestReasoningMatch, split_values(), style_identities() (+3 more)
 
 ### Community 139 - "test_register_first_user_is_owner"
 Cohesion: 0.05
 Nodes (37): Arah desain, Beda dari gambar referensi, Belum diverifikasi, Bentuk, jarak, gerak, Dasbor: kartu contoh diganti apa, Excboncp: Brief Frontend dan Prompt Claude, Font, Keputusan yang perlu disetujui tim (+29 more)
 
+### Community 140 - "re"
+Cohesion: 0.20
+Nodes (8): apply_color(), apply_viewbox_size(), extract_svgs(), generate_batch(), generate_icon(), generate_sizes(), load_env(), main()
+
 ### Community 141 - "test_login_invalid_password"
-Cohesion: 0.05
-Nodes (41): frame(), lucide-react, LoginPage(), metadata, metadata, RegisterPage(), Ballpit(), wake() (+33 more)
+Cohesion: 0.06
+Nodes (30): lucide-react, LoginPage(), metadata, metadata, RegisterPage(), DemoAccount, EXCBON_DEMO_ACCOUNTS, LoginFormCard() (+22 more)
 
 ### Community 142 - "get"
 Cohesion: 0.06
@@ -922,13 +947,17 @@ Nodes (24): The frontmatter: token schema, anim(), armRight, blob(), body, brow(
 Cohesion: 0.07
 Nodes (27): Arah desain, Beda dari gambar referensi, Bentuk, jarak, gerak, Beranda: kartu contoh diganti apa, Cara menguji rasa, Enam prinsip, Excboncp: Brief Frontend dan Prompt Claude (v2), Font (+19 more)
 
+### Community 149 - "SpecularButton.tsx"
+Cohesion: 0.21
+Nodes (14): ClosingCtaPanel(), HeroSection(), clamp(), compile(), link(), loopPosition(), rimPoint(), Settings (+6 more)
+
 ### Community 150 - "updatePendingCounter"
 Cohesion: 0.17
 Nodes (27): clearStoredManualApplyState(), fetchPendingCount(), handleManualEditActivity(), hidePendingApplyDock(), manualApplyLoadingText(), manualApplyStateKey(), manualEditEventForCurrentPage(), numberOrNull() (+19 more)
 
 ### Community 151 - "csv"
-Cohesion: 0.04
-Nodes (18): detect_domain(), get_cip_brief(), _load_csv(), search(), search_all(), _search_csv(), detect_domain(), _load_csv() (+10 more)
+Cohesion: 0.05
+Nodes (16): BM25, detect_domain(), get_cip_brief(), _load_csv(), search(), search_all(), _search_csv(), BM25 (+8 more)
 
 ### Community 152 - "UI Styling Skill"
 Cohesion: 0.08
@@ -994,9 +1023,13 @@ Nodes (22): Best Practices, Chart.js Integration, Command, Component Spec Patter
 Cohesion: 0.09
 Nodes (22): @apply Directive, Best Practices, Color Customization, Complete Tailwind Config, Configuration Examples, Content Configuration, Custom Color Palette, Custom Font Sizes (+14 more)
 
+### Community 168 - "ScrollStorySection.tsx"
+Cohesion: 0.24
+Nodes (12): framer-motion, EarthGlobe(), Globe3DDemo, ChapterEarthLayer(), EarthGlobeWrapper(), ScrollStorySection(), StoryLayer(), StoryCtaOverlay() (+4 more)
+
 ### Community 170 - "spacing"
-Cohesion: 0.09
-Nodes (22): $type, $value, $type, $value, $type, $value, $type, $value (+14 more)
+Cohesion: 0.06
+Nodes (34): $type, $value, $type, $value, $type, $value, $type, $value (+26 more)
 
 ### Community 172 - "The Toolkit"
 Cohesion: 0.10
@@ -1006,9 +1039,9 @@ Nodes (20): Animate complex properties, Assess What "Extraordinary" Means Here, 
 Cohesion: 0.10
 Nodes (20): aliases, components, hooks, lib, ui, utils, registries, @aceternity (+12 more)
 
-### Community 174 - "BotanicalAppShell.tsx"
-Cohesion: 0.12
-Nodes (17): lottie-react, lottie-react@^3.1.2, NotFound(), AUTH_ROLES, NAV_ENTRIES, NAV_GROUPS, NavEntry, NavGroupId (+9 more)
+### Community 174 - "_insert_http_ledger_block"
+Cohesion: 0.16
+Nodes (6): _insert_http_ledger_block(), ledger_client(), test_verify_endpoint_is_public_and_valid(), test_verify_endpoint_mentions_eas_lock(), test_verify_endpoint_reports_tampering(), test_verify_endpoint_returns_404_for_unknown_entry()
 
 ### Community 175 - "dapp/components.json"
 Cohesion: 0.10
@@ -1039,8 +1072,8 @@ Cohesion: 0.11
 Nodes (18): Aesthetic directions (pick one, don't blend), Anti-AI-Slop Skill, Asset, Data & Code Slop, Copy defaults to refuse, Copy rules (this is half the battle), Motion & Interaction Slop, Output format when generating UI, State coverage (the fastest non-slop signal) (+10 more)
 
 ### Community 182 - "sys"
-Cohesion: 0.05
-Nodes (27): Judging fit error, main(), require_ffmpeg(), run(), bezier_progress(), fit_property(), main(), progress() (+19 more)
+Cohesion: 0.06
+Nodes (18): main(), require_ffmpeg(), run(), foreground_mask(), load_frames(), main(), measure(), test_sync_parses_bundled_starter_template() (+10 more)
 
 ### Community 183 - "Asset Organization Guide"
 Cohesion: 0.11
@@ -1053,6 +1086,10 @@ Nodes (18): Accessibility Considerations, Analogous, Black, Blue, Color Combinat
 ### Community 185 - "Core Logo Types"
 Cohesion: 0.11
 Nodes (18): 1. Wordmark (Logotype), 2. Lettermark (Monogram), 3. Pictorial Mark (Brand Mark), 4. Abstract Mark, 5. Mascot, 6. Emblem, 7. Combination Mark, Aesthetic Styles (+10 more)
+
+### Community 186 - "fit_curves.py"
+Cohesion: 0.20
+Nodes (7): Judging fit error, bezier_progress(), fit_property(), main(), progress(), rms(), spring_model()
 
 ### Community 187 - "color"
 Cohesion: 0.11
@@ -1068,11 +1105,15 @@ Nodes (7): initiateExpression(), applyEase(), ease(), easeIn(), easeOut(), execu
 
 ### Community 190 - "index.ts"
 Cohesion: 0.11
-Nodes (28): LiveSimulationSection(), formatWibTimeNow(), LiveClock(), LiveClockProps, easeOut(), LiveNumber(), LiveNumberProps, prefersReducedMotion() (+20 more)
+Nodes (27): LiveSimulationSection(), formatWibTimeNow(), LiveClock(), LiveClockProps, easeOut(), LiveNumberProps, prefersReducedMotion(), Pressable() (+19 more)
 
 ### Community 191 - "compilerOptions"
 Cohesion: 0.11
 Nodes (18): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+10 more)
+
+### Community 192 - "StoryChapter"
+Cohesion: 0.22
+Nodes (8): STORY_CHAPTERS, StoryCardProps, HotspotItem, StoryHotspotsProps, NarrativeRibbonProps, StoryTimelineNavProps, StoryChapter, StoryTelemetry
 
 ### Community 193 - "ui-animation/SKILL.md"
 Cohesion: 0.12
@@ -1163,8 +1204,8 @@ Cohesion: 0.12
 Nodes (15): 22 Art Direction Styles, Banner Sizes & Art Direction Styles Reference, Complete Banner Sizes, CTA Rules, Design Principles, Pinterest Research Queries, Print, Print Specs (+7 more)
 
 ### Community 215 - "fontSize"
-Cohesion: 0.12
-Nodes (16): $type, $value, $type, $value, $type, $value, $type, $value (+8 more)
+Cohesion: 0.11
+Nodes (20): $type, $value, $type, $value, $type, $value, $type, $value (+12 more)
 
 ### Community 217 - "onAnnotDown"
 Cohesion: 0.24
@@ -1235,8 +1276,8 @@ Cohesion: 0.14
 Nodes (13): Animation Tokens, Base Layer, Button Example, Component Classes, CSS Variables Setup, Dark Mode Toggle, HSL Format Benefits, shadcn/ui Alignment (+5 more)
 
 ### Community 235 - "radius"
-Cohesion: 0.19
-Nodes (14): $type, $value, $type, $value, $type, $value, primitive, radius (+6 more)
+Cohesion: 0.11
+Nodes (27): $type, $value, lg, sm, $type, $value, $type, $value (+19 more)
 
 ### Community 236 - "Layout Patterns"
 Cohesion: 0.14
@@ -1277,6 +1318,10 @@ Nodes (12): Categories, Dark Mode, File Organization, Layer 1: Primitive Tokens,
 ### Community 248 - "design-tokens-starter.json"
 Cohesion: 0.15
 Nodes (12): component, $type, $value, dark, semantic, $schema, $type, $value (+4 more)
+
+### Community 252 - "Ballpit.tsx"
+Cohesion: 0.23
+Nodes (11): frame(), Ballpit(), wake(), BallpitMaterial, BallpitProps, clamp(), compile(), link() (+3 more)
 
 ### Community 253 - "critique.md"
 Cohesion: 0.17
@@ -1482,9 +1527,13 @@ Nodes (8): Animation Review Format, Before/After/Why table, Contents, Operating 
 Cohesion: 0.22
 Nodes (8): 1. Configured & Verified Active MCP Servers, 2. Updated Registry Configuration (`components.json`), 3.1 Meshy MCP (`@meshy-ai/meshy-mcp-server`), 3.2 Spline MCP (`https://mcp.spline.design/mcp` or Desktop MCP), 3.3 Approved Execution Fallback for Interactive 3D Mascot, 3. 3D Mascot MCP Evaluation (Meshy MCP & Spline MCP), Commercial / Gated Registries Note (`@reactbits-starter`, `@reactbits-pro`), EXBON CP — MCP Setup & UI Registry Configuration
 
-### Community 307 - "docs/models/DAPP_FLOWCHART.md"
-Cohesion: 0.50
-Nodes (3): DApp Flowchart, Metadata, Screen Inventory
+### Community 307 - "Operate mode depth (and Read notes)"
+Cohesion: 0.22
+Nodes (9): Color, Components, Layout, Motion, Operate mode depth (and Read notes), Product constraints, Product permissions, The product slop test (+1 more)
+
+### Community 308 - "docs/team-ownership.md"
+Cohesion: 0.40
+Nodes (4): 1. Primary Human Ownership Areas, 2. Detailed Ownership Matrix, 3. Human Governance Invariants (Rules 9 & 10), Team Ownership & Human Accountability Matrix
 
 ### Community 309 - "Android platform"
 Cohesion: 0.25
@@ -1517,6 +1566,10 @@ Nodes (8): Aturan Anti-Translationese, TR-1. Pilih Aktif atau Pasif Berdasarkan 
 ### Community 316 - "9. AI TELLS (Forbidden Patterns)"
 Cohesion: 0.25
 Nodes (8): 9.A Visual & CSS, 9. AI TELLS (Forbidden Patterns), 9.B Typography, 9.C Layout & Spacing, 9.D Content & Data ("Jane Doe" Effect), 9.E External Resources & Components, 9.F Production-Test Tells (banned outright), 9.G EM-DASH BAN (the single most-violated Tell)
+
+### Community 317 - "$type"
+Cohesion: 0.60
+Nodes (5): $type, $value, 700, 700, 700
 
 ### Community 318 - "Content Rules"
 Cohesion: 0.25
@@ -1553,6 +1606,10 @@ Nodes (6): Checks, Entry Atomicity, Impeccable Manual Edit Applier, Input Contra
 ### Community 328 - "live-browser-ignores.js"
 Cohesion: 0.52
 Nodes (6): globToRegex(), matchesScope(), normalizeIgnoreRule(), normalizeIgnoreValue(), pageCandidates(), resolveDetectIgnores()
+
+### Community 329 - "50"
+Cohesion: 0.67
+Nodes (4): $type, $value, 50, 50
 
 ### Community 330 - "Aturan Konten"
 Cohesion: 0.29
@@ -1650,6 +1707,10 @@ Nodes (6): animations, author, description, generator, keywords, version
 Cohesion: 0.29
 Nodes (6): animations, author, description, generator, keywords, version
 
+### Community 355 - "react"
+Cohesion: 0.09
+Nodes (34): leaflet, react, leaflet@^1.9.4, MapAliasPage(), MarketAliasPage(), PetaIndexPage(), PetaParcelPage(), ScreenerPage() (+26 more)
+
 ### Community 356 - "Visualize: Direction Comps & Asset Production"
 Cohesion: 0.33
 Nodes (5): After approval: the comp becomes a spec, Generate three compositional options, One approval point, Plates and provenance, Visualize: Direction Comps & Asset Production
@@ -1714,6 +1775,10 @@ Nodes (4): Guidelines Source, How It Works, Usage, Web Interface Guidelines
 Cohesion: 0.40
 Nodes (4): 1. Architecture Summary (`8` Cohesive Sections), 2. Responsive Layout & Accessibility Grid, 3. Section-by-Section Indonesian Copy Plan (Zero Em-Dashes, Zero Banned Words), EXBON CP — Landing Page Blueprint (`/`)
 
+### Community 373 - "800"
+Cohesion: 0.67
+Nodes (4): $type, $value, 800, 800
+
 ### Community 374 - "EXBON CP — Laporan Integrasi Peta Nyata (Leaflet + OpenStreetMap)"
 Cohesion: 0.40
 Nodes (4): 1. Sumber Peta Dasar & Konfigurasi Basemap, 2. Lapisan Data Lahan & Sensor Lapangan, 3. Penanganan Layout, Z-Index & Mode Gagal (*Fallback*), EXBON CP — Laporan Integrasi Peta Nyata (Leaflet + OpenStreetMap)
@@ -1726,13 +1791,9 @@ Nodes (5): $type, $value, border, border, border
 Cohesion: 0.60
 Nodes (5): radius, radius, radius, $type, $value
 
-### Community 377 - "lg"
-Cohesion: 0.60
-Nodes (5): lg, $type, $value, lg, lg
-
-### Community 378 - "sm"
-Cohesion: 0.60
-Nodes (5): sm, sm, sm, $type, $value
+### Community 377 - "white"
+Cohesion: 0.67
+Nodes (3): white, $type, $value
 
 ### Community 379 - "scripts"
 Cohesion: 0.40
@@ -1774,14 +1835,6 @@ Nodes (3): Catatan Verifikasi Otomatis Terakhir, EXBON CP — Antigravity Skill 
 Cohesion: 0.67
 Nodes (4): padding-y, padding-y, $type, $value
 
-### Community 390 - "xl"
-Cohesion: 0.67
-Nodes (4): xl, xl, $type, $value
-
-### Community 391 - "none"
-Cohesion: 0.67
-Nodes (4): $type, $value, none, none
-
 ### Community 392 - "package.json"
 Cohesion: 0.67
 Nodes (3): devDependencies, antislop@github:miqdadbadjuber/anti-slop, antislop
@@ -1793,22 +1846,6 @@ Nodes (3): Arahan Karakter & Gaya Visual, Brief Maskot Orangutan EXBON CP, Dafta
 ### Community 394 - "intersectsImpl"
 Cohesion: 0.50
 Nodes (4): boxIntersect(), intersectData(), intersectsImpl(), splitData()
-
-### Community 396 - "16"
-Cohesion: 0.67
-Nodes (3): $type, $value, 16
-
-### Community 397 - "1"
-Cohesion: 0.67
-Nodes (3): $type, $value, 1
-
-### Community 398 - "3"
-Cohesion: 0.67
-Nodes (3): $type, $value, 3
-
-### Community 399 - "8"
-Cohesion: 0.67
-Nodes (3): $type, $value, 8
 
 ### Community 400 - "destructive"
 Cohesion: 0.67
@@ -1836,23 +1873,23 @@ Nodes (3): secondary-foreground, $type, $value
 
 ## Knowledge Gaps
 - **389 isolated node(s):** `excboncp`, `Application Layer`, `Blockchain Layer`, `Central Engineering Server`, `Client Layer` (+384 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 3988 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **58 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 3997 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **54 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Curve Fitting` connect `Code Output` to `sys`?**
+- **Why does `Curve Fitting` connect `Code Output` to `fit_curves.py`?**
   _High betweenness centrality (0.057) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `TailwindConfigGenerator` (e.g. with `TestGeneratedConfigIsValidJs` and `TestTailwindConfigGenerator`) actually correct?**
   _`TailwindConfigGenerator` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `excboncp`, `Application Layer`, `Blockchain Layer` to the rest of the system?**
   _389 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `test_ledger.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.03963963963963964 - nodes in this community are weakly interconnected._
-- **Why does `Judging fit error` connect `sys` to `Code Output`?**
+  _Cohesion score 0.06559356136820925 - nodes in this community are weakly interconnected._
+- **Why does `Judging fit error` connect `fit_curves.py` to `Code Output`?**
   _High betweenness centrality (0.055) - this node is a cross-community bridge._
-- **Should `tasks/router.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.03264462809917355 - nodes in this community are weakly interconnected._
+- **Should `credentials/service.py` be split into smaller, more focused modules?**
+  _Cohesion score 0.06547619047619048 - nodes in this community are weakly interconnected._
 - **Should `dapp/package.json` be split into smaller, more focused modules?**
-  _Cohesion score 0.04689265536723164 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.030961298377028715 - nodes in this community are weakly interconnected._

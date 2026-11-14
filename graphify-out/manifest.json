@@ -1356,9 +1356,9 @@
     "semantic_hash": ""
   },
   "src/dapp/package.json": {
-    "mtime": 1794631182.5839753,
-    "seen": 1794631381.944213,
-    "ast_hash": "1995007c2bf69f4209a5842e05a8b18a",
+    "mtime": 1794634595.1446543,
+    "seen": 1794635098.6763387,
+    "ast_hash": "da2e47002072d990eb580a4941044052",
     "semantic_hash": ""
   },
   "src/dapp/postcss.config.mjs": {
@@ -9954,9 +9954,9 @@
     "semantic_hash": ""
   },
   "src/dapp/src/components/landing/ScrollStorySection.tsx": {
-    "mtime": 1794633475.9383502,
-    "seen": 1794633555.3146894,
-    "ast_hash": "09e8a6746e2deca1cbef7142fa0a4521",
+    "mtime": 1794634073.842365,
+    "seen": 1794635098.7261646,
+    "ast_hash": "e22dcd8df80f330520c678156906395b",
     "semantic_hash": ""
   },
   "src/dapp/src/components/landing/StoryCard.tsx": {
@@ -10091,6 +10091,30 @@
     "ast_hash": "eb7d5a17e2e85768a2f87c48a95b9cdd",
     "semantic_hash": ""
   },
+  "src/dapp/src/components/3d-globe-demo.tsx": {
+    "mtime": 1794634891.415822,
+    "seen": 1794635098.7095625,
+    "ast_hash": "a0f89879caf88cc184f65bc7b442fddd",
+    "semantic_hash": ""
+  },
+  "src/dapp/src/components/landing/EarthGlobe.tsx": {
+    "mtime": 1794634899.4310744,
+    "seen": 1794635098.7261646,
+    "ast_hash": "49af822fd5a3d5936ce3a03e36d904f8",
+    "semantic_hash": ""
+  },
+  "src/dapp/src/components/landing/StoryNarrativeRibbon.tsx": {
+    "mtime": 1794633854.8050175,
+    "seen": 1794635098.7269666,
+    "ast_hash": "3cec28203acb106a3c26db7e819afdd8",
+    "semantic_hash": ""
+  },
+  "src/dapp/src/components/ui/3d-globe.tsx": {
+    "mtime": 1794634804.229467,
+    "seen": 1794635098.7345254,
+    "ast_hash": "6f435d82de84ca04ec88d2541b8573a4",
+    "semantic_hash": ""
+  },
   "iot-node/package-lock.json": {
     "mtime": 1794368527.971033,
     "seen": 1794631381.944213,
@@ -10104,9 +10128,9 @@
     "semantic_hash": ""
   },
   "src/dapp/package-lock.json": {
-    "mtime": 1794632946.2559297,
-    "seen": 1794633555.7992797,
-    "ast_hash": "fb805b04ea3cccdd4b6342cd0bce6ffa",
+    "mtime": 1794634595.2814498,
+    "seen": 1794635099.2323122,
+    "ast_hash": "ee99b3a42039e504fe6bcefcd4294f9a",
     "semantic_hash": ""
   }
 }
